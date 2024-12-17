@@ -72,7 +72,7 @@ namespace SqlServer.Rules.Design
                 //ignore selects that do not use a from clause with tables
                 if (fromClause == null) { continue; }
 
-                var visitor = new NamedTableReferenceVisitor() { TypeFilter = ObjectTypeFilter.PermanentOnly };
+                var visitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                 fromClause.Accept(visitor);
                 //only scan for aliases if there are more than 1 table in the from clause
                 if (visitor.Count <= 1) { continue; }

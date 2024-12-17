@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using System;
 
 namespace TSQLSmellSCA
 {

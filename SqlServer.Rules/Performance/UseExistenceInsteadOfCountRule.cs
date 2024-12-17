@@ -79,7 +79,7 @@ namespace SqlServer.Rules.Performance
             return problems;
         }
 
-        private bool CheckIf(IfStatement ifstmt)
+        private static bool CheckIf(IfStatement ifstmt)
         {
             if (ifstmt.Predicate is BooleanComparisonExpression booleanCompare)
             {

@@ -1,12 +1,8 @@
 ﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
 using SqlServer.Rules.ReferentialIntegrity;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {

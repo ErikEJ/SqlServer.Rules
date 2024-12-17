@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class SqlDataTypeProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public SqlDataTypeProcessor(Smells smells)
         {

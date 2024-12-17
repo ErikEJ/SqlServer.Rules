@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class TableVariableProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public TableVariableProcessor(Smells smells)
         {

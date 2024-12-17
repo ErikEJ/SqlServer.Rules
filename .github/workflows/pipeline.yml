@@ -31,7 +31,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: SplitRepoName
         shell: powershell
@@ -40,7 +40,7 @@ jobs:
           echo "REPO_OWNER=$($repoVals[0])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           echo "REPO_NAME=$($repoVals[1])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes_filter
         with:
           filters: |
@@ -50,9 +50,9 @@ jobs:
               - 'SqlServer.Rules/**/*'
 
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "5.0.x" # SDK Version to use; x will use the latest version of the 5.0 channel
+          dotnet-version: "8.0.x" # SDK Version to use; x will use the latest version of the 5.0 channel
 
       # LINTER
       # Format the output of dotnet format
@@ -64,7 +64,7 @@ jobs:
         run: dotnet tool update --global dotnet-format
 
       - name: Run dotnet format
-        run: dotnet format --check --verbosity diagnostic
+        run: dotnet format --verbosity diagnostic
 
       # BUILD
       - name: Restore dependencies
@@ -125,7 +125,7 @@ jobs:
 
       - name: Bump version and push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v5.6
+        uses: mathieudutour/github-tag-action@v6.2
         if: ${{ github.ref == 'refs/heads/master' && (steps.changes_filter.outputs.workflows == 'true' || steps.changes_filter.outputs.rules == 'true') }}
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"

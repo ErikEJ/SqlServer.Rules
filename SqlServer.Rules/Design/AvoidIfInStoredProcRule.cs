@@ -66,7 +66,7 @@ namespace SqlServer.Rules.Design
 
             foreach (var ifStatement in ifVisitor.NotIgnoredStatements(RuleId))
             {
-                var tableVisitor = new NamedTableReferenceVisitor() { TypeFilter = ObjectTypeFilter.PermanentOnly };
+                var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                 ifStatement.ThenStatement?.Accept(tableVisitor);
                 ifStatement.ElseStatement?.Accept(tableVisitor);
                 problems.AddRange(tableVisitor.Statements.Select(s => new SqlRuleProblem(Message, sqlObj, s)));

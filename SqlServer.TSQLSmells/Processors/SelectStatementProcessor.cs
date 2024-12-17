@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using System.Collections.Generic;
 
 namespace TSQLSmellSCA
 {
     public class SelectStatementProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public SelectStatementProcessor(Smells smells)
         {

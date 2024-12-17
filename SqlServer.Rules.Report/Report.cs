@@ -20,10 +20,17 @@ namespace SqlServer.Rules.Report
 
         public Report(string solutionName, List<IssueType> issueTypes, string projectName, List<Issue> problems)
         {
-            ToolsVersion = typeof(Report).Assembly.GetName().Version.ToString(); ;
-            Information = new Information() { Solution = $"{solutionName}.sln" };
+            ToolsVersion = typeof(Report).Assembly.GetName().Version.ToString();
+            Information = new Information { Solution = $"{solutionName}.sln" };
             IssueTypes = issueTypes;
-            Issues = new List<RulesProject> { new Rules.Report.RulesProject() { Name = projectName, Issues = problems } };
+            Issues =
+            [
+                new RulesProject
+                {
+                    Name = projectName,
+                    Issues = problems
+                },
+            ];
         }
     }
 }

@@ -7,7 +7,7 @@ namespace SqlServer.Dac.Visitors
     {
         public ObjectTypeFilter TypeFilter { get; set; } = ObjectTypeFilter.All;
         public IList<CreateTableStatement> Statements { get; } = new List<CreateTableStatement>();
-        public int Count { get { return this.Statements.Count; } }
+        public int Count { get { return Statements.Count; } }
         public override void Visit(CreateTableStatement node)
         {
             switch (TypeFilter)

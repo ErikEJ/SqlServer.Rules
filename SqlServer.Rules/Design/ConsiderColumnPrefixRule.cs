@@ -3,14 +3,13 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
 	/// <IsIgnorable>true</IsIgnorable>
@@ -93,7 +92,7 @@ namespace SqlServer.Rules.Design
             return problems;
         }
 
-        private bool CheckName(ColumnReferenceExpression col)
+        private static bool CheckName(ColumnReferenceExpression col)
         {
             var names = col.MultiPartIdentifier?.Identifiers;
             if (names == null) { return false; }

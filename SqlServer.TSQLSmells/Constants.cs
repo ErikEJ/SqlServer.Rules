@@ -16,8 +16,6 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-using Microsoft.SqlServer.Dac.Extensibility;
-
 namespace TSQLSmellSCA
 {
     internal static class RuleConstants

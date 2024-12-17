@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using System.Collections.Generic;
 
 namespace TSQLSmellSCA
 {
     public class ProcedureStatementBodyProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
         public bool NoCountSet = false;
         private IList<ProcedureParameter> _parameterList;
 
@@ -42,8 +42,10 @@ namespace TSQLSmellSCA
                 {
                     _smells.ProcessTsqlFragment(Fragment);
                 }
+
                 if (!NoCountSet) _smells.SendFeedBack(30, StatementBody.ProcedureReference);
             }
+
             ParameterList = null;
         }
     }

@@ -3,12 +3,10 @@ using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
-using SqlServer.Rules.Globals;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace SqlServer.Rules
 {
@@ -278,11 +276,12 @@ namespace SqlServer.Rules
             {
                 return GetDataType(exprInt);
             }
-            else if (value is NumericLiteral exprNum)
+
+            if (value is NumericLiteral exprNum)
             {
                 return GetDataType(exprNum);
             }
-            else if (value is FunctionCall exprFunc)
+            if (value is FunctionCall exprFunc)
             {
                 if (_functions.ContainsKey(exprFunc.FunctionName.Value))
                 {
@@ -337,22 +336,21 @@ namespace SqlServer.Rules
             {
                 return GetColumnDataType(sqlObj, query, expression1, model, variables);
             }
-            else if (expression is StringLiteral stringLiteral)
+
+            if (expression is StringLiteral stringLiteral)
             {
                 if (stringLiteral.IsNational)
                 {
                     return "nvarchar";
                 }
-                else
-                {
-                    return "varchar";
-                }
+
+                return "varchar";
             }
-            else if (expression is NumericLiteral exprNum)
+            if (expression is NumericLiteral exprNum)
             {
                 return exprNum.LiteralType.ToString();
             }
-            else if (expression is IntegerLiteral exprInt)
+            if (expression is IntegerLiteral exprInt)
             {
                 long val = long.Parse(exprInt.Value);
 
@@ -360,31 +358,33 @@ namespace SqlServer.Rules
                 {
                     return "tinyint";
                 }
-                else if (val >= -32768 && val <= 32768)
+
+                if (val >= -32768 && val <= 32768)
                 {
                     return "smallint";
                 }
-                else if (val >= -2147483648 && val <= 2147483648)
+                if (val >= -2147483648 && val <= 2147483648)
                 {
                     return "int";
                 }
-                else if (val >= -9223372036854775808 && val <= 9223372036854775807)
+                if (val >= -9223372036854775808 && val <= 9223372036854775807)
                 {
                     return "bigint";
                 }
+
                 //technically this may not be accurate. as sql sever will interpret literal ints as different types
                 //depending upon how large they are. smallint, tinyint, etc... Unless I mimic their same value behavior.
                 return "int";
             }
-            else if (expression is CastCall exprCast)
+            if (expression is CastCall exprCast)
             {
                 return exprCast.DataType.Name.Identifiers.First().Value;
             }
-            else if (expression is ConvertCall exprConvert)
+            if (expression is ConvertCall exprConvert)
             {
                 return exprConvert.DataType.Name.Identifiers.First().Value;
             }
-            else if (expression is VariableReference exprVar)
+            if (expression is VariableReference exprVar)
             {
                 var variable = variables.FirstOrDefault(v => _comparer.Equals(v.Name, exprVar.Name));
                 if (variable != null)
@@ -473,12 +473,11 @@ namespace SqlServer.Rules
                 {
                     return GetDataType(sqlObj, query, selectColumns.First().Expression, variables);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
-            else if (columns.Count > 1)
+
+            if (columns.Count > 1)
             {
                 var tablesVisitor = new TableReferenceWithAliasVisitor();
 
@@ -614,7 +613,7 @@ namespace SqlServer.Rules
 
             foreach (var referencedTable in referencedTables)
             {
-                string fullColumnName = referencedTable.Name.ToString() + ".[" + column.MultiPartIdentifier.Identifiers.Last().Value + "]";
+                string fullColumnName = referencedTable.Name + ".[" + column.MultiPartIdentifier.Identifiers.Last().Value + "]";
                 var retColumn = referencedTable.GetReferencedRelationshipInstances(Table.Columns).FirstOrDefault(p => _comparer.Equals(p.ObjectName.ToString(), fullColumnName));
 
                 if (retColumn != null) { return referencedTable; }

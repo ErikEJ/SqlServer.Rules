@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql;
-
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
 
 namespace TSQLSmellSCA
 {
+    public class TSQLSmellWorker
+    {
+        private readonly TSqlModel _model;
+        private readonly string _ruleID;
 
-    public class TSQLSmellWorker{
-
-        
-        private TSqlModel _model;
-        private string _ruleID;
-
-       public TSQLSmellWorker(SqlRuleExecutionContext context,string ruleID)
+        public TSQLSmellWorker(SqlRuleExecutionContext context, string ruleID)
         {
             _model = context.SchemaModel;
             _ruleID = ruleID;
@@ -26,24 +18,22 @@ namespace TSQLSmellSCA
 
         public IList<SqlRuleProblem> Analyze()
         {
-            
             List<SqlRuleProblem> problems = new List<SqlRuleProblem>();
-           
-            ModelTypeClass[] ExFilter = new[]{
-                ModelSchema.ExtendedProperty
-            };
 
-            List<TSqlObject>WhiteList = new List<TSqlObject>();
-            
+            ModelTypeClass[] ExFilter = new[] { ModelSchema.ExtendedProperty };
+
+            List<TSqlObject> WhiteList = new List<TSqlObject>();
+
             //[SqlTableBase].[dbo].[test].[WhiteList]
-            foreach (TSqlObject tSqlObject in _model.GetObjects(DacQueryScopes.UserDefined,ExFilter))
+            foreach (TSqlObject tSqlObject in _model.GetObjects(DacQueryScopes.UserDefined, ExFilter))
             {
-                if(tSqlObject.Name.ToString().EndsWith("[WhiteList]",StringComparison.OrdinalIgnoreCase)){
-                    foreach(ModelRelationshipInstance refer in tSqlObject.GetReferencedRelationshipInstances()){
+                if (tSqlObject.Name.ToString().EndsWith("[WhiteList]", StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (ModelRelationshipInstance refer in tSqlObject.GetReferencedRelationshipInstances())
+                    {
                         WhiteList.Add(refer.Object);
                     }
                 }
-                
             }
 
             foreach (TSqlObject tSqlObject in _model.GetObjects(DacQueryScopes.UserDefined))
@@ -57,15 +47,17 @@ namespace TSQLSmellSCA
                     }
 
                 }
+
                 if (isWhite) continue;
 
                 problems.AddRange(DoSmells(tSqlObject));
-               
+
             }
+
             return (problems);
         }
 
-        private  IList<SqlRuleProblem> DoSmells(TSqlObject SqlObject)
+        private IList<SqlRuleProblem> DoSmells(TSqlObject SqlObject)
         {
 
             List<SqlRuleProblem> problems = new List<SqlRuleProblem>();
@@ -75,14 +67,10 @@ namespace TSQLSmellSCA
 
             int iRule = int.Parse(_ruleID.Substring(_ruleID.Length - 3));
             return (smellprocess.ProcessObject(SqlObject, iRule));
-
         }
-
-
     }
 
-
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName01, // ID used to look up the display name inside the resources file
         null,
@@ -93,16 +81,15 @@ namespace TSQLSmellSCA
     {
 
         public const string RuleId = "Smells.SML001";
-        
+
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext context)
         {
             TSQLSmellWorker Worker = new TSQLSmellWorker(context, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA2.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName02, // ID used to look up the display name inside the resources file
         null,
@@ -113,16 +100,15 @@ namespace TSQLSmellSCA
     {
 
         public const string RuleId = "Smells.SML002";
-        
+
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext context)
         {
             TSQLSmellWorker Worker = new TSQLSmellWorker(context, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA3.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName03, // ID used to look up the display name inside the resources file
         null,
@@ -139,10 +125,9 @@ namespace TSQLSmellSCA
             TSQLSmellWorker Worker = new TSQLSmellWorker(context, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA4.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName04, // ID used to look up the display name inside the resources file
         null,
@@ -151,7 +136,6 @@ namespace TSQLSmellSCA
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA4 : SqlCodeAnalysisRule
     {
-
         public const string RuleId = "Smells.SML004";
 
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext context)
@@ -159,10 +143,9 @@ namespace TSQLSmellSCA
             TSQLSmellWorker Worker = new TSQLSmellWorker(context, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA5.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName05, // ID used to look up the display name inside the resources file
         null,
@@ -171,7 +154,6 @@ namespace TSQLSmellSCA
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA5 : SqlCodeAnalysisRule
     {
-
         public const string RuleId = "Smells.SML005";
 
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext context)
@@ -179,10 +161,9 @@ namespace TSQLSmellSCA
             TSQLSmellWorker Worker = new TSQLSmellWorker(context, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA6.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName06, // ID used to look up the display name inside the resources file
         null,
@@ -191,7 +172,6 @@ namespace TSQLSmellSCA
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA6 : SqlCodeAnalysisRule
     {
-
         public const string RuleId = "Smells.SML006";
 
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext context)
@@ -202,7 +182,7 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA07.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName07, // ID used to look up the display name inside the resources file
         null,
@@ -222,7 +202,7 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA08.RuleId,
+    [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName08, // ID used to look up the display name inside the resources file
         null,
@@ -242,13 +222,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA09.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName09, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName09, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA09 : SqlCodeAnalysisRule
     {
 
@@ -256,7 +236,7 @@ namespace TSQLSmellSCA
 
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext context)
         {
-            
+
             TSQLSmellWorker Worker = new TSQLSmellWorker(context, RuleId);
             return (Worker.Analyze());
         }
@@ -264,13 +244,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA10.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName10, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName10, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA10 : SqlCodeAnalysisRule
     {
 
@@ -285,13 +265,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA11.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName11, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName11, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA11 : SqlCodeAnalysisRule
     {
 
@@ -305,13 +285,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA12.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName12, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName12, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA12 : SqlCodeAnalysisRule
     {
 
@@ -325,13 +305,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA13.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName13, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName13, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA13 : SqlCodeAnalysisRule
     {
 
@@ -345,13 +325,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA14.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName14, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName14, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA14 : SqlCodeAnalysisRule
     {
 
@@ -365,13 +345,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA15.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName15, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName15, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA15 : SqlCodeAnalysisRule
     {
 
@@ -386,13 +366,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA16.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName16, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName16, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA16 : SqlCodeAnalysisRule
     {
 
@@ -406,13 +386,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA17.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName17, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName17, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA17 : SqlCodeAnalysisRule
     {
 
@@ -426,13 +406,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA18.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName18, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName18, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA18 : SqlCodeAnalysisRule
     {
 
@@ -447,13 +427,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA19.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName19, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName19, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA19 : SqlCodeAnalysisRule
     {
 
@@ -467,13 +447,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA20.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName20, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName20, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA20 : SqlCodeAnalysisRule
     {
 
@@ -487,13 +467,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA21.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName21, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName21, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA21 : SqlCodeAnalysisRule
     {
 
@@ -507,13 +487,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA22.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName22, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName22, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA22 : SqlCodeAnalysisRule
     {
 
@@ -527,13 +507,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA23.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName23, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName23, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA23 : SqlCodeAnalysisRule
     {
 
@@ -548,13 +528,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA24.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName24, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName24, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA24 : SqlCodeAnalysisRule
     {
 
@@ -568,13 +548,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA25.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName25, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName25, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA25 : SqlCodeAnalysisRule
     {
 
@@ -588,13 +568,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA26.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName26, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName26, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA26 : SqlCodeAnalysisRule
     {
 
@@ -608,13 +588,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA27.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName27, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName27, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA27 : SqlCodeAnalysisRule
     {
 
@@ -628,13 +608,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA28.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName28, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName28, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA28 : SqlCodeAnalysisRule
     {
 
@@ -648,13 +628,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA29.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName29, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName29, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA29 : SqlCodeAnalysisRule
     {
 
@@ -668,13 +648,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA30.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName30, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName30, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA30 : SqlCodeAnalysisRule
     {
 
@@ -688,13 +668,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA31.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName31, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName31, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA31 : SqlCodeAnalysisRule
     {
 
@@ -709,13 +689,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA32.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName32, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName32, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA32 : SqlCodeAnalysisRule
     {
 
@@ -729,13 +709,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA33.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName33, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName33, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA33 : SqlCodeAnalysisRule
     {
 
@@ -749,13 +729,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA34.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName34, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName34, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA34 : SqlCodeAnalysisRule
     {
 
@@ -769,13 +749,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA35.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName35, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName35, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA35 : SqlCodeAnalysisRule
     {
 
@@ -789,13 +769,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA36.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName36, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName36, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA36 : SqlCodeAnalysisRule
     {
 
@@ -810,13 +790,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA37.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName37, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName37, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA37 : SqlCodeAnalysisRule
     {
 
@@ -830,13 +810,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA38.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName38, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName38, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA38 : SqlCodeAnalysisRule
     {
 
@@ -850,13 +830,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA39.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName39, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName39, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA39 : SqlCodeAnalysisRule
     {
 
@@ -870,13 +850,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA40.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName40, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName40, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA40 : SqlCodeAnalysisRule
     {
 
@@ -890,13 +870,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA41.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName41, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName41, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA41 : SqlCodeAnalysisRule
     {
 
@@ -910,13 +890,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA42.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName42, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName42, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA42 : SqlCodeAnalysisRule
     {
 
@@ -931,13 +911,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA43.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName43, // ID used to look up the display name inside the resources file
-    null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName43, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA43 : SqlCodeAnalysisRule
     {
 
@@ -950,14 +930,14 @@ namespace TSQLSmellSCA
         }
 
     }
-    
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA44.RuleId,
-    RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-    RuleConstants.TSQLSmell_RuleName44, // ID used to look up the display name inside the resources file
-    null,
+
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName44, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-    Category = RuleConstants.CategorySmells,
-    RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA44 : SqlCodeAnalysisRule
     {
 
@@ -971,13 +951,13 @@ namespace TSQLSmellSCA
 
     }
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA45.RuleId,
-  RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-  RuleConstants.TSQLSmell_RuleName45, // ID used to look up the display name inside the resources file
-  null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName45, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-  Category = RuleConstants.CategorySmells,
-  RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA45 : SqlCodeAnalysisRule
     {
 
@@ -992,13 +972,13 @@ namespace TSQLSmellSCA
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA46.RuleId,
-RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-RuleConstants.TSQLSmell_RuleName46, // ID used to look up the display name inside the resources file
-null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName46, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-Category = RuleConstants.CategorySmells,
-RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA46 : SqlCodeAnalysisRule
     {
 
@@ -1013,16 +993,15 @@ RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     }
 
 
-    [LocalizedExportCodeAnalysisRule(TSQLSmellSCA47.RuleId,
-RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
-RuleConstants.TSQLSmell_RuleName47, // ID used to look up the display name inside the resources file
-null,
+    [LocalizedExportCodeAnalysisRule(RuleId,
+        RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
+        RuleConstants.TSQLSmell_RuleName47, // ID used to look up the display name inside the resources file
+        null,
         // ID used to look up the description inside the resources file
-Category = RuleConstants.CategorySmells,
-RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
+        Category = RuleConstants.CategorySmells,
+        RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
     public sealed class TSQLSmellSCA47 : SqlCodeAnalysisRule
     {
-
         public const string RuleId = "Smells.SML047";
 
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext context)
@@ -1030,31 +1009,5 @@ RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
             TSQLSmellWorker Worker = new TSQLSmellWorker(context, RuleId);
             return (Worker.Analyze());
         }
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -82,14 +80,14 @@ namespace SqlServer.Rules.Performance
             return problems;
         }
 
-        private bool CheckFunction(FunctionCall func)
+        private static bool CheckFunction(FunctionCall func)
         {
             if (func == null) { return false; }
 
             return func.Parameters.OfType<ColumnReferenceExpression>().Any(col =>
             {
                 var colId = col.MultiPartIdentifier?.GetObjectIdentifier();
-                if (colId == null || colId.Parts.Count() == 0) { return false; }
+                if (colId == null || colId.Parts.Count == 0) { return false; }
                 return !Constants.DateParts.Contains(colId.Parts.Last().ToLower());
             }) && !Constants.Aggregates.Contains(func.FunctionName.Value.ToUpper());
         }

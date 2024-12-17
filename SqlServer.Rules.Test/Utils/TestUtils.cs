@@ -2,19 +2,19 @@
 //<copyright company="Microsoft">
 //
 //    The MIT License (MIT)
-//    
+//
 //    Copyright (c) 2015 Microsoft
-//    
+//
 //    Permission is hereby granted, free of charge, to any person obtaining a copy
 //    of this software and associated documentation files (the "Software"), to deal
 //    in the Software without restriction, including without limitation the rights
 //    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //    copies of the Software, and to permit persons to whom the Software is
 //    furnished to do so, subject to the following conditions:
-//    
+//
 //    The above copyright notice and this permission notice shall be included in all
 //    copies or substantial portions of the Software.
-//    
+//
 //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,10 +25,10 @@
 //</copyright>
 //------------------------------------------------------------------------------
 
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -63,11 +63,11 @@ END
 
         private const string _dropDatabaseIfExistAzure = @"DROP DATABASE [{0}];";
 
-        private static Regex _batch = new Regex(@"GO\s*$", RegexOptions.Multiline);
+        private static readonly Regex _batch = new Regex(@"GO\s*$", RegexOptions.Multiline);
         private static InstanceInfo _defaultInstanceInfo;
 
         /// <summary>
-        /// Default connection string to LocalDB. Consider extending in the future to allow 
+        /// Default connection string to LocalDB. Consider extending in the future to allow
         /// specification of multiple server versions and paths.
         /// </summary>
         public static string ServerConnectionString
@@ -89,7 +89,7 @@ END
 
         public static void DropDbAndDeleteFiles(string dbName, string mdfFilePath = null, string ldfFilePath = null)
         {
-            DropDbAndDeleteFiles(TestUtils.ServerConnectionString, dbName, mdfFilePath, ldfFilePath);
+            DropDbAndDeleteFiles(ServerConnectionString, dbName, mdfFilePath, ldfFilePath);
         }
 
         public static void DropDbAndDeleteFiles(string serverName, string dbName, string mdfFilePath = null, string ldfFilePath = null)
@@ -170,10 +170,7 @@ END
                 }
                 finally
                 {
-                    if (conn != null)
-                    {
-                        conn.Close();
-                    }
+                    conn?.Close();
                 }
             }
 
@@ -192,7 +189,7 @@ END
         public static SqlTestDB CreateTestDatabase(InstanceInfo instance, string dbName)
         {
             // Cleanup the database if it already exists
-            TestUtils.DropDatabase(instance, dbName);
+            DropDatabase(instance, dbName);
 
             // Create the test database
             string createDB = string.Format(CultureInfo.InvariantCulture, "create database [{0}]", dbName);
@@ -202,7 +199,7 @@ END
         }
 
         /// <summary>
-        /// Executes the query, and returns the first column of the first row in the 
+        /// Executes the query, and returns the first column of the first row in the
         /// result set returned by the query. Extra columns or rows are ignored.
         /// </summary>
         public static object ExecuteScalar(SqlConnection connection, string sqlCommandText, int commandTimeOut = 30)
@@ -237,7 +234,7 @@ END
         private static SqlCommand GetCommandObject(SqlConnection conn, string sqlCommandText, int commandTimeOut)
         {
             SqlCommand cmd = conn.CreateCommand();
-            // reasonable hard code to prevent hang client.  
+            // reasonable hard code to prevent hang client.
             cmd.CommandTimeout = commandTimeOut;
             cmd.CommandText = String.Format(CultureInfo.InvariantCulture, _setLockTimeoutDefault, GetLockTimeoutMS());
             cmd.ExecuteNonQuery();

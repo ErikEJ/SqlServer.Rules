@@ -71,9 +71,8 @@ namespace SqlServer.Dac
                         ret = execProc.ProcedureReference.ProcedureReference.Name.GetObjectIdentifier(assumedSchema);
                     }
                     break;
-                case TSqlScript script:
-                case TSqlStatementSnippet frag:
-                    ret = null;
+                case TSqlScript _:
+                case TSqlStatementSnippet _:
                     break;
                 default:
                     throw new ApplicationException("Unable to determine fragment type");
@@ -86,7 +85,7 @@ namespace SqlServer.Dac
             var identifiers = table.SchemaObject.Identifiers;
             if (identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
-                return new ObjectIdentifier(new[] { assumedSchema, identifiers.First().Value });
+                return new ObjectIdentifier(assumedSchema, identifiers.First().Value);
             }
             return new ObjectIdentifier(identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value));
         }
@@ -95,7 +94,7 @@ namespace SqlServer.Dac
             var identifiers = proc.Name.Identifiers;
             if (identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
-                return new ObjectIdentifier(new[] { assumedSchema, identifiers.First().Value });
+                return new ObjectIdentifier(assumedSchema, identifiers.First().Value);
             }
             return new ObjectIdentifier(identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value));
         }
@@ -103,7 +102,7 @@ namespace SqlServer.Dac
         {
             if (name.Identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
-                return new ObjectIdentifier(new[] { assumedSchema, name.Identifiers.First().Value });
+                return new ObjectIdentifier(assumedSchema, name.Identifiers.First().Value);
             }
             return new ObjectIdentifier(name.Identifiers.Select(x => x.Value));
         }
@@ -111,7 +110,7 @@ namespace SqlServer.Dac
         {
             if (name.Identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
-                return new ObjectIdentifier(new[] { assumedSchema, name.Identifiers.First().Value });
+                return new ObjectIdentifier(assumedSchema, name.Identifiers.First().Value);
             }
             return new ObjectIdentifier(name.Identifiers.Select(x => x.Value));
         }
@@ -179,9 +178,9 @@ namespace SqlServer.Dac
             {
                 return $"[{column.MultiPartIdentifier.Identifiers.First().Value}]";
             }
-            var tname = "[" + string.Join("].[", column.MultiPartIdentifier.Identifiers.Take(cnt - 1).Select(i => i.Value)) + "]";
+            var tName = "[" + string.Join("].[", column.MultiPartIdentifier.Identifiers.Take(cnt - 1).Select(i => i.Value)) + "]";
 
-            return tname;
+            return tName;
         }
 
         /// <summary>
@@ -198,7 +197,7 @@ namespace SqlServer.Dac
 
         public static string GetConstraintName(this ConstraintDefinition constraint)
         {
-            string ret = null;
+            string ret;
             if (constraint == null) { return null; }
 
             switch (constraint)
@@ -227,7 +226,7 @@ namespace SqlServer.Dac
 
         public static ObjectIdentifier GetObjectName(this TSqlFragment fragment, string assumedSchema = "dbo")
         {
-            ObjectIdentifier ret = null;
+            ObjectIdentifier ret;
             if (fragment == null) { return null; }
 
             switch (fragment)

@@ -10,7 +10,7 @@ namespace SqlServer.Dac.Visitors
     public class CreateUserVisitor : BaseVisitor, IVisitor<CreateUserStatement>
     {
         public IList<CreateUserStatement> Statements { get; } = new List<CreateUserStatement>();
-        public int Count { get { return this.Statements.Count; } }
+        public int Count { get { return Statements.Count; } }
         public override void ExplicitVisit(CreateUserStatement node)
         {
             Statements.Add(node);

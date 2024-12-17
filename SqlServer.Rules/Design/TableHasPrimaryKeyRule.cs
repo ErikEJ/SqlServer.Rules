@@ -10,9 +10,9 @@ namespace SqlServer.Rules.Design
     /// Tables should have a primary key
     /// </summary>
     /// <FriendlyName>Missing primary key</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -24,10 +24,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0002";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Table does not have a primary key.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -52,9 +54,9 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) 
-            { 
-                return problems; 
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
             }
 
             var child = sqlObj.GetChildren(DacQueryScopes.All)

@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class IfStatementProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public IfStatementProcessor(Smells smells)
         {

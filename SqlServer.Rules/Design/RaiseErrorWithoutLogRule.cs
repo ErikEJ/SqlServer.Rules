@@ -73,8 +73,8 @@ namespace SqlServer.Rules.Design
             var offenders =
                 from r in visitor.Statements
                 where
-                    r.SecondParameter is IntegerLiteral &&
-                    int.Parse((r.SecondParameter as Literal)?.Value) > 18 &&
+                    r.SecondParameter is IntegerLiteral literal &&
+                    int.Parse(literal?.Value) > 18 &&
                     (r.RaiseErrorOptions & RaiseErrorOptions.Log) != RaiseErrorOptions.Log
                 select r;
 

@@ -32,7 +32,7 @@ namespace SqlServer.Rules.Report
             //load the dacpac
             TSqlModel model = TSqlModel.LoadFromDacpac(
                     request.InputPath
-                    , new ModelLoadOptions()
+                    , new ModelLoadOptions
                     {
                         LoadAsScriptBackedModel = true,
                         ModelStorageType = Microsoft.SqlServer.Dac.DacSchemaModelStorageType.Memory
@@ -71,14 +71,12 @@ namespace SqlServer.Rules.Report
 
                 return;
             }
-            else
+
+            foreach (var err in result.Problems)
             {
-                foreach (var err in result.Problems)
-                {
-                    SendNotification(err.ErrorMessageString, NotificationType.Warning);
-                }
-                result.SerializeResultsToXml(GetOutputFileName(request, ReportOutputType.XML));
+                SendNotification(err.ErrorMessageString, NotificationType.Warning);
             }
+            result.SerializeResultsToXml(GetOutputFileName(request, ReportOutputType.XML));
             sw.Stop();
             SendNotification($"Running rules complete, elapsed: {sw.Elapsed.ToString(@"hh\:mm\:ss")}");
             #endregion
@@ -164,7 +162,7 @@ namespace SqlServer.Rules.Report
         {
             return (from r in rules
                     where suppressIssueTypes == null ? true : !suppressIssueTypes.Invoke(r)
-                    select new IssueType()
+                    select new IssueType
                     {
                         Severity = r.Severity.ToString(),
                         Description = r.DisplayDescription,
@@ -189,7 +187,7 @@ namespace SqlServer.Rules.Report
         private static void SerializeReport(Report report, string outputPath)
         {
             var serializer = new XmlSerializer(typeof(Report));
-            var ns = new XmlSerializerNamespaces(new XmlQualifiedName[] { new XmlQualifiedName(string.Empty, string.Empty) });
+            var ns = new XmlSerializerNamespaces([new XmlQualifiedName(string.Empty, string.Empty)]);
             var xmlSettings = new XmlWriterSettings
             {
                 Indent = true,

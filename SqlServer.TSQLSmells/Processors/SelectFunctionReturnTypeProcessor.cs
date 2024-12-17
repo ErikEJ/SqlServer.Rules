@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class SelectFunctionReturnTypeProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public SelectFunctionReturnTypeProcessor(Smells smells)
         {

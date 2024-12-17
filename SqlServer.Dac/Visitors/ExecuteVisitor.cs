@@ -1,9 +1,6 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
+﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SqlServer.Dac.Visitors
@@ -20,7 +17,7 @@ namespace SqlServer.Dac.Visitors
             _procNames = procNames.ToList();
         }
         public IList<ExecuteStatement> Statements { get; } = new List<ExecuteStatement>();
-        public int Count { get { return this.Statements.Count; } }
+        public int Count { get { return Statements.Count; } }
         public override void ExplicitVisit(ExecuteStatement node)
         {
             if (!_procNames.Any())
@@ -33,7 +30,7 @@ namespace SqlServer.Dac.Visitors
             }
         }
 
-        private bool CheckProcName(ExecuteStatement exec, string name)
+        private static bool CheckProcName(ExecuteStatement exec, string name)
         {
             if (!(exec.ExecuteSpecification.ExecutableEntity is ExecutableProcedureReference execProc))
             {

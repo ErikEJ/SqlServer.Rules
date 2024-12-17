@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SqlServer.Rules.Globals
 {
@@ -13,7 +9,8 @@ namespace SqlServer.Rules.Globals
         public const string Design = "Design";
         public const string Naming = "Naming";
 
-        public static List<string> Aggregates = new List<string>() {
+        public static List<string> Aggregates = new List<string>
+        {
             "AVG",
             "MIN",
             "CHECKSUM_AGG",
@@ -29,7 +26,7 @@ namespace SqlServer.Rules.Globals
             "MAX"
         };
 
-        public static List<string> DateParts = new List<string>()
+        public static List<string> DateParts = new List<string>
         {
             "year",
             "yy",

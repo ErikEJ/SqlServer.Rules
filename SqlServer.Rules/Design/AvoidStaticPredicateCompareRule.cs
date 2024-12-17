@@ -3,7 +3,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,10 +17,10 @@ namespace SqlServer.Rules.Design
     /// Catches:
     /// ```sql
     /// FROM a
-    /// JOIN b ON a.id = b.a_id AND 4 &lt; 3 + 2 
+    /// JOIN b ON a.id = b.a_id AND 4 &lt; 3 + 2
     /// ```
-    /// 
-    /// equivalent to 
+    ///
+    /// equivalent to
     /// ```sql
     /// FROM a
     /// JOIN b ON a.id = b.a_id /* true */
@@ -110,7 +109,7 @@ namespace SqlServer.Rules.Design
             return problems;
         }
 
-        private bool TestCompare(BooleanComparisonExpression compare)
+        private static bool TestCompare(BooleanComparisonExpression compare)
         {
             var expr1 = compare.FirstExpression;
             var expr2 = compare.SecondExpression;

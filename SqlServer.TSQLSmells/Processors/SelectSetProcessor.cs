@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class SelectSetProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public SelectSetProcessor(Smells smells)
         {
@@ -25,26 +25,28 @@ namespace TSQLSmellSCA
             switch (ElemType)
             {
                 case "BinaryExpression":
-                    var BinaryExpression = (BinaryExpression) Expression;
+                    var BinaryExpression = (BinaryExpression)Expression;
                     ProcessSelectSetFragment(BinaryExpression.FirstExpression, VarName);
                     ProcessSelectSetFragment(BinaryExpression.SecondExpression, VarName);
                     break;
                 case "VariableReference":
-                    ProcessVariableReference((VariableReference) Expression, VarName);
+                    ProcessVariableReference((VariableReference)Expression, VarName);
                     break;
                 case "FunctionCall":
-                    var Func = (FunctionCall) Expression;
+                    var Func = (FunctionCall)Expression;
                     foreach (TSqlFragment Parameter in Func.Parameters)
                     {
                         ProcessSelectSetFragment(Parameter, VarName);
                     }
+
                     break;
                 case "CastCall":
-                    var Cast = (CastCall) Expression;
+                    var Cast = (CastCall)Expression;
                     if (FragmentTypeParser.GetFragmentType(Cast.Parameter) == "VariableReference")
                     {
-                        ProcessVariableReference((VariableReference) Cast.Parameter, VarName);
+                        ProcessVariableReference((VariableReference)Cast.Parameter, VarName);
                     }
+
                     break;
                 case "StringLiteral":
                     break;

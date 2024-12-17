@@ -4,10 +4,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 namespace SqlServer.Rules.Performance
@@ -68,7 +65,7 @@ namespace SqlServer.Rules.Performance
             var visitor = new DataModificationStatementVisitor();
             fragment.Accept(visitor);
 
-            var modelFunctions = model.GetObjects(DacQueryScopes.UserDefined, new[] { ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction });
+            var modelFunctions = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction);
 
             foreach (var stmt in visitor.Statements)
             {

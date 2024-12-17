@@ -79,8 +79,8 @@ namespace SqlServer.Rules.Design
 
             var joinOffenders =
                 from j in joinHintVisitor.NotIgnoredStatements(RuleId)
-                where j is QualifiedJoin
-                    && ((QualifiedJoin)j).JoinHint != JoinHint.None
+                where j is QualifiedJoin @join
+                    && @join.JoinHint != JoinHint.None
                 select j as QualifiedJoin;
 
             problems.AddRange(tableOffenders.Select(o => new SqlRuleProblem(Message, sqlObj, o)));

@@ -5,7 +5,6 @@ using SqlServer.Rules.Test;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace SqlServer.Rules.Tests
 {

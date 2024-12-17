@@ -8,7 +8,7 @@ namespace SqlServer.Dac.Visitors
     {
         private readonly IList<string> _variableNames = new List<string>();
         public IList<GlobalVariableExpression> Statements { get; } = new List<GlobalVariableExpression>();
-        public int Count { get { return this.Statements.Count; } }
+        public int Count { get { return Statements.Count; } }
         public GlobalVariableExpressionVisitor()
         {
         }

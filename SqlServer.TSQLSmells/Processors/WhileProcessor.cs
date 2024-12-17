@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class WhileProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public WhileProcessor(Smells smells)
         {

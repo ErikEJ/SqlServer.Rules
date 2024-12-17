@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class ColumnDefinitionProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public ColumnDefinitionProcessor(Smells smells)
         {

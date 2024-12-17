@@ -2,19 +2,19 @@
 //<copyright company="Microsoft">
 //
 //    The MIT License (MIT)
-//    
+//
 //    Copyright (c) 2015 Microsoft
-//    
+//
 //    Permission is hereby granted, free of charge, to any person obtaining a copy
 //    of this software and associated documentation files (the "Software"), to deal
 //    in the Software without restriction, including without limitation the rights
 //    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //    copies of the Software, and to permit persons to whom the Software is
 //    furnished to do so, subject to the following conditions:
-//    
+//
 //    The above copyright notice and this permission notice shall be included in all
 //    copies or substantial portions of the Software.
-//    
+//
 //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,8 +25,8 @@
 //</copyright>
 //------------------------------------------------------------------------------
 
-using System;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace SqlServer.Rules.Tests.Utils
 {
@@ -54,15 +54,14 @@ namespace SqlServer.Rules.Tests.Utils
                 int temp;
                 if (int.TryParse(value, out temp))
                 {
-                    this.ConnectTimeout = temp;
+                    ConnectTimeout = temp;
                 }
                 else
                 {
-                    this.ConnectTimeout = 15;
+                    ConnectTimeout = 15;
                 }
             }
         }
-
 
         public string MachineName
         {
@@ -74,14 +73,17 @@ namespace SqlServer.Rules.Tests.Utils
                 {
                     serverName = DataSource.Substring(0, index);
                 }
+
                 if (StringComparer.OrdinalIgnoreCase.Compare("(local)", serverName) == 0
                     || StringComparer.OrdinalIgnoreCase.Compare(".", serverName) == 0)
                 {
                     serverName = Environment.MachineName;
                 }
+
                 return serverName;
             }
         }
+
         public string InstanceName
         {
             get
@@ -92,16 +94,16 @@ namespace SqlServer.Rules.Tests.Utils
                 {
                     name = DataSource.Substring(index + 1);
                 }
+
                 return name;
             }
         }
 
         public string UserId { get; set; }
-
         public string Password { get; set; }
 
         /// <summary>
-        /// Connection string to this instance with the master database as the default.  
+        /// Connection string to this instance with the master database as the default.
         /// Integrated security is used
         /// </summary>
         /// <returns></returns>
@@ -127,7 +129,7 @@ namespace SqlServer.Rules.Tests.Utils
 
         /// <summary>
         /// Build a connection string for this instance using the specified
-        /// username/password for security and specifying the dbName as the 
+        /// username/password for security and specifying the dbName as the
         /// initial catalog
         /// </summary>
         public string BuildConnectionString(string userId, string password, string dbName)
@@ -135,6 +137,7 @@ namespace SqlServer.Rules.Tests.Utils
             SqlConnectionStringBuilder scsb = CreateBuilder(userId, password, dbName);
             return scsb.ConnectionString;
         }
+
         public SqlConnectionStringBuilder CreateBuilder(string userId, string password, string dbName)
         {
             SqlConnectionStringBuilder scsb = new SqlConnectionStringBuilder();
@@ -144,7 +147,7 @@ namespace SqlServer.Rules.Tests.Utils
             scsb.MultipleActiveResultSets = false;
             if (ConnectTimeout != 15)
             {
-                scsb.ConnectTimeout = this.ConnectTimeout;
+                scsb.ConnectTimeout = ConnectTimeout;
             }
 
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(password))

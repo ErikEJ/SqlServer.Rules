@@ -3,7 +3,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -70,7 +69,7 @@ namespace SqlServer.Rules.Design
             var execVisitor = new ExecuteVisitor();
             fragment.Accept(fromClauseVisitor, execVisitor);
 
-            var tableVisitor = new NamedTableReferenceVisitor() { TypeFilter = ObjectTypeFilter.PermanentOnly };
+            var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
             foreach (var from in fromClauseVisitor.Statements)
             {
                 from.Accept(tableVisitor);
@@ -90,7 +89,7 @@ namespace SqlServer.Rules.Design
             return problems;
         }
 
-        private bool CheckProc(ExecuteStatement proc)
+        private static bool CheckProc(ExecuteStatement proc)
         {
             if (!(proc.ExecuteSpecification.ExecutableEntity is ExecutableProcedureReference execProc))
             {

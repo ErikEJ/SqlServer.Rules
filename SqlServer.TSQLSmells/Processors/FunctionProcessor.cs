@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class FunctionProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public FunctionProcessor(Smells smells)
         {

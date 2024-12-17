@@ -2,12 +2,9 @@
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
-using SqlServer.Rules.Globals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Index = Microsoft.SqlServer.Dac.Model.Index;
 
 namespace SqlServer.Rules.ReferentialIntegrity
@@ -123,7 +120,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
             var fkForeignColumns = fk.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignColumns, DacQueryScopes.All)
                 .Select(x => x.ObjectName).ToList();
 
-            return new ForeignKeyInfo()
+            return new ForeignKeyInfo
             {
                 Name = fk.Name.GetName(),
                 TableName = new ObjectIdentifier(GetTableOrAliasName(fkColumns.FirstOrDefault())),
@@ -221,10 +218,10 @@ namespace SqlServer.Rules.ReferentialIntegrity
         private static IList<string> GetTableOrAliasName(ObjectIdentifier identifier)
         {
             var parts = identifier.Parts;
-            if (parts.Count() == 1) { return parts; }
+            if (parts.Count == 1) { return parts; }
 
             //take the first parts minus one from the length. as they could use dbo.Table.Column or Table.Column, or t1.Column
-            return parts.Take(parts.Count() - 1).ToList();
+            return parts.Take(parts.Count - 1).ToList();
         }
 
         private static IList<string> GetTableOrAliasName(IEnumerable<Identifier> identifiers)

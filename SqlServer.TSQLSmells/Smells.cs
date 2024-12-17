@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Resources;
 using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Resources;
 
 namespace TSQLSmellSCA
 {
@@ -105,11 +105,9 @@ namespace TSQLSmellSCA
             get { return _procedureStatementBodyProcessor; }
         }
 
-
         public void SendFeedBack(int errorNum, TSqlFragment errorFrg)
         {
             if (errorNum != _iRule) return;
-
 
             ResourceManager rm = Resources.ResourceManager;
 
@@ -134,7 +132,7 @@ namespace TSQLSmellSCA
             {
                 case "QuerySpecification":
                     //{$Query = $Stmt.QueryExpression;
-                    var querySpec = (QuerySpecification) queryExpression;
+                    var querySpec = (QuerySpecification)queryExpression;
                     _selectStatementProcessor.ProcessSelectElements(querySpec.SelectElements, parentType, cte);
                     if (querySpec.FromClause != null) _fromProcessor.Process(querySpec.FromClause, cte);
                     if (querySpec.WhereClause != null) _whereProcessor.Process(querySpec.WhereClause);
@@ -146,17 +144,18 @@ namespace TSQLSmellSCA
                             SendFeedBack(28, querySpec.OrderByClause);
                         }
                     }
+
                     if (querySpec.TopRowFilter != null) _topProcessor.ProcessTopFilter(querySpec.TopRowFilter);
 
                     break;
                 case "QueryParenthesisExpression":
                     //{$Query=$Stmt.QueryExpression.QueryExpression;break}
-                    var expression = (QueryParenthesisExpression) queryExpression;
+                    var expression = (QueryParenthesisExpression)queryExpression;
                     ProcessQueryExpression(expression.QueryExpression, "RG", testTop, cte);
 
                     break;
                 case "BinaryQueryExpression":
-                    var binaryQueryExpression = (BinaryQueryExpression) queryExpression;
+                    var binaryQueryExpression = (BinaryQueryExpression)queryExpression;
                     ProcessQueryExpression(binaryQueryExpression.FirstQueryExpression, parentType, testTop, cte);
                     ProcessQueryExpression(binaryQueryExpression.SecondQueryExpression, parentType, testTop, cte);
                     //BinaryQueryExpression.
@@ -166,89 +165,88 @@ namespace TSQLSmellSCA
             }
         }
 
-
         //void ProcessSelectElements(
-
-
         public void ProcessTsqlFragment(TSqlFragment fragment)
         {
-           String stmtType = FragmentTypeParser.GetFragmentType(fragment);
+            String stmtType = FragmentTypeParser.GetFragmentType(fragment);
             //Console.WriteLine(StmtType);
             switch (stmtType)
             {
                 case "DeclareCursorStatement":
-                    _cursorProcessor.ProcessCursorStatement((DeclareCursorStatement) fragment);
+                    _cursorProcessor.ProcessCursorStatement((DeclareCursorStatement)fragment);
                     break;
                 case "BeginEndBlockStatement":
-                    _beginEndBlockProcessor.ProcessBeginEndBlockStatement((BeginEndBlockStatement) fragment);
+                    _beginEndBlockProcessor.ProcessBeginEndBlockStatement((BeginEndBlockStatement)fragment);
                     break;
                 case "CreateFunctionStatement":
                 case "AlterFunctionStatement":
-                    _functionStatementBodyProcessor.ProcessFunctionStatementBody((FunctionStatementBody) fragment);
+                    _functionStatementBodyProcessor.ProcessFunctionStatementBody((FunctionStatementBody)fragment);
                     break;
                 case "SelectFunctionReturnType":
-                    _selectFunctionReturnTypeProcessor.ProcessSelectFunctionReturnType((SelectFunctionReturnType) fragment);
+                    _selectFunctionReturnTypeProcessor.ProcessSelectFunctionReturnType((SelectFunctionReturnType)fragment);
                     return;
                 case "ScalarFunctionReturnType":
-                    _scalarFunctionReturnTypeProcessor.ProcessScalarFunctionReturnType((ScalarFunctionReturnType) fragment);
+                    _scalarFunctionReturnTypeProcessor.ProcessScalarFunctionReturnType((ScalarFunctionReturnType)fragment);
                     break;
                 case "SetTransactionIsolationLevelStatement":
-                    _setTransactionIsolationLevelProcessor.ProcessSetTransactionIolationLevelStatement((SetTransactionIsolationLevelStatement) fragment);
+                    _setTransactionIsolationLevelProcessor.ProcessSetTransactionIolationLevelStatement((SetTransactionIsolationLevelStatement)fragment);
                     break;
                 case "WhileStatement":
-                    _whileProcessor.ProcessWhileStatement((WhileStatement) fragment);
+                    _whileProcessor.ProcessWhileStatement((WhileStatement)fragment);
                     break;
                 case "InsertStatement":
-                    InsertProcessor.Process((InsertStatement) fragment);
+                    InsertProcessor.Process((InsertStatement)fragment);
                     break;
                 case "SelectStatement":
-                    _selectStatementProcessor.Process((SelectStatement) fragment, "RG", true);
+                    _selectStatementProcessor.Process((SelectStatement)fragment, "RG", true);
                     break;
                 case "SetRowCountStatement":
                     SendFeedBack(42, fragment);
                     break;
                 case "IfStatement":
-                    _ifStatementProcessor.ProcessIfStatement((IfStatement) fragment);
+                    _ifStatementProcessor.ProcessIfStatement((IfStatement)fragment);
                     break;
                 case "PredicateSetStatement":
-                    _predicateSetProcessor.ProcessPredicateSetStatement((PredicateSetStatement) fragment);
+                    _predicateSetProcessor.ProcessPredicateSetStatement((PredicateSetStatement)fragment);
                     break;
                 case "ExecuteStatement":
-                    ExecutableEntityProcessor.ProcessExecuteStatement((ExecuteStatement) fragment);
+                    ExecutableEntityProcessor.ProcessExecuteStatement((ExecuteStatement)fragment);
                     break;
                 case "SetIdentityInsertStatement":
                     SendFeedBack(22, fragment);
                     break;
                 case "SetCommandStatement":
-                    _setProcessor.ProcessSetStatement((SetCommandStatement) fragment);
+                    _setProcessor.ProcessSetStatement((SetCommandStatement)fragment);
                     break;
 
                 case "CreateTableStatement":
-                    _createTableProcessor.ProcessCreateTable((CreateTableStatement) fragment);
+                    _createTableProcessor.ProcessCreateTable((CreateTableStatement)fragment);
                     break;
 
                 case "CreateProcedureStatement":
                 case "AlterProcedureStatement":
-                    ProcedureStatementBodyProcessor.ProcessProcedureStatementBody((ProcedureStatementBody) fragment);
+                    ProcedureStatementBodyProcessor.ProcessProcedureStatementBody((ProcedureStatementBody)fragment);
                     _assignmentList.Clear();
                     break;
                 case "CreateViewStatement":
                 case "AlterViewStatement":
-                    _viewStatementProcessor.ProcessViewStatementBody((ViewStatementBody) fragment);
+                    _viewStatementProcessor.ProcessViewStatementBody((ViewStatementBody)fragment);
                     break;
                 case "TSqlBatch":
-                    var batch = (TSqlBatch) fragment;
+                    var batch = (TSqlBatch)fragment;
                     foreach (TSqlStatement innerFragment in batch.Statements)
                     {
                         ProcessTsqlFragment(innerFragment);
                     }
+
                     break;
                 case "TSqlScript":
-                    var script = (TSqlScript) fragment;
+                    var script = (TSqlScript)fragment;
                     foreach (TSqlBatch innerBatch in script.Batches)
                     {
                         ProcessTsqlFragment(innerBatch);
                     }
+
                     break;
                 case "TryCatchStatement":
                     var trycatch = (TryCatchStatement)fragment;
@@ -262,50 +260,51 @@ namespace TSQLSmellSCA
                     {
                         ProcessTsqlFragment(innerStmt);
                     }
+
                     break;
                 case "BooleanParenthesisExpression":
-                    var expression = (BooleanParenthesisExpression) fragment;
+                    var expression = (BooleanParenthesisExpression)fragment;
                     ProcessTsqlFragment(expression.Expression);
                     break;
                 case "BooleanComparisonExpression":
-                    var bcExpression = (BooleanComparisonExpression) fragment;
+                    var bcExpression = (BooleanComparisonExpression)fragment;
                     ProcessTsqlFragment(bcExpression.FirstExpression);
                     ProcessTsqlFragment(bcExpression.SecondExpression);
                     break;
                 case "ScalarSubquery":
-                    var scalarSubquery = (ScalarSubquery) fragment;
+                    var scalarSubquery = (ScalarSubquery)fragment;
                     ProcessQueryExpression(scalarSubquery.QueryExpression, "RG");
                     break;
                 case "ReturnStatement":
-                    _returnStatementProcessor.ProcessReturnStatement((ReturnStatement) fragment);
+                    _returnStatementProcessor.ProcessReturnStatement((ReturnStatement)fragment);
                     break;
                 case "IntegerLiteral":
                     break;
                 case "DeclareVariableStatement":
-                    _declareVariableProcessor.ProcessDeclareVariableStatement((DeclareVariableStatement) fragment);
+                    _declareVariableProcessor.ProcessDeclareVariableStatement((DeclareVariableStatement)fragment);
                     break;
                 case "DeclareVariableElement":
-                    _declareVariableProcessor.ProcessDeclareVariableElement((DeclareVariableElement) fragment);
+                    _declareVariableProcessor.ProcessDeclareVariableElement((DeclareVariableElement)fragment);
                     break;
                 case "PrintStatement":
                     break;
                 case "SqlDataTypeReference":
-                    _sqlDataTypeProcessor.ProcessSqlDataTypeReference((SqlDataTypeReference) fragment);
+                    _sqlDataTypeProcessor.ProcessSqlDataTypeReference((SqlDataTypeReference)fragment);
                     break;
                 case "DeclareTableVariableStatement":
-                    _tableVariableProcessor.ProcessTableVariableStatement((DeclareTableVariableStatement) fragment);
+                    _tableVariableProcessor.ProcessTableVariableStatement((DeclareTableVariableStatement)fragment);
                     break;
                 case "TableValuedFunctionReturnType":
-                    _tableVariableProcessor.ProcessTableValuedFunctionReturnType((TableValuedFunctionReturnType) fragment);
+                    _tableVariableProcessor.ProcessTableValuedFunctionReturnType((TableValuedFunctionReturnType)fragment);
                     break;
                 case "DeclareTableVariableBody":
-                    _tableVariableProcessor.ProcessTableVariableBody((DeclareTableVariableBody) fragment);
+                    _tableVariableProcessor.ProcessTableVariableBody((DeclareTableVariableBody)fragment);
                     break;
                 case "VariableReference":
                     //ProcessVariableReference((VariableReference)Fragment);
                     break;
                 case "ExistsPredicate":
-                    _tableVariableProcessor.ProcessExistsPredicate((ExistsPredicate) fragment);
+                    _tableVariableProcessor.ProcessExistsPredicate((ExistsPredicate)fragment);
                     break;
 
                 case "ColumnDefinition":
@@ -313,7 +312,6 @@ namespace TSQLSmellSCA
                     break;
             }
         }
-
 
         public List<SqlRuleProblem> ProcessObject(TSqlObject sqlObject, int iRule)
         {
@@ -329,9 +327,10 @@ namespace TSQLSmellSCA
                 {
                     foreach (TSqlParserToken parserToken in frg.ScriptTokenStream)
                     {
- //                       if (parserToken.TokenType == TSqlTokenType.SingleLineComment) SendFeedBack(23, parserToken);
+                        //if (parserToken.TokenType == TSqlTokenType.SingleLineComment) SendFeedBack(23, parserToken);
                     }
                 }
+
                 ProcessTsqlFragment(frg);
             }
 

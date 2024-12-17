@@ -64,7 +64,7 @@ namespace SqlServer.Rules.Design
             var name = sqlObj.Name.GetName();
 
             var transactionVisitor = new TransactionVisitor();
-            var actionStatementVisitor = new ActionStatementVisitor() { TypeFilter = ObjectTypeFilter.PermanentOnly };
+            var actionStatementVisitor = new ActionStatementVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
             fragment.Accept(actionStatementVisitor);
             if (actionStatementVisitor.Count <= 1) { return problems; }
             fragment.Accept(transactionVisitor);

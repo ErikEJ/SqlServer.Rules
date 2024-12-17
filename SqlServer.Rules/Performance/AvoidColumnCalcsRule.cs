@@ -77,7 +77,7 @@ namespace SqlServer.Rules.Performance
             return problems;
         }
 
-        private bool? CheckBinaryExpression(BinaryExpression bin)
+        private static bool? CheckBinaryExpression(BinaryExpression bin)
         {
             bool? ret = null;
 
@@ -90,13 +90,13 @@ namespace SqlServer.Rules.Performance
                 return true;
             }
 
-            if (!ret.HasValue && bin.FirstExpression is BinaryExpression)
+            if (!ret.HasValue && bin.FirstExpression is BinaryExpression expression)
             {
-                ret = CheckBinaryExpression(bin.FirstExpression as BinaryExpression);
+                ret = CheckBinaryExpression(expression);
             }
-            if (!ret.HasValue && bin.SecondExpression is BinaryExpression)
+            if (!ret.HasValue && bin.SecondExpression is BinaryExpression binaryExpression)
             {
-                ret = CheckBinaryExpression(bin.SecondExpression as BinaryExpression);
+                ret = CheckBinaryExpression(binaryExpression);
             }
 
             return ret;

@@ -2,19 +2,19 @@
 //<copyright company="Microsoft">
 //
 //    The MIT License (MIT)
-//    
+//
 //    Copyright (c) 2015 Microsoft
-//    
+//
 //    Permission is hereby granted, free of charge, to any person obtaining a copy
 //    of this software and associated documentation files (the "Software"), to deal
 //    in the Software without restriction, including without limitation the rights
 //    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //    copies of the Software, and to permit persons to whom the Software is
 //    furnished to do so, subject to the following conditions:
-//    
+//
 //    The above copyright notice and this permission notice shall be included in all
 //    copies or substantial portions of the Software.
-//    
+//
 //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,11 +25,11 @@
 //</copyright>
 //------------------------------------------------------------------------------
 
+using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Dac;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -88,7 +88,7 @@ namespace SqlServer.Rules.Tests.Utils
             try
             {
                 dbName = Path.GetFileNameWithoutExtension(dacpacPath);
-                db = SqlTestDB.CreateFromDacpac(instance, dacpacPath, deployOptions, dropDatabaseOnCleanup);
+                db = CreateFromDacpac(instance, dacpacPath, deployOptions, dropDatabaseOnCleanup);
                 return true;
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace SqlServer.Rules.Tests.Utils
             {
                 dbName = Path.GetFileNameWithoutExtension(bacpacPath);
                 importOptions = FillDefaultImportOptionsForTest(importOptions);
-                db = SqlTestDB.CreateFromBacpac(instance, bacpacPath, importOptions, dropDatabaseOnCleanup);
+                db = CreateFromBacpac(instance, bacpacPath, importOptions, dropDatabaseOnCleanup);
                 return true;
             }
             catch (Exception ex)
@@ -171,28 +171,24 @@ namespace SqlServer.Rules.Tests.Utils
 
         private SqlTestDB()
         {
-            _cleanupScripts = new List<string>();
+            _cleanupScripts = [];
         }
 
         /// <summary>
         /// Represents a test Database that was created for tests.  The DB has already been attached/created,
-        /// and will not be removed unless dropDatabaseOnCleanup is true. 
+        /// and will not be removed unless dropDatabaseOnCleanup is true.
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="dropDatabaseOnCleanup">If true the db instance will be dropped when the Cleanup method is called</param>
         /// <param name="dbName"></param>
         public SqlTestDB(InstanceInfo instance, string dbName, bool dropDatabaseOnCleanup = false)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
             if (string.IsNullOrEmpty(dbName))
             {
-                throw new ArgumentOutOfRangeException("dbName");
+                throw new ArgumentOutOfRangeException(nameof(dbName));
             }
 
-            _instance = instance;
+            _instance = instance ?? throw new ArgumentNullException(nameof(instance));
             _dbName = dbName;
 
             _cleanupDatabase = true;
@@ -235,11 +231,8 @@ namespace SqlServer.Rules.Tests.Utils
         {
             Cleanup(ReallyCleanUpDatabase.NotIfItCameFromABackupFile);
 
-            EventHandler<EventArgs> h = this.Disposing;
-            if (h != null)
-            {
-                h(this, EventArgs.Empty);
-            }
+            EventHandler<EventArgs> h = Disposing;
+            h?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -291,7 +284,7 @@ namespace SqlServer.Rules.Tests.Utils
         public void Execute(string script, int? timeout = null)
         {
             IList<string> batches = TestUtils.GetBatches(script);
-            using (SqlConnection connection = this.OpenSqlConnection())
+            using (SqlConnection connection = OpenSqlConnection())
             {
                 foreach (var batch in batches)
                 {
@@ -310,15 +303,15 @@ namespace SqlServer.Rules.Tests.Utils
             catch (Exception ex)
             {
                 string message = string.Format(CultureInfo.CurrentCulture, "Executing script on server '{0}' database '{1}' failed. Error: {2}.\r\n\r\nScript: {3}.)",
-                    this.Instance.DataSource, this.DatabaseName, ex.Message, script);
+                    Instance.DataSource, DatabaseName, ex.Message, script);
                 Debug.WriteLine(message);
             }
         }
 
         public void ExtractDacpac(string filePath, IEnumerable<Tuple<string, string>> tables = null, DacExtractOptions extractOptions = null)
         {
-            DacServices ds = new DacServices(this.BuildConnectionString());
-            ds.Extract(filePath, this.DatabaseName, this.DatabaseName, new Version(1, 0, 0), string.Empty, tables, extractOptions);
+            DacServices ds = new DacServices(BuildConnectionString());
+            ds.Extract(filePath, DatabaseName, DatabaseName, new Version(1, 0, 0), string.Empty, tables, extractOptions);
         }
 
         public bool TryExtractDacpac(string filePath, out string error, IEnumerable<Tuple<string, string>> tables = null, DacExtractOptions extractOptions = null)
@@ -338,8 +331,8 @@ namespace SqlServer.Rules.Tests.Utils
 
         public void ExportBacpac(string filePath, IEnumerable<Tuple<string, string>> tables = null, DacExportOptions extractOptions = null)
         {
-            DacServices ds = new DacServices(this.BuildConnectionString());
-            ds.ExportBacpac(filePath, this.DatabaseName, extractOptions, tables);
+            DacServices ds = new DacServices(BuildConnectionString());
+            ds.ExportBacpac(filePath, DatabaseName, extractOptions, tables);
         }
 
         public bool TryExportBacpac(string filePath, out string error, IEnumerable<Tuple<string, string>> tables = null, DacExportOptions exportOptions = null)
@@ -365,7 +358,7 @@ namespace SqlServer.Rules.Tests.Utils
         /// <param name="reallyCleanUpDatabase">ReallyCleanUpDatabase.NotIfItCameFromABackupFile: means to
         /// check whether the database came from a backup file or has previously been cleaned. If either
         /// of those two things is true, then the database is not cleaned up.
-        /// 
+        ///
         /// ReallyCleanUpDatabase.YesReally: means to clean up the database regardless of its origin.
         /// </param>
         public void Cleanup(ReallyCleanUpDatabase reallyCleanUpDatabase = ReallyCleanUpDatabase.YesReally)

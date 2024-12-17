@@ -6,7 +6,8 @@ namespace SqlServer.Dac
 {
     public static class Misc
     {
-        private static StringComparer _comparer = StringComparer.OrdinalIgnoreCase;
+        private static readonly StringComparer _comparer = StringComparer.OrdinalIgnoreCase;
+
         public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
             if (dictionary.ContainsKey(key))

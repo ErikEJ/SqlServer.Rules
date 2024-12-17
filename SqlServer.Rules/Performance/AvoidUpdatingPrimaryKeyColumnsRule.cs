@@ -4,7 +4,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -86,7 +85,7 @@ namespace SqlServer.Rules.Performance
                 //we have an aliased table we need to find out what the real table is so we can look up its columns
                 if (update.UpdateSpecification.FromClause != null)
                 {
-                    var namedTableVisitor = new NamedTableReferenceVisitor() { TypeFilter = ObjectTypeFilter.PermanentOnly };
+                    var namedTableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                     update.UpdateSpecification.FromClause.Accept(namedTableVisitor);
 
                     target = namedTableVisitor.Statements
@@ -95,9 +94,8 @@ namespace SqlServer.Rules.Performance
                 }
 
                 var targetSqlObj = model.GetObject(Table.TypeClass, target.GetObjectIdentifier(), DacQueryScopes.All);
-                if (targetSqlObj == null) { continue; }
 
-                var pk = targetSqlObj.GetReferencing(PrimaryKeyConstraint.Host, DacQueryScopes.UserDefined).FirstOrDefault();
+                var pk = targetSqlObj?.GetReferencing(PrimaryKeyConstraint.Host, DacQueryScopes.UserDefined).FirstOrDefault();
                 if (pk == null) { continue; }
                 var primaryKeyColumns = pk.GetReferenced(PrimaryKeyConstraint.Columns, DacQueryScopes.All);
 

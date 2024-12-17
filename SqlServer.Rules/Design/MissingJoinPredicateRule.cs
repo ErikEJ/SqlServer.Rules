@@ -6,7 +6,6 @@ using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
 using SqlServer.Rules.ReferentialIntegrity;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace SqlServer.Rules.Design

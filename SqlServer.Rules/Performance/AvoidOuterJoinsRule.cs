@@ -1,10 +1,8 @@
 ﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,31 +15,31 @@ namespace SqlServer.Rules.Performance
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd>
     ///   SHOULD FLAG AS PROBLEM:
-    /// 
+    ///
     ///   ```sql
     ///       SELECT a.*
     ///       FROM a
     ///       LEFT JOIN b ON a.id = b.id
-    ///       WHERE b.id IS NULL 
+    ///       WHERE b.id IS NULL
     ///   ```
-    /// 
+    ///
     ///   SHOULD NOT FLAG AS PROBLEM:
-    /// 
+    ///
     ///   ```sql
     ///       SELECT a.*, b.*
     ///       FROM a
     ///       LEFT JOIN b ON a.id = b.id
-    ///       WHERE b.id IS NULL  
+    ///       WHERE b.id IS NULL
     ///   ```
-    /// 
+    ///
     ///   ```sql
     ///       SELECT a.*, b.*
     ///       FROM a
     ///       LEFT JOIN b ON a.id = b.id
-    ///   ``` 
+    ///   ```
     /// </ExampleMd>
     /// <remarks>
-    ///   <para>Requirements: 
+    ///   <para>Requirements:
     ///   <list type="table">
     ///     <listheader>
     ///       <term>Requirement</term>
@@ -53,8 +51,8 @@ namespace SqlServer.Rules.Performance
     ///   </list>
     ///   </para>
     ///   <para>Description:
-    ///   The traditional method of checking for row existence is to use a LEFT JOIN and checking the null-ability of a LEFT JOIN'ed column in the WHERE clause. 
-    ///   This method causes SQL Server to load all of the rows from the OUTER JOIN'ed table. 
+    ///   The traditional method of checking for row existence is to use a LEFT JOIN and checking the null-ability of a LEFT JOIN'ed column in the WHERE clause.
+    ///   This method causes SQL Server to load all of the rows from the OUTER JOIN'ed table.
     ///   In cases where the matched rows are significantly less than the total rows, it is unnecessary work for SQL Server.
     ///   </para>
     ///   <para>
@@ -65,7 +63,7 @@ namespace SqlServer.Rules.Performance
     ///   Counter Indications:
     ///   <list type="bullet">
     ///     <item>If there are joins in the <c>EXISTS (subquery)</c>
-    ///      SQL Server will favor performing loop joins through the tables, hoping to find a row quickly. 
+    ///      SQL Server will favor performing loop joins through the tables, hoping to find a row quickly.
     ///      In certain cases, loop joins may be inefficient.</item>
     ///     <item>If the SQL optimizer underestimates the <c>rowcount</c> from the table in the <c>EXISTS (subquery)</c>
     ///      The query plan may show an optimal plan but the query will perform much worse.
@@ -150,7 +148,7 @@ namespace SqlServer.Rules.Performance
 
                     foreach (var join in outerJoins)
                     {
-                        TableReference table = null;
+                        TableReference table;
                         if (join.QualifiedJoinType == QualifiedJoinType.LeftOuter)
                         {
                             table = join.SecondTableReference as TableReference;
@@ -163,7 +161,7 @@ namespace SqlServer.Rules.Performance
                         var tableName = table.GetName();
                         var alias = (table as TableReferenceWithAlias)?.Alias.Value;
 
-                        //are there any columns in the select that match this table? 
+                        //are there any columns in the select that match this table?
                         if (columns.Any(c =>
                         {
                             var colTableName = c.GetName();

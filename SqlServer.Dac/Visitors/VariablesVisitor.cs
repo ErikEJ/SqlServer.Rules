@@ -15,10 +15,10 @@ namespace SqlServer.Dac.Visitors
         {
             get
             {
-                return (this.DeclareVariables != null ? this.DeclareVariables.Count : 0)
-                    + (this.ProcedureParameters != null ? this.ProcedureParameters.Count : 0)
-                    + (this.VariableReferences != null ? this.VariableReferences.Count : 0)
-                    + (this.SelectSetVariables != null ? this.SelectSetVariables.Count : 0);
+                return (DeclareVariables != null ? DeclareVariables.Count : 0)
+                    + (ProcedureParameters != null ? ProcedureParameters.Count : 0)
+                    + (VariableReferences != null ? VariableReferences.Count : 0)
+                    + (SelectSetVariables != null ? SelectSetVariables.Count : 0);
             }
         }
 

@@ -1,11 +1,11 @@
-﻿using System;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using System;
 
 namespace TSQLSmellSCA
 {
     public class FromProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public FromProcessor(Smells smells)
         {

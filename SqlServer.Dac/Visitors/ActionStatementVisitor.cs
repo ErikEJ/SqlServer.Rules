@@ -1,5 +1,4 @@
 ﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,7 +38,7 @@ namespace SqlServer.Dac.Visitors
             }
         }
 
-        private bool IsTempNode(DataModificationStatement node)
+        private static bool IsTempNode(DataModificationStatement node)
         {
             var ret = false;
             NamedTableReference target = null;

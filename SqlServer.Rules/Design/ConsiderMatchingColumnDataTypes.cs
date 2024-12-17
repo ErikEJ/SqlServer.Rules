@@ -4,7 +4,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,7 +74,7 @@ namespace SqlServer.Rules.Design
                 columnList.AddRange(columnVisitor.NotIgnoredStatements(RuleId)
                     .Where(col => col.DataType != null)
                     .Select(col =>
-                    new TableColumnInfo()
+                    new TableColumnInfo
                     {
                         TableName = table.Name.GetName(),
                         ColumnName = col.ColumnIdentifier.Value,
@@ -100,7 +99,7 @@ namespace SqlServer.Rules.Design
             );
 
             problems.AddRange(offenders
-                .Select(col => new SqlRuleProblem(string.Format(Message, col.ToString()), col.Table, col.Column)));
+                .Select(col => new SqlRuleProblem(string.Format(Message, col), col.Table, col.Column)));
 
             return problems;
         }

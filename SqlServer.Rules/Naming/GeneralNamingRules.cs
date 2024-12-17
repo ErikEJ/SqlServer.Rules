@@ -13,8 +13,8 @@ namespace SqlServer.Rules.Performance
     /// General naming violation.
     /// </summary>
     /// <FriendlyName>Name standard</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Multiple possible rule violations:
     ///   <list type="bullet">
@@ -27,8 +27,8 @@ namespace SqlServer.Rules.Performance
     ///     <item> Constraint '{name}' does not follow the company naming standard. Please use the name DF_{tableName}_{columnName}. </item>
     ///   </list>
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-	/// <seealso cref="SqlServer.Rules.Naming.NamingViolationRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.Naming.NamingViolationRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -40,6 +40,7 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRN0007";
+
         /// <summary>
         /// The rule display name
         /// </summary>
@@ -50,18 +51,18 @@ namespace SqlServer.Rules.Performance
         /// Initializes a new instance of the <see cref="GeneralNamingRules"/> class.
         /// </summary>
         public GeneralNamingRules() : base(
-                ModelSchema.Table,
-                ModelSchema.View,
-                ModelSchema.ScalarFunction,
-                ModelSchema.TableValuedFunction,
-                ModelSchema.Procedure,
+            ModelSchema.Table,
+            ModelSchema.View,
+            ModelSchema.ScalarFunction,
+            ModelSchema.TableValuedFunction,
+            ModelSchema.Procedure,
 
-                ModelSchema.PrimaryKeyConstraint,
-                ModelSchema.Index,
-                ModelSchema.ForeignKeyConstraint,
-                ModelSchema.DefaultConstraint,
-                ModelSchema.CheckConstraint,
-                ModelSchema.DmlTrigger
+            ModelSchema.PrimaryKeyConstraint,
+            ModelSchema.Index,
+            ModelSchema.ForeignKeyConstraint,
+            ModelSchema.DefaultConstraint,
+            ModelSchema.CheckConstraint,
+            ModelSchema.DmlTrigger
         )
         {
         }
@@ -109,12 +110,13 @@ namespace SqlServer.Rules.Performance
                     {
                         problems.Add(new SqlRuleProblem($"Primary Key '{name}' does not follow the company naming standard. Please use the name PK_{tableName}.", sqlObj, fragment));
                     }
+
                     break;
                 case "index":
                     var idx = fragment as CreateIndexStatement;
-                    
+
                     if (idx == null)
-                    { 
+                    {
                         return problems;
                     }
 
@@ -130,6 +132,7 @@ namespace SqlServer.Rules.Performance
                     {
                         problems.Add(new SqlRuleProblem($"Index '{name}' does not follow the company naming standard. Please use a format that starts with {naming}.", sqlObj, fragment));
                     }
+
                     break;
                 case "foreignkeyconstraint":
                     //var fk = fragment as createke;
@@ -142,12 +145,14 @@ namespace SqlServer.Rules.Performance
                     {
                         problems.Add(new SqlRuleProblem($"Foreign Key '{name}' does not follow the company naming standard. Please use a format that starts with FK_{tableName}_{foreignTableName}", sqlObj, fragment));
                     }
+
                     break;
                 case "checkconstraint":
                     if (!Regex.IsMatch(name, $@"^CK_{tableName}_.*", RegexOptions.IgnoreCase))
                     {
                         problems.Add(new SqlRuleProblem($"Check Constraint '{name}' does not follow the company naming standard. Please use a format that starts with CK_{tableName}*.", sqlObj, fragment));
                     }
+
                     break;
                 case "defaultconstraint":
                     var columnName = GetReferencedName(sqlObj, DefaultConstraint.TargetColumn, "Column");
@@ -156,6 +161,7 @@ namespace SqlServer.Rules.Performance
                     {
                         problems.Add(new SqlRuleProblem($"Constraint '{name}' does not follow the company naming standard. Please use the name DF_{tableName}_{columnName}.", sqlObj, fragment));
                     }
+
                     // ADD OTHER TYPES IF DESIRED IF YOU WANT THEM TO MATCH A SPECIFIC FORMAT
                     break;
             }
@@ -169,11 +175,8 @@ namespace SqlServer.Rules.Performance
             {
                 return sqlObj.GetReferenced().FirstOrDefault(o => _comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
             }
-            {
-                return sqlObj.GetReferenced(relation).FirstOrDefault(o => _comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
-            }
+
+            return sqlObj.GetReferenced(relation).FirstOrDefault(o => _comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
         }
-
-
     }
 }

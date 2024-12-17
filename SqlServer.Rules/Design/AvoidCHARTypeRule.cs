@@ -77,7 +77,7 @@ namespace SqlServer.Rules.Design
             return problems;
         }
 
-        private decimal GetDataTypeLength(ColumnDefinition col)
+        private static decimal GetDataTypeLength(ColumnDefinition col)
         {
             if (col.DataType is SqlDataTypeReference dataType)
             {

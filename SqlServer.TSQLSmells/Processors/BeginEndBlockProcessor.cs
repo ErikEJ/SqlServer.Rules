@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class BeginEndBlockProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public BeginEndBlockProcessor(Smells smells)
         {

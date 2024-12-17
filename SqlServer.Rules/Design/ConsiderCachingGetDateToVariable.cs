@@ -9,7 +9,7 @@ using System.Linq;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
@@ -72,7 +72,7 @@ namespace SqlServer.Rules.Design
             fragment.Accept(actionStatementVisitor);
             statements.AddRange(actionStatementVisitor.NotIgnoredStatements(RuleId));
 
-            if (statements.Count() > 1)
+            if (statements.Count > 1)
             {
                 statements.ForEach(statement =>
                 {
@@ -87,7 +87,7 @@ namespace SqlServer.Rules.Design
 
         private bool DoesStatementHaveDateFunction(StatementWithCtesAndXmlNamespaces statement)
         {
-            bool hasDateFunction = false;
+            bool hasDateFunction;
 
             var allFunctions = new FunctionCallVisitor();
 

@@ -4,7 +4,7 @@ namespace TSQLSmellSCA
 {
     public class PredicateSetProcessor
     {
-        private Smells _smells;
+        private readonly Smells _smells;
 
         public PredicateSetProcessor(Smells smells)
         {

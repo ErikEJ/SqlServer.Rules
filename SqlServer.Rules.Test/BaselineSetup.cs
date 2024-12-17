@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SqlServer.Rules.Test
 {
@@ -44,7 +43,7 @@ namespace SqlServer.Rules.Test
 
         private string GetBaseFolder()
         {
-            var testAssemply = this.GetType().Assembly;
+            var testAssemply = GetType().Assembly;
 
             return Path.GetDirectoryName(testAssemply.Location);
         }

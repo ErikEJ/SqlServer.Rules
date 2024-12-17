@@ -3,7 +3,6 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -70,9 +69,9 @@ namespace SqlServer.Rules.Design
             foreach (var stmt in visitor.NotIgnoredStatements(RuleId))
             {
                 if (stmt.UpdateSpecification.WhereClause != null
-                    || !(stmt.UpdateSpecification.Target is NamedTableReference)) { continue; }
+                    || !(stmt.UpdateSpecification.Target is NamedTableReference reference)) { continue; }
 
-                var tableName = ((NamedTableReference)stmt.UpdateSpecification.Target).SchemaObject.Identifiers.Last().Value;
+                var tableName = reference.SchemaObject.Identifiers.Last().Value;
 
                 if (stmt.UpdateSpecification.FromClause != null)
                 {
