@@ -1,7 +1,7 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlServer.Rules.Performance;
-using System.Linq;
 
 namespace SqlServer.Rules.Tests.Performance
 {

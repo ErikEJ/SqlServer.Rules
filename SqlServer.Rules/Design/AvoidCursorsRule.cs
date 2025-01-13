@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -25,10 +25,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0033";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid using cursors.";
+
         /// <summary>
         /// The message
         /// </summary>

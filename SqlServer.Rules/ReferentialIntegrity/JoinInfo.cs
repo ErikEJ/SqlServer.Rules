@@ -1,8 +1,8 @@
-﻿using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Dac;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlServer.Dac;
 
 namespace SqlServer.Rules.ReferentialIntegrity
 {
@@ -18,6 +18,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// The table1.
         /// </value>
         public NamedTableReference Table1 { get; set; }
+
         /// <summary>
         /// Gets or sets the table2.
         /// </summary>
@@ -36,6 +37,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         {
             get { return Table1.SchemaObject.GetObjectIdentifier(); }
         }
+
         /// <summary>
         /// Gets the name of the table2.
         /// </summary>
@@ -55,6 +57,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// </value>
 #pragma warning disable CA2227 // Collection properties should be read only
         public IList<BooleanComparisonExpression> Compares { get; set; }
+
         /// <summary>
         /// Gets or sets the table1 join columns.
         /// </summary>
@@ -62,6 +65,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// The table1 join columns.
         /// </value>
         public IList<ColumnReferenceExpression> Table1JoinColumns { get; set; } = new List<ColumnReferenceExpression>();
+
         /// <summary>
         /// Gets or sets the table2 join columns.
         /// </summary>
@@ -111,6 +115,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
                 return fkInfoColumnNames.Intersect(table2Columns).Count() == fkInfoColumnNames.Count
                     && fkInfoToColumnNames.Intersect(table1Columns).Count() == fkInfoToColumnNames.Count;
             }
+
             return false;
         }
 
@@ -150,8 +155,8 @@ namespace SqlServer.Rules.ReferentialIntegrity
                     cols.Add($"{col1.MultiPartIdentifier.GetName()} {compare.ComparisonType} {col2.MultiPartIdentifier.GetName()}");
                 }
             }
+
             return $"{Table1.GetName()} {Table1.Alias?.Value} JOIN {Table2.GetName()} {Table2.Alias?.Value} ON {string.Join(" + ", cols)}";
         }
     }
-
 }

@@ -1,20 +1,20 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
 
 namespace TSQLSmellSCA
 {
     public class TSQLSmellWorker
     {
-        private readonly TSqlModel _model;
-        private readonly string _ruleID;
+        private readonly TSqlModel model;
+        private readonly string ruleID;
 
         public TSQLSmellWorker(SqlRuleExecutionContext context, string ruleID)
         {
-            _model = context.SchemaModel;
-            _ruleID = ruleID;
+            model = context.SchemaModel;
+            this.ruleID = ruleID;
         }
 
         public IList<SqlRuleProblem> Analyze()
@@ -25,8 +25,8 @@ namespace TSQLSmellSCA
 
             var WhiteList = new List<TSqlObject>();
 
-            //[SqlTableBase].[dbo].[test].[WhiteList]
-            foreach (var tSqlObject in _model.GetObjects(DacQueryScopes.UserDefined, ExFilter))
+            // [SqlTableBase].[dbo].[test].[WhiteList]
+            foreach (var tSqlObject in model.GetObjects(DacQueryScopes.UserDefined, ExFilter))
             {
                 if (tSqlObject.Name.ToString().EndsWith("[WhiteList]", StringComparison.OrdinalIgnoreCase))
                 {
@@ -37,16 +37,15 @@ namespace TSQLSmellSCA
                 }
             }
 
-            foreach (var tSqlObject in _model.GetObjects(DacQueryScopes.UserDefined))
+            foreach (var tSqlObject in model.GetObjects(DacQueryScopes.UserDefined))
             {
                 var isWhite = false;
-                foreach (var WhiteCheck in WhiteList)
+                foreach (var whiteCheck in WhiteList)
                 {
-                    if (WhiteCheck.Equals(tSqlObject))
+                    if (whiteCheck.Equals(tSqlObject))
                     {
                         isWhite = true;
                     }
-
                 }
 
                 if (isWhite)
@@ -55,20 +54,19 @@ namespace TSQLSmellSCA
                 }
 
                 problems.AddRange(DoSmells(tSqlObject));
-
             }
 
             return (problems);
         }
 
-        private List<SqlRuleProblem> DoSmells(TSqlObject SqlObject)
+        private List<SqlRuleProblem> DoSmells(TSqlObject sqlObject)
         {
             var problems = new List<SqlRuleProblem>();
 
             var smellprocess = new Smells();
 
-            var iRule = int.Parse(_ruleID.Substring(_ruleID.Length - 3), CultureInfo.InvariantCulture);
-            return (smellprocess.ProcessObject(SqlObject, iRule));
+            var iRule = int.Parse(ruleID.Substring(ruleID.Length - 3), CultureInfo.InvariantCulture);
+            return (smellprocess.ProcessObject(sqlObject, iRule));
         }
     }
 
@@ -76,6 +74,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName01, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -95,6 +94,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName02, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -114,6 +114,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName03, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -133,6 +134,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName04, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -151,6 +153,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName05, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -169,6 +172,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName06, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -181,13 +185,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName07, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -201,13 +205,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName08, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -221,13 +225,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName09, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -242,7 +246,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -250,6 +253,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName10, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -263,7 +267,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -271,6 +274,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName11, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -284,13 +288,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName12, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -304,13 +308,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName13, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -324,13 +328,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName14, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -344,13 +348,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName15, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -364,7 +368,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -372,6 +375,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName16, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -385,13 +389,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName17, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -405,13 +409,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName18, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -425,7 +429,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -433,6 +436,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName19, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -446,13 +450,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName20, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -466,13 +470,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName21, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -486,13 +490,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName22, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -506,13 +510,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName23, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -526,7 +530,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -534,6 +537,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName24, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -547,13 +551,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName25, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -567,13 +571,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName26, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -587,13 +591,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName27, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -607,13 +611,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName28, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -627,13 +631,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName29, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -647,13 +651,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName30, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -667,13 +671,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName31, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -687,7 +691,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -695,6 +698,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName32, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -708,13 +712,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName33, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -728,13 +732,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName34, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -748,13 +752,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName35, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -768,13 +772,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName36, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -788,7 +792,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -796,6 +799,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName37, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -809,13 +813,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName38, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -829,13 +833,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName39, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -849,13 +853,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName40, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -869,13 +873,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName41, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -889,13 +893,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName42, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -909,7 +913,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -917,6 +920,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName43, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -930,13 +934,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName44, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -950,13 +954,13 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
     [LocalizedExportCodeAnalysisRule(RuleId,
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName45, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -970,7 +974,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -978,6 +981,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName46, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model
@@ -991,7 +995,6 @@ namespace TSQLSmellSCA
             var Worker = new TSQLSmellWorker(ruleExecutionContext, RuleId);
             return (Worker.Analyze());
         }
-
     }
 
 
@@ -999,6 +1002,7 @@ namespace TSQLSmellSCA
         RuleConstants.ResourceBaseName, // Name of the resource file to look up displayname and description in
         RuleConstants.TSQLSmell_RuleName47, // ID used to look up the display name inside the resources file
         null,
+
         // ID used to look up the description inside the resources file
         Category = RuleConstants.CategorySmells,
         RuleScope = SqlRuleScope.Model)] // This rule targets the whole model

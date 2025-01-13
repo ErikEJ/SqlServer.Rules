@@ -5,6 +5,9 @@
         <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
         <!-- For additional properties that can be set here, please refer to https://github.com/rr-wfm/MSBuild.Sdk.SqlProj#model-properties -->
     </PropertyGroup>
+    <ItemGroup>
+      <None Remove="bin\Debug\netstandard2.1\TestDatabase.dacpac" />
+    </ItemGroup>
 
     <ItemGroup>
         <!-- These packages adds additional code analysis rules -->
@@ -17,6 +20,10 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\netstandard2.1\" />
     </ItemGroup>
 
     <PropertyGroup>

@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -30,10 +30,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0039";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Use fully qualified object names in SELECT, UPDATE, DELETE, MERGE and EXECUTE statements. [schema].[name].";
+
         /// <summary>
         /// The message
         /// </summary>

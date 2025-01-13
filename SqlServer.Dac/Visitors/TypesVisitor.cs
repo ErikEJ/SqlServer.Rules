@@ -1,6 +1,6 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace SqlServer.Dac.Visitors
 {

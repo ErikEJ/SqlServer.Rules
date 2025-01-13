@@ -1,7 +1,3 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using SqlServer.Dac;
-using SqlServer.Rules.Report.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +9,10 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using SqlServer.Dac;
+using SqlServer.Rules.Report.Properties;
 
 namespace SqlServer.Rules.Report
 {
@@ -32,18 +32,18 @@ namespace SqlServer.Rules.Report
             SendNotification($"Loading {request.FileName}.dacpac");
             var sw = Stopwatch.StartNew();
 
-            //load the dacpac
+            // load the dacpac
             var model = TSqlModel.LoadFromDacpac(
-                    request.InputPath
-                    , new ModelLoadOptions
+                    request.InputPath,
+                    new ModelLoadOptions
                     {
                         LoadAsScriptBackedModel = true,
-                        ModelStorageType = Microsoft.SqlServer.Dac.DacSchemaModelStorageType.Memory
+                        ModelStorageType = Microsoft.SqlServer.Dac.DacSchemaModelStorageType.Memory,
                     });
             var factory = new CodeAnalysisServiceFactory();
             var service = factory.CreateAnalysisService(model);
 
-            //surpress rules
+            // surpress rules
             service.SetProblemSuppressor(request.Suppress);
             sw.Stop();
             SendNotification($"Loading {request.FileName}.dacpac complete, elapsed: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}");
@@ -51,7 +51,8 @@ namespace SqlServer.Rules.Report
 
             SendNotification("Running rules");
             sw = Stopwatch.StartNew();
-            //process non-suppressed rules
+
+            // process non-suppressed rules
             var result = service.Analyze(model);
 
             if (!result.AnalysisSucceeded)
@@ -78,11 +79,12 @@ namespace SqlServer.Rules.Report
             {
                 SendNotification(err.ErrorMessageString, NotificationType.Warning);
             }
+
             result.SerializeResultsToXml(GetOutputFileName(request, ReportOutputType.XML));
             sw.Stop();
             SendNotification($"Running rules complete, elapsed: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}");
 
-            //create report object
+            // create report object
             var report = new Report(
                 request.Solution,
                 GetIssueTypes(service.GetRules(), request.SuppressIssueTypes).ToList(),
@@ -91,7 +93,8 @@ namespace SqlServer.Rules.Report
 
             SendNotification("Writing report");
             sw = Stopwatch.StartNew();
-            //write out the xml
+
+            // write out the xml
             switch (request.ReportOutputType)
             {
                 case ReportOutputType.XML:
@@ -113,6 +116,7 @@ namespace SqlServer.Rules.Report
                         xslTransform.Load(xlstPath);
                         xslTransform.Transform(xPathDoc, null, xmlWriter);
                     }
+
                     break;
                 case ReportOutputType.CSV:
                     SerializeReportToCSV(report, GetOutputFileName(request, request.ReportOutputType));
@@ -120,8 +124,8 @@ namespace SqlServer.Rules.Report
                 default:
                     SendNotification($"Invalid report type: {request.ReportOutputType}");
                     break;
-
             }
+
             sw.Stop();
             SendNotification($"Writing report complete, elapsed: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}");
 
@@ -133,8 +137,9 @@ namespace SqlServer.Rules.Report
         {
             var currentDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var outDir = string.IsNullOrWhiteSpace(request.OutputDirectory) ? currentDir : request.OutputDirectory;
-            //not sure where this " is coming from, but it throws an exception trying to use the path
-            outDir = outDir.Replace("\"", "", StringComparison.OrdinalIgnoreCase).Trim();
+
+            // not sure where this " is coming from, but it throws an exception trying to use the path
+            outDir = outDir.Replace("\"", string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"OUT DIRECTORY: ' {outDir} '");
             Console.ResetColor();
@@ -143,6 +148,7 @@ namespace SqlServer.Rules.Report
             {
                 outDir = Path.Combine(currentDir, outDir);
             }
+
             return outDir;
         }
 
@@ -167,8 +173,8 @@ namespace SqlServer.Rules.Report
                     {
                         Severity = r.Severity.ToString(),
                         Description = r.DisplayDescription,
-                        Category = $"{r.Namespace}.{r.Metadata.Category}", //as we are including msft rules now too, we need to include the namespace in the category
-                        Id = r.ShortRuleId
+                        Category = $"{r.Namespace}.{r.Metadata.Category}", // as we are including msft rules now too, we need to include the namespace in the category
+                        Id = r.ShortRuleId,
                     }).Distinct(new IssueTypeComparer());
         }
 
@@ -181,7 +187,7 @@ namespace SqlServer.Rules.Report
                        Line = p.StartLine,
                        Message = p.Description,// p.ErrorMessageString,
                        Offset = p.StartColumn.ToString(CultureInfo.InvariantCulture),
-                       TypeId = p.Rule()
+                       TypeId = p.Rule(),
                    };
         }
 
@@ -192,7 +198,7 @@ namespace SqlServer.Rules.Report
             var xmlSettings = new XmlWriterSettings
             {
                 Indent = true,
-                IndentChars = "\t"
+                IndentChars = "\t",
             };
             using (var writer = XmlWriter.Create(outputPath, xmlSettings))
             {
@@ -215,16 +221,17 @@ namespace SqlServer.Rules.Report
 #pragma warning restore CA1305 // Specify IFormatProvider
                 }
             }
+
             File.WriteAllText(outputPath, sb.ToString());
 
-            //var issuesMap = new ColumnInfoList<Issue>();
-            //issuesMap.Add("A", "Issue Id", (obj) => obj.TypeId, updateHeader: true);
-            //issuesMap.Add("B", "Message", (obj) => obj.Message, updateHeader: true);
-            //issuesMap.Add("C", "Line,Offset", (obj) => $"{obj.Line},{obj.Offset}", updateHeader: true);
-            //issuesMap.Add("D", "File Name", (obj) => obj.File, updateHeader: true);
+            // var issuesMap = new ColumnInfoList<Issue>();
+            // issuesMap.Add("A", "Issue Id", (obj) => obj.TypeId, updateHeader: true);
+            // issuesMap.Add("B", "Message", (obj) => obj.Message, updateHeader: true);
+            // issuesMap.Add("C", "Line,Offset", (obj) => $"{obj.Line},{obj.Offset}", updateHeader: true);
+            // issuesMap.Add("D", "File Name", (obj) => obj.File, updateHeader: true);
 
-            //using (ExcelWriter writer = File.Exists(outputPath) ? new ExcelWriter(outputPath, 1, 2) : new ExcelWriter(1, 2))
-            //{
+            // using (ExcelWriter writer = File.Exists(outputPath) ? new ExcelWriter(outputPath, 1, 2) : new ExcelWriter(1, 2))
+            // {
             //    writer.CreateSheetIfNotFound = true;
             //    foreach (var issue in report.Issues)
             //    {
@@ -232,8 +239,8 @@ namespace SqlServer.Rules.Report
             //        writer.WriteDataToSheet(issue.Name, issue.Issues, issuesMap);
             //    }
 
-            //    writer.WriteTo(outputPath);
-            //}
+            // writer.WriteTo(outputPath);
+            // }
         }
     }
 }

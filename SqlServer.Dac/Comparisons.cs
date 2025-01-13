@@ -1,7 +1,7 @@
-﻿using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace SqlServer.Dac
 {
@@ -11,22 +11,27 @@ namespace SqlServer.Dac
         {
             return CompareIdentifiers(identifier, mpIdentifier.Identifiers.Select(x => x.Value));
         }
+
         public static int CompareTo(this ObjectIdentifier identifier, IList<Identifier> identifiers)
         {
             return CompareIdentifiers(identifier, identifiers.Select(x => x.Value));
         }
+
         public static int CompareTo(this MultiPartIdentifier identifier, ObjectIdentifier oIdentifier)
         {
             return CompareIdentifiers(oIdentifier, identifier.Identifiers.Select(x => x.Value));
         }
+
         public static int CompareTo(this ObjectIdentifier identifier, ObjectIdentifier identifier2)
         {
             return CompareIdentifiers(identifier, identifier2.Parts);
         }
+
         public static int CompareTo(this ObjectIdentifier identifier, IList<string> identifiers)
         {
             return CompareIdentifiers(identifier, identifiers);
         }
+
         /// <summary>
         /// Compares the identifiers. Will return the cumulative values when the specified parts match:
         /// Server Name     : 0  -- should not happen
@@ -67,6 +72,7 @@ namespace SqlServer.Dac
                     }
                 }
             }
+
             return ret;
         }
 
@@ -75,8 +81,9 @@ namespace SqlServer.Dac
             var ret = new List<string>(nameParts);
             for (var i = ret.Count; i < 4; i++)
             {
-                ret.Insert(0, "");
+                ret.Insert(0, string.Empty);
             }
+
             return ret;
         }
     }

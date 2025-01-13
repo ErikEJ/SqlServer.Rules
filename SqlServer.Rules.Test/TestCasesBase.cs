@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlServer.Rules.Test;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace SqlServer.Rules.Tests
 {

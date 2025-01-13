@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -83,10 +83,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0013";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Consider replacing the OUTER JOIN with EXISTS.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -163,23 +165,23 @@ namespace SqlServer.Rules.Performance
                         var tableName = table.GetName();
                         var alias = (table as TableReferenceWithAlias)?.Alias.Value;
 
-                        //are there any columns in the select that match this table?
+                        // are there any columns in the select that match this table?
                         if (columns.Any(c =>
                         {
                             var colTableName = c.GetName();
-                            return _comparer.Equals(tableName, colTableName) || _comparer.Equals(alias, colTableName);
+                            return Comparer.Equals(tableName, colTableName) || Comparer.Equals(alias, colTableName);
                         }))
                         {
                             continue;
                         }
 
-                        //no columns, now we need to look in the where clause for a null check against this table.
+                        // no columns, now we need to look in the where clause for a null check against this table.
                         if (isnullVisitor.Statements.Any(nc =>
                         {
                             var col = nc.FirstExpression as ColumnReferenceExpression ?? nc.SecondExpression as ColumnReferenceExpression;
                             if (col == null) { return false; }
                             var colTableName = col.GetName();
-                            return _comparer.Equals(tableName, colTableName) || _comparer.Equals(alias, colTableName);
+                            return Comparer.Equals(tableName, colTableName) || Comparer.Equals(alias, colTableName);
                         }))
                         {
                             problems.Add(new SqlRuleProblem(Message, sqlObj, join));

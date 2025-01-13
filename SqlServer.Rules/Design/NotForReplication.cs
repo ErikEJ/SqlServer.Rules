@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Rules.Globals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
 {
@@ -27,10 +27,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0065";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = Message;
+
         /// <summary>
         /// The message
         /// </summary>

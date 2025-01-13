@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-//<copyright company="Microsoft">
+// <copyright company="Microsoft">
 //
 //    The MIT License (MIT)
 //
@@ -22,17 +22,17 @@
 //    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //    SOFTWARE.
-//</copyright>
+// </copyright>
 //------------------------------------------------------------------------------
 
-using Microsoft.Data.SqlClient;
-using Microsoft.SqlServer.Dac;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Dac;
 
 namespace SqlServer.Rules.Tests.Utils
 {
@@ -45,13 +45,13 @@ namespace SqlServer.Rules.Tests.Utils
     {
         public enum ReallyCleanUpDatabase
         {
-            NotIfItCameFromABackupFile, YesReally
+            NotIfItCameFromABackupFile, YesReally,
         }
 
         private readonly InstanceInfo _instance;
         private readonly string _dbName;
 
-        //   Variables for tracking restored DB information
+        // Variables for tracking restored DB information
         private bool _cleanupDatabase;
         private readonly List<string> _cleanupScripts;
         public event EventHandler<EventArgs> Disposing;
@@ -64,6 +64,7 @@ namespace SqlServer.Rules.Tests.Utils
             {
                 ds.Deploy(dp, dbName, true, deployOptions);
             }
+
             var sqlDb = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
             return sqlDb;
         }
@@ -77,6 +78,7 @@ namespace SqlServer.Rules.Tests.Utils
                 importOptions = FillDefaultImportOptionsForTest(importOptions);
                 ds.ImportBacpac(bp, dbName, importOptions);
             }
+
             var sqlDb = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
             return sqlDb;
         }
@@ -246,14 +248,17 @@ namespace SqlServer.Rules.Tests.Utils
         {
             return CreateBuilder().ConnectionString;
         }
+
         public SqlConnectionStringBuilder CreateBuilder()
         {
             return _instance.CreateBuilder(_dbName);
         }
+
         public string BuildConnectionString(string userName, string password)
         {
             return CreateBuilder(userName, password).ConnectionString;
         }
+
         public SqlConnectionStringBuilder CreateBuilder(string userName, string password)
         {
             return _instance.CreateBuilder(userName, password, _dbName);
@@ -274,6 +279,7 @@ namespace SqlServer.Rules.Tests.Utils
             conn.Open();
             return conn;
         }
+
         public DbConnection OpenConnection(string userName, string password)
         {
             var conn = new SqlConnection(_instance.BuildConnectionString(userName, password, _dbName));
@@ -383,6 +389,7 @@ namespace SqlServer.Rules.Tests.Utils
                     }
                 }
             }
+
             Log("Deleting DB {0}", _dbName);
             try
             {
@@ -393,6 +400,7 @@ namespace SqlServer.Rules.Tests.Utils
                 // We do not want a cleanup failure to block a test's execution result
                 Log("Exception thrown during cleanup of DB " + _dbName + " " + ex);
             }
+
             _cleanupDatabase = false;
         }
 

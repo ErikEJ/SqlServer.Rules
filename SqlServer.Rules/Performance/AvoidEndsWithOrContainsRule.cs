@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -11,14 +11,14 @@ namespace SqlServer.Rules.Performance
     /// Avoid using patterns that start with '%' with the LIKE keyword  (Sargeable)
     /// </summary>
     /// <FriendlyName>Unanchored string pattern</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// This rule checks for usage of wildcard characters at the beginning of a word while searching
     /// using the LIKE keyword. Usage of wildcard characters at the beginning of a LIKE pattern
     /// results in an index scan, which defeats the purpose of an index.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -30,10 +30,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0002";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Try to avoid using patterns that start with '%' when using the LIKE keyword if possible.  (Sargable)";
+
         /// <summary>
         /// The message
         /// </summary>

@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -12,8 +12,8 @@ namespace SqlServer.Rules.Performance
     /// Consider using <c>RECOMPILE</c> query hint instead of <c>WITH RECOMPILE</c> option 
     /// </summary>
     /// <FriendlyName>Procedure level recompile option</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd>
     ///    good:
     ///     ```sql
     ///     CREATE PROCEDURE dbo.my_proc
@@ -36,7 +36,7 @@ namespace SqlServer.Rules.Performance
     /// procedure option instructs the Database Engine does not cache a plan for this procedure and
     /// the procedure is compiled at run time.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -48,10 +48,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0022";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Consider using RECOMPILE query hint instead of the WITH RECOMPILE option.";
+
         /// <summary>
         /// The message
         /// </summary>

@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -11,9 +11,9 @@ namespace SqlServer.Rules.Design
     /// Avoid the use of SELECT *. This can cause more columns than desired to be returned, and can also cause issues if the order of the columns changes.
     /// </summary>
     /// <FriendlyName>Avoid SELECT *</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -25,10 +25,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0006";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid using SELECT *.";
+
         /// <summary>
         /// The message
         /// </summary>

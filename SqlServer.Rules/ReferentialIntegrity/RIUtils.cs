@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Index = Microsoft.SqlServer.Dac.Model.Index;
 
 namespace SqlServer.Rules.ReferentialIntegrity
@@ -34,10 +34,11 @@ namespace SqlServer.Rules.ReferentialIntegrity
             {
                 throw new ArgumentException("The parameter is not of type Table", nameof(table));
             }
-            //convert the column names to a list of string 
+
+            // convert the column names to a list of string 
             var fkColumnNames = columnNames.Select(x => x.Parts.Last()).ToList();
 
-            //get all the indexes for this table
+            // get all the indexes for this table
             var indexes = table.GetReferencing(DacQueryScopes.All)
                 .Where(x => x.ObjectType == Index.TypeClass
                     || x.ObjectType == PrimaryKeyConstraint.TypeClass
@@ -45,7 +46,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
 
             if (indexes.Count == 0) { return false; }
 
-            //pull all the column names out of the indexes
+            // pull all the column names out of the indexes
             var indexInfo = new Dictionary<string, IList<string>>();
             foreach (var index in indexes)
             {
@@ -56,12 +57,12 @@ namespace SqlServer.Rules.ReferentialIntegrity
                 );
             }
 
-            //find any index that contains all the columns from the foreign key
+            // find any index that contains all the columns from the foreign key
             return indexInfo.Any(ii =>
             {
-                //intersect works, but the index must match the column names in 
-                //the correct order, and the proper ordinal in the index hence the for...
-                //i.Value.Intersect(fkColumnNames).Count() == fkColumnNames.Count()) 
+                // intersect works, but the index must match the column names in 
+                // the correct order, and the proper ordinal in the index hence the for...
+                // i.Value.Intersect(fkColumnNames).Count() == fkColumnNames.Count()) 
                 for (var i = 0; i < fkColumnNames.Count; i++)
                 {
                     if (!fkColumnNames[i].StringEquals(ii.Value?.ElementAtOrDefault(i)))
@@ -69,6 +70,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
                         return false;
                     }
                 }
+
                 return true;
             });
         }
@@ -98,6 +100,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
                     fks.Add(name, fk.GetFKInfo());
                 }
             }
+
             return fks;
         }
 
@@ -115,6 +118,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
             {
                 throw new ArgumentException("The parameter is not of type ForeignKeyConstraint", nameof(fk));
             }
+
             var fkColumns = fk.GetReferencedRelationshipInstances(ForeignKeyConstraint.Columns, DacQueryScopes.All)
                 .Select(x => x.ObjectName).ToList();
             var fkForeignColumns = fk.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignColumns, DacQueryScopes.All)
@@ -126,7 +130,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
                 TableName = new ObjectIdentifier(GetTableOrAliasName(fkColumns.FirstOrDefault())),
                 ToTableName = new ObjectIdentifier(GetTableOrAliasName(fkForeignColumns.FirstOrDefault())),
                 ColumnNames = fkColumns,
-                ToColumnNames = fkForeignColumns
+                ToColumnNames = fkForeignColumns,
             };
         }
 
@@ -146,7 +150,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
             var joinVisitor = new JoinVisitor();
             from.Accept(joinVisitor);
 
-            //build the list of pure tables along with the list of boolean comparisons
+            // build the list of pure tables along with the list of boolean comparisons
             foreach (var join in joinVisitor.QualifiedJoins)
             {
                 var joinInfo = new JoinInfo { };
@@ -159,14 +163,16 @@ namespace SqlServer.Rules.ReferentialIntegrity
                 {
                     joinInfo.Table1 = join.FirstTableReference as NamedTableReference;
                 }
+
                 if (join.SecondTableReference.GetType() == typeof(NamedTableReference))
                 {
                     joinInfo.Table2 = join.SecondTableReference as NamedTableReference;
                 }
+
                 joins.Add(joinInfo);
             }
 
-            //table2 should always have a table..... maybe. unless the table is actually a sub-select. Then we will ignore it
+            // table2 should always have a table..... maybe. unless the table is actually a sub-select. Then we will ignore it
             foreach (var join in joins.Where(j => j.Table2 != null))
             {
                 var table1 = join.Table1;
@@ -174,11 +180,11 @@ namespace SqlServer.Rules.ReferentialIntegrity
                 var table2Alias = table2.Alias?.Value;
                 var table2Name = new ObjectIdentifier(table2.SchemaObject.Identifiers.Select(x => x.Value));
 
-                //we need to figure out which side of the comparison goes to which table..... PITA. yes.....
+                // we need to figure out which side of the comparison goes to which table..... PITA. yes.....
                 foreach (var compare in join.Compares
                     .Where(x => x.FirstExpression is ColumnReferenceExpression && x.SecondExpression is ColumnReferenceExpression))
                 {
-                    //we use a loop as we need to check both the first expression and the second expression to see which table the columns belong to
+                    // we use a loop as we need to check both the first expression and the second expression to see which table the columns belong to
                     for (var i = 0; i < 2; i++)
                     {
                         var col = (i == 0 ? compare.FirstExpression : compare.SecondExpression) as ColumnReferenceExpression;
@@ -189,7 +195,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
                             continue;
                         }
 
-                        //use table1 if it was supplied in the compare. else scan the joins to find the matching table to the column
+                        // use table1 if it was supplied in the compare. else scan the joins to find the matching table to the column
                         var tbl = table1 ?? joins.Select(x =>
                         {
                             if (CheckName(x.Table2, col)) { return x.Table2; }
@@ -220,7 +226,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
             var parts = identifier.Parts;
             if (parts.Count == 1) { return parts; }
 
-            //take the first parts minus one from the length. as they could use dbo.Table.Column or Table.Column, or t1.Column
+            // take the first parts minus one from the length. as they could use dbo.Table.Column or Table.Column, or t1.Column
             return parts.Take(parts.Count - 1).ToList();
         }
 
@@ -229,7 +235,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
 #pragma warning disable CA1851 // Possible multiple enumerations of 'IEnumerable' collection
             if (identifiers.Count() == 1) { return identifiers.Select(x => x.Value).ToList(); }
 
-            //take the first parts minus one from the length. as they could use dbo.Table.Column or Table.Column, or t1.Column
+            // take the first parts minus one from the length. as they could use dbo.Table.Column or Table.Column, or t1.Column
             return identifiers.Take(identifiers.Count() - 1).Select(x => x.Value).ToList();
 #pragma warning restore CA1851 // Possible multiple enumerations of 'IEnumerable' collection
         }

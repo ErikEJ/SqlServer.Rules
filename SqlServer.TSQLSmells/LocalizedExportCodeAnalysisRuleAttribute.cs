@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright company="Microsoft">
 //   Copyright 2013 Microsoft
 //
@@ -16,11 +16,11 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-using Microsoft.SqlServer.Dac.CodeAnalysis;
 using System;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 
 namespace TSQLSmellSCA
 {
@@ -57,7 +57,7 @@ namespace TSQLSmellSCA
         {
             ResourceBaseName = resourceBaseName;
             DisplayNameResourceId = displayNameResourceId;
-            DescriptionResourceId = displayNameResourceId; //descriptionResourceId;
+            DescriptionResourceId = displayNameResourceId; // descriptionResourceId;
         }
 
         /// <summary>

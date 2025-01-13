@@ -1,12 +1,12 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -14,14 +14,14 @@ namespace SqlServer.Rules.Design
     /// Avoid using columns that match other columns by name, but are different in type or size
     /// </summary>
     /// <FriendlyName>Ambiguous column name across design</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Columns are found in multiple tables that match by name but differ by either type or size.
     /// If the columns truly have different meanings, they should differ by name as well or they
     /// should match in datatype and size.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -33,10 +33,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0047";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid using columns that match other columns by name, but are different in type or size.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -84,19 +86,19 @@ namespace SqlServer.Rules.Design
                         DataType = col.DataType.Name.Identifiers.FirstOrDefault()?.Value,
                         DataTypeParameters = GetDataTypeLengthParameters(col),
                         Column = col,
-                        Table = table
+                        Table = table,
                     }
                 ));
             }
 
-            //find all the columns that match by name but differ by data type or length....
+            // find all the columns that match by name but differ by data type or length....
             var offenders = columnList.Where(x =>
                 columnList.Any(y =>
-                    !_comparer.Equals(x.TableName, y.TableName)
-                    && _comparer.Equals(x.ColumnName, y.ColumnName)
+                    !Comparer.Equals(x.TableName, y.TableName)
+                    && Comparer.Equals(x.ColumnName, y.ColumnName)
                     && (
-                        !_comparer.Equals(x.DataType, y.DataType)
-                        || !_comparer.Equals(x.DataTypeParameters, y.DataTypeParameters)
+                        !Comparer.Equals(x.DataType, y.DataType)
+                        || !Comparer.Equals(x.DataTypeParameters, y.DataTypeParameters)
                     )
                 )
             );
@@ -113,10 +115,11 @@ namespace SqlServer.Rules.Design
             {
                 return string.Join(",", dataType.GetDataTypeParameters());
             }
+
             return string.Empty;
         }
 
-        private class TableColumnInfo
+        private sealed class TableColumnInfo
         {
             public string TableName { get; set; }
             public string ColumnName { get; set; }

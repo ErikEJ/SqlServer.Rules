@@ -1,5 +1,5 @@
 ﻿//------------------------------------------------------------------------------
-//<copyright company="Microsoft">
+// <copyright company="Microsoft">
 //
 //    The MIT License (MIT)
 //
@@ -22,10 +22,9 @@
 //    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //    SOFTWARE.
-//</copyright>
+// </copyright>
 //------------------------------------------------------------------------------
 
-using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,6 +32,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.Data.SqlClient;
 
 namespace SqlServer.Rules.Tests.Utils
 {
@@ -46,7 +46,7 @@ namespace SqlServer.Rules.Tests.Utils
 
         public const string MasterDatabaseName = "master";
 
-        const string _setLockTimeoutDefault = "SET LOCK_TIMEOUT {0}"; //value configurable
+        const string _setLockTimeoutDefault = "SET LOCK_TIMEOUT {0}"; // value configurable
 
         const string _queryDatabaseIfExist = @"SELECT COUNT(*) FROM [sys].[databases] WHERE [name] = '{0}'";
 
@@ -83,6 +83,7 @@ END
                 {
                     _defaultInstanceInfo = new InstanceInfo(DefaultDataSourceName);
                 }
+
                 return _defaultInstanceInfo;
             }
         }
@@ -243,6 +244,7 @@ END
         private static SqlCommand GetCommandObject(SqlConnection conn, string sqlCommandText, int commandTimeOut)
         {
             var cmd = conn.CreateCommand();
+
             // reasonable hard code to prevent hang client.
             cmd.CommandTimeout = commandTimeOut;
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
@@ -347,7 +349,6 @@ END
         {
             return _batch.Split(script).Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
         }
-
     }
 
     internal class ArgumentValidation

@@ -9,8 +9,8 @@ namespace SqlServer.Rules.Design
     /// Do not use DECIMAL or NUMERIC data types without specifying precision and scale.
     /// </summary>
     /// <FriendlyName>Unspecified precision or scale </FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks the T-SQL code for use <c>DECIMAL</c> or <c>NUMERIC</c> data types without
     /// specifying length. Avoid defining columns, variables, and parameters using 
@@ -29,10 +29,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0027";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Do not use DECIMAL or NUMERIC data types without specifying precision and scale.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -43,7 +45,7 @@ namespace SqlServer.Rules.Design
         /// </summary>
         public NoPrecisionScaleRule() : base(new[]
                 {
-                    ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table
+                    ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table,
                 }, new[] { SqlDataTypeOption.Decimal, SqlDataTypeOption.Numeric }, 2, Message)
         { }
     }

@@ -1,19 +1,19 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
     /// <summary>Index has exact duplicate or overlapping index. Combine indexes to reduce over-head </summary>
     /// <FriendlyName>Duplicate/Overlapping Index</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule matches exact duplicating or partially duplicating indexes. The exact duplicating
     /// indexes must have the same key columns in the same order, and the same included columns but
@@ -21,7 +21,7 @@ namespace SqlServer.Rules.Design
     /// the same leading key columns, but the included columns are ignored. These types of indexes
     /// are probable dead indexes walking.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -33,14 +33,17 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0052";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Index has exact duplicate or borderline overlapping index.";
+
         /// <summary>
         /// The message duplicate
         /// </summary>
         public const string MessageDuplicate = "'{0}' is a duplicate index.";
+
         /// <summary>
         /// The message border line
         /// </summary>
@@ -94,18 +97,18 @@ namespace SqlServer.Rules.Design
 
             if (indexInfo.Count == 0) { return problems; }
 
-            //find all the duplicates where all the columns match
+            // find all the duplicates where all the columns match
             var dupes = indexInfo.GroupBy(x => string.Join(",", x.Value))
                 .Where(x => x.Count() > 1).SelectMany(x => x).ToList();
             problems.AddRange(dupes
                 .Select(ix => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, MessageDuplicate, ix.Key.Name.Value), sqlObj, ix.Key)));
 
-            //remove the exact duplicates to try to search for border line duplicates
+            // remove the exact duplicates to try to search for border line duplicates
             indexInfo.RemoveAll((key, value) => dupes.Any(x => x.Key == key));
 
             if (indexInfo.Count <= 1) { return problems; }
 
-            //find all the borderline duplicates where the first column matches
+            // find all the borderline duplicates where the first column matches
             var borderLineDupes = indexInfo.GroupBy(x => x.Value.First()).Where(x => x.Count() > 1).SelectMany(x => x).ToList();
             problems.AddRange(borderLineDupes
                 .Select(ix => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, MessageBorderLine, ix.Key.Name.Value), sqlObj, ix.Key)));

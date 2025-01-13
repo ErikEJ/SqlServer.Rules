@@ -1,5 +1,5 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
+﻿using System;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -26,6 +26,7 @@ namespace TSQLSmellSCA
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -43,12 +44,14 @@ namespace TSQLSmellSCA
                         {
                             _smells.SendFeedBack(1, NamedTableRef);
                         }
+
                         if (NamedTableRef.SchemaObject.SchemaIdentifier == null &&
                             !isCteName(NamedTableRef.SchemaObject, cte))
                         {
                             _smells.SendFeedBack(2, NamedTableRef);
                         }
                     }
+
                     if (NamedTableRef.TableHints != null)
                     {
                         foreach (var TableHint in NamedTableRef.TableHints)
@@ -72,6 +75,7 @@ namespace TSQLSmellSCA
                             }
                         }
                     }
+
                     break;
                 case "QueryDerivedTable":
 
@@ -81,12 +85,14 @@ namespace TSQLSmellSCA
                     {
                         _smells.SendFeedBack(11, QueryDerivedRef);
                     }
+
                     if (FragmentTypeParser.GetFragmentType(QueryDerivedRef.QueryExpression) == "QuerySpecification")
                     {
-                        //    QuerySpecification QuerySpec = (QuerySpecification)QueryDerivedRef.QueryExpression;
+                        // QuerySpecification QuerySpec = (QuerySpecification)QueryDerivedRef.QueryExpression;
                         //  Process(QuerySpec.FromClause, cte);
                         _smells.ProcessQueryExpression(QueryDerivedRef.QueryExpression, "RG", true, cte);
                     }
+
                     break;
                 case "QualifiedJoin":
                     var QualifiedJoin = (QualifiedJoin) TableRef;

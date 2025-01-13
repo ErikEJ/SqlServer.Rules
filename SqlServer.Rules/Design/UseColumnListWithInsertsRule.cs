@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,14 +13,14 @@ namespace SqlServer.Rules.Design
     /// Always use a column list in INSERT statements.
     /// </summary>
     /// <FriendlyName>Implicit column list</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// When inserting into a table or view it is recommended that the target column list be
     /// explicitly specified. This results in more maintainable code and helps in avoiding problems
     /// when the table structure changes (like adding or dropping a column).
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -32,10 +32,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0015";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Always use a column list in INSERT statements.";
+
         /// <summary>
         /// The message
         /// </summary>

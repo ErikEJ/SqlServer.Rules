@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -12,14 +12,14 @@ namespace SqlServer.Rules.Performance
     ///  Avoid using not equal operator (&lt;>,!=) in the WHERE clause. (Sargeable) 
     /// </summary>
     /// <FriendlyName>Use of inequality</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks for usage of the not equal operator in the WHERE clause as it result table
     /// and index scans. Consider replacing the not equal operator with equals (=) or inequality
     /// operators (>,>=,&lt;,&lt;=) if possible.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -31,10 +31,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0006";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Try to avoid using not equal operator (<>,!=) in the WHERE clause if possible. (Sargable)";
+
         /// <summary>
         /// The message
         /// </summary>

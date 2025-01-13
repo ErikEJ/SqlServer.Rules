@@ -1,25 +1,25 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
     /// <summary>Avoid modification of parameters in a stored procedure prior to use in a select query.</summary>
     /// <FriendlyName>Manipulated parameter value</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// For best query performance, in some situations you'll need to avoid assigning a new
     /// value to a parameter of a stored procedure within the procedure body, and then using the
     /// parameter value in a query. The stored procedure and all queries in it are initially
     /// compiled with the parameter value first passed in as a parameter to the query.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -31,14 +31,17 @@ namespace SqlServer.Rules.Design
         /// The base rule identifier
         /// </summary>
         public const string BaseRuleId = "SRP0021";
+
         /// <summary>
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + BaseRuleId;
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid modification of parameters in a stored procedure prior to use in a select query.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -87,7 +90,7 @@ namespace SqlServer.Rules.Design
                 var getAssignmentSelects = selectVisitor.NotIgnoredStatements(RuleId)
                     .GetSelectsSettingParameterValue(param).Where(sel => sel.StartLine < selectStartLine);
                 var setStatements = setVisitor.NotIgnoredStatements(RuleId)
-                    .Where(set => _comparer.Equals(set.Variable.Name, param) && set.StartLine < selectStartLine);
+                    .Where(set => Comparer.Equals(set.Variable.Name, param) && set.StartLine < selectStartLine);
 
                 problems.AddRange(getAssignmentSelects.Select(x => new SqlRuleProblem(Message, sqlObj, x)));
                 problems.AddRange(setStatements.Select(x => new SqlRuleProblem(Message, sqlObj, x)));
@@ -95,6 +98,5 @@ namespace SqlServer.Rules.Design
 
             return problems;
         }
-
     }
 }

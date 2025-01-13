@@ -17,6 +17,7 @@ namespace TSQLSmellSCA
             {
                 _smells.SendFeedBack(33, Element);
             }
+
             _smells.ProcessTsqlFragment(Element.DataType);
             if (Element.Value != null)
             {

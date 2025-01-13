@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace SqlServer.Dac
 {
@@ -16,8 +16,10 @@ namespace SqlServer.Dac
             {
                 return new ObjectIdentifier(assumedSchema, identifiers.First().Value);
             }
+
             return new ObjectIdentifier(identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value));
         }
+
         public static ObjectIdentifier GetObjectIdentifier(this ProcedureReference proc, string assumedSchema = "dbo")
         {
             var identifiers = proc.Name.Identifiers;
@@ -25,44 +27,55 @@ namespace SqlServer.Dac
             {
                 return new ObjectIdentifier(assumedSchema, identifiers.First().Value);
             }
+
             return new ObjectIdentifier(identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value));
         }
+
         public static ObjectIdentifier GetObjectIdentifier(this SchemaObjectName name, string assumedSchema = "dbo")
         {
             if (name.Identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
                 return new ObjectIdentifier(assumedSchema, name.Identifiers.First().Value);
             }
+
             return new ObjectIdentifier(name.Identifiers.Select(x => x.Value));
         }
+
         public static ObjectIdentifier GetObjectIdentifier(this MultiPartIdentifier name, string assumedSchema = "dbo")
         {
             if (name.Identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
                 return new ObjectIdentifier(assumedSchema, name.Identifiers.First().Value);
             }
+
             return new ObjectIdentifier(name.Identifiers.Select(x => x.Value));
         }
+
         public static string GetName(this ObjectIdentifier identifier)
         {
             return $"[{string.Join("].[", identifier.Parts.Select(x => x))}]";
         }
+
         public static string GetName(this SchemaObjectName name)
         {
             return $"[{string.Join("].[", name.Identifiers.Select(x => x.Value))}]";
         }
+
         public static string GetName(this MultiPartIdentifier name)
         {
             return $"[{string.Join("].[", name.Identifiers.Select(x => x.Value))}]";
         }
+
         public static string GetName(this IEnumerable<Identifier> identifiers)
         {
             return $"[{string.Join("].[", identifiers.Select(x => x.Value))}]";
         }
+
         public static string GetName(this IEnumerable<string> identifiers)
         {
             return $"[{string.Join("].[", identifiers)}]";
         }
+
         public static string GetName(this FunctionCall stmt)
         {
             var first = string.Empty;
@@ -74,20 +87,24 @@ namespace SqlServer.Dac
 
             return $"{first}[{stmt.FunctionName.Value}]";
         }
+
         public static string GetName(this NamedTableReference table)
         {
             var identifiers = table.SchemaObject.Identifiers;
 
             return identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value).GetName();
         }
+
         public static string GetName(this TableReference table, string assumedSchema = null)
         {
             if (table is NamedTableReference t1)
             {
                 return t1.SchemaObject.GetName();
             }
+
             return string.Empty;
         }
+
         public static string GetName(this ColumnReferenceExpression column)
         {
             var cnt = column.MultiPartIdentifier.Identifiers.Count;
@@ -95,6 +112,7 @@ namespace SqlServer.Dac
             {
                 return $"[{column.MultiPartIdentifier.Identifiers.First().Value}]";
             }
+
             var tName = "[" + string.Join("].[", column.MultiPartIdentifier.Identifiers.Take(cnt - 1).Select(i => i.Value)) + "]";
 
             return tName;
@@ -167,8 +185,9 @@ namespace SqlServer.Dac
                 case CreateOrAlterProcedureStatement createOrAlterProcedure:
                     ret = createOrAlterProcedure.ProcedureReference.Name.GetObjectIdentifier(assumedSchema);
                     break;
-                //case TSqlScript script:
-                //case TSqlStatementSnippet frag:
+
+                // case TSqlScript script:
+                // case TSqlStatementSnippet frag:
                 //    ret = null;
                 //    break;
                 default:

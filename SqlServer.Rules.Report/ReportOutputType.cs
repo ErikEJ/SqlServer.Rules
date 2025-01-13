@@ -3,6 +3,6 @@
     public enum ReportOutputType
     {
         XML,
-        CSV
+        CSV,
     }
 }

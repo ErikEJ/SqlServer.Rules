@@ -1,13 +1,13 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Dac;
-using SqlServer.Dac.Visitors;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlServer.Dac;
+using SqlServer.Dac.Visitors;
 
 namespace SqlServer.Rules
 {
@@ -21,6 +21,7 @@ namespace SqlServer.Rules
         /// The programming schemas
         /// </summary>
         protected static readonly IList<ModelTypeClass> ProgrammingSchemas = new[] { ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction };
+
         /// <summary>
         /// The programming and view schemas
         /// </summary>
@@ -30,6 +31,7 @@ namespace SqlServer.Rules
         /// The programming schema types
         /// </summary>
         protected static readonly Type[] ProgrammingSchemaTypes = new Type[] { typeof(CreateProcedureStatement), typeof(CreateFunctionStatement) };
+
         /// <summary>
         /// The programming and view schema types
         /// </summary>
@@ -39,7 +41,11 @@ namespace SqlServer.Rules
         /// The comparer
         /// </summary>
 #pragma warning disable CA2211 // Non-constant fields should not be visible
-        public static StringComparer _comparer = StringComparer.InvariantCultureIgnoreCase;
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable SA1401 // Fields should be private
+        public static StringComparer Comparer = StringComparer.InvariantCultureIgnoreCase;
+#pragma warning restore SA1401 // Fields should be private
+#pragma warning restore IDE1006 // Naming Styles
 #pragma warning restore CA2211 // Non-constant fields should not be visible
         /// <summary>
         /// Gets the problems.
@@ -51,10 +57,10 @@ namespace SqlServer.Rules
         protected List<SqlRuleProblem> Problems { get; } = new List<SqlRuleProblem>();
 #pragma warning restore CA1002 // Do not expose generic lists
 
-        //really not proud of this... could not figure out another way. has to be maintained with each new SQL Server version.
+        // really not proud of this... could not figure out another way. has to be maintained with each new SQL Server version.
         private static readonly Dictionary<string, string> _functions = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
         {
-			/*Date and Time Data Types and Functions (Transact-SQL)*/
+            /*Date and Time Data Types and Functions (Transact-SQL)*/
             { "CURRENT_DATE", "date" },
             { "CURRENT_TIMESTAMP", "datetime" },
             { "CURRENT_TIMEZONE", "varchar" },
@@ -81,8 +87,8 @@ namespace SqlServer.Rules
             { "TIMEFROMPARTS", "time" },
             { "TODATETIMEOFFSET", "datetimeoffset" },
             { "YEAR", "int" },
-			/* Mathematical Functions (Transact-SQL)*/
-			{ "ACOS", "float" },
+            /* Mathematical Functions (Transact-SQL)*/
+            { "ACOS", "float" },
             { "ASIN", "float" },
             { "ATAN", "float" },
             { "ATN2", "float" },
@@ -94,14 +100,15 @@ namespace SqlServer.Rules
             { "PI", "float" },
             { "POWER", "float" },
             { "RAND", "float" },
-			//{ "ROUND", "" }, completely unable to figure out how to map these. leaving commented here to mark that in case someone else figures it out
-			//{ "SIGN", "" },
-			{ "SIN", "float" },
+
+            // { "ROUND", "" }, completely unable to figure out how to map these. leaving commented here to mark that in case someone else figures it out
+            // { "SIGN", "" },
+            { "SIN", "float" },
             { "SQRT", "float" },
             { "SQUARE", "float" },
             { "TAN", "float" },
-			/*String Functions (Transact-SQL)*/
-			{ "ASCII", "int" },
+            /*String Functions (Transact-SQL)*/
+            { "ASCII", "int" },
             { "BASE64_DECODE", "varbinary" },
             { "BASE64_ENCODE", "varchar" },
             { "CHAR", "char" },
@@ -113,8 +120,8 @@ namespace SqlServer.Rules
             { "STR", "varchar" },
             { "STRING_ESCAPE", "nvarchar" },
             { "UNICODE", "int" },
-			/* System Functions (Transact-SQL)*/
-			{ "HOST_ID", "char" },
+            /* System Functions (Transact-SQL)*/
+            { "HOST_ID", "char" },
             { "HOST_NAME", "nvarchar" },
             { "ISNUMERIC", "int" },
             { "NEWID", "uniqueidentifier" },
@@ -123,8 +130,8 @@ namespace SqlServer.Rules
             { "SESSION_CONTEXT", "sql_variant" },
             { "SESSION_ID", "nvarchar" },
             { "XACT_STATE", "smallint" },
-			/*Metadata Functions (Transact-SQL)*/
-			{ "APP_NAME", "nvarchar" },
+            /*Metadata Functions (Transact-SQL)*/
+            { "APP_NAME", "nvarchar" },
             { "APPLOCK_MODE", "nvarchar" },
             { "APPLOCK_TEST", "smallint" },
             { "ASSEMBLYPROPERTY", "sql_variant" },
@@ -162,8 +169,8 @@ namespace SqlServer.Rules
             { "TYPE_ID", "int" },
             { "TYPE_NAME", "sysname" },
             { "TYPEPROPERTY", "int" },
-			/*Security Functions (Transact-SQL)*/
-			{ "CERTENCODED", "varbinary" },
+            /*Security Functions (Transact-SQL)*/
+            { "CERTENCODED", "varbinary" },
             { "CERTPRIVATEKEY", "varbinary" },
             { "CURRENT_USER", "sysname" },
             { "DATABASE_PRINCIPAL_ID", "int" },
@@ -182,7 +189,7 @@ namespace SqlServer.Rules
             { "SYSTEM_USER", "nchar" },
             { "SUSER_NAME", "nvarchar" },
             { "USER_ID", "int" },
-            { "USER_NAME", "nvarchar" }
+            { "USER_NAME", "nvarchar" },
         };
 
         /// <summary>
@@ -208,7 +215,7 @@ namespace SqlServer.Rules
                     var func = (fragment as CreateFunctionStatement);
                     if (func == null) { return null; }
 
-                    //this is an ITVF, and does not have a statement list, it has one statement in the return block...
+                    // this is an ITVF, and does not have a statement list, it has one statement in the return block...
                     if (func.StatementList == null && func.ReturnType is SelectFunctionReturnType returnType)
                     {
                         statementList.Statements.Add(returnType.SelectStatement);
@@ -221,7 +228,7 @@ namespace SqlServer.Rules
                     return (fragment as CreateTriggerStatement)?.StatementList;
 
                 default:
-                    //throw new ApplicationException("Unable to determine statement list for fragment type: " + fragmentTypeName);
+                    // throw new ApplicationException("Unable to determine statement list for fragment type: " + fragmentTypeName);
                     return null;
             }
         }
@@ -291,6 +298,7 @@ namespace SqlServer.Rules
             {
                 return GetDataType(exprNum);
             }
+
             if (value is FunctionCall exprFunc)
             {
                 if (_functions.TryGetValue(exprFunc.FunctionName.Value, out var type))
@@ -320,7 +328,7 @@ namespace SqlServer.Rules
         {
             if (!(value is VariableReference varRef)) { return GetDataType(value); }
 
-            var var1 = variables.FirstOrDefault(v => _comparer.Equals(v.Name, varRef.Name));
+            var var1 = variables.FirstOrDefault(v => Comparer.Equals(v.Name, varRef.Name));
             if (var1 != null) { return var1.DataType; }
 
             return string.Empty;
@@ -356,10 +364,12 @@ namespace SqlServer.Rules
 
                 return "varchar";
             }
+
             if (expression is NumericLiteral exprNum)
             {
                 return exprNum.LiteralType.ToString();
             }
+
             if (expression is IntegerLiteral exprInt)
             {
                 var val = long.Parse(exprInt.Value, CultureInfo.InvariantCulture);
@@ -373,30 +383,35 @@ namespace SqlServer.Rules
                 {
                     return "smallint";
                 }
+
                 if (val >= -2147483648 && val <= 2147483648)
                 {
                     return "int";
                 }
+
                 if (val >= -9223372036854775808 && val <= 9223372036854775807)
                 {
                     return "bigint";
                 }
 
-                //technically this may not be accurate. as sql sever will interpret literal ints as different types
-                //depending upon how large they are. smallint, tinyint, etc... Unless I mimic their same value behavior.
+                // technically this may not be accurate. as sql sever will interpret literal ints as different types
+                // depending upon how large they are. smallint, tinyint, etc... Unless I mimic their same value behavior.
                 return "int";
             }
+
             if (expression is CastCall exprCast)
             {
                 return exprCast.DataType.Name.Identifiers.First().Value;
             }
+
             if (expression is ConvertCall exprConvert)
             {
                 return exprConvert.DataType.Name.Identifiers.First().Value;
             }
+
             if (expression is VariableReference exprVar)
             {
-                var variable = variables.FirstOrDefault(v => _comparer.Equals(v.Name, exprVar.Name));
+                var variable = variables.FirstOrDefault(v => Comparer.Equals(v.Name, exprVar.Name));
                 if (variable != null)
                 {
                     return variable.DataType;
@@ -404,8 +419,8 @@ namespace SqlServer.Rules
             }
             else if (expression is FunctionCall exprFunc)
             {
-                //TIM C: sigh, this does not work for all functions. the api does not allow for me to look up built in functions. nor does it allow me to get the
-                //data types of parameters, so I am not able to type ALL functions like DATEADD, the parameter could be a column, string literal, variable, function etc...
+                // TIM C: sigh, this does not work for all functions. the api does not allow for me to look up built in functions. nor does it allow me to get the
+                // data types of parameters, so I am not able to type ALL functions like DATEADD, the parameter could be a column, string literal, variable, function etc...
                 if (_functions.TryGetValue(exprFunc.FunctionName.Value, out var type))
                 {
                     return type;
@@ -436,20 +451,20 @@ namespace SqlServer.Rules
             return null;
         }
 
-        //protected string GetColumnDataType(ColumnReferenceExpression value, Dictionary<NamedTableView, IDictionary<string, DataTypeView>> columnDataTypes)
-        //{
+        // protected string GetColumnDataType(ColumnReferenceExpression value, Dictionary<NamedTableView, IDictionary<string, DataTypeView>> columnDataTypes)
+        // {
         //    var columnName = value.MultiPartIdentifier.Identifiers.GetName().ToLower();
         //    var types = columnDataTypes.Where(t => t.Key.Name.ToLower().Contains(columnName));
         //    //so.... technically this could resolve to multiple columns, but I have no clue which one to pick as the column does not have any reference to the parent query.
         //    var typ = types.FirstOrDefault();
 
-        //    if (typ.Key != null)
+        // if (typ.Key != null)
         //    {
         //        //return typ.Value..DataType.;
         //    }
 
-        //    return null;
-        //}
+        // return null;
+        // }
 
         /// <summary>
         /// Gets the data type of the column.
@@ -472,13 +487,14 @@ namespace SqlServer.Rules
 
             if (columns.Count == 0)
             {
-                //we have an aliased column, probably from a cte, temp table, or sub-select. we need to try to find it
+                // we have an aliased column, probably from a cte, temp table, or sub-select. we need to try to find it
                 var visitor = new SelectScalarExpressionVisitor();
-                sqlObj.GetFragment().Accept(visitor); //sqlObj.GetFragment()
+                sqlObj.GetFragment().Accept(visitor); // sqlObj.GetFragment()
 
-                //try to find a select column where the alias matches the column name we are searching for
-                var selectColumns = visitor.Statements.Where(x => _comparer.Equals(x.ColumnName?.Value, columnName)).ToList();
-                //if we find more than one match, we have no way to determine which is the correct one.
+                // try to find a select column where the alias matches the column name we are searching for
+                var selectColumns = visitor.Statements.Where(x => Comparer.Equals(x.ColumnName?.Value, columnName)).ToList();
+
+                // if we find more than one match, we have no way to determine which is the correct one.
                 if (selectColumns.Count == 1)
                 {
                     return GetDataType(sqlObj, query, selectColumns.First().Expression, variables);
@@ -497,10 +513,10 @@ namespace SqlServer.Rules
 
                     var columnTableAlias = column.MultiPartIdentifier.Identifiers.First().Value;
                     var tbls = tablesVisitor.Statements
-                        .Where(x => _comparer.Equals(x.Alias?.Value, columnTableAlias) || _comparer.Equals(x.GetName(), $"[{columnTableAlias}]"))
+                        .Where(x => Comparer.Equals(x.Alias?.Value, columnTableAlias) || Comparer.Equals(x.GetName(), $"[{columnTableAlias}]"))
                         .ToList();
 
-                    //if we find more than one table with the same alias, we have no idea which one it could be.
+                    // if we find more than one table with the same alias, we have no idea which one it could be.
                     if (tbls.Count == 1)
                     {
                         referencedColumn = GetReferencedColumn(tbls.FirstOrDefault(), columns, columnName);
@@ -539,15 +555,16 @@ namespace SqlServer.Rules
             if (referencedColumn != null)
             {
                 TSqlObject dataType = null;
-                //sometimes for some reason, I have to call getreferenced multiple times to get to the datatype. nfc why....
+
+                // sometimes for some reason, I have to call getreferenced multiple times to get to the datatype. nfc why....
                 while (dataType == null && referencedColumn != null)
                 {
                     var colReferenced = referencedColumn.GetReferenced(DacQueryScopes.All).ToList();
 
-                    dataType = colReferenced.FirstOrDefault(x => _comparer.Equals(x.ObjectType.Name, "DataType"));
+                    dataType = colReferenced.FirstOrDefault(x => Comparer.Equals(x.ObjectType.Name, "DataType"));
                     if (dataType == null)
                     {
-                        //try the next? referenced column.
+                        // try the next? referenced column.
                         referencedColumn = colReferenced.FirstOrDefault(x => x.ObjectType == Column.TypeClass);
                     }
                     else
@@ -621,7 +638,7 @@ namespace SqlServer.Rules
             }
             else
             {
-                //they did NOT use a two part name, so logic dictates that this column SHOULD only appear once in the list of tables, but we will have to search all of the tables.
+                // they did NOT use a two part name, so logic dictates that this column SHOULD only appear once in the list of tables, but we will have to search all of the tables.
                 tables.AddRange(namedTableVisitor.Statements);
             }
 
@@ -630,7 +647,7 @@ namespace SqlServer.Rules
             foreach (var referencedTable in referencedTables)
             {
                 var fullColumnName = referencedTable.Name + ".[" + column.MultiPartIdentifier.Identifiers.Last().Value + "]";
-                var retColumn = referencedTable.GetReferencedRelationshipInstances(Table.Columns).FirstOrDefault(p => _comparer.Equals(p.ObjectName.ToString(), fullColumnName));
+                var retColumn = referencedTable.GetReferencedRelationshipInstances(Table.Columns).FirstOrDefault(p => Comparer.Equals(p.ObjectName.ToString(), fullColumnName));
 
                 if (retColumn != null) { return referencedTable; }
             }

@@ -8,8 +8,8 @@ namespace SqlServer.Rules.Naming
     /// Function name may conflict system name. Avoid 'fn_' prefix when naming functions.
     /// </summary>
     /// <FriendlyName>UDF with System prefix</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// This rule checks for user defined scalar functions with 'fn_'. Though this practice is
     /// supported, it is recommended that the prefixes not be used to avoid name clashes with
@@ -27,6 +27,7 @@ namespace SqlServer.Rules.Naming
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRN0001";
+
         /// <summary>
         /// The rule display name
         /// </summary>

@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -11,13 +11,13 @@ namespace SqlServer.Rules.Design
     /// Excessive number of indexes on table found
     /// </summary>
     /// <FriendlyName>Excessive indexes on table</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Having too many indexes on a table can cause performance issues with action queries as each
     /// time an action query is run all associated indexes need to be updated as well.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -29,10 +29,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0045";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Excessive number of indexes on table found on table.";
+
         /// <summary>
         /// The message
         /// </summary>

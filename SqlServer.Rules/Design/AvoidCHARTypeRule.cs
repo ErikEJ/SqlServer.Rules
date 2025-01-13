@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -27,10 +27,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0005";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid the (n)char column type except for short static length data.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -68,9 +70,9 @@ namespace SqlServer.Rules.Design
                     column = col,
                     name = col.ColumnIdentifier.Value,
                     type = col.DataType.Name.Identifiers.FirstOrDefault()?.Value,
-                    length = GetDataTypeLength(col)
+                    length = GetDataTypeLength(col),
                 })
-                .Where(x => (_comparer.Equals(x.type, "char") || _comparer.Equals(x.type, "nchar")) && x.length > 9);
+                .Where(x => (Comparer.Equals(x.type, "char") || Comparer.Equals(x.type, "nchar")) && x.length > 9);
 
             problems.AddRange(longChars.Select(col => new SqlRuleProblem(Message, sqlObj, col.column)));
 
@@ -83,6 +85,7 @@ namespace SqlServer.Rules.Design
             {
                 return dataType.GetDataTypeParameters().FirstOrDefault();
             }
+
             return 0;
         }
     }

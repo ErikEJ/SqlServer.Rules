@@ -25,6 +25,7 @@ namespace TSQLSmellSCA
                     {
                         _smells.SendFeedBack(6, Expression);
                     }
+
                     break;
             }
         }

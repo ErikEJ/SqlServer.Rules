@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using SqlServer.Rules.Globals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using SqlServer.Rules.Globals;
 using Index = Microsoft.SqlServer.Dac.Model.Index;
 
 namespace SqlServer.Rules.Design
@@ -27,10 +27,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0001";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Table does not have a natural key.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -68,13 +70,13 @@ namespace SqlServer.Rules.Design
                 var keyColumnDefault = keyColumn.GetReferencing().FirstOrDefault(x => x.ObjectType == DefaultConstraint.TypeClass);
                 var isSequence = keyColumnDefault?.GetReferenced().Any(x => x.ObjectType == Sequence.TypeClass);
 
-                //if our primary key consists of a identity or sequence, check to see if we have a unique constraint. assume the unique constraint is a natural key if we find one. else, problem.
+                // if our primary key consists of a identity or sequence, check to see if we have a unique constraint. assume the unique constraint is a natural key if we find one. else, problem.
                 if (isIdentity.GetValueOrDefault(false) || isSequence.GetValueOrDefault(false))
                 {
                     var uc = sqlObj.GetChildren(DacQueryScopes.All).FirstOrDefault(x => x.ObjectType == ModelSchema.UniqueConstraint);
                     if (uc == null)
                     {
-                        //no unique constraint. search for a unique index
+                        // no unique constraint. search for a unique index
                         var indexes = sqlObj.GetChildren(DacQueryScopes.All).Where(x => x.ObjectType == ModelSchema.Index);
                         if (!indexes.Any(ix => Convert.ToBoolean(ix.GetProperty(Index.Unique), CultureInfo.InvariantCulture)))
                         {

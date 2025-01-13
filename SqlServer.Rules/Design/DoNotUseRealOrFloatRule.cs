@@ -1,21 +1,21 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
     /// <summary>Do not use the real or float data types as they are approximate value data types.</summary>
     /// <FriendlyName>Use of approximate data type</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// <c>REAL</c> and <c>FLOAT</c> do not store accurate values. They store <b>Approximate</b> values.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -27,10 +27,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0046";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Do not use the real or float data types for parameters or columns as they are approximate value data types.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -79,7 +81,7 @@ namespace SqlServer.Rules.Design
                     }
                 }
             }
-            else //tables, views
+            else // tables, views
             {
                 var columns = sqlObj.GetReferenced().Where(x => x.ObjectType == ModelSchema.Column);
 

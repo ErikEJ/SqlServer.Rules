@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Rules.Globals;
@@ -9,8 +9,8 @@ namespace SqlServer.Rules.Design
     /// Do not use VARCHAR or NVARCHAR data types without specifying length.
     /// </summary>
     /// <FriendlyName>Unspecified type length</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Without specifying the length SQL Server will either assign a default length or determine
     /// the length for you (if casting a variable).
@@ -27,10 +27,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0026";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Do not use these data types (VARCHAR, NVARCHAR, CHAR, NCHAR) without specifying length.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -43,7 +45,7 @@ namespace SqlServer.Rules.Design
             : base(
                 new[]
                 {
-                    ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table
+                    ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table,
                 }, new[] { SqlDataTypeOption.VarChar, SqlDataTypeOption.NVarChar, SqlDataTypeOption.Char, SqlDataTypeOption.NChar }, 1, Message)
         {
         }

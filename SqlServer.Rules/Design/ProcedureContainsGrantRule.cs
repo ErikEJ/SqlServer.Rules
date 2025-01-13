@@ -1,11 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,8 +13,8 @@ namespace SqlServer.Rules.Design
     /// The procedure grants itself permissions. Possible missing GO command
     /// </summary>
     /// <FriendlyName>Permission change in stored procedure</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd>
     ///    ```sql
     ///     CREATE PROCEDURE dbo.my_proc 
     ///     AS
@@ -30,7 +30,7 @@ namespace SqlServer.Rules.Design
     /// GO end of batch signaling command is missing and the statements in the script following the
     /// procedure are included in the procedure body.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -42,10 +42,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0060";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "The procedure grants itself permissions. Possible missing GO command.";
+
         /// <summary>
         /// The message
         /// </summary>

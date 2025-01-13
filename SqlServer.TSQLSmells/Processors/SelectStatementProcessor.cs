@@ -1,5 +1,5 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -32,6 +32,7 @@ namespace TSQLSmellSCA
                     _smells.InsertProcessor.ProcessWithCtesAndXmlNamespaces(Cte);
                 }
             }
+
             _smells.ProcessQueryExpression(SelStatement.QueryExpression, ParentType, false, Cte);
             ProcessOptimizerHints(SelStatement.OptimizerHints, SelStatement);
         }
@@ -65,6 +66,7 @@ namespace TSQLSmellSCA
                         case "ConvertCall":
                             break;
                     }
+
                     break;
                 case "SelectSetVariable":
                     _smells.SelectSetProcessor.ProcessSelectSetVariable((SelectSetVariable)SelectElement);

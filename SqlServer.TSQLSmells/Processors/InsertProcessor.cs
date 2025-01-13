@@ -40,7 +40,8 @@ namespace TSQLSmellSCA
                     break;
                 case "ExecuteInsertSource":
                     var ExecSource = (ExecuteInsertSource) Fragment.InsertSpecification.InsertSource;
-                    //ProcessExecuteSpecification(ExecSource.Execute);
+
+                    // ProcessExecuteSpecification(ExecSource.Execute);
                     var ExecutableEntity = ExecSource.Execute.ExecutableEntity;
                     _smells.ExecutableEntityProcessor.ProcessExecutableEntity(ExecutableEntity);
                     break;

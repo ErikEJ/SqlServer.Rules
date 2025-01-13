@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -27,10 +27,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0032";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Try to avoid the OR operator in query where clauses if possible.  (Sargable)";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -91,8 +93,9 @@ namespace SqlServer.Rules.Design
                 return booleanExpression.BinaryExpressionType == BooleanBinaryExpressionType.Or
                     && (expr1 is BooleanIsNullExpression || expr1 is BooleanComparisonExpression)
                     && (expr2 is BooleanIsNullExpression || expr2 is BooleanComparisonExpression)
-                    && _comparer.Equals(GetVariableName(expr1), GetVariableName(expr2));
+                    && Comparer.Equals(GetVariableName(expr1), GetVariableName(expr2));
             }
+
             return false;
         }
 
@@ -103,6 +106,7 @@ namespace SqlServer.Rules.Design
             {
                 ret = varExpr.Name;
             }
+
             if (bex is BooleanComparisonExpression compareExpr)
             {
                 if (compareExpr.FirstExpression is VariableReference expr1)
@@ -114,6 +118,7 @@ namespace SqlServer.Rules.Design
                     ret = expr2.Name;
                 }
             }
+
             return ret;
         }
     }

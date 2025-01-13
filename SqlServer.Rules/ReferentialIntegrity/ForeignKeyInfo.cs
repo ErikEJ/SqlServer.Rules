@@ -1,7 +1,7 @@
-﻿using Microsoft.SqlServer.Dac.Model;
-using SqlServer.Dac;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.SqlServer.Dac.Model;
+using SqlServer.Dac;
 
 namespace SqlServer.Rules.ReferentialIntegrity
 {
@@ -17,6 +17,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// The name.
         /// </value>
         public string Name { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the table.
         /// </summary>
@@ -24,6 +25,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// The name of the table.
         /// </value>
         public ObjectIdentifier TableName { get; set; }
+
         /// <summary>
         /// Converts to tablename.
         /// </summary>
@@ -31,6 +33,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// The name of to table.
         /// </value>
         public ObjectIdentifier ToTableName { get; set; }
+
         /// <summary>
         /// Gets or sets the column names.
         /// </summary>
@@ -62,13 +65,14 @@ namespace SqlServer.Rules.ReferentialIntegrity
             {
                 cols.Add(col.Parts.Last());
             }
+
             foreach (var col in ToColumnNames)
             {
                 toCols.Add(col.Parts.Last());
             }
-            //CONSTRAINT [FK_Table2_ToTable1] FOREIGN KEY ([Tbl1Id], [Tbl1Id2]) REFERENCES [Table1]([Table1Id], [Table1Id2])
+
+            // CONSTRAINT [FK_Table2_ToTable1] FOREIGN KEY ([Tbl1Id], [Tbl1Id2]) REFERENCES [Table1]([Table1Id], [Table1Id2])
             return $"CONSTRAINT {Name} FOREIGN KEY {TableName.GetName()} ({string.Join(", ", cols)}) REFERENCES  {ToTableName.GetName()} ({string.Join(", ", toCols)})";
         }
-
     }
 }

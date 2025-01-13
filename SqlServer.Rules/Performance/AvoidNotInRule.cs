@@ -1,22 +1,22 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>Avoid using NOT IN predicate in the WHERE clause.</summary>
     /// <FriendlyName>Non-member test in predicate</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Using NOT IN predicate in the WHERE clause generally performs badly, because the SQL Server
     /// optimizer has to use a TABLE SCAN instead of an INDEX SEEK even the filtering columns are
     /// covered by index.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -28,10 +28,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0011";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid using the NOT IN predicate in a WHERE clause. (Sargable)";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -70,7 +72,6 @@ namespace SqlServer.Rules.Performance
 
                 var offenders = inPredicateVisitor.NotIgnoredStatements(RuleId).Where(i => i.NotDefined);
                 problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
-
             }
 
 

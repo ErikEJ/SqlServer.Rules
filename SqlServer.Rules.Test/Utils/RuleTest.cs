@@ -1,41 +1,14 @@
-﻿//------------------------------------------------------------------------------
-//<copyright company="Microsoft">
-//
-//    The MIT License (MIT)
-//
-//    Copyright (c) 2015 Microsoft
-//
-//    Permission is hereby granted, free of charge, to any person obtaining a copy
-//    of this software and associated documentation files (the "Software"), to deal
-//    in the Software without restriction, including without limitation the rights
-//    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//    copies of the Software, and to permit persons to whom the Software is
-//    furnished to do so, subject to the following conditions:
-//
-//    The above copyright notice and this permission notice shall be included in all
-//    copies or substantial portions of the Software.
-//
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//    SOFTWARE.
-//</copyright>
-//------------------------------------------------------------------------------
-
-using Microsoft.SqlServer.Dac;
-using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Extensibility;
-using Microsoft.SqlServer.Dac.Model;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.SqlServer.Dac;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Extensibility;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SqlServer.Rules.Tests.Utils
 {
@@ -59,7 +32,7 @@ namespace SqlServer.Rules.Tests.Utils
         {
             PublicModel,
             DacpacModel,
-            Database
+            Database,
         }
 
         public RuleTest(IList<Tuple<string, string>> testScripts, TSqlModelOptions databaseOptions, SqlServerVersion sqlVersion)
@@ -155,10 +128,10 @@ namespace SqlServer.Rules.Tests.Utils
             AssertModelValid(model);
 
             // Used to load the model from a dacpac, letting us use LoadAsScriptBackedModel option
-            //string fileName = $"{Path.GetTempFileName()}.dacpac";
-            //DacPackageExtensions.BuildPackage(fileName, model, new PackageMetadata());
+            // string fileName = $"{Path.GetTempFileName()}.dacpac";
+            // DacPackageExtensions.BuildPackage(fileName, model, new PackageMetadata());
 
-            //model = TSqlModel.LoadFromDacpac(
+            // model = TSqlModel.LoadFromDacpac(
             //        fileName
             //        , new ModelLoadOptions()
             //        {
@@ -266,6 +239,7 @@ namespace SqlServer.Rules.Tests.Utils
             {
                 throw new ArgumentNullException(nameof(fullId));
             }
+
             if (fullId == null)
             {
                 throw new ArgumentNullException(nameof(verify));
@@ -296,12 +270,12 @@ namespace SqlServer.Rules.Tests.Utils
             var factory = new CodeAnalysisServiceFactory();
             var ruleSettings = new CodeAnalysisRuleSettings
             {
-                        new RuleConfiguration(ruleIdToRun)
+                        new RuleConfiguration(ruleIdToRun),
                     };
             ruleSettings.DisableRulesNotInSettings = true;
             var service = factory.CreateAnalysisService(ModelForAnalysis.Version, new CodeAnalysisServiceSettings
             {
-                RuleSettings = ruleSettings
+                RuleSettings = ruleSettings,
             });
 
             DumpErrors(service.GetRuleLoadErrors());
@@ -339,6 +313,7 @@ namespace SqlServer.Rules.Tests.Utils
                     {
                         errorMessage.AppendFormat("{0}({1}, {2}): ", error.Document, error.Line, error.Column);
                     }
+
                     errorMessage.AppendLine(error.Message);
                 }
 
@@ -408,9 +383,9 @@ namespace SqlServer.Rules.Tests.Utils
                         compare = x.StartColumn - y.StartColumn;
                     }
                 }
+
                 return compare;
             }
-
         }
     }
 }

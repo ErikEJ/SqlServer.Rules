@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -26,10 +26,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0038";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Consider aliasing all table sources in the query.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -69,12 +71,14 @@ namespace SqlServer.Rules.Design
             foreach (var select in selectStatementVisitor.Statements)
             {
                 var fromClause = (select.QueryExpression as QuerySpecification)?.FromClause;
-                //ignore selects that do not use a from clause with tables
+
+                // ignore selects that do not use a from clause with tables
                 if (fromClause == null) { continue; }
 
                 var visitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                 fromClause.Accept(visitor);
-                //only scan for aliases if there are more than 1 table in the from clause
+
+                // only scan for aliases if there are more than 1 table in the from clause
                 if (visitor.Count <= 1) { continue; }
 
                 var offenders =
@@ -84,6 +88,7 @@ namespace SqlServer.Rules.Design
 
                 problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
             }
+
             return problems;
         }
     }

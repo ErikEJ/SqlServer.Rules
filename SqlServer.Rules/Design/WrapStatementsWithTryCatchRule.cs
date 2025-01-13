@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,15 +13,15 @@ namespace SqlServer.Rules.Design
     /// Wrap TRY..CATCH around multiple data manipulation statements.
     /// </summary>
     /// <FriendlyName>Expected error handeling</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks for SELECT INTO,INSERT,DELETE and UPDATE statements which are neither 
     /// inside <c>TRY..CATCH</c> block. This check is important, because, by default, SQL Server
     /// will not rollback all the previous changes within a transaction if a particular statement
     /// fails and setting <c>XACT_ABORT</c> is not ON.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -33,10 +33,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0013";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Wrap multiple action statements within a try catch.";
+
         /// <summary>
         /// The message
         /// </summary>

@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -32,10 +32,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0016";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Data types on both sides of an equality check should be the same in the where clause. (Sargable)";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -58,14 +60,15 @@ namespace SqlServer.Rules.Performance
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext ruleExecutionContext)
         {
             var problems = new List<SqlRuleProblem>();
-            var sqlObj = ruleExecutionContext.ModelElement; //proc / view / function
+            var sqlObj = ruleExecutionContext.ModelElement; // proc / view / function
             if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
 
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
-                //get the combined parameters and declare variables into one search-able list
+
+                // get the combined parameters and declare variables into one search-able list
                 var variablesVisitor = new VariablesVisitor();
                 fragment.AcceptChildren(variablesVisitor);
                 var variables = variablesVisitor.GetVariables();
@@ -125,24 +128,24 @@ namespace SqlServer.Rules.Performance
 
                             if (string.IsNullOrWhiteSpace(datatype1) || string.IsNullOrWhiteSpace(datatype2)) { continue; }
 
-                            //when checking the numeric literal I am not sure if it is a bit or tinyint.
-                            if ((_comparer.Equals(datatype1, "bit") && _comparer.Equals(datatype2, "tinyint"))
-                                || (_comparer.Equals(datatype1, "tinyint") && _comparer.Equals(datatype2, "bit"))) { continue; }
+                            // when checking the numeric literal I am not sure if it is a bit or tinyint.
+                            if ((Comparer.Equals(datatype1, "bit") && Comparer.Equals(datatype2, "tinyint"))
+                                || (Comparer.Equals(datatype1, "tinyint") && Comparer.Equals(datatype2, "bit"))) { continue; }
 
-                            if (!_comparer.Equals(datatype1, datatype2))
+                            if (!Comparer.Equals(datatype1, datatype2))
                             {
                                 problems.Add(new SqlRuleProblem(Message, sqlObj, comparison));
                             }
                         }
                     }
                 }
-
             }
             catch (System.Exception ex)
             {
-                //TODO: PROPERLY LOG THIS ERROR
+                // TODO: PROPERLY LOG THIS ERROR
                 Debug.WriteLine(ex.ToString());
-                //throw;
+
+                // throw;
             }
 #pragma warning restore CA1031 // Do not catch general exception types
 

@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -25,10 +25,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0041";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid use of the SELECT INTO syntax.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -65,7 +67,7 @@ namespace SqlServer.Rules.Design
 
             var offenders =
                 from s in visitor.NotIgnoredStatements(RuleId)
-                let tn = s.Into == null ? "" : s.Into.Identifiers?.LastOrDefault()?.Value
+                let tn = s.Into == null ? string.Empty : s.Into.Identifiers?.LastOrDefault()?.Value
                 where s.Into != null && !(tn.StartsWith('#') || !tn.StartsWith('@'))
                 select s.Into;
 

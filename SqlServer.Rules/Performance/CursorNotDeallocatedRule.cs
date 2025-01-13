@@ -1,17 +1,17 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>Local cursor not explicitly deallocated</summary>
     /// <FriendlyName>Unfreed cursor</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -23,10 +23,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0008";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Local cursor not explicitly deallocated.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -67,7 +69,7 @@ namespace SqlServer.Rules.Performance
                 var localDeallocateCursors = deallocateCursorVisitor.Statements.Where(c => !c.Cursor.IsGlobal);
 
                 var unDeallocatedCursors = localOpenCursors.Where(c =>
-                    !localDeallocateCursors.Any(c2 => _comparer.Equals(c.Cursor.Name.Value, c2.Cursor.Name.Value)));
+                    !localDeallocateCursors.Any(c2 => Comparer.Equals(c.Cursor.Name.Value, c2.Cursor.Name.Value)));
 
                 foreach (var cursor in unDeallocatedCursors)
                 {

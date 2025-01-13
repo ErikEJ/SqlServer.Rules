@@ -29,6 +29,7 @@ namespace SqlServer.Dac
 
             return dic1;
         }
+
         public static void RemoveAll<TKey, TValue>(this IDictionary<TKey, TValue> dict, Func<TKey, TValue, bool> match)
         {
             foreach (var key in dict.Keys.ToArray().Where(key => match(key, dict[key])))
@@ -36,6 +37,7 @@ namespace SqlServer.Dac
                 dict.Remove(key);
             }
         }
+
         public static void RemoveAll<T>(this IList<T> list, Func<T, bool> match)
         {
             for (var i = list.Count - 1; i >= 0; i--)
@@ -47,11 +49,11 @@ namespace SqlServer.Dac
                 }
             }
         }
+
         public static bool StringEquals(this object value1, object value2)
         {
             if (value1 == null || value2 == null) { return false; }
             return _comparer.Equals(value1, value2);
         }
-
     }
 }

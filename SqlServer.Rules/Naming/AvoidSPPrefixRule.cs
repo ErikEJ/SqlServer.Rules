@@ -9,7 +9,7 @@ namespace SqlServer.Rules.Naming
     /// </summary>
     /// <FriendlyName>Procedure name may conflict system name</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// This rule checks for creation of stored procedure with names starting with `sp_`.The prefix
     /// `sp_` is reserved for system stored procedure that ship with SQL Server. Whenever SQL Server
@@ -30,6 +30,7 @@ namespace SqlServer.Rules.Naming
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRN0002";
+
         /// <summary>
         /// The rule display name
         /// </summary>

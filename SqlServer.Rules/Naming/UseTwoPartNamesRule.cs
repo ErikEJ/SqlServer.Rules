@@ -2,11 +2,11 @@
  * TIM C: 1/19/2018 Commented this out AS the dacpac ALWAYS reports two part names even when the file is missing the schema. 
  */
 
+using System.Collections.Generic;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
 
 namespace SqlServer.Rules.Naming
 {
@@ -14,14 +14,14 @@ namespace SqlServer.Rules.Naming
     /// Using two part naming on objects [Schema].[Name] is recommended
     /// </summary>
     /// <FriendlyName>Use of default schema</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Without specifying the schema in the CREATE script will cause SQL Server to try to assign
     /// the correct schema which will default to the current users default schema and may or may
     /// not be dbo.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -33,10 +33,12 @@ namespace SqlServer.Rules.Naming
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRN0006";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Two part naming on objects is required.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -80,6 +82,7 @@ namespace SqlServer.Rules.Naming
             {
                 problems.Add(new SqlRuleProblem(Message, sqlObj));
             }
+
             return problems;
         }
     }

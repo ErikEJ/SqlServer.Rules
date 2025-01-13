@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Dac.Visitors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlServer.Dac.Visitors;
 
 namespace SqlServer.Rules.Globals
 {
@@ -13,6 +13,7 @@ namespace SqlServer.Rules.Globals
     public static class Ignorables
     {
         #region ignorables
+
         /// <summary>
         /// Nots the ignored statements.
         /// </summary>
@@ -29,6 +30,7 @@ namespace SqlServer.Rules.Globals
                    where ShouldNotIgnoreRule(scriptTokenStream, ruleId, s.StartLine)
                    select s;
         }
+
         /// <summary>
         /// Nots the ignored statements.
         /// </summary>

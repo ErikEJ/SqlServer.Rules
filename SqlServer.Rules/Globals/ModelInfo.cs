@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Dac;
-using SqlServer.Dac.Visitors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlServer.Dac;
+using SqlServer.Dac.Visitors;
 
 namespace SqlServer.Rules.Globals
 {
@@ -62,7 +62,7 @@ namespace SqlServer.Rules.Globals
             var columnList = list.Where(t => t.Key.IsMatch(colIdentifier)).ToList();
             if (columnList.Count != 0)
             {
-                //ok, if there are multiples.... really don't know how to handle that.
+                // ok, if there are multiples.... really don't know how to handle that.
                 return columnList.First().Value.FirstOrDefault(x => x.Value.Name.StringEquals(colIdentifier.Parts.Last())).Value;
             }
 
@@ -120,7 +120,7 @@ namespace SqlServer.Rules.Globals
         {
             if (query == null) { return; }
 
-            //new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+            // new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             var namedTableReferenceVisitor = new NamedTableReferenceVisitor();
             query.Accept(namedTableReferenceVisitor);
 

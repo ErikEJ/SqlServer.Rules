@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace SqlServer.Rules.Design
 {
@@ -12,8 +12,8 @@ namespace SqlServer.Rules.Design
     /// 
     /// </summary>
     /// <FriendlyName></FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// This rule scans stored procedures, views, functions and triggers to flag use of equality
     /// and inequality comparisons involving a NULL constant. These comparisons are undefined when
@@ -26,7 +26,7 @@ namespace SqlServer.Rules.Design
     /// This occurs if either an expression is compared to the literal NULL, or if two expressions 
     /// are compared and one of them evaluates to NULL.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -38,10 +38,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0011";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Equality and inequality comparisons involving a NULL constant found. Use IS NULL or IS NOT NULL.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -64,7 +66,7 @@ namespace SqlServer.Rules.Design
         public override IList<SqlRuleProblem> Analyze(SqlRuleExecutionContext ruleExecutionContext)
         {
             var problems = new List<SqlRuleProblem>();
-            var sqlObj = ruleExecutionContext.ModelElement; //proc / view / function
+            var sqlObj = ruleExecutionContext.ModelElement; // proc / view / function
             if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
 
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -72,7 +74,7 @@ namespace SqlServer.Rules.Design
             {
                 var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
 
-                //get the combined parameters and declare variables into one search-able list
+                // get the combined parameters and declare variables into one search-able list
                 var variablesVisitor = new VariablesVisitor();
                 fragment.AcceptChildren(variablesVisitor);
                 var variables = variablesVisitor.GetVariables();
@@ -91,7 +93,7 @@ namespace SqlServer.Rules.Design
                             if ((comparison.FirstExpression is NullLiteral || comparison.SecondExpression is NullLiteral) &&
                                 (comparison.ComparisonType == BooleanComparisonType.Equals
                                 || comparison.ComparisonType == BooleanComparisonType.NotEqualToBrackets
-                                || comparison.ComparisonType == BooleanComparisonType.NotEqualToExclamation) //probably can remove the ComparisonTypeCheck
+                                || comparison.ComparisonType == BooleanComparisonType.NotEqualToExclamation) // probably can remove the ComparisonTypeCheck
                                 )
                             {
                                 problems.Add(new SqlRuleProblem(Message, sqlObj, comparison));
@@ -102,9 +104,10 @@ namespace SqlServer.Rules.Design
             }
             catch (System.Exception ex)
             {
-                //TODO: PROPERLY LOG THIS ERROR
+                // TODO: PROPERLY LOG THIS ERROR
                 Debug.WriteLine(ex.ToString());
-                //throw;
+
+                // throw;
             }
 #pragma warning restore CA1031 // Do not catch general exception types
 

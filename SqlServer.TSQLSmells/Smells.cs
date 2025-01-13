@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace TSQLSmellSCA
 {
@@ -125,7 +125,7 @@ namespace TSQLSmellSCA
             switch (expressionType)
             {
                 case "QuerySpecification":
-                    //{$Query = $Stmt.QueryExpression;
+                    // {$Query = $Stmt.QueryExpression;
                     var querySpec = (QuerySpecification)queryExpression;
                     _selectStatementProcessor.ProcessSelectElements(querySpec.SelectElements, parentType, cte);
                     if (querySpec.FromClause != null)
@@ -154,7 +154,7 @@ namespace TSQLSmellSCA
 
                     break;
                 case "QueryParenthesisExpression":
-                    //{$Query=$Stmt.QueryExpression.QueryExpression;break}
+                    // {$Query=$Stmt.QueryExpression.QueryExpression;break}
                     var expression = (QueryParenthesisExpression)queryExpression;
                     ProcessQueryExpression(expression.QueryExpression, "RG", testTop, cte);
 
@@ -163,18 +163,20 @@ namespace TSQLSmellSCA
                     var binaryQueryExpression = (BinaryQueryExpression)queryExpression;
                     ProcessQueryExpression(binaryQueryExpression.FirstQueryExpression, parentType, testTop, cte);
                     ProcessQueryExpression(binaryQueryExpression.SecondQueryExpression, parentType, testTop, cte);
-                    //BinaryQueryExpression.
 
-                    //{Process-BinaryQueryExpression $Stmt.QueryExpression;break;}
+                    // BinaryQueryExpression.
+
+                    // {Process-BinaryQueryExpression $Stmt.QueryExpression;break;}
                     break;
             }
         }
 
-        //void ProcessSelectElements(
+        // void ProcessSelectElements(
         public void ProcessTsqlFragment(TSqlFragment fragment)
         {
             var stmtType = FragmentTypeParser.GetFragmentType(fragment);
-            //Console.WriteLine(StmtType);
+
+            // Console.WriteLine(StmtType);
             switch (stmtType)
             {
                 case "DeclareCursorStatement":
@@ -303,7 +305,7 @@ namespace TSQLSmellSCA
                     _tableVariableProcessor.ProcessTableVariableBody((DeclareTableVariableBody)fragment);
                     break;
                 case "VariableReference":
-                    //ProcessVariableReference((VariableReference)Fragment);
+                    // ProcessVariableReference((VariableReference)Fragment);
                     break;
                 case "ExistsPredicate":
                     _tableVariableProcessor.ProcessExistsPredicate((ExistsPredicate)fragment);
@@ -331,7 +333,7 @@ namespace TSQLSmellSCA
                 {
                     foreach (var parserToken in frg.ScriptTokenStream)
                     {
-                        //if (parserToken.TokenType == TSqlTokenType.SingleLineComment) SendFeedBack(23, parserToken);
+                        // if (parserToken.TokenType == TSqlTokenType.SingleLineComment) SendFeedBack(23, parserToken);
                     }
                 }
 

@@ -1,24 +1,24 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>Reduce number of joined relations.</summary>
     /// <FriendlyName>High join count</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Queries that use a high number of joins will cause the compiler to time out trying to find
     ///  a good execution plan. Consider re-arranging the tables in the joins from smallest to
     ///  largest table and applying the FORCE ORDER query hint. 
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -30,10 +30,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0018";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Query uses a high number of joins. ";
+
         /// <summary>
         /// The message
         /// </summary>

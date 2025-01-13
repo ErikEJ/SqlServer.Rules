@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
 
 namespace SqlServer.Rules.Performance
 {
@@ -25,10 +25,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0015";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid the use of calculations on columns in the where clause. (Sargable)";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -94,6 +96,7 @@ namespace SqlServer.Rules.Performance
             {
                 ret = CheckBinaryExpression(expression);
             }
+
             if (!ret.HasValue && bin.SecondExpression is BinaryExpression binaryExpression)
             {
                 ret = CheckBinaryExpression(binaryExpression);

@@ -1,20 +1,20 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using SqlServer.Rules.Globals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using SqlServer.Rules.Globals;
 using Index = Microsoft.SqlServer.Dac.Model.Index;
 
 namespace SqlServer.Rules.Design
 {
     /// <summary>Consider adding clustered index to table.</summary>
     /// <FriendlyName>Missing Clustered index</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>Tables that do not have clustered index should be the exception not the rule.</remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -26,10 +26,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0020";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Table does not have a clustered index.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -79,6 +81,7 @@ namespace SqlServer.Rules.Design
             {
                 return Convert.ToBoolean(i.GetProperty(UniqueConstraint.Clustered), CultureInfo.InvariantCulture);
             }
+
             return Convert.ToBoolean(i.GetProperty(PrimaryKeyConstraint.Clustered), CultureInfo.InvariantCulture);
         }
     }

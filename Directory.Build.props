@@ -3,4 +3,9 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest-all</AnalysisLevel>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Shared code analyzers used for all projects in the solution -->
+    <!--<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />-->
+  </ItemGroup>
 </Project>

@@ -1,20 +1,20 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>Consider indexing the columns referenced by IN predicates in order to avoid table scans.</summary>
     /// <FriendlyName>Un-indexed membership test</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>Consider indexing the columns referenced by IN predicates in order to avoid table scans</remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -26,10 +26,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0012";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Consider indexing the columns referenced by IN predicates in order to avoid table scans.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -84,7 +86,7 @@ namespace SqlServer.Rules.Performance
 
                         var table = GetTableFromColumn(sqlObj, query, column);
 
-                        //most likely the base is a view.... /sigh
+                        // most likely the base is a view.... /sigh
                         if (table == null) { continue; }
 
                         var indexes = table.GetChildren(DacQueryScopes.All).Where(x => x.ObjectType == ModelSchema.Index);
@@ -94,13 +96,12 @@ namespace SqlServer.Rules.Performance
                             indexColumnExists = index.GetReferenced(DacQueryScopes.All)
                                 .Any(x =>
                                     x.ObjectType == ModelSchema.Column
-                                    && _comparer.Equals(x.Name.Parts.Last(), column.MultiPartIdentifier.Identifiers.Last().Value));
+                                    && Comparer.Equals(x.Name.Parts.Last(), column.MultiPartIdentifier.Identifiers.Last().Value));
                             if (indexColumnExists) { break; }
                         }
 
                         if (!indexColumnExists) { problems.Add(new SqlRuleProblem(Message, sqlObj, inClause)); }
                     }
-
                 }
             }
 

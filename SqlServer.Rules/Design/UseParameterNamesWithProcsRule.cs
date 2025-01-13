@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,13 +13,13 @@ namespace SqlServer.Rules.Design
     /// Always use parameter names when calling stored procedures
     /// </summary>
     /// <FriendlyName>Ordinal parameters used</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks EXECUTE statements for stored procedure not being called with named
     /// parameters, but with parameters by position.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -31,10 +31,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0058";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Always use parameter names when calling stored procedures.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -79,6 +81,7 @@ namespace SqlServer.Rules.Design
                     problems.Add(new SqlRuleProblem(Message, sqlObj, exec));
                 }
             }
+
             return problems;
         }
     }

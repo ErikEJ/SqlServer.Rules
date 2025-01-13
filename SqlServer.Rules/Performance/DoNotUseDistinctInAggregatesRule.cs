@@ -1,23 +1,23 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>Avoid using DISTINCT keyword inside of aggregate functions.</summary>
     /// <FriendlyName>Aggregate of unique set</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks all aggregate functions (except MIN and MAX) for using the DISTINCT keyword.
     /// The using DISTINCT in aggregate function can often cause significant performance
     /// degradation especially when used multiple times or with other aggregate functions in the
     /// same select.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -29,10 +29,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0003";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid using DISTINCT keyword inside of aggregate functions.";
+
         /// <summary>
         /// The message
         /// </summary>

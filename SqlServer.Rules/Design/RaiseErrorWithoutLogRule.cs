@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,8 +13,8 @@ namespace SqlServer.Rules.Design
     /// The RAISERROR statement with severity above 18 and requires WITH LOG clause.
     /// </summary>
     /// <FriendlyName>Error handling requires SA permissions</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks RAISERROR statements for having severity above 18 and not having a 
     /// <c>WITH LOG</c> clause. Error severity levels greater than 18 can only be specified by
@@ -23,7 +23,7 @@ namespace SqlServer.Rules.Design
     /// members of the sysadmin fixed server role or users with <c>ALTER TRACE</c> permissions.
     /// For severity levels from 19 through 25, the <c>WITH LOG</c> option is required.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -35,10 +35,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0044";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "The RAISERROR statement with severity above 18 requires the WITH LOG clause.";
+
         /// <summary>
         /// The message
         /// </summary>

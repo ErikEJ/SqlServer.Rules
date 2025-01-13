@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using SqlServer.Rules.Globals;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
 {
@@ -11,8 +11,8 @@ namespace SqlServer.Rules.Design
     /// Please review ANSI, arithmetic, concat, and identifier options
     /// </summary>
     /// <FriendlyName>Invalid database configured options</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The database is configured with invalid options. 
     /// Many of these options can have an adverse affect as well as affect performance.
@@ -28,7 +28,7 @@ namespace SqlServer.Rules.Design
     ///   <item><term>QUOTED_IDENTIFIER</term><description>OFF</description></item>
     /// </list>
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -40,10 +40,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0061";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "The database is configured with invalid options.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -85,10 +87,11 @@ namespace SqlServer.Rules.Design
 
             if (invalidOptions.Count > 0)
             {
-                //cant pass null into the SqlRuleProblem ctor so we have to create or get a tsqlobject
+                // cant pass null into the SqlRuleProblem ctor so we have to create or get a tsqlobject
                 var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).First();
                 problems.Add(new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, Message, string.Join(", ", invalidOptions)), options));
             }
+
             return problems;
         }
     }

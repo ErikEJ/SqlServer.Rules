@@ -1,6 +1,6 @@
-﻿using SqlServer.Rules.Report;
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
+using SqlServer.Rules.Report;
 
 namespace SqlServer.Rules.Generator
 {
@@ -21,7 +21,7 @@ namespace SqlServer.Rules.Generator
                 Solution = args[0],
                 InputPath = args[0],
                 OutputFileName = args.Length > 1 ? args[1] : string.Empty,
-                Suppress = p => Regex.IsMatch(p.Problem.RuleId, @"Microsoft\.Rules.*(SR0001|SR0016|SR0005|SR0007)", RegexOptions.IgnoreCase)
+                Suppress = p => Regex.IsMatch(p.Problem.RuleId, @"Microsoft\.Rules.*(SR0001|SR0016|SR0005|SR0007)", RegexOptions.IgnoreCase),
             };
 
             var factory = new ReportFactory();
@@ -42,6 +42,7 @@ namespace SqlServer.Rules.Generator
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
             }
+
             Console.WriteLine(notificationMessage);
             Console.ResetColor();
         }

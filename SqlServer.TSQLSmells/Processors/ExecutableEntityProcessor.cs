@@ -1,5 +1,5 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
+﻿using System;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -28,6 +28,7 @@ namespace TSQLSmellSCA
                         break;
                 }
             }
+
             return false;
         }
 
@@ -43,6 +44,7 @@ namespace TSQLSmellSCA
                     {
                         _smells.SendFeedBack(21, ExecutableEntity);
                     }
+
                     if (
                         ProcReference.ProcedureReference.ProcedureReference.Name.BaseIdentifier.Value.Equals(
                             "sp_executesql", StringComparison.OrdinalIgnoreCase))
@@ -62,6 +64,7 @@ namespace TSQLSmellSCA
                             }
                         }
                     }
+
                     break;
                 case "ExecutableStringList":
                     var StringList = (ExecutableStringList) ExecutableEntity;
@@ -69,6 +72,7 @@ namespace TSQLSmellSCA
                     {
                         _smells.SendFeedBack(43, ExecutableEntity);
                     }
+
                     break;
             }
         }
@@ -88,6 +92,7 @@ namespace TSQLSmellSCA
                     return true;
                 }
             }
+
             foreach (var VarOn in _smells.AssignmentList)
             {
                 if (VarOn.VarName.Equals(VarName, StringComparison.OrdinalIgnoreCase))
@@ -98,6 +103,7 @@ namespace TSQLSmellSCA
                     }
                 }
             }
+
             return false;
         }
     }

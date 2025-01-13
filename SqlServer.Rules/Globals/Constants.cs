@@ -23,7 +23,7 @@ namespace SqlServer.Rules.Globals
             "VAR",
             "GROUPING_ID",
             "VARP",
-            "MAX"
+            "MAX",
         };
 
         public static List<string> DateParts = new List<string>
@@ -62,7 +62,7 @@ namespace SqlServer.Rules.Globals
             "MICROSECOND",
             "MCS",
             "NANOSECOND",
-            "NS"
+            "NS",
         };
     }
 }

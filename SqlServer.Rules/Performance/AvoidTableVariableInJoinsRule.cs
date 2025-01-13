@@ -1,16 +1,16 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>Avoid the use of table variables in join clauses planning and maintenace hazard.</summary>
     /// <FriendlyName>Table variable in JOIN</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     ///   <list type="bullet">
     ///     <item> Execution plan choices may not be optimal or stable when a table variable contains a
@@ -37,7 +37,7 @@ namespace SqlServer.Rules.Performance
     ///     <item> Table variables cannot be altered after creation.</item>
     ///   </list>
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -49,10 +49,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0014";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid the use of table variables in join clauses.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -92,8 +94,8 @@ namespace SqlServer.Rules.Performance
                 join.Accept(tableVarVisitor);
 
                 problems.AddRange(tableVarVisitor.NotIgnoredStatements(RuleId).Select(tv => new SqlRuleProblem(Message, sqlObj, tv)));
-
             }
+
             return problems;
         }
     }

@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -12,13 +12,13 @@ namespace SqlServer.Rules.Design
     /// UPDATE statement without row limiting conditions.
     /// </summary>
     /// <FriendlyName>Unbounded UPDATE</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule looks for <c>UPDATE</c> statements not having a <c>WHERE</c> clause. Consider
     /// reviewing your code to avoid unintentionally updating all the records in the table.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
     RuleDisplayName,
     Description = RuleDisplayName,
@@ -30,10 +30,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0018";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "UPDATE statement without row limiting conditions.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -81,12 +83,13 @@ namespace SqlServer.Rules.Design
                     stmt.UpdateSpecification.FromClause.Accept(tableVisitor);
 
                     var table = tableVisitor.Statements.OfType<NamedTableReference>()
-                        .FirstOrDefault(t => _comparer.Equals(t.Alias?.Value, tableName));
+                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, tableName));
                     if (table != null)
                     {
                         tableName = table.SchemaObject.Identifiers.Last().Value;
                     }
                 }
+
                 if (!(tableName.StartsWith('#') || tableName.StartsWith('@')))
                 {
                     problems.Add(new SqlRuleProblem(Message, sqlObj, stmt));

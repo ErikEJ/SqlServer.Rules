@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,9 +13,9 @@ namespace SqlServer.Rules.Design
     ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -28,10 +28,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0028";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Consider prefixing column names with table name or table alias.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -73,7 +75,8 @@ namespace SqlServer.Rules.Design
                 {
                     var fromClause = query.FromClause;
                     if (fromClause == null) { continue; }
-                    //check to ensure we have more than one table
+
+                    // check to ensure we have more than one table
                     var namedTableVisitor = new NamedTableReferenceVisitor();
                     fromClause.Accept(namedTableVisitor);
                     if (namedTableVisitor.Count <= 1) { continue; }
@@ -89,9 +92,9 @@ namespace SqlServer.Rules.Design
                     {
                         problems.Add(new SqlRuleProblem(Message, sqlObj, select));
                     }
-
                 }
             }
+
             return problems;
         }
 

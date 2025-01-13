@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,8 +13,8 @@ namespace SqlServer.Rules.Design
     /// Do not use WAITFOR DELAY/TIME statement in stored procedures, functions, and triggers.
     /// </summary>
     /// <FriendlyName>Forced delay</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks for WAITFOR statement with DELAY or TIME being used inside:
     /// <list type="bullet"> 
@@ -25,7 +25,7 @@ namespace SqlServer.Rules.Design
     /// The WAITFOR statement blocks the execution until a specified time or time interval is reached.
     /// This is not typically wanted in a OLTP system unless for a very specific reason.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -37,10 +37,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0035";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Do not use WAITFOR DELAY/TIME statement in stored procedures, functions, and triggers.";
+
         /// <summary>
         /// The message
         /// </summary>

@@ -1,27 +1,30 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System;
-using System.Collections.Generic;
 
 namespace SqlServer.Rules.Naming
 {
     /// <summary>
     ///  Base class for naming validations
     /// </summary>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     public class NamingViolationRule : BaseSqlCodeAnalysisRule
     {
         private readonly string _RuleId;
+
         /// <summary>
         /// The message
         /// </summary>
         protected string Message { get; }
+
         /// <summary>
         /// The bad characters
         /// </summary>
         protected string BadCharacters { get; }
+
         /// <summary>
         /// The partial predicate
         /// </summary>

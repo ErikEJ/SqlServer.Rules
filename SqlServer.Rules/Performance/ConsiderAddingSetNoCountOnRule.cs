@@ -1,18 +1,18 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>SET NOCOUNT ON is recommended to be enabled in stored procedures and triggers</summary>
     /// <FriendlyName>Noisy trigger</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// This rule scans triggers and stored procedures to ensure they SET NOCOUNT to ON at the
     ///  beginning. Use SET NOCOUNT ON at the beginning of your SQL batches, stored procedures and
@@ -22,7 +22,7 @@ namespace SqlServer.Rules.Performance
     ///  much actual data, setting SET NOCOUNT to ON can provide a significant performance boost,
     ///  because network traffic is greatly reduced.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -34,10 +34,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0005";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "SET NOCOUNT ON is recommended to be enabled in stored procedures and triggers.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -80,6 +82,7 @@ namespace SqlServer.Rules.Performance
             {
                 problems.Add(new SqlRuleProblem(Message, sqlObj));
             }
+
             return problems;
         }
     }

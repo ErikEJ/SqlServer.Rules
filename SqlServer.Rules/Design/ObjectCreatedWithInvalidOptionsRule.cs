@@ -1,8 +1,8 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace SqlServer.Rules.Design
 {
@@ -10,8 +10,8 @@ namespace SqlServer.Rules.Design
     /// The SQL module was created with ANSI_NULLS and/or QUOTED_IDENTIFIER options set to OFF
     /// </summary>
     /// <FriendlyName>Object level option override</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks existing SQL modules which have ANSI_NULLS and/or QUOTED_IDENTIFIER settings
     /// saved with value OFF. Consider reviewing the need for these options settings, and in case
@@ -20,7 +20,7 @@ namespace SqlServer.Rules.Design
     /// they may prevent further performance optimizations, such as filtered indexes, indexes on
     /// computed columns or indexed views.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -32,14 +32,17 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0055";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "The object was created with invalid options.";
+
         /// <summary>
         /// The message
         /// </summary>
         public const string Message = "The object was created with the invalid options: {0}.";
+
         /// <summary>
         /// The message no effect
         /// </summary>

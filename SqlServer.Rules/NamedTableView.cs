@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Dac;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlServer.Dac;
 
 namespace SqlServer.Rules
 {
@@ -24,6 +24,7 @@ namespace SqlServer.Rules
                 Aliases.Add(namedTable.Alias.Value);
             }
         }
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -31,6 +32,7 @@ namespace SqlServer.Rules
         /// The name.
         /// </value>
         public string Name { get; set; }
+
         /// <summary>
         /// Gets or sets the aliases.
         /// </summary>
@@ -92,6 +94,7 @@ namespace SqlServer.Rules
             if (!string.IsNullOrWhiteSpace(Name)) { return Name.StringEquals(tmp.Name); }
             return false;
         }
+
         /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
@@ -103,6 +106,7 @@ namespace SqlServer.Rules
             if (!string.IsNullOrWhiteSpace(Name)) { return Name.GetHashCode(StringComparison.OrdinalIgnoreCase); }
             return base.GetHashCode();
         }
+
         /// <summary>
         /// Converts to string.
         /// </summary>

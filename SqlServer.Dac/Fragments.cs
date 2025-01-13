@@ -1,12 +1,12 @@
-using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using SqlServer.Dac.Visitors;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
+using SqlServer.Dac.Visitors;
 
 namespace SqlServer.Dac
 {
@@ -35,6 +35,7 @@ namespace SqlServer.Dac
                     {
                         if (bch.RemoveRecursive(remove)) { return true; }
                     }
+
                     break;
                 case TSqlBatch batch:
                     if (RemoveStatementFromList(batch.Statements, remove)) { return true; }
@@ -75,6 +76,7 @@ namespace SqlServer.Dac
 
                 if (stmt.RemoveRecursive(remove)) { return true; }
             }
+
             return false;
         }
 
@@ -85,7 +87,7 @@ namespace SqlServer.Dac
         /// <returns></returns>
         public static TSqlFragment GetFragment(this SqlRuleExecutionContext ruleExecutionContext, bool forceParse = false)
         {
-            //if forceparse is true, we don't care about the type, we want to parse the object so as to get the header comments as well
+            // if forceparse is true, we don't care about the type, we want to parse the object so as to get the header comments as well
             if (!forceParse)
             {
                 var fragment = ruleExecutionContext.ScriptFragment;
@@ -131,12 +133,13 @@ namespace SqlServer.Dac
             {
                 fragment = tsqlParser.Parse(stringReader, out parseErrors);
 
-                //so even after parsing, some scripts are coming back as T-SQL script, lets try to get the root object
+                // so even after parsing, some scripts are coming back as T-SQL script, lets try to get the root object
                 if (fragment != null && fragment.GetType() == typeof(TSqlScript))
                 {
                     fragment = ((TSqlScript)fragment).Batches.FirstOrDefault()?.Statements.FirstOrDefault();
                 }
             }
+
             return fragment;
         }
 
@@ -148,13 +151,14 @@ namespace SqlServer.Dac
         /// <returns></returns>
         public static TSqlFragment GetFragment(this TSqlFragment baseFragment, params Type[] typesToLookFor)
         {
-            //for some odd reason, sometimes the fragments do not pass in properly to the rules....
-            //this function can re-parse that fragment into its true fragment, and not a SQL script...
+            // for some odd reason, sometimes the fragments do not pass in properly to the rules....
+            // this function can re-parse that fragment into its true fragment, and not a SQL script...
             if (!(baseFragment is TSqlScript script)) { return baseFragment; }
 
             var stmt = script.Batches.FirstOrDefault()?.Statements.FirstOrDefault();
             if (stmt == null) { return script; }
-            //we don't need to parse the fragment unless it is of type TSqlStatement or TSqlStatementSnippet.... just return the type it found
+
+            // we don't need to parse the fragment unless it is of type TSqlStatement or TSqlStatementSnippet.... just return the type it found
             if (!(stmt.GetType() == typeof(TSqlStatement) || stmt.GetType() == typeof(TSqlStatementSnippet))) { return stmt; }
 
             var tsqlParser = new TSql140Parser(true);
@@ -172,7 +176,8 @@ namespace SqlServer.Dac
                     return visitor.Statements.First();
                 }
             }
-            //if we got here, the object was tsqlscript, but was not parseable.... so we bail out
+
+            // if we got here, the object was tsqlscript, but was not parseable.... so we bail out
             return script;
         }
     }

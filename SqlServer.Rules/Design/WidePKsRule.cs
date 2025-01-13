@@ -1,9 +1,9 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -11,9 +11,9 @@ namespace SqlServer.Rules.Design
     /// Avoid creating very wide primary keys with guids or (n)varchar as the first column in the index.
     /// </summary>
     /// <FriendlyName>Avoid wide primary keys</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -25,6 +25,7 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0003";
+
         /// <summary>
         /// The rule display name
         /// </summary>
@@ -34,6 +35,7 @@ namespace SqlServer.Rules.Design
         /// The unique identifier message
         /// </summary>
         private const string GuidMessage = "Guids should not be used as the first column in a primary key.";
+
         /// <summary>
         /// The wide varchar message
         /// </summary>
@@ -76,7 +78,7 @@ namespace SqlServer.Rules.Design
             }
 
             var dataTypeName = dataType.Name.Parts.Last();
-            if (_comparer.Equals(dataTypeName, "uniqueidentifier"))
+            if (Comparer.Equals(dataTypeName, "uniqueidentifier"))
             {
                 problems.Add(new SqlRuleProblem(GuidMessage, sqlObj));
             }
@@ -85,8 +87,8 @@ namespace SqlServer.Rules.Design
             {
                 var len = col.GetProperty<int>(Column.Length);
                 dataTypeName = col.GetReferenced(Column.DataType).First().Name.Parts.Last();
-                return (_comparer.Equals(dataTypeName, "varchar") && len > 50)
-                    || (_comparer.Equals(dataTypeName, "nvarchar") && len > 100);
+                return (Comparer.Equals(dataTypeName, "varchar") && len > 50)
+                    || (Comparer.Equals(dataTypeName, "nvarchar") && len > 100);
             }))
             {
                 problems.Add(new SqlRuleProblem(WideVarcharMessage, sqlObj));

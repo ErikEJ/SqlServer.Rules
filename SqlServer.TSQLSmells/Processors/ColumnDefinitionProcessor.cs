@@ -19,7 +19,6 @@ namespace TSQLSmellSCA
 
                 _smells.ProcessTsqlFragment(Constraint);
             }
-           
         }
     }
 }

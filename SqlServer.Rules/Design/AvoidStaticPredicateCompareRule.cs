@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -12,8 +12,8 @@ namespace SqlServer.Rules.Design
     /// The comparison expression always evaluates to TRUE or FALSE
     /// </summary>
     /// <FriendlyName>Expression reducible to constaint</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd>
     /// Catches:
     /// ```sql
     /// FROM a
@@ -29,7 +29,7 @@ namespace SqlServer.Rules.Design
     /// <remarks>
     /// Checks join and where clause predicates for predicates that will always evaluate to true/false.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -41,10 +41,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0050";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "The comparison expression always evaluates to TRUE or FALSE.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -123,7 +125,7 @@ namespace SqlServer.Rules.Design
                     (type1 == typeof(IntegerLiteral) || type1 == typeof(StringLiteral))
                     && (type2 == typeof(IntegerLiteral) || type2 == typeof(StringLiteral))
                 )
-                && _comparer.Equals((expr1 as Literal)?.Value, (expr2 as Literal)?.Value));
+                && Comparer.Equals((expr1 as Literal)?.Value, (expr2 as Literal)?.Value));
         }
     }
 }

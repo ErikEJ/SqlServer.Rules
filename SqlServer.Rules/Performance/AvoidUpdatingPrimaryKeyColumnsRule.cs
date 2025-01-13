@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -44,10 +44,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0017";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid updating columns that are part of the primary key.  (Halloween Protection)";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -85,14 +87,14 @@ namespace SqlServer.Rules.Performance
                     continue; 
                 }
 
-                //we have an aliased table we need to find out what the real table is so we can look up its columns
+                // we have an aliased table we need to find out what the real table is so we can look up its columns
                 if (update.UpdateSpecification.FromClause != null)
                 {
                     var namedTableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                     update.UpdateSpecification.FromClause.Accept(namedTableVisitor);
 
                     target = namedTableVisitor.Statements
-                        .FirstOrDefault(t => _comparer.Equals(t.Alias?.Value, target.SchemaObject.Identifiers.LastOrDefault()?.Value));
+                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, target.SchemaObject.Identifiers.LastOrDefault()?.Value));
                     if (target == null) 
                     { 
                         continue; 
@@ -116,6 +118,7 @@ namespace SqlServer.Rules.Performance
                     problems.Add(new SqlRuleProblem(Message, sqlObj, update));
                 }
             }
+
             return problems;
         }
     }

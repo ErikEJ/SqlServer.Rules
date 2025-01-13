@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -13,13 +13,13 @@ namespace SqlServer.Rules.Performance
     /// Avoid the use of functions with UPDATE / INSERT  / DELETE statements. (Halloween Protection)
     /// </summary>
     /// <FriendlyName>Function in data modification</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// When a user defined function that does not use <c>SCHEMABINDING</c> is used in an action
     /// query the data modifications have to be spooled to tempdb in a two step operation.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -31,10 +31,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0010";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid the use of user defined functions with UPDATE/INSERT/DELETE statements. (Halloween Protection)";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -78,10 +80,10 @@ namespace SqlServer.Rules.Performance
                     TSqlFragment fnFragment;
 
                     var fnName = functionCall.GetName();
-                    var modelFunction = modelFunctions.FirstOrDefault(mf => _comparer.Equals(mf.Name.GetName(), fnName));
+                    var modelFunction = modelFunctions.FirstOrDefault(mf => Comparer.Equals(mf.Name.GetName(), fnName));
                     if (modelFunction == null) { continue; }
 
-                    //we need to parse the SQL into a fragment, so we can use the visitors on it
+                    // we need to parse the SQL into a fragment, so we can use the visitors on it
                     fnFragment = modelFunction.GetFragment(out var parseErrors);
                     fnFragment.Accept(createFunctionVisitor);
 

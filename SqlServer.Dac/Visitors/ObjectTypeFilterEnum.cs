@@ -4,6 +4,6 @@
     {
         All,
         PermanentOnly,
-        TempOnly
+        TempOnly,
     }
 }

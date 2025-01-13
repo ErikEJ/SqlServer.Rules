@@ -1,12 +1,12 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SqlServer.Rules.Tests.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SqlServer.Rules.Tests.Utils;
 
 namespace SqlServer.Rules.Test
 {
@@ -103,16 +103,16 @@ namespace SqlServer.Rules.Test
                 var failureMessage = new StringBuilder();
 
                 failureMessage.AppendLine($"The result is not the same as expected. Please compare actual output to baseline.");
-                failureMessage.AppendLine("");
+                failureMessage.AppendLine(string.Empty);
                 failureMessage.AppendLine($"### Loaded Test Script Files ###");
                 failureMessage.AppendLine(loadedTestScriptFiles);
-                failureMessage.AppendLine("");
+                failureMessage.AppendLine(string.Empty);
                 failureMessage.AppendLine($"### View Baseline ###");
                 failureMessage.AppendLine(BaselineFilePath);
-                failureMessage.AppendLine("");
+                failureMessage.AppendLine(string.Empty);
                 failureMessage.AppendLine($"### View Action Output ###");
                 failureMessage.AppendLine(OutputFilePath);
-                failureMessage.AppendLine("");
+                failureMessage.AppendLine(string.Empty);
                 failureMessage.AppendLine($"### Test Folder ###");
                 failureMessage.AppendLine(ScriptsFolder);
 

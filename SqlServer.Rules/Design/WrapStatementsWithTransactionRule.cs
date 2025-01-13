@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,13 +13,13 @@ namespace SqlServer.Rules.Design
     /// Wrap multiple action statements within a transaction
     /// </summary>
     /// <FriendlyName>Non-transactional body</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     ///  Not wrapping multiple action statements in a transaction inside a stored procedure
     ///  can lead to malformed data if only some of the queries succeed.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -31,10 +31,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0009";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Wrap multiple action statements within a transaction.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -74,7 +76,7 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            //eliminate rollbacks, and ensure all the action statements are wrapped inside the begin tran...commit tran
+            // eliminate rollbacks, and ensure all the action statements are wrapped inside the begin tran...commit tran
             var transactionStatements = transactionVisitor.Statements
                 .Where(st => st.GetType() == typeof(BeginTransactionStatement)
                     || st.GetType() == typeof(CommitTransactionStatement))

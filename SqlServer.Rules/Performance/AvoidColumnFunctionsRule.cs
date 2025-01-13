@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
@@ -30,10 +30,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0009";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Avoid wrapping columns within a function in the WHERE clause. (Sargable)";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -88,8 +90,8 @@ namespace SqlServer.Rules.Performance
             {
                 var colId = col.MultiPartIdentifier?.GetObjectIdentifier();
                 if (colId == null || colId.Parts.Count == 0) { return false; }
-                return !Constants.DateParts.Contains(colId.Parts.Last(), _comparer);
-            }) && !Constants.Aggregates.Contains(func.FunctionName.Value, _comparer);
+                return !Constants.DateParts.Contains(colId.Parts.Last(), Comparer);
+            }) && !Constants.Aggregates.Contains(func.FunctionName.Value, Comparer);
         }
     }
 }

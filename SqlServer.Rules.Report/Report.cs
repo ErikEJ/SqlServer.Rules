@@ -28,7 +28,7 @@ namespace SqlServer.Rules.Report
                 new RulesProject
                 {
                     Name = projectName,
-                    Issues = problems
+                    Issues = problems,
                 },
             ];
         }

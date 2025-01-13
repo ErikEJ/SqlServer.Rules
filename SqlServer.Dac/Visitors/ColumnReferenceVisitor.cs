@@ -1,5 +1,5 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace SqlServer.Dac.Visitors
 {
@@ -21,6 +21,7 @@ namespace SqlServer.Dac.Visitors
                 item.Accept(columnVisitor);
                 columns.AddRange(columnVisitor.Statements);
             }
+
             return columns;
         }
     }

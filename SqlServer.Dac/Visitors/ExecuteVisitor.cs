@@ -1,7 +1,7 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace SqlServer.Dac.Visitors
 {
@@ -12,10 +12,12 @@ namespace SqlServer.Dac.Visitors
         {
             _procNames = new List<string>();
         }
+
         public ExecuteVisitor(params string[] procNames)
         {
             _procNames = procNames.ToList();
         }
+
         public IList<ExecuteStatement> Statements { get; } = new List<ExecuteStatement>();
         public int Count { get { return Statements.Count; } }
         public override void ExplicitVisit(ExecuteStatement node)
@@ -36,6 +38,7 @@ namespace SqlServer.Dac.Visitors
             {
                 return false;
             }
+
             var procName = execProc.ProcedureReference.ProcedureReference.Name.GetName();
             return Regex.IsMatch(procName, name, RegexOptions.IgnoreCase);
         }

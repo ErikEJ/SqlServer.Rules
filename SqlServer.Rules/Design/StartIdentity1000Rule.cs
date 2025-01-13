@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -12,9 +12,9 @@ namespace SqlServer.Rules.Design
     /// Start identity columns used in a primary key with a seed of 1000
     /// </summary>
     /// <FriendlyName>Low identity seed value</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     /// <remarks>Seed values below 1000 have had issues with replication on some versions of SQL Server</remarks>
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
@@ -27,10 +27,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0010";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Start identity column used in a primary key with a seed of 1000 or higher.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -65,22 +67,25 @@ namespace SqlServer.Rules.Design
                 );
 
             var createTable = fragment as CreateTableStatement;
-            //find the pk columns
+
+            // find the pk columns
             var pk = createTable.Definition.TableConstraints
                 .FirstOrDefault(c =>
                     c.GetType() == typeof(UniqueConstraintDefinition)
                     && ((UniqueConstraintDefinition)c).IsPrimaryKey);
             if (pk == null) { return problems; }
 
-            //reduce our pks, just down to a list of their names
+            // reduce our pks, just down to a list of their names
             var pkColNames = ((UniqueConstraintDefinition)pk).Columns
                 .Select(c => c.Column.MultiPartIdentifier.Identifiers.GetName().ToUpperInvariant()).ToList();
-            //try to find the identity column that is a member of the pk
+
+            // try to find the identity column that is a member of the pk
             var identityColumn = createTable.Definition.ColumnDefinitions
                 .FirstOrDefault(cd => pkColNames.Contains($"[{cd.ColumnIdentifier.Value.ToUpperInvariant()}]") && cd.IdentityOptions != null);
 
             if (identityColumn == null) { return problems; }
-            //if the seed starts less than 1000, flag it
+
+            // if the seed starts less than 1000, flag it
             if (((IntegerLiteral)identityColumn.IdentityOptions.IdentitySeed)?.GetValue() < 1000)
             {
                 problems.Add(new SqlRuleProblem(Message, sqlObj, identityColumn));

@@ -1,8 +1,8 @@
-﻿using Microsoft.SqlServer.Dac.Model;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.Model;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace SqlServer.Dac
 {
@@ -10,7 +10,7 @@ namespace SqlServer.Dac
     {
         Parameter,
         Declare,
-        Column
+        Column,
     }
 
     public class DataTypeView
@@ -30,6 +30,7 @@ namespace SqlServer.Dac
                 Length = length;
             }
         }
+
         public DataTypeView(string name, DataTypeReference dataType, DataTypeViewType type)
         {
             Name = name;
@@ -55,6 +56,7 @@ namespace SqlServer.Dac
             {
                 len = $" ({Length})";
             }
+
             return !string.IsNullOrEmpty(Name) ? $"{Type} {Name} {DataType}{len}" : base.ToString();
         }
     }

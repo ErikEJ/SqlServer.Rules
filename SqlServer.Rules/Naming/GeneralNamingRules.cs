@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace SqlServer.Rules.Performance
 {
@@ -135,7 +135,7 @@ namespace SqlServer.Rules.Performance
 
                     break;
                 case "FOREIGNKEYCONSTRAINT":
-                    //var fk = fragment as createke;
+                    // var fk = fragment as createke;
                     var tableFk = ruleExecutionContext.SchemaModel.GetObject(ForeignKeyConstraint.TypeClass, sqlObj.Name, DacQueryScopes.All);
                     var foreignTableName = tableFk.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignTable, DacQueryScopes.All)
                         .Select(x => x.ObjectName).ToList()
@@ -156,7 +156,8 @@ namespace SqlServer.Rules.Performance
                     break;
                 case "DEFAULTCONSTRAINT":
                     var columnName = GetReferencedName(sqlObj, DefaultConstraint.TargetColumn, "Column");
-                    //allow two formats for this one
+
+                    // allow two formats for this one
                     if (!Regex.IsMatch(name, $@"^DF_{tableName}_{columnName}$", RegexOptions.IgnoreCase))
                     {
                         problems.Add(new SqlRuleProblem($"Constraint '{name}' does not follow the company naming standard. Please use the name DF_{tableName}_{columnName}.", sqlObj, fragment));
@@ -173,10 +174,10 @@ namespace SqlServer.Rules.Performance
         {
             if (relation == null)
             {
-                return sqlObj.GetReferenced().FirstOrDefault(o => _comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
+                return sqlObj.GetReferenced().FirstOrDefault(o => Comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
             }
 
-            return sqlObj.GetReferenced(relation).FirstOrDefault(o => _comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
+            return sqlObj.GetReferenced(relation).FirstOrDefault(o => Comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
         }
     }
 }

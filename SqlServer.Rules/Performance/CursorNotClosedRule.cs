@@ -1,22 +1,22 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SqlServer.Rules.Performance
 {
     /// <summary>Local cursor not closed</summary>
     /// <FriendlyName>Dangling cursor</FriendlyName>
-	/// <IsIgnorable>false</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>false</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks if any local cursor is closed until the end of the batch. Because when open,
     /// the cursor still holds locks on referred-to-tables or views, you should explicitly close it
     /// as soon as it is no longer needed.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -28,10 +28,12 @@ namespace SqlServer.Rules.Performance
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRP0007";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Local cursor not closed.";
+
         /// <summary>
         /// The message
         /// </summary>
@@ -72,7 +74,7 @@ namespace SqlServer.Rules.Performance
                 var localCloseCursors = closeCursorVisitor.Statements.Where(c => !c.Cursor.IsGlobal);
 
                 var unclosedCursors = localOpenCursors.Where(c =>
-                    !localCloseCursors.Any(c2 => _comparer.Equals(c.Cursor.Name.Value, c2.Cursor.Name.Value)));
+                    !localCloseCursors.Any(c2 => Comparer.Equals(c.Cursor.Name.Value, c2.Cursor.Name.Value)));
 
                 foreach (var cursor in unclosedCursors)
                 {

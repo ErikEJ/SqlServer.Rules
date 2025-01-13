@@ -1,11 +1,11 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace SqlServer.Rules.Design
 {
@@ -13,15 +13,15 @@ namespace SqlServer.Rules.Design
     /// Removed unreferenced parameters
     /// </summary>
     /// <FriendlyName>Unused input parameter</FriendlyName>
-	/// <IsIgnorable>true</IsIgnorable>
-	/// <ExampleMd></ExampleMd>
+    /// <IsIgnorable>true</IsIgnorable>
+    /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// This rule checks for not used stored procedure or function input parameters. 
     /// Unused parameters not necessarily negatively affect the performance, but they just add bloat
     /// to your stored procedures and functions.
     /// </remarks>
-	/// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-	/// <seealso cref="SqlServer.Rules.Design.TypesMissingParametersRule" />
+    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
+    /// <seealso cref="SqlServer.Rules.Design.TypesMissingParametersRule" />
     [ExportCodeAnalysisRule(RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
@@ -33,10 +33,12 @@ namespace SqlServer.Rules.Design
         /// The rule identifier
         /// </summary>
         public const string RuleId = Constants.RuleNameSpace + "SRD0016";
+
         /// <summary>
         /// The rule display name
         /// </summary>
         public const string RuleDisplayName = "Input parameter never used. Consider removing the parameter or using it.";
+
         /// <summary>
         /// The message
         /// </summary>
