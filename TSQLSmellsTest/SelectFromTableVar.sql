@@ -1,3 +1,4 @@
+--SML005,SML033
 Create PRocedure dbo.SelectAs
 as
 Set nocount on ;

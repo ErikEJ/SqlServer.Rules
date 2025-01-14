@@ -24,15 +24,18 @@ namespace SqlServer.Rules.Tests.Docs
             var assembly = typeof(ObjectCreatedWithInvalidOptionsRule).Assembly;
             var assemblyPath = assembly.Location;
             var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            var docsFolder = "..\\..\\..\\..\\docs"; // Path.Combine(assemblyFolder, "Docs");
+            var docsFolder = "../../../../docs";
+            var rulesScriptFolder = "../../../../TSQLSmellsTest";
 
             var rules = assembly.GetTypes()
-                .Where(t => t.IsClass 
-                    && !t.IsAbstract 
+                .Where(t => t.IsClass
+                    && !t.IsAbstract
                     && t.IsSubclassOf(typeof(BaseSqlCodeAnalysisRule))
                     && t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).Any()
                 )
                 .ToList();
+
+            var ruleScripts = CollectRuleScripts(rulesScriptFolder);
 
             var smellsAssembly = typeof(Smells).Assembly;
 
@@ -232,7 +235,7 @@ namespace SqlServer.Rules.Tests.Docs
             stringBuilder.AppendLine("# Table of Contents");
             stringBuilder.AppendLine(spaces);
 
-            foreach (var category in categories) 
+            foreach (var category in categories)
             {
                 stringBuilder.AppendLine(spaces);
                 stringBuilder.AppendLine($"## {category}");
@@ -280,7 +283,7 @@ namespace SqlServer.Rules.Tests.Docs
                     {
                         friendlyName = ruleAttribute.Description;
                         isIgnorable = " ";
-                    }                   
+                    }
 
                     var ruleLink = $"[{ruleAttribute.Id.ToId()}]({category}/{ruleAttribute.Id.ToId()}.md)";
                     stringBuilder.AppendLine($"| {ruleLink} | {friendlyName} | {isIgnorable} | {ruleAttribute.Description?.Replace("|", "&#124;")} | {exampleMd} |");
@@ -292,6 +295,39 @@ namespace SqlServer.Rules.Tests.Docs
 
             File.WriteAllText(Path.Combine(docsFolder, "table_of_contents.md"), stringBuilder.ToString(), Encoding.UTF8);
         }
+
+        private Dictionary<string, List<string>> CollectRuleScripts(string rulesScriptFolder)
+        {
+            var ruleScripts = new Dictionary<string, List<string>>();
+            var files = Directory.GetFiles(rulesScriptFolder, "*.sql", SearchOption.AllDirectories).ToList();
+            foreach (var file in files)
+            {
+                var ruleLine = File.ReadAllLines(file).FirstOrDefault();
+
+                if (string.IsNullOrWhiteSpace(ruleLine))
+                {
+                    continue;
+                }
+
+                if (!ruleLine.StartsWith("--", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var ruleList = ruleLine.Replace("--", string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var rule in ruleList)
+                {
+                    if (!ruleScripts.ContainsKey(rule))
+                    {
+                        ruleScripts.Add(rule, new List<string>());
+                    }
+                    ruleScripts[rule].Add(File.ReadAllText(file));
+                }
+            }
+            return ruleScripts;
+        }
+
     }
 
     public static class Extensions
