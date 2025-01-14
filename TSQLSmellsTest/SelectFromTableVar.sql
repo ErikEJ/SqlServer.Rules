@@ -1,4 +1,3 @@
---SML005,SML033
 Create PRocedure dbo.SelectAs
 as
 Set nocount on ;
@@ -9,3 +8,4 @@ Declare @X table
 
 Select * from @x
 
+--SML005,SML033
