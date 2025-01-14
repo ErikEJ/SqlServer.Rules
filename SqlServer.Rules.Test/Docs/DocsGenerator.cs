@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace SqlServer.Rules.Tests.Docs
             var assembly = typeof(ObjectCreatedWithInvalidOptionsRule).Assembly;
             var assemblyPath = assembly.Location;
             var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            var docsFolder = Path.Combine(assemblyFolder, "Docs");
+            var docsFolder = "..\\..\\..\\..\\docs"; // Path.Combine(assemblyFolder, "Docs");
 
             var rules = assembly.GetTypes()
                 .Where(t => t.IsClass 
@@ -180,17 +180,20 @@ namespace SqlServer.Rules.Tests.Docs
             stringBuilder.AppendLine(spaces);
             stringBuilder.AppendLine($"{attribute.Description}");
 
-            stringBuilder.AppendLine(spaces);
-            stringBuilder.AppendLine($"## Summary");
-            stringBuilder.AppendLine(spaces);
-            stringBuilder.AppendLine($"{comments.Summary}");
+            if (!string.IsNullOrWhiteSpace(comments.Summary))
+            {
+                stringBuilder.AppendLine(spaces);
+                stringBuilder.AppendLine($"## Summary");
+                stringBuilder.AppendLine(spaces);
+                stringBuilder.AppendLine($"{TrimLeadingWhitespace(comments.Summary)}");
+            }
 
             if (!string.IsNullOrWhiteSpace(exampleMd))
             {
                 stringBuilder.AppendLine(spaces);
                 stringBuilder.AppendLine("### Examples");
                 stringBuilder.AppendLine(spaces);
-                stringBuilder.Append($"{exampleMd}");
+                stringBuilder.Append($"{TrimLeadingWhitespace(exampleMd)}");
             }
 
             if (!string.IsNullOrWhiteSpace(comments.Remarks))
@@ -206,6 +209,18 @@ namespace SqlServer.Rules.Tests.Docs
 
             var filePath = Path.Combine(docsFolder, $"{attribute.Id.ToId()}.md");
             File.WriteAllText(filePath, stringBuilder.ToString(), Encoding.UTF8);
+        }
+
+        private string TrimLeadingWhitespace(string summary)
+        {
+            if (string.IsNullOrWhiteSpace(summary))
+            {
+                return string.Empty;
+            }
+
+            var lines = summary.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var trimmedLines = lines.Select(l => l.TrimStart()).ToArray();
+            return string.Join(Environment.NewLine, trimmedLines);
         }
 
         private void GenerateTocMarkdown(List<Type> sqlServerRules, List<Type> tSqlSmellRules, List<string> categories, DocXmlReader reader, string docsFolder)
