@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[TempTableWithNamedDefConstraint]
+CREATE PROCEDURE [dbo].[TempTableWithNamedDefConstraint]
 	
 AS
 	Set nocount on;
@@ -15,3 +15,5 @@ AS
 	);
 
 RETURN 0
+
+--SML039

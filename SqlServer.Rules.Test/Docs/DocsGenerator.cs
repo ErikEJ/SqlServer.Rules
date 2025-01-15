@@ -327,7 +327,7 @@ namespace SqlServer.Rules.Tests.Docs
                     continue;
                 }
 
-                var ruleList = ruleLine.Replace("--", string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries);
+                var ruleList = ruleLine.Replace("--", string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                 foreach (var rule in ruleList)
                 {

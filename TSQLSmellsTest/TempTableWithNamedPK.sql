@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[TempTableWithNamedPK]
+CREATE PROCEDURE [dbo].[TempTableWithNamedPK]
 	
 AS
 	SET nocount on;
@@ -15,3 +15,5 @@ AS
 	);
 
 RETURN 0
+
+--SML038

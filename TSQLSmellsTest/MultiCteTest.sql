@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE dbo.MultiCteTest
+CREATE PROCEDURE dbo.MultiCteTest
     @pInsertCount INT = 0 OUTPUT
 AS 
 BEGIN
@@ -15,3 +15,5 @@ set nocount on ;
 	from successfulOrder;
 	
 END;
+
+--SML005

@@ -4,3 +4,5 @@ AS
 Set nocount on;
 
 SELECT IdCol FROM TestTableSSDT;
+
+--SML002

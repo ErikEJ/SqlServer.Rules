@@ -20,3 +20,5 @@ Select 1
 			order by Col1)
 			Derived
  on Derived.Col1 = TestTableSSDT.Col1;
+
+ --SML035

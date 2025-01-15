@@ -7,3 +7,5 @@ select sum(TestTableSSDT.IdCol) over(partition by TestTableSSDT.Col1
 	                 Range UNBOUNDED PRECEDING) as RollingBalance
   from [dbo].[TestTableSSDT]
 order by Col1,Col2;
+
+--SML025
