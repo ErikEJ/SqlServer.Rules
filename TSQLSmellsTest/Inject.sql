@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[Injection]
+CREATE PROCEDURE [dbo].[Injection]
 	@param1 varchar(255)
 AS
 SET NOCOUNT ON;
@@ -89,4 +89,4 @@ SET NOCOUNT ON;
 
 RETURN 0
 
- 
+--SML043

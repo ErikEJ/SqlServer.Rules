@@ -146,6 +146,57 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TSQLSmells", "TSQLSmells", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeSmells", "CodeSmells", "{34C26AAF-CF8D-450B-B2E7-CDACFB55C1BE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\CodeSmells\SML001.md = docs\CodeSmells\SML001.md
+		docs\CodeSmells\SML002.md = docs\CodeSmells\SML002.md
+		docs\CodeSmells\SML003.md = docs\CodeSmells\SML003.md
+		docs\CodeSmells\SML004.md = docs\CodeSmells\SML004.md
+		docs\CodeSmells\SML005.md = docs\CodeSmells\SML005.md
+		docs\CodeSmells\SML006.md = docs\CodeSmells\SML006.md
+		docs\CodeSmells\SML007.md = docs\CodeSmells\SML007.md
+		docs\CodeSmells\SML008.md = docs\CodeSmells\SML008.md
+		docs\CodeSmells\SML009.md = docs\CodeSmells\SML009.md
+		docs\CodeSmells\SML010.md = docs\CodeSmells\SML010.md
+		docs\CodeSmells\SML011.md = docs\CodeSmells\SML011.md
+		docs\CodeSmells\SML012.md = docs\CodeSmells\SML012.md
+		docs\CodeSmells\SML013.md = docs\CodeSmells\SML013.md
+		docs\CodeSmells\SML014.md = docs\CodeSmells\SML014.md
+		docs\CodeSmells\SML015.md = docs\CodeSmells\SML015.md
+		docs\CodeSmells\SML016.md = docs\CodeSmells\SML016.md
+		docs\CodeSmells\SML017.md = docs\CodeSmells\SML017.md
+		docs\CodeSmells\SML018.md = docs\CodeSmells\SML018.md
+		docs\CodeSmells\SML019.md = docs\CodeSmells\SML019.md
+		docs\CodeSmells\SML020.md = docs\CodeSmells\SML020.md
+		docs\CodeSmells\SML021.md = docs\CodeSmells\SML021.md
+		docs\CodeSmells\SML022.md = docs\CodeSmells\SML022.md
+		docs\CodeSmells\SML023.md = docs\CodeSmells\SML023.md
+		docs\CodeSmells\SML024.md = docs\CodeSmells\SML024.md
+		docs\CodeSmells\SML025.md = docs\CodeSmells\SML025.md
+		docs\CodeSmells\SML026.md = docs\CodeSmells\SML026.md
+		docs\CodeSmells\SML027.md = docs\CodeSmells\SML027.md
+		docs\CodeSmells\SML028.md = docs\CodeSmells\SML028.md
+		docs\CodeSmells\SML029.md = docs\CodeSmells\SML029.md
+		docs\CodeSmells\SML030.md = docs\CodeSmells\SML030.md
+		docs\CodeSmells\SML031.md = docs\CodeSmells\SML031.md
+		docs\CodeSmells\SML032.md = docs\CodeSmells\SML032.md
+		docs\CodeSmells\SML033.md = docs\CodeSmells\SML033.md
+		docs\CodeSmells\SML034.md = docs\CodeSmells\SML034.md
+		docs\CodeSmells\SML035.md = docs\CodeSmells\SML035.md
+		docs\CodeSmells\SML036.md = docs\CodeSmells\SML036.md
+		docs\CodeSmells\SML037.md = docs\CodeSmells\SML037.md
+		docs\CodeSmells\SML038.md = docs\CodeSmells\SML038.md
+		docs\CodeSmells\SML039.md = docs\CodeSmells\SML039.md
+		docs\CodeSmells\SML040.md = docs\CodeSmells\SML040.md
+		docs\CodeSmells\SML041.md = docs\CodeSmells\SML041.md
+		docs\CodeSmells\SML042.md = docs\CodeSmells\SML042.md
+		docs\CodeSmells\SML043.md = docs\CodeSmells\SML043.md
+		docs\CodeSmells\SML044.md = docs\CodeSmells\SML044.md
+		docs\CodeSmells\SML045.md = docs\CodeSmells\SML045.md
+		docs\CodeSmells\SML046.md = docs\CodeSmells\SML046.md
+		docs\CodeSmells\SML047.md = docs\CodeSmells\SML047.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -206,6 +257,7 @@ Global
 		{F07AAB67-97A5-4D2D-B808-145886DD960D} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
 		{3F96C1BE-A925-4DA8-A8F6-24575E677B48} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
 		{58DB81BD-4FDC-4CA8-9E64-7757ED5C2D7B} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
+		{34C26AAF-CF8D-450B-B2E7-CDACFB55C1BE} = {596B2FD7-2684-4DC5-BD46-31EE223C49E4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67B59E89-8C35-419D-A49B-9C2C19584900}

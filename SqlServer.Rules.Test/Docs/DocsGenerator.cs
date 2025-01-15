@@ -67,7 +67,7 @@ namespace SqlServer.Rules.Tests.Docs
 
                 var elements = GetRuleElements(t, ruleAttribute);
 
-                GenerateRuleMarkdown(comments, elements, ruleAttribute, Path.Combine(docsFolder, ruleAttribute.Category), t.Assembly.GetName().Name, t.Namespace, t.Name);
+                GenerateRuleMarkdown(comments, elements, ruleScripts, ruleAttribute, Path.Combine(docsFolder, ruleAttribute.Category), t.Assembly.GetName().Name, t.Namespace, t.Name);
             });
 
             GenerateTocMarkdown(rules, null, categories, reader, docsFolder);
@@ -119,7 +119,7 @@ namespace SqlServer.Rules.Tests.Docs
             return elements.Order().ToList();
         }
 
-        private void GenerateRuleMarkdown(TypeComments comments, List<string> elements, ExportCodeAnalysisRuleAttribute attribute, string docsFolder, string assemblyName, string nameSpace, string className)
+        private void GenerateRuleMarkdown(TypeComments comments, List<string> elements, Dictionary<string, List<string>> ruleScripts, ExportCodeAnalysisRuleAttribute attribute, string docsFolder, string assemblyName, string nameSpace, string className)
         {
             var isIgnorable = string.Empty;
             var friendlyName = string.Empty;
@@ -191,10 +191,17 @@ namespace SqlServer.Rules.Tests.Docs
                 stringBuilder.AppendLine($"{TrimLeadingWhitespace(comments.Summary)}");
             }
 
-            if (!string.IsNullOrWhiteSpace(exampleMd))
+            var scriptExamples = ruleScripts.ContainsKey(attribute.Id.ToId()) ? ruleScripts[attribute.Id.ToId()] : new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(exampleMd)
+                || scriptExamples.Any())
             {
                 stringBuilder.AppendLine(spaces);
                 stringBuilder.AppendLine("### Examples");
+            }
+
+            if (!string.IsNullOrWhiteSpace(exampleMd))
+            {
                 stringBuilder.AppendLine(spaces);
                 stringBuilder.Append($"{TrimLeadingWhitespace(exampleMd)}");
             }
@@ -205,6 +212,17 @@ namespace SqlServer.Rules.Tests.Docs
                 stringBuilder.AppendLine("### Remarks");
                 stringBuilder.AppendLine(spaces);
                 stringBuilder.AppendLine($"{comments.Remarks}");
+            }
+
+            if (scriptExamples.Any())
+            {
+                stringBuilder.AppendLine(spaces);
+                foreach (var script in scriptExamples)
+                {
+                    stringBuilder.AppendLine("```sql");
+                    stringBuilder.AppendLine(script);
+                    stringBuilder.AppendLine("```");
+                }
             }
 
             stringBuilder.AppendLine(spaces);
@@ -302,14 +320,9 @@ namespace SqlServer.Rules.Tests.Docs
             var files = Directory.GetFiles(rulesScriptFolder, "*.sql", SearchOption.AllDirectories).ToList();
             foreach (var file in files)
             {
-                var ruleLine = File.ReadAllLines(file).FirstOrDefault();
+                var ruleLine = File.ReadAllLines(file).Where(l => l.StartsWith("--", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
-                if (string.IsNullOrWhiteSpace(ruleLine))
-                {
-                    continue;
-                }
-
-                if (!ruleLine.StartsWith("--", StringComparison.OrdinalIgnoreCase))
+                if (ruleLine == null || string.IsNullOrWhiteSpace(ruleLine))
                 {
                     continue;
                 }
