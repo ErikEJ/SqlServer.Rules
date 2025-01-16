@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright company="Microsoft">
 //
 //    The MIT License (MIT)
@@ -407,7 +407,7 @@ namespace SqlServer.Rules.Tests.Utils
         private static void Log(string format, params object[] args)
         {
             Trace.TraceInformation("*** {0} TEST {1}",
-                DateTime.Now.ToString("HH:mm:ss.fff"), string.Format(format, args));
+                DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture), string.Format(CultureInfo.InvariantCulture, format, args));
         }
 
         internal void AddCleanupScript(string script)

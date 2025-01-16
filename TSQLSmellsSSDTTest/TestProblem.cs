@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace TSQLSmellsSSDTTest;
 
@@ -15,9 +16,9 @@ public class TestProblem
         RuleId = ruleId;
     }
 
-    public override bool Equals(Object obj)
+    public override bool Equals(object obj)
     {
-        TestProblem prb = obj as TestProblem;
+        var prb = obj as TestProblem;
         if (prb.RuleId.Equals(RuleId, StringComparison.OrdinalIgnoreCase) &&
             prb.StartColumn == StartColumn &&
             prb.StartLine == StartLine)
@@ -30,6 +31,6 @@ public class TestProblem
 
     public override int GetHashCode()
     {
-        return string.Format("{0}:{1}:{2}", RuleId, StartColumn, StartLine).GetHashCode();
+        return string.Format(CultureInfo.InvariantCulture, "{0}:{1}:{2}", RuleId, StartColumn, StartLine).GetHashCode();
     }
 }

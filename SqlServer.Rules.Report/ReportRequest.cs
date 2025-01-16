@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 
@@ -14,7 +14,7 @@ namespace SqlServer.Rules.Report
             get { return Path.GetFileNameWithoutExtension(Solution); }
         }
 
-        public string OutputDirectory { get; set; } = String.Empty;
+        public string OutputDirectory { get; set; } = string.Empty;
 
         private string _outputFileName;
         public string OutputFileName

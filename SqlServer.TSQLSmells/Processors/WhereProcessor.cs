@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
@@ -43,7 +42,7 @@ namespace TSQLSmellSCA
         private void ProcessWhereScalarExpression(ScalarExpression WhereExpression)
         {
             var ExpressionType = FragmentTypeParser.GetFragmentType(WhereExpression);
-            String ParameterType;
+            string ParameterType;
             switch (ExpressionType)
             {
                 case "ConvertCall":

@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -50,7 +50,7 @@ namespace TSQLSmellSCA
 
                 foreach (var colDef in TblStmt.Definition.ColumnDefinitions)
                 {
-                    if (colDef.DefaultConstraint != null && colDef.DefaultConstraint.ConstraintIdentifier != null)
+                    if (colDef.DefaultConstraint?.ConstraintIdentifier != null)
                     {
                         _smells.SendFeedBack(39, colDef);
                     }

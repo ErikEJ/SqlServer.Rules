@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright company="Microsoft">
 //
 //    The MIT License (MIT)
@@ -26,6 +26,7 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.Globalization;
 using Microsoft.Data.SqlClient;
 
 namespace SqlServer.Rules.Tests.Utils
@@ -46,7 +47,7 @@ namespace SqlServer.Rules.Tests.Utils
 
         public string ConnectTimeoutAsString
         {
-            get { return ConnectTimeout.ToString(); }
+            get { return ConnectTimeout.ToString(CultureInfo.InvariantCulture); }
             set
             {
                 int temp;

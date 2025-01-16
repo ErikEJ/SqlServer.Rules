@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -65,7 +65,7 @@ namespace SqlServer.Rules.Design
             fragment.Accept(columnVisitor);
 
             var longChars = columnVisitor.NotIgnoredStatements(RuleId)
-                .Where(col => col.DataType != null && col.DataType.Name != null)
+                .Where(col => col.DataType?.Name != null)
                 .Select(col => new {
                     column = col,
                     name = col.ColumnIdentifier.Value,

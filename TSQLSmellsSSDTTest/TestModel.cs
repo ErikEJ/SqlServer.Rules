@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -9,9 +8,9 @@ namespace TSQLSmellsSSDTTest;
 
 public class TestModel
 {
-    public List<TestProblem> ExpectedProblems { get; set; } = new List<TestProblem>();
-    public List<TestProblem> FoundProblems { get; set; } = new List<TestProblem>();
-    public List<string> TestFiles { get; set; } = new List<String>();
+    public List<TestProblem> ExpectedProblems { get; set; } = [];
+    public List<TestProblem> FoundProblems { get; set; } = [];
+    public List<string> TestFiles { get; set; } = [];
 
     private TSqlModel Model { get; set; }
 
@@ -23,9 +22,9 @@ public class TestModel
 
     public void AddFilesToModel()
     {
-        foreach (string FileName in TestFiles)
+        foreach (var FileName in TestFiles)
         {
-            String FileContent = string.Empty;
+            var FileContent = string.Empty;
             using (var reader = new StreamReader(FileName))
             {
                 FileContent += reader.ReadToEnd();
@@ -37,12 +36,12 @@ public class TestModel
 
     public void SerializeResultOutput(CodeAnalysisResult result)
     {
-        foreach (SqlRuleProblem Problem in result.Problems)
+        foreach (var Problem in result.Problems)
         {
             // Only concern ourselves with our problems
             if (Problem.RuleId.StartsWith("Smells."))
             {
-                TestProblem TestProblem = new TestProblem(Problem.StartLine, Problem.StartColumn, Problem.RuleId);
+                var TestProblem = new TestProblem(Problem.StartLine, Problem.StartColumn, Problem.RuleId);
                 FoundProblems.Add(TestProblem);
             }
         }
@@ -50,8 +49,8 @@ public class TestModel
 
     public void RunSCARules()
     {
-        CodeAnalysisService service = new CodeAnalysisServiceFactory().CreateAnalysisService(Model.Version);
-        CodeAnalysisResult result = service.Analyze(Model);
+        var service = new CodeAnalysisServiceFactory().CreateAnalysisService(Model.Version);
+        var result = service.Analyze(Model);
         SerializeResultOutput(result);
 
         CollectionAssert.AreEquivalent(FoundProblems, ExpectedProblems);

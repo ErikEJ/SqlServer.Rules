@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -72,7 +72,7 @@ namespace SqlServer.Rules.Design
 
             var keyColumn = columns.FirstOrDefault();
             var dataType = keyColumn.GetReferenced(Column.DataType, DacQueryScopes.All).FirstOrDefault();
-            if (dataType == null || dataType.Name == null)
+            if (dataType?.Name == null)
             {
                 return problems;
             }

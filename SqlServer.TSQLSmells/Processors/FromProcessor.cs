@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA

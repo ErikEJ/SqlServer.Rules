@@ -79,7 +79,7 @@ namespace TSQLSmellSCA
             }
             catch (Exception ex)
             {
-                var msg = String.Format(CultureInfo.CurrentCulture, Resources.CannotCreateResourceManager, ResourceBaseName, resourceAssembly);
+                var msg = string.Format(CultureInfo.CurrentCulture, Resources.CannotCreateResourceManager, ResourceBaseName, resourceAssembly);
                 throw new RuleException(msg, ex);
             }
         }

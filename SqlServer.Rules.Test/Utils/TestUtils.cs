@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright company="Microsoft">
 //
 //    The MIT License (MIT)
@@ -249,7 +249,7 @@ END
             cmd.CommandTimeout = commandTimeOut;
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
 #pragma warning disable CA1863 // Use 'CompositeFormat'
-            cmd.CommandText = String.Format(CultureInfo.InvariantCulture, _setLockTimeoutDefault, GetLockTimeoutMS());
+            cmd.CommandText = string.Format(CultureInfo.InvariantCulture, _setLockTimeoutDefault, GetLockTimeoutMS());
 #pragma warning restore CA1863 // Use 'CompositeFormat'
             cmd.ExecuteNonQuery();
             cmd.CommandText = sqlCommandText;

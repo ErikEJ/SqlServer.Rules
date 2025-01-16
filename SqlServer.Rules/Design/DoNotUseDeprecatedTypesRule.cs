@@ -65,7 +65,7 @@ namespace SqlServer.Rules.Design
             fragment.Accept(columnVisitor);
 
             var offenders = columnVisitor.Statements
-                .Where(col => col.DataType != null && col.DataType.Name != null)
+                .Where(col => col.DataType?.Name != null)
                 .Select(col => new {
                     column = col,
                     name = col.ColumnIdentifier.Value,

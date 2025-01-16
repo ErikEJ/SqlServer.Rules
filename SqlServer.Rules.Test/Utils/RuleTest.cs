@@ -55,20 +55,12 @@ namespace SqlServer.Rules.Tests.Utils
         /// <summary>
         /// List of tuples representing scripts and the logical source name for those scripts.
         /// </summary>
-        public IList<Tuple<string, string>> TestScripts
-        {
-            get;
-            set;
-        }
+        public IList<Tuple<string, string>> TestScripts { get; set; }
 
         /// <summary>
         /// Update the DatabaseOptions if you wish to test with different properties, such as a different collation.
         /// </summary>
-        public TSqlModelOptions DatabaseOptions
-        {
-            get;
-            set;
-        }
+        public TSqlModelOptions DatabaseOptions { get; set; }
 
         /// <summary>
         /// Version to target the model at - the model will be compiled against that server version, and rules that do not
@@ -77,29 +69,13 @@ namespace SqlServer.Rules.Tests.Utils
         public SqlServerVersion SqlVersion { get; set; }
 
 
-        public AnalysisTarget Target
-        {
-            get;
-            set;
-        }
+        public AnalysisTarget Target { get; set; }
 
-        public TSqlModel ModelForAnalysis
-        {
-            get;
-            set;
-        }
+        public TSqlModel ModelForAnalysis { get; set; }
 
-        public string DacpacPath
-        {
-            get;
-            set;
-        }
+        public string DacpacPath { get; set; }
 
-        public string DatabaseName
-        {
-            get;
-            set;
-        }
+        public string DatabaseName { get; set; }
 
         protected void CreateModelUsingTestScripts()
         {
@@ -171,7 +147,7 @@ namespace SqlServer.Rules.Tests.Utils
             var db = TestUtils.CreateTestDatabase(TestUtils.DefaultInstanceInfo, DatabaseName);
             _trash.Add(db);
 
-            TestUtils.ExecuteNonQuery(db, TestScripts.Select(t => t.Item1).SelectMany(s => TestUtils.GetBatches(s)).ToList());
+            TestUtils.ExecuteNonQuery(db, TestScripts.Select(t => t.Item1).SelectMany(TestUtils.GetBatches).ToList());
 
             var model = TSqlModel.LoadFromDatabase(db.BuildConnectionString(), new ModelExtractOptions { LoadAsScriptBackedModel = true });
             AssertModelValid(model);
@@ -270,8 +246,8 @@ namespace SqlServer.Rules.Tests.Utils
             var factory = new CodeAnalysisServiceFactory();
             var ruleSettings = new CodeAnalysisRuleSettings
             {
-                        new RuleConfiguration(ruleIdToRun),
-                    };
+                new RuleConfiguration(ruleIdToRun),
+            };
             ruleSettings.DisableRulesNotInSettings = true;
             var service = factory.CreateAnalysisService(ModelForAnalysis.Version, new CodeAnalysisServiceSettings
             {
@@ -280,7 +256,7 @@ namespace SqlServer.Rules.Tests.Utils
 
             DumpErrors(service.GetRuleLoadErrors());
 
-            Assert.IsTrue(service.GetRules().Any((rule) => rule.RuleId.Equals(ruleIdToRun, StringComparison.OrdinalIgnoreCase)),
+            Assert.IsTrue(service.GetRules().Any(rule => rule.RuleId.Equals(ruleIdToRun, StringComparison.OrdinalIgnoreCase)),
                 "Expected rule '{0}' not found by the service", ruleIdToRun);
             return service;
         }
@@ -293,7 +269,6 @@ namespace SqlServer.Rules.Tests.Utils
             DumpErrors(analysisResult.AnalysisErrors);
 
             var problemsString = DumpProblemsToString(analysisResult.Problems);
-
 
             verify(analysisResult, problemsString);
         }
@@ -311,7 +286,7 @@ namespace SqlServer.Rules.Tests.Utils
                     hasError = true;
                     if (error.Document != null)
                     {
-                        errorMessage.AppendFormat("{0}({1}, {2}): ", error.Document, error.Line, error.Column);
+                        errorMessage.AppendFormat(CultureInfo.InvariantCulture, "{0}({1}, {2}): ", error.Document, error.Line, error.Column);
                     }
 
                     errorMessage.AppendLine(error.Message);
@@ -351,8 +326,8 @@ namespace SqlServer.Rules.Tests.Utils
                 }
 
                 AppendOneProblemItem(sb, "Script file", fileName);
-                AppendOneProblemItem(sb, "Start line", problem.StartLine.ToString());
-                AppendOneProblemItem(sb, "Start column", problem.StartColumn.ToString());
+                AppendOneProblemItem(sb, "Start line", problem.StartLine.ToString(CultureInfo.InvariantCulture));
+                AppendOneProblemItem(sb, "Start column", problem.StartColumn.ToString(CultureInfo.InvariantCulture));
 
                 sb.Append("========end of problem========\r\n\r\n");
             }
