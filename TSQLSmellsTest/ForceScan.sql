@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[ForceScan]
+CREATE PROCEDURE [dbo].[ForceScan]
 	
 AS
 set nocount on
@@ -6,3 +6,5 @@ set nocount on
 	from dbo.TestTableSSDT with(forcescan);
 
 RETURN 0
+
+--SML044

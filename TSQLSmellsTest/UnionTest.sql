@@ -7,3 +7,5 @@ Union ALL
 SELECT * FROM dbo.TestTableSSDT
 UNION ALL
 SELECT * FROM dbo.TestTableSSDT
+
+--SML005

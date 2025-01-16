@@ -1,1139 +1,1042 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TSQLSmellsSSDTTest
+namespace TSQLSmellsSSDTTest;
+
+[TestClass]
+public class testConvertDate : TestModel
 {
-    public class TestProblem
+    public testConvertDate()
     {
-        public int StartColumn;
-        public int StartLine;
-        public string RuleId;
+        TestFiles.Add("../../../../TSQLSmellsTest/ConvertDate.sql");
 
-        public TestProblem(int StartLine, int StartColumn, string RuleId)
-        {
-            this.StartColumn = StartColumn;
-            this.StartLine = StartLine;
-            this.RuleId = RuleId;
-        }
-
-        public override bool Equals(Object obj)
-        {
-            TestProblem prb = obj as TestProblem;
-            if (prb.RuleId.Equals(RuleId, StringComparison.OrdinalIgnoreCase) &&
-                prb.StartColumn == StartColumn &&
-                prb.StartLine == StartLine)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return string.Format("{0}:{1}:{2}", RuleId, StartColumn, StartLine).GetHashCode();
-        }
+        ExpectedProblems.Add(new TestProblem(8, 7, "Smells.SML006"));
     }
 
-    public class TestModel
+    [TestMethod]
+    public void ConvertDate()
     {
-        public List<TestProblem> _ExpectedProblems = new List<TestProblem>();
-        public List<TestProblem> _FoundProblems = new List<TestProblem>();
-        public List<String> _TestFiles = new List<String>();
+        RunTest();
+    }
+}
 
-        private TSqlModel _Model;
+[TestClass]
+public class testsqlInjection : TestModel
+{
+    public testsqlInjection()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/Inject.sql");
 
-        public void BuildModel()
-        {
-            _Model = new TSqlModel(SqlServerVersion.Sql110, null);
-            AddFilesToModel();
-        }
-
-        public void AddFilesToModel()
-        {
-            foreach (string FileName in _TestFiles)
-            {
-                String FileContent = string.Empty;
-                using (var reader = new StreamReader(FileName))
-                {
-                    FileContent += reader.ReadToEnd();
-                }
-
-                _Model.AddObjects(FileContent);
-            }
-        }
-
-        public void SerializeResultOutput(CodeAnalysisResult result)
-        {
-            foreach (SqlRuleProblem Problem in result.Problems)
-            {
-                // Only concern ourselves with our problems
-                if (Problem.RuleId.StartsWith("Smells."))
-                {
-                    TestProblem TestProblem = new TestProblem(Problem.StartLine, Problem.StartColumn, Problem.RuleId);
-                    _FoundProblems.Add(TestProblem);
-                }
-            }
-        }
-
-        public void RunSCARules()
-        {
-            CodeAnalysisService service = new CodeAnalysisServiceFactory().CreateAnalysisService(_Model.Version);
-            CodeAnalysisResult result = service.Analyze(_Model);
-            SerializeResultOutput(result);
-
-            CollectionAssert.AreEquivalent(_FoundProblems, _ExpectedProblems);
-        }
-
-        public void RunTest()
-        {
-            BuildModel();
-            RunSCARules();
-        }
+        ExpectedProblems.Add(new TestProblem(14, 10, "Smells.SML043"));
+        ExpectedProblems.Add(new TestProblem(23, 10, "Smells.SML043"));
+        ExpectedProblems.Add(new TestProblem(52, 10, "Smells.SML043"));
+        ExpectedProblems.Add(new TestProblem(88, 10, "Smells.SML043"));
+        ExpectedProblems.Add(new TestProblem(5, 7, "Smells.SML043"));
     }
 
-    [TestClass]
-    public class testConvertDate : TestModel
+    [TestMethod]
+    public void SQLInjection()
     {
-        public testConvertDate()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ConvertDate.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(8, 7, "Smells.SML006"));
-        }
+[TestClass]
+public class testCreateViewOrderBy : TestModel
+{
+    public testCreateViewOrderBy()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/CreateViewOrderBy.sql");
 
-        [TestMethod]
-        public void ConvertDate()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML028"));
     }
 
-    [TestClass]
-    public class testsqlInjection : TestModel
+    [TestMethod]
+    public void CreateViewOrderBy()
     {
-        public testsqlInjection()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/Inject.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(14, 10, "Smells.SML043"));
-            _ExpectedProblems.Add(new TestProblem(23, 10, "Smells.SML043"));
-            _ExpectedProblems.Add(new TestProblem(52, 10, "Smells.SML043"));
-            _ExpectedProblems.Add(new TestProblem(88, 10, "Smells.SML043"));
-            _ExpectedProblems.Add(new TestProblem(5, 7, "Smells.SML043"));
-        }
+[TestClass]
+public class testConvertDateMultipleCond : TestModel
+{
+    public testConvertDateMultipleCond()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/ConvertDateMultiCond.sql");
 
-        [TestMethod]
-        public void SQLInjection()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(7, 7, "Smells.SML006"));
+        ExpectedProblems.Add(new TestProblem(8, 5, "Smells.SML006"));
     }
 
-    [TestClass]
-    public class testCreateViewOrderBy : TestModel
+    [TestMethod]
+    public void ConvertDateMultipleCond()
     {
-        public testCreateViewOrderBy()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/CreateViewOrderBy.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML028"));
-        }
+[TestClass]
+public class testDisabledForeignKeyConstraint : TestModel
+{
 
-        [TestMethod]
-        public void CreateViewOrderBy()
-        {
-            RunTest();
-        }
+    public testDisabledForeignKeyConstraint()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/DisabledForeignKey.sql");
+
+        ExpectedProblems.Add(new TestProblem(7, 7, "Smells.SML006"));
+        ExpectedProblems.Add(new TestProblem(8, 5, "Smells.SML006"));
     }
 
-    [TestClass]
-    public class testConvertDateMultipleCond : TestModel
+    [TestMethod, Ignore("Not working")]
+    public void DisabledForeignKeyConstraint()
     {
-        public testConvertDateMultipleCond()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ConvertDateMultiCond.sql");
-
-            _ExpectedProblems.Add(new TestProblem(7, 7, "Smells.SML006"));
-            _ExpectedProblems.Add(new TestProblem(8, 5, "Smells.SML006"));
-        }
-
-        [TestMethod]
-        public void ConvertDateMultipleCond()
-        {
-            RunTest();
-        }
+        RunTest();
     }
 
-    /*
-    [TestClass]
-    public class testDisabledForeignKeyConstraint : TestModel
+}
+
+[TestClass]
+public class testConvertInt : TestModel
+{
+    public testConvertInt()
     {
+        TestFiles.Add("../../../../TSQLSmellsTest/ConvertInt.sql");
 
-        public testDisabledForeignKeyConstraint()
-        {
-            this._TestFiles.Add("../../../../TSQLSmellsTest/DisabledForeignKey.sql");
-
-            this._ExpectedProblems.Add(new TestProblem(7, 7, "Smells.SML006"));
-            this._ExpectedProblems.Add(new TestProblem(8, 5, "Smells.SML006"));
-        }
-
-        [TestMethod]
-        public void DisabledForeignKeyConstraint()
-        {
-
-            RunTest();
-        }
-
-    }
-    */
-    [TestClass]
-    public class testConvertInt : TestModel
-    {
-        public testConvertInt()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ConvertInt.sql");
-
-            _ExpectedProblems.Add(new TestProblem(7, 7, "Smells.SML006"));
-        }
-
-        [TestMethod]
-        public void ConvertInt()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(7, 7, "Smells.SML006"));
     }
 
-    [TestClass]
-    public class testConvertInt2 : TestModel
+    [TestMethod]
+    public void ConvertInt()
     {
-        public testConvertInt2()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ConvertInt2.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(7, 14, "Smells.SML006"));
-        }
+[TestClass]
+public class testConvertInt2 : TestModel
+{
+    public testConvertInt2()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/ConvertInt2.sql");
 
-        [TestMethod]
-        public void ConvertInt2()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(7, 14, "Smells.SML006"));
     }
 
-    [TestClass]
-    public class testCreateProcedureNoSchema : TestModel
+    [TestMethod]
+    public void ConvertInt2()
     {
-        public testCreateProcedureNoSchema()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/CreateProcedureNoSchema.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(2, 18, "Smells.SML024"));
-        }
+[TestClass]
+public class testCreateProcedureNoSchema : TestModel
+{
+    public testCreateProcedureNoSchema()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/CreateProcedureNoSchema.sql");
 
-        [TestMethod]
-        public void CreateProcedureNoSchema()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(2, 18, "Smells.SML024"));
     }
 
-    [TestClass]
-    public class testCreateTableNoSchema : TestModel
+    [TestMethod]
+    public void CreateProcedureNoSchema()
     {
-        public testCreateTableNoSchema()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/CreateTableNoSchema.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(1, 1, "Smells.SML027"));
-        }
+[TestClass]
+public class testCreateTableNoSchema : TestModel
+{
+    public testCreateTableNoSchema()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/CreateTableNoSchema.sql");
 
-        [TestMethod]
-        public void CreateTableNoSchema()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(1, 1, "Smells.SML027"));
     }
 
-    [TestClass]
-    public class testDeclareCursor : TestModel
+    [TestMethod]
+    public void CreateTableNoSchema()
     {
-        public testDeclareCursor()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/DeclareCursor.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML029"));
-        }
+[TestClass]
+public class testDeclareCursor : TestModel
+{
+    public testDeclareCursor()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/DeclareCursor.sql");
 
-        [TestMethod]
-        public void DeclareCursor()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML029"));
     }
 
-    [TestClass]
-    public class testDerived : TestModel
+    [TestMethod]
+    public void DeclareCursor()
     {
-        public testDerived()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/Derived.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(7, 24, "Smells.SML035"));
-        }
+[TestClass]
+public class testDerived : TestModel
+{
+    public testDerived()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/Derived.sql");
 
-        [TestMethod]
-        public void Derived()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(7, 24, "Smells.SML035"));
     }
 
-    [TestClass]
-    public class testExec1PartName : TestModel
+    [TestMethod]
+    public void Derived()
     {
-        public testExec1PartName()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/Exec1PartName.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 6, "Smells.SML021"));
-        }
+[TestClass]
+public class testExec1PartName : TestModel
+{
+    public testExec1PartName()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/Exec1PartName.sql");
 
-        [TestMethod]
-        public void Exec1PartName()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 6, "Smells.SML021"));
     }
 
-    [TestClass]
-    public class testExecSQL : TestModel
+    [TestMethod]
+    public void Exec1PartName()
     {
-        public testExecSQL()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ExecSQL.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 1, "Smells.SML012"));
-        }
+[TestClass]
+public class testExecSQL : TestModel
+{
+    public testExecSQL()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/ExecSQL.sql");
 
-        [TestMethod]
-        public void ExecSQL()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 1, "Smells.SML012"));
     }
 
-    [TestClass]
-    public class testExplicitRangeWindow : TestModel
+    [TestMethod]
+    public void ExecSQL()
     {
-        public testExplicitRangeWindow()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ExplicitRangeWindow.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(7, 19, "Smells.SML025"));
-        }
+[TestClass]
+public class testExplicitRangeWindow : TestModel
+{
+    public testExplicitRangeWindow()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/ExplicitRangeWindow.sql");
 
-        [TestMethod]
-        public void ExplicitRangeWindow()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(7, 19, "Smells.SML025"));
     }
 
-    [TestClass]
-    public class testExists : TestModel
+    [TestMethod]
+    public void ExplicitRangeWindow()
     {
-        public testExists()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/Exists.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(7, 19, "Smells.SML025"));
-        }
+[TestClass]
+public class testExists : TestModel
+{
+    public testExists()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/Exists.sql");
 
-        [TestMethod]
-        public void Exists()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(7, 19, "Smells.SML025"));
     }
 
-    [TestClass]
-    public class testForceScan : TestModel
+    [TestMethod]
+    public void Exists()
     {
-        public testForceScan()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ForceScan.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 30, "Smells.SML044"));
-        }
+[TestClass]
+public class testForceScan : TestModel
+{
+    public testForceScan()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/ForceScan.sql");
 
-        [TestMethod]
-        public void ForceScan()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 30, "Smells.SML044"));
     }
 
-    [TestClass]
-    public class testImplicitRangeWindow : TestModel
+    [TestMethod]
+    public void ForceScan()
     {
-        public testImplicitRangeWindow()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/ImplicitRangeWindow.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 32, "Smells.SML026"));
-        }
+[TestClass]
+public class testImplicitRangeWindow : TestModel
+{
+    public testImplicitRangeWindow()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/ImplicitRangeWindow.sql");
 
-        [TestMethod]
-        public void ImplicitRangeWindow()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 32, "Smells.SML026"));
     }
 
-    [TestClass]
-    public class testInsertMissingColumnSpecifiers : TestModel
+    [TestMethod]
+    public void ImplicitRangeWindow()
     {
-        public testInsertMissingColumnSpecifiers()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/InsertMissingColumnSpecifiers.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 5, "Smells.SML012"));
-        }
+[TestClass]
+public class testInsertMissingColumnSpecifiers : TestModel
+{
+    public testInsertMissingColumnSpecifiers()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/InsertMissingColumnSpecifiers.sql");
 
-        [TestMethod]
-        public void InsertMissingColumnSpecifiers()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 5, "Smells.SML012"));
     }
 
-    [TestClass]
-    public class testInsertSelectStar : TestModel
+    [TestMethod]
+    public void InsertMissingColumnSpecifiers()
     {
-        public testInsertSelectStar()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/InsertSelectStar.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
-        }
+[TestClass]
+public class testInsertSelectStar : TestModel
+{
+    public testInsertSelectStar()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/InsertSelectStar.sql");
 
-        [TestMethod]
-        public void InsertSelectStar()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testLagFunction : TestModel
+    [TestMethod]
+    public void InsertSelectStar()
     {
-        public testLagFunction()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/LAGFunction.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
-        }
+[TestClass]
+public class testLagFunction : TestModel
+{
+    public testLagFunction()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/LAGFunction.sql");
 
-        [TestMethod]
-        public void LagFunction()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testMultiCteTest : TestModel
+    [TestMethod]
+    public void LagFunction()
     {
-        public testMultiCteTest()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/MultiCteTest.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(8, 10, "Smells.SML005"));
-        }
+[TestClass]
+public class testMultiCteTest : TestModel
+{
+    public testMultiCteTest()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/MultiCteTest.sql");
 
-        [TestMethod]
-        public void MultiCteTest()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(8, 10, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testOrderByOrdinal : TestModel
+    [TestMethod]
+    public void MultiCteTest()
     {
-        public testOrderByOrdinal()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/orderbyordinal.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 34, "Smells.SML007"));
-            _ExpectedProblems.Add(new TestProblem(6, 36, "Smells.SML007"));
-            _ExpectedProblems.Add(new TestProblem(6, 38, "Smells.SML007"));
-        }
+[TestClass]
+public class testOrderByOrdinal : TestModel
+{
+    public testOrderByOrdinal()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/orderbyordinal.sql");
 
-        [TestMethod]
-        public void OrderByOrdinal()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 34, "Smells.SML007"));
+        ExpectedProblems.Add(new TestProblem(6, 36, "Smells.SML007"));
+        ExpectedProblems.Add(new TestProblem(6, 38, "Smells.SML007"));
     }
 
-    [TestClass]
-    public class testRangeWindow : TestModel
+    [TestMethod]
+    public void OrderByOrdinal()
     {
-        public testRangeWindow()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/RangeWindow.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(8, 19, "Smells.SML025"));
-        }
+[TestClass]
+public class testRangeWindow : TestModel
+{
+    public testRangeWindow()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/RangeWindow.sql");
 
-        [TestMethod]
-        public void RangeWindow()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(8, 19, "Smells.SML025"));
     }
 
-    [TestClass]
-    public class testSelectFromTableVar : TestModel
+    [TestMethod]
+    public void RangeWindow()
     {
-        public testSelectFromTableVar()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SelectFromTableVar.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(4, 1, "Smells.SML033"));
-        }
+[TestClass]
+public class testSelectFromTableVar : TestModel
+{
+    public testSelectFromTableVar()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SelectFromTableVar.sql");
 
-        [TestMethod]
-        public void SelectFromTableVar()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(4, 1, "Smells.SML033"));
     }
 
-    [TestClass]
-    public class testSelectStarFromViewInProc : TestModel
+    [TestMethod]
+    public void SelectFromTableVar()
     {
-        public testSelectStarFromViewInProc()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SelectStarFromViewInProc.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(4, 8, "Smells.SML005"));
-        }
+[TestClass]
+public class testSelectStarFromViewInProc : TestModel
+{
+    public testSelectStarFromViewInProc()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SelectStarFromViewInProc.sql");
 
-        [TestMethod]
-        public void SelectFromTableVar()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(4, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testSelectStarOutOfCteTest : TestModel
+    [TestMethod]
+    public void SelectFromTableVar()
     {
-        public testSelectStarOutOfCteTest()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SelectStarOutOfCteTest.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(8, 8, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(10, 8, "Smells.SML005"));
-        }
+[TestClass]
+public class testSelectStarOutOfCteTest : TestModel
+{
+    public testSelectStarOutOfCteTest()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SelectStarOutOfCteTest.sql");
 
-        [TestMethod]
-        public void SelectStarOutOfCteTest()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(8, 8, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(10, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testSelectTopNoParen : TestModel
+    [TestMethod]
+    public void SelectStarOutOfCteTest()
     {
-        public testSelectTopNoParen()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SelectTopNoParen.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML034"));
-        }
+[TestClass]
+public class testSelectTopNoParen : TestModel
+{
+    public testSelectTopNoParen()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SelectTopNoParen.sql");
 
-        [TestMethod]
-        public void SelectTopNoParen()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML034"));
     }
 
-    [TestClass]
-    public class testSetNoCountON : TestModel
+    [TestMethod]
+    public void SelectTopNoParen()
     {
-        public testSetNoCountON()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SetNoCountON.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML034"));
-        }
+[TestClass]
+public class testSetNoCountON : TestModel
+{
+    public testSetNoCountON()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SetNoCountON.sql");
 
-        [TestMethod]
-        public void SetNoCountON()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML034"));
     }
 
-    [TestClass]
-    public class testSets : TestModel
+    [TestMethod]
+    public void SetNoCountON()
     {
-        public testSets()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SETs.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(10, 1, "Smells.SML013"));
-            _ExpectedProblems.Add(new TestProblem(4, 1, "Smells.SML014"));
-            _ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML015"));
-            _ExpectedProblems.Add(new TestProblem(6, 1, "Smells.SML016"));
-            _ExpectedProblems.Add(new TestProblem(7, 1, "Smells.SML017"));
-            _ExpectedProblems.Add(new TestProblem(8, 1, "Smells.SML018"));
-            _ExpectedProblems.Add(new TestProblem(9, 1, "Smells.SML019"));
-            _ExpectedProblems.Add(new TestProblem(2, 18, "Smells.SML030"));
-        }
+[TestClass]
+public class testSets : TestModel
+{
+    public testSets()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SETs.sql");
 
-        [TestMethod]
-        public void Sets()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(10, 1, "Smells.SML013"));
+        ExpectedProblems.Add(new TestProblem(4, 1, "Smells.SML014"));
+        ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML015"));
+        ExpectedProblems.Add(new TestProblem(6, 1, "Smells.SML016"));
+        ExpectedProblems.Add(new TestProblem(7, 1, "Smells.SML017"));
+        ExpectedProblems.Add(new TestProblem(8, 1, "Smells.SML018"));
+        ExpectedProblems.Add(new TestProblem(9, 1, "Smells.SML019"));
+        ExpectedProblems.Add(new TestProblem(2, 18, "Smells.SML030"));
     }
 
-    [TestClass]
-    public class testSets2 : TestModel
+    [TestMethod]
+    public void Sets()
     {
-        public testSets2()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SETs2.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 16, "Smells.SML008"));
-            _ExpectedProblems.Add(new TestProblem(6, 15, "Smells.SML009"));
-            _ExpectedProblems.Add(new TestProblem(7, 1, "Smells.SML020"));
-            _ExpectedProblems.Add(new TestProblem(8, 1, "Smells.SML022"));
-        }
+[TestClass]
+public class testSets2 : TestModel
+{
+    public testSets2()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SETs2.sql");
 
-        [TestMethod]
-        public void Sets2()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 16, "Smells.SML008"));
+        ExpectedProblems.Add(new TestProblem(6, 15, "Smells.SML009"));
+        ExpectedProblems.Add(new TestProblem(7, 1, "Smells.SML020"));
+        ExpectedProblems.Add(new TestProblem(8, 1, "Smells.SML022"));
     }
 
-    [TestClass]
-    public class testSetTransactionIsolationLevel : TestModel
+    [TestMethod]
+    public void Sets2()
     {
-        public testSetTransactionIsolationLevel()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SetTransactionIsolationLevel.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML010"));
-        }
+[TestClass]
+public class testSetTransactionIsolationLevel : TestModel
+{
+    public testSetTransactionIsolationLevel()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SetTransactionIsolationLevel.sql");
 
-        [TestMethod]
-        public void SetTransactionIsolationLevel()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML010"));
     }
 
-    [TestClass]
-    public class testSingleCharAlias : TestModel
+    [TestMethod]
+    public void SetTransactionIsolationLevel()
     {
-        public testSingleCharAlias()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SingleCharAlias.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 8, "Smells.SML011"));
-        }
+[TestClass]
+public class testSingleCharAlias : TestModel
+{
+    public testSingleCharAlias()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SingleCharAlias.sql");
 
-        [TestMethod]
-        public void SingleCharAlias()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 8, "Smells.SML011"));
     }
 
-    [TestClass]
-    public class testTableHints : TestModel
+    [TestMethod]
+    public void SingleCharAlias()
     {
-        public testTableHints()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TableHints.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML004"));
-        }
+[TestClass]
+public class testTableHints : TestModel
+{
+    public testTableHints()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TableHints.sql");
 
-        [TestMethod]
-        public void TableHints()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 1, "Smells.SML004"));
     }
 
-    [TestClass]
-    public class testCrossServerJoin : TestModel
+    [TestMethod]
+    public void TableHints()
     {
-        public testCrossServerJoin()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestCrossServerJoin.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 18, "Smells.SML001"));
-        }
+[TestClass]
+public class testCrossServerJoin : TestModel
+{
+    public testCrossServerJoin()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestCrossServerJoin.sql");
 
-        [TestMethod]
-        public void CrossServerJoin()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 18, "Smells.SML001"));
     }
 
-    [TestClass]
-    public class testOnePartNamedSelect : TestModel
+    [TestMethod]
+    public void CrossServerJoin()
     {
-        public testOnePartNamedSelect()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestOnePartNamedSelect.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 19, "Smells.SML002"));
-        }
+[TestClass]
+public class testOnePartNamedSelect : TestModel
+{
+    public testOnePartNamedSelect()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestOnePartNamedSelect.sql");
 
-        [TestMethod]
-        public void OnePartNamedSelect()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 19, "Smells.SML002"));
     }
 
-    [TestClass]
-    public class testSelectStarBeginEndBlock : TestModel
+    [TestMethod]
+    public void OnePartNamedSelect()
     {
-        public testSelectStarBeginEndBlock()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarBeginEndBlock.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
-        }
+[TestClass]
+public class testSelectStarBeginEndBlock : TestModel
+{
+    public testSelectStarBeginEndBlock()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarBeginEndBlock.sql");
 
-        [TestMethod]
-        public void SelectStarBeginEndBlock()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testSelectStarInCteTest : TestModel
+    [TestMethod]
+    public void SelectStarBeginEndBlock()
     {
-        public testSelectStarInCteTest()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInCteTest.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
-        }
+[TestClass]
+public class testSelectStarInCteTest : TestModel
+{
+    public testSelectStarInCteTest()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInCteTest.sql");
 
-        [TestMethod]
-        public void SelectStarInCteTest()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testSelectStarIninlineTVF : TestModel
+    [TestMethod]
+    public void SelectStarInCteTest()
     {
-        public testSelectStarIninlineTVF()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarIninlineTVF.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
-        }
+[TestClass]
+public class testSelectStarIninlineTVF : TestModel
+{
+    public testSelectStarIninlineTVF()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarIninlineTVF.sql");
 
-        [TestMethod]
-        public void SelectStarIninlineTVF()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(6, 9, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testSelectStarInMultiStatementTVF : TestModel
+    [TestMethod]
+    public void SelectStarIninlineTVF()
     {
-        public testSelectStarInMultiStatementTVF()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInMultiStatementTVF.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(12, 10, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(8, 10, "Smells.SML033"));
-        }
+[TestClass]
+public class testSelectStarInMultiStatementTVF : TestModel
+{
+    public testSelectStarInMultiStatementTVF()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInMultiStatementTVF.sql");
 
-        [TestMethod]
-        public void SelectStarInMultiStatementTVF()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(12, 10, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(8, 10, "Smells.SML033"));
     }
 
-    [TestClass]
-    public class testSelectStarInScalarUDF : TestModel
+    [TestMethod]
+    public void SelectStarInMultiStatementTVF()
     {
-        public testSelectStarInScalarUDF()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInScalarUDF.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(9, 10, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(5, 10, "Smells.SML033"));
-        }
+[TestClass]
+public class testSelectStarInScalarUDF : TestModel
+{
+    public testSelectStarInScalarUDF()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInScalarUDF.sql");
 
-        [TestMethod]
-        public void SelectStarInScalarUDF()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(9, 10, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(5, 10, "Smells.SML033"));
     }
 
-    [TestClass]
-    public class testSelectStarInWhileLoop : TestModel
+    [TestMethod]
+    public void SelectStarInScalarUDF()
     {
-        public testSelectStarInWhileLoop()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInWhileLoop.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML005"));
-        }
+[TestClass]
+public class testSelectStarInWhileLoop : TestModel
+{
+    public testSelectStarInWhileLoop()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInWhileLoop.sql");
 
-        [TestMethod]
-        public void SelectStarInWhileLoop()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testWithExists : TestModel
+    [TestMethod]
+    public void SelectStarInWhileLoop()
     {
-        public testWithExists()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestWithExists.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 18, "Smells.SML005"));
-        }
+[TestClass]
+public class testWithExists : TestModel
+{
+    public testWithExists()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestWithExists.sql");
 
-        [TestMethod]
-        public void WithExists()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 18, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testWithExistsAndNestedSelectStar : TestModel
+    [TestMethod]
+    public void WithExists()
     {
-        public testWithExistsAndNestedSelectStar()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestWithExistsAndNestedSelectStar.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(4, 18, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML005"));
-        }
+[TestClass]
+public class testWithExistsAndNestedSelectStar : TestModel
+{
+    public testWithExistsAndNestedSelectStar()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestWithExistsAndNestedSelectStar.sql");
 
-        [TestMethod]
-        public void WithExistsAndNestedSelectStar()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(4, 18, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(5, 9, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testWithExistsAndNestedSelectStarInlineIF : TestModel
+    [TestMethod]
+    public void WithExistsAndNestedSelectStar()
     {
-        public testWithExistsAndNestedSelectStarInlineIF()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestWithExistsAndNestedSelectStarInlineIF.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(4, 18, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(4, 51, "Smells.SML005"));
-        }
+[TestClass]
+public class testWithExistsAndNestedSelectStarInlineIF : TestModel
+{
+    public testWithExistsAndNestedSelectStarInlineIF()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestWithExistsAndNestedSelectStarInlineIF.sql");
 
-        [TestMethod]
-        public void WithExistsAndNestedSelectStarInlineIF()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(4, 18, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(4, 51, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testWithNoLock : TestModel
+    [TestMethod]
+    public void WithExistsAndNestedSelectStarInlineIF()
     {
-        public testWithNoLock()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLock.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(4, 42, "Smells.SML003"));
-        }
+[TestClass]
+public class testWithNoLock : TestModel
+{
+    public testWithNoLock()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLock.sql");
 
-        [TestMethod]
-        public void WithNoLock()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(4, 42, "Smells.SML003"));
     }
 
-    [TestClass]
-    public class testWithNoLockIndexhint : TestModel
+    [TestMethod]
+    public void WithNoLock()
     {
-        public testWithNoLockIndexhint()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockIndexhint.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(4, 42, "Smells.SML003"));
-            _ExpectedProblems.Add(new TestProblem(4, 49, "Smells.SML045"));
-        }
+[TestClass]
+public class testWithNoLockIndexhint : TestModel
+{
+    public testWithNoLockIndexhint()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockIndexhint.sql");
 
-        [TestMethod]
-        public void WithNoLockIndexhint()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(4, 42, "Smells.SML003"));
+        ExpectedProblems.Add(new TestProblem(4, 49, "Smells.SML045"));
     }
 
-    [TestClass]
-    public class testWithNoLockInWhiteList : TestModel
+    [TestMethod]
+    public void WithNoLockIndexhint()
     {
-        public testWithNoLockInWhiteList()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockInWhiteList.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(4, 42, "Smells.SML003"));
-        }
+[TestClass]
+public class testWithNoLockInWhiteList : TestModel
+{
+    public testWithNoLockInWhiteList()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockInWhiteList.sql");
 
-        [TestMethod]
-        public void WithNoLockInWhiteList()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(4, 42, "Smells.SML003"));
     }
 
-    [TestClass]
-    public class testWithNoLockNoWith : TestModel
+    [TestMethod]
+    public void WithNoLockInWhiteList()
     {
-        public testWithNoLockNoWith()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockNoWith.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(4, 38, "Smells.SML003"));
-        }
+[TestClass]
+public class testWithNoLockNoWith : TestModel
+{
+    public testWithNoLockNoWith()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockNoWith.sql");
 
-        [TestMethod]
-        public void WithNoLockNoWith()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(4, 38, "Smells.SML003"));
     }
 
-    [TestClass]
-    public class testUnion : TestModel
+    [TestMethod]
+    public void WithNoLockNoWith()
     {
-        public testUnion()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/UnionTest.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
-            _ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
-        }
+[TestClass]
+public class testUnion : TestModel
+{
+    public testUnion()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/UnionTest.sql");
 
-        [TestMethod]
-        public void Union()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testUnnamedPrimaryKey : TestModel
+    [TestMethod]
+    public void Union()
     {
-        public testUnnamedPrimaryKey()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/UnnamedPK.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
-            // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
-            // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
-        }
+[TestClass]
+public class testUnnamedPrimaryKey : TestModel
+{
+    public testUnnamedPrimaryKey()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/UnnamedPK.sql");
 
-        [TestMethod]
-        public void UnnamedPrimaryKey()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
+        // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
+        // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testWhiteListTest : TestModel
+    [TestMethod]
+    public void UnnamedPrimaryKey()
     {
-        public testWhiteListTest()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/WhiteListTest.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
-            // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
-            // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
-        }
+[TestClass]
+public class testWhiteListTest : TestModel
+{
+    public testWhiteListTest()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/WhiteListTest.sql");
 
-        [TestMethod]
-        public void WhiteList()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
+        // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
+        // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testSingleLineComment : TestModel
+    [TestMethod]
+    public void WhiteList()
     {
-        public testSingleLineComment()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/SingleLineComment.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
-            // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
-            // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
-        }
+[TestClass]
+public class testSingleLineComment : TestModel
+{
+    public testSingleLineComment()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/SingleLineComment.sql");
 
-        [TestMethod]
-        public void SingleLineComment()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(5, 8, "Smells.SML005"));
+        // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
+        // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testTempTableWithNamedPK : TestModel
+    [TestMethod]
+    public void SingleLineComment()
     {
-        public testTempTableWithNamedPK()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedPK.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(14, 3, "Smells.SML038"));
+[TestClass]
+public class testTempTableWithNamedPK : TestModel
+{
+    public testTempTableWithNamedPK()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedPK.sql");
 
-            // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
-            // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
-        }
+        ExpectedProblems.Add(new TestProblem(14, 3, "Smells.SML038"));
 
-        [TestMethod]
-        public void TempTableWithNamedPK()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(7, 8, "Smells.SML005"));
+        // this._ExpectedProblems.Add(new TestProblem(9, 8, "Smells.SML005"));
     }
 
-    [TestClass]
-    public class testTempTableWithNamedDefConstraint : TestModel
+    [TestMethod]
+    public void TempTableWithNamedPK()
     {
-        public testTempTableWithNamedDefConstraint()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedDefConstraint.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(14, 3, "Smells.SML039"));
-        }
+[TestClass]
+public class testTempTableWithNamedDefConstraint : TestModel
+{
+    public testTempTableWithNamedDefConstraint()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedDefConstraint.sql");
 
-        [TestMethod]
-        public void TempTableWithNamedDefConstraint()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(14, 3, "Smells.SML039"));
     }
 
-    [TestClass]
-    public class testTempTableWithNamedFK : TestModel
+    [TestMethod]
+    public void TempTableWithNamedDefConstraint()
     {
-        public testTempTableWithNamedFK()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedFK.sql");
+        RunTest();
+    }
+}
 
-            // this._ExpectedProblems.Add(new TestProblem(14, 3, "Smells.SML040"));
-        }
+[TestClass]
+public class testTempTableWithNamedFK : TestModel
+{
+    public testTempTableWithNamedFK()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedFK.sql");
 
-        [TestMethod]
-        public void TempTableWithNamedFK()
-        {
-            RunTest();
-        }
+        // this._ExpectedProblems.Add(new TestProblem(14, 3, "Smells.SML040"));
     }
 
-    [TestClass]
-    public class testTempTableWithNamedCheckConstraint : TestModel
+    [TestMethod]
+    public void TempTableWithNamedFK()
     {
-        public testTempTableWithNamedCheckConstraint()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedCheckConstraint.sql");
+        RunTest();
+    }
+}
 
-            _ExpectedProblems.Add(new TestProblem(14, 16, "Smells.SML040"));
-        }
+[TestClass]
+public class testTempTableWithNamedCheckConstraint : TestModel
+{
+    public testTempTableWithNamedCheckConstraint()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedCheckConstraint.sql");
 
-        [TestMethod]
-        public void TempTableWithNamedCheckConstraint()
-        {
-            RunTest();
-        }
+        ExpectedProblems.Add(new TestProblem(14, 16, "Smells.SML040"));
     }
 
-    [TestClass]
-    public class testEqualsNull : TestModel
+    [TestMethod]
+    public void TempTableWithNamedCheckConstraint()
     {
-        public testEqualsNull()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/EqualsNull.sql");
-            _ExpectedProblems.Add(new TestProblem(13, 39, "Smells.SML046"));
-        }
+        RunTest();
+    }
+}
 
-        [TestMethod]
-        public void EqualsNull()
-        {
-            RunTest();
-        }
+[TestClass]
+public class testEqualsNull : TestModel
+{
+    public testEqualsNull()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/EqualsNull.sql");
+        ExpectedProblems.Add(new TestProblem(13, 39, "Smells.SML046"));
     }
 
-    [TestClass]
-    public class testDeprecatedType : TestModel
+    [TestMethod]
+    public void EqualsNull()
     {
-        public testDeprecatedType()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/DeprecatedTypes.sql");
-            _ExpectedProblems.Add(new TestProblem(4, 16, "Smells.SML047"));
-        }
+        RunTest();
+    }
+}
 
-        [TestMethod]
-        public void DeprecatedTypes()
-        {
-            RunTest();
-        }
+[TestClass]
+public class testDeprecatedType : TestModel
+{
+    public testDeprecatedType()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/DeprecatedTypes.sql");
+        ExpectedProblems.Add(new TestProblem(4, 16, "Smells.SML047"));
     }
 
-    [TestClass]
-    public class testDeprecatedTypeSP : TestModel
+    [TestMethod]
+    public void DeprecatedTypes()
     {
-        public testDeprecatedTypeSP()
-        {
-            _TestFiles.Add("../../../../TSQLSmellsTest/DeprecatedTypesSP.sql");
-            _ExpectedProblems.Add(new TestProblem(4, 14, "Smells.SML047"));
-            _ExpectedProblems.Add(new TestProblem(5, 14, "Smells.SML047"));
-        }
+        RunTest();
+    }
+}
 
-        [TestMethod]
-        public void DeprecatedTypesSP()
-        {
-            RunTest();
-        }
+[TestClass]
+public class testDeprecatedTypeSP : TestModel
+{
+    public testDeprecatedTypeSP()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/DeprecatedTypesSP.sql");
+        ExpectedProblems.Add(new TestProblem(4, 14, "Smells.SML047"));
+        ExpectedProblems.Add(new TestProblem(5, 14, "Smells.SML047"));
+    }
+
+    [TestMethod]
+    public void DeprecatedTypesSP()
+    {
+        RunTest();
     }
 }

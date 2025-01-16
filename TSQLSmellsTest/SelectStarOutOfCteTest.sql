@@ -10,3 +10,5 @@ SELECT * FROM dbo.TestTable
 SELECT * FROM ctex
 
 go
+
+--SML005
