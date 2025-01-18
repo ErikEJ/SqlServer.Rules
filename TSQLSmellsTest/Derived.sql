@@ -21,4 +21,4 @@ Select 1
 			Derived
  on Derived.Col1 = TestTableSSDT.Col1;
 
- --SML035
+ -- SML035

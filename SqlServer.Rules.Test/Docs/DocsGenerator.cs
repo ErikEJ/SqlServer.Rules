@@ -218,7 +218,7 @@ namespace SqlServer.Rules.Tests.Docs
                 foreach (var script in scriptExamples)
                 {
                     stringBuilder.AppendLine("```sql");
-                    stringBuilder.AppendLine(script);
+                    stringBuilder.AppendLine(script.Trim(Environment.NewLine.ToCharArray()).Trim());
                     stringBuilder.AppendLine("```");
                 }
             }

@@ -9,4 +9,4 @@ select sum(IdCol) over(partition by Col1
   from dbo.TestTableSSDT
 order by Col1,Col2;
 
---SML025
+-- SML025

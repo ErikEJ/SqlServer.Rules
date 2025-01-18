@@ -8,4 +8,4 @@ select sum(TestTableSSDT.IdCol) over(partition by TestTableSSDT.Col1
   from [dbo].[TestTableSSDT]
 order by Col1,Col2;
 
---SML025
+-- SML025

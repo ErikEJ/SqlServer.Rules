@@ -5,4 +5,4 @@ AS
 	Select top 100 Col1 from dbo.TestTableSSDT;
 RETURN 0
 
---SML034
+-- SML034

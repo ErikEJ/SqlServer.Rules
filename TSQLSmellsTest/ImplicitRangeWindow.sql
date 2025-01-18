@@ -10,4 +10,4 @@ select sum(TestTableSSDT.Col1) over(partition by TestTableSSDT.IdCol
   from dbo.TestTableSSDT
 order by Col1,Col2;
 
---SML026
+-- SML026

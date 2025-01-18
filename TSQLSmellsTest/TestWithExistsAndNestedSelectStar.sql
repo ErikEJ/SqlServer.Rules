@@ -6,4 +6,4 @@ IF EXISTS(SELECT * FROM dbo.TestTableSSDT) BEGIN
 end
 GO
 
---SML005
+-- SML005

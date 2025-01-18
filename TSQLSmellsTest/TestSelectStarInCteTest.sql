@@ -10,4 +10,4 @@ SELECT idcol,Col1 FROM ctex
 
 go
 
---SML005
+-- SML005

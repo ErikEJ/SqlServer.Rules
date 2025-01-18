@@ -8,4 +8,4 @@ Declare @X table
 
 Select * from @x
 
---SML005,SML033
+-- SML005, SML033
