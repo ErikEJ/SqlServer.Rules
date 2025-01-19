@@ -8,9 +8,9 @@ namespace TSQLSmellsSSDTTest;
 
 public class TestModel
 {
-    public List<TestProblem> ExpectedProblems { get; set; } = [];
-    public List<TestProblem> FoundProblems { get; set; } = [];
-    public List<string> TestFiles { get; set; } = [];
+    public List<TestProblem> ExpectedProblems { get; private set; } = [];
+    public List<TestProblem> FoundProblems { get; private set; } = [];
+    public List<string> TestFiles { get; private set; } = [];
 
     private TSqlModel Model { get; set; }
 
@@ -39,7 +39,7 @@ public class TestModel
         foreach (var Problem in result.Problems)
         {
             // Only concern ourselves with our problems
-            if (Problem.RuleId.StartsWith("Smells."))
+            if (Problem.RuleId.StartsWith("Smells.", System.StringComparison.OrdinalIgnoreCase))
             {
                 var TestProblem = new TestProblem(Problem.StartLine, Problem.StartColumn, Problem.RuleId);
                 FoundProblems.Add(TestProblem);
