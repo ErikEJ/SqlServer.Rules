@@ -36,6 +36,7 @@ namespace SqlServer.Rules.Tests.Docs
                 .ToList();
 
             var ruleScripts = CollectRuleScripts(rulesScriptFolder);
+
             var smellsAssembly = typeof(Smells).Assembly;
 
             var tSqlSmellRules = smellsAssembly.GetTypes()
@@ -69,7 +70,7 @@ namespace SqlServer.Rules.Tests.Docs
                 GenerateRuleMarkdown(comments, elements, ruleScripts, ruleAttribute, Path.Combine(docsFolder, ruleAttribute.Category), t.Assembly.GetName().Name, t.Namespace, t.Name);
             });
 
-            GenerateTocMarkdown(rules, null, categories, reader, docsFolder);
+            GenerateTocMarkdown(rules, categories, ruleScripts, reader, docsFolder);
         }
 
         private static void CreateFolders(string docsFolder, List<string> categories)
@@ -242,7 +243,7 @@ namespace SqlServer.Rules.Tests.Docs
             return string.Join(Environment.NewLine, trimmedLines);
         }
 
-        private static void GenerateTocMarkdown(List<Type> sqlServerRules, List<Type> tSqlSmellRules, List<string> categories, DocXmlReader reader, string docsFolder)
+        private static void GenerateTocMarkdown(List<Type> sqlServerRules, List<string> categories, Dictionary<string, List<string>> ruleScripts, DocXmlReader reader, string docsFolder)
         {
             const string spaces = "  ";
 
@@ -299,6 +300,7 @@ namespace SqlServer.Rules.Tests.Docs
                     {
                         friendlyName = ruleAttribute.Description;
                         isIgnorable = " ";
+                        exampleMd = ruleScripts.Any(x => x.Key.Contains(ruleAttribute.Id.ToId())) ? "Yes" : " ";
                     }
 
                     var ruleLink = $"[{ruleAttribute.Id.ToId()}]({category}/{ruleAttribute.Id.ToId()}.md)";
@@ -350,9 +352,9 @@ namespace SqlServer.Rules.Tests.Docs
             return string.Join(' ', parts);
         }
 
-        public static string ToId(this string Input)
+        public static string ToId(this string input)
         {
-            return new string(Input.Split('.').Last());
+            return new string(input.Split('.').Last());
         }
     }
 }
