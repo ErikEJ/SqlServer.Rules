@@ -27,40 +27,39 @@
 
 using System.IO;
 
-namespace SqlServer.Rules.Test
+namespace SqlServer.Rules.Test;
+
+internal sealed class RuleTestUtils
 {
-    internal sealed class RuleTestUtils
+
+    public static void SaveStringToFile(string contents, string filename)
     {
-
-        public static void SaveStringToFile(string contents, string filename)
+        FileStream fileStream = null;
+        StreamWriter streamWriter = null;
+        try
         {
-            FileStream fileStream = null;
-            StreamWriter streamWriter = null;
-            try
+            var directory = Path.GetDirectoryName(filename);
+            if (!Directory.Exists(directory))
             {
-                var directory = Path.GetDirectoryName(filename);
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
+                Directory.CreateDirectory(directory);
+            }
 
-                fileStream = new FileStream(filename, FileMode.Create);
-                streamWriter = new StreamWriter(fileStream);
-                streamWriter.Write(contents);
-            }
-            finally
-            {
-                streamWriter?.Close();
-                fileStream?.Close();
-            }
+            fileStream = new FileStream(filename, FileMode.Create);
+            streamWriter = new StreamWriter(fileStream);
+            streamWriter.Write(contents);
         }
-
-        public static string ReadFileToString(string filePath)
+        finally
         {
-            using (var reader = new StreamReader(filePath))
-            {
-                return reader.ReadToEnd();
-            }
+            streamWriter?.Close();
+            fileStream?.Close();
+        }
+    }
+
+    public static string ReadFileToString(string filePath)
+    {
+        using (var reader = new StreamReader(filePath))
+        {
+            return reader.ReadToEnd();
         }
     }
 }
