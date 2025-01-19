@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TSQLSmellsSSDTTest;
 
+#pragma warning disable IDE1006 // Naming Styles
 [TestClass]
 public class testConvertDate : TestModel
 {
@@ -1040,3 +1041,4 @@ public class testDeprecatedTypeSP : TestModel
         RunTest();
     }
 }
+#pragma warning restore IDE1006 // Naming Styles

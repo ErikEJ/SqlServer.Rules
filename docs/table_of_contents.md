@@ -6,53 +6,53 @@
   
 | Rule Id | Friendly Name | Ignorable | Description | Example? |
 |----|----|----|----|----|
-| [SML001](CodeSmells/SML001.md) | Avoid cross server joins |   | Avoid cross server joins |   |
-| [SML002](CodeSmells/SML002.md) | Best practice is to use two part naming |   | Best practice is to use two part naming |   |
-| [SML003](CodeSmells/SML003.md) | Dirty Reads cause consistency errors |   | Dirty Reads cause consistency errors |   |
-| [SML004](CodeSmells/SML004.md) | Dont Override the optimizer |   | Dont Override the optimizer |   |
-| [SML005](CodeSmells/SML005.md) | Avoid use of 'Select *' |   | Avoid use of 'Select *' |   |
-| [SML006](CodeSmells/SML006.md) | Avoid Explicit Conversion of Columnar data |   | Avoid Explicit Conversion of Columnar data |   |
+| [SML001](CodeSmells/SML001.md) | Avoid cross server joins |   | Avoid cross server joins | Yes |
+| [SML002](CodeSmells/SML002.md) | Best practice is to use two part naming |   | Best practice is to use two part naming | Yes |
+| [SML003](CodeSmells/SML003.md) | Dirty Reads cause consistency errors |   | Dirty Reads cause consistency errors | Yes |
+| [SML004](CodeSmells/SML004.md) | Dont Override the optimizer |   | Dont Override the optimizer | Yes |
+| [SML005](CodeSmells/SML005.md) | Avoid use of 'Select *' |   | Avoid use of 'Select *' | Yes |
+| [SML006](CodeSmells/SML006.md) | Avoid Explicit Conversion of Columnar data |   | Avoid Explicit Conversion of Columnar data | Yes |
 | [SML007](CodeSmells/SML007.md) | Avoid use of ordinal positions in ORDER BY Clauses |   | Avoid use of ordinal positions in ORDER BY Clauses |   |
-| [SML008](CodeSmells/SML008.md) | Dont Change DateFormat |   | Dont Change DateFormat |   |
-| [SML009](CodeSmells/SML009.md) | Dont Change DateFirst |   | Dont Change DateFirst |   |
-| [SML010](CodeSmells/SML010.md) | ReadUnCommitted: Dirty reads can cause consistency errors |   | ReadUnCommitted: Dirty reads can cause consistency errors |   |
-| [SML011](CodeSmells/SML011.md) | Single character aliases are poor practice |   | Single character aliases are poor practice |   |
-| [SML012](CodeSmells/SML012.md) | Missing Column specifications on insert |   | Missing Column specifications on insert |   |
-| [SML013](CodeSmells/SML013.md) | CONCAT_NULL_YIELDS_NULL should be on |   | CONCAT_NULL_YIELDS_NULL should be on |   |
-| [SML014](CodeSmells/SML014.md) | ANSI_NULLS should be On |   | ANSI_NULLS should be On |   |
-| [SML015](CodeSmells/SML015.md) | ANSI_PADDING should be On |   | ANSI_PADDING should be On |   |
-| [SML016](CodeSmells/SML016.md) | ANSI_WARNINGS should be On |   | ANSI_WARNINGS should be On |   |
-| [SML017](CodeSmells/SML017.md) | ARITHABORT should be On |   | ARITHABORT should be On |   |
-| [SML018](CodeSmells/SML018.md) | NUMERIC_ROUNDABORT should be Off |   | NUMERIC_ROUNDABORT should be Off |   |
-| [SML019](CodeSmells/SML019.md) | QUOTED_IDENTIFIER should be ON |   | QUOTED_IDENTIFIER should be ON |   |
-| [SML020](CodeSmells/SML020.md) | FORCEPLAN should be OFF |   | FORCEPLAN should be OFF |   |
-| [SML021](CodeSmells/SML021.md) | Use 2 part naming in EXECUTE statements |   | Use 2 part naming in EXECUTE statements |   |
-| [SML022](CodeSmells/SML022.md) | Identity value should be agnostic |   | Identity value should be agnostic |   |
+| [SML008](CodeSmells/SML008.md) | Dont Change DateFormat |   | Dont Change DateFormat | Yes |
+| [SML009](CodeSmells/SML009.md) | Dont Change DateFirst |   | Dont Change DateFirst | Yes |
+| [SML010](CodeSmells/SML010.md) | ReadUnCommitted: Dirty reads can cause consistency errors |   | ReadUnCommitted: Dirty reads can cause consistency errors | Yes |
+| [SML011](CodeSmells/SML011.md) | Single character aliases are poor practice |   | Single character aliases are poor practice | Yes |
+| [SML012](CodeSmells/SML012.md) | Missing Column specifications on insert |   | Missing Column specifications on insert | Yes |
+| [SML013](CodeSmells/SML013.md) | CONCAT_NULL_YIELDS_NULL should be on |   | CONCAT_NULL_YIELDS_NULL should be on | Yes |
+| [SML014](CodeSmells/SML014.md) | ANSI_NULLS should be On |   | ANSI_NULLS should be On | Yes |
+| [SML015](CodeSmells/SML015.md) | ANSI_PADDING should be On |   | ANSI_PADDING should be On | Yes |
+| [SML016](CodeSmells/SML016.md) | ANSI_WARNINGS should be On |   | ANSI_WARNINGS should be On | Yes |
+| [SML017](CodeSmells/SML017.md) | ARITHABORT should be On |   | ARITHABORT should be On | Yes |
+| [SML018](CodeSmells/SML018.md) | NUMERIC_ROUNDABORT should be Off |   | NUMERIC_ROUNDABORT should be Off | Yes |
+| [SML019](CodeSmells/SML019.md) | QUOTED_IDENTIFIER should be ON |   | QUOTED_IDENTIFIER should be ON | Yes |
+| [SML020](CodeSmells/SML020.md) | FORCEPLAN should be OFF |   | FORCEPLAN should be OFF | Yes |
+| [SML021](CodeSmells/SML021.md) | Use 2 part naming in EXECUTE statements |   | Use 2 part naming in EXECUTE statements | Yes |
+| [SML022](CodeSmells/SML022.md) | Identity value should be agnostic |   | Identity value should be agnostic | Yes |
 | [SML023](CodeSmells/SML023.md) | Avoid single line comments |   | Avoid single line comments |   |
-| [SML024](CodeSmells/SML024.md) | Use two part naming |   | Use two part naming |   |
-| [SML025](CodeSmells/SML025.md) | RANGE windows are much slower then ROWS (Explicit use) |   | RANGE windows are much slower then ROWS (Explicit use) |   |
-| [SML026](CodeSmells/SML026.md) | RANGE windows are much slower then ROWS (Implicit use) |   | RANGE windows are much slower then ROWS (Implicit use) |   |
-| [SML027](CodeSmells/SML027.md) | Create table statements should specify schema |   | Create table statements should specify schema |   |
-| [SML028](CodeSmells/SML028.md) | Ordering in a view does not guarantee result set ordering |   | Ordering in a view does not guarantee result set ordering |   |
-| [SML029](CodeSmells/SML029.md) | Cursors default to writable.  Specify FAST_FORWARD |   | Cursors default to writable.  Specify FAST_FORWARD |   |
-| [SML030](CodeSmells/SML030.md) | Include SET NOCOUNT ON inside stored procedures |   | Include SET NOCOUNT ON inside stored procedures |   |
+| [SML024](CodeSmells/SML024.md) | Use two part naming |   | Use two part naming | Yes |
+| [SML025](CodeSmells/SML025.md) | RANGE windows are much slower then ROWS (Explicit use) |   | RANGE windows are much slower then ROWS (Explicit use) | Yes |
+| [SML026](CodeSmells/SML026.md) | RANGE windows are much slower then ROWS (Implicit use) |   | RANGE windows are much slower then ROWS (Implicit use) | Yes |
+| [SML027](CodeSmells/SML027.md) | Create table statements should specify schema |   | Create table statements should specify schema | Yes |
+| [SML028](CodeSmells/SML028.md) | Ordering in a view does not guarantee result set ordering |   | Ordering in a view does not guarantee result set ordering | Yes |
+| [SML029](CodeSmells/SML029.md) | Cursors default to writable.  Specify FAST_FORWARD |   | Cursors default to writable.  Specify FAST_FORWARD | Yes |
+| [SML030](CodeSmells/SML030.md) | Include SET NOCOUNT ON inside stored procedures |   | Include SET NOCOUNT ON inside stored procedures | Yes |
 | [SML031](CodeSmells/SML031.md) | EXISTS/NOT EXISTS can be more performant than COUNT(*) |   | EXISTS/NOT EXISTS can be more performant than COUNT(*) |   |
 | [SML032](CodeSmells/SML032.md) | Ordering in a derived table does not guarantee result set ordering |   | Ordering in a derived table does not guarantee result set ordering |   |
-| [SML033](CodeSmells/SML033.md) | Single character variable names are poor practice |   | Single character variable names are poor practice |   |
-| [SML034](CodeSmells/SML034.md) | Expression used with TOP should be wrapped in parenthises |   | Expression used with TOP should be wrapped in parenthises |   |
+| [SML033](CodeSmells/SML033.md) | Single character variable names are poor practice |   | Single character variable names are poor practice | Yes |
+| [SML034](CodeSmells/SML034.md) | Expression used with TOP should be wrapped in parenthises |   | Expression used with TOP should be wrapped in parenthises | Yes |
 | [SML035](CodeSmells/SML035.md) | TOP(100) percent is ignored by the optimizer |   | TOP(100) percent is ignored by the optimizer |   |
 | [SML036](CodeSmells/SML036.md) | Foreign Key Constraints should be named |   | Foreign Key Constraints should be named |   |
 | [SML037](CodeSmells/SML037.md) | Check Constraints should be named |   | Check Constraints should be named |   |
-| [SML038](CodeSmells/SML038.md) | Primary Key Constraints on temporary tables should not be named |   | Primary Key Constraints on temporary tables should not be named |   |
-| [SML039](CodeSmells/SML039.md) | Default Constraints on temporary tables should not be named |   | Default Constraints on temporary tables should not be named |   |
-| [SML040](CodeSmells/SML040.md) | Foreign Key Constraints on temporary tables should not be named |   | Foreign Key Constraints on temporary tables should not be named |   |
+| [SML038](CodeSmells/SML038.md) | Primary Key Constraints on temporary tables should not be named |   | Primary Key Constraints on temporary tables should not be named | Yes |
+| [SML039](CodeSmells/SML039.md) | Default Constraints on temporary tables should not be named |   | Default Constraints on temporary tables should not be named | Yes |
+| [SML040](CodeSmells/SML040.md) | Foreign Key Constraints on temporary tables should not be named |   | Foreign Key Constraints on temporary tables should not be named | Yes |
 | [SML041](CodeSmells/SML041.md) | Check Constraints on temporary tables should not be named |   | Check Constraints on temporary tables should not be named |   |
 | [SML042](CodeSmells/SML042.md) | Use of SET ROWCOUNT is deprecated : use TOP |   | Use of SET ROWCOUNT is deprecated : use TOP |   |
-| [SML043](CodeSmells/SML043.md) | Potential SQL Injection Issue |   | Potential SQL Injection Issue |   |
-| [SML044](CodeSmells/SML044.md) | Dont override the optimizer ( FORCESCAN ) |   | Dont override the optimizer ( FORCESCAN ) |   |
-| [SML045](CodeSmells/SML045.md) | Dont override the optimizer ( Index Hint) |   | Dont override the optimizer ( Index Hint) |   |
-| [SML046](CodeSmells/SML046.md) | "= Null" Comparison |   | "= Null" Comparison |   |
-| [SML047](CodeSmells/SML047.md) | Use of deprecated data type |   | Use of deprecated data type |   |
+| [SML043](CodeSmells/SML043.md) | Potential SQL Injection Issue |   | Potential SQL Injection Issue | Yes |
+| [SML044](CodeSmells/SML044.md) | Dont override the optimizer ( FORCESCAN ) |   | Dont override the optimizer ( FORCESCAN ) | Yes |
+| [SML045](CodeSmells/SML045.md) | Dont override the optimizer ( Index Hint) |   | Dont override the optimizer ( Index Hint) | Yes |
+| [SML046](CodeSmells/SML046.md) | "= Null" Comparison |   | "= Null" Comparison | Yes |
+| [SML047](CodeSmells/SML047.md) | Use of deprecated data type |   | Use of deprecated data type | Yes |
   
 ## Design
   

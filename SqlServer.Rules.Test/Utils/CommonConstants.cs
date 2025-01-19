@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // <copyright company="Microsoft">
 //
 //    The MIT License (MIT)
@@ -25,14 +25,13 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-namespace SqlServer.Rules.Tests.Utils
+namespace SqlServer.Rules.Tests.Utils;
+
+internal sealed class CommonConstants
 {
-    internal class CommonConstants
-    {
-        public const string MasterDatabaseName = "master";
+    public const string MasterDatabaseName = "master";
 
-        public const int DefaultSqlQueryTimeoutInSeconds = 60;
+    public const int DefaultSqlQueryTimeoutInSeconds = 60;
 
-        public const int DefaultCommandTimeout = 30;
-    }
+    public const int DefaultCommandTimeout = 30;
 }

@@ -34,385 +34,386 @@ using System.IO;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Dac;
 
-namespace SqlServer.Rules.Tests.Utils
+namespace SqlServer.Rules.Tests.Utils;
+
+/// <summary>
+/// TestDB manages a database that is used during unit testing.  It provides
+/// services such as connection strings and attach/detach of the DB from
+/// the test database server
+/// </summary>
+public sealed class SqlTestDB : IDisposable
 {
-    /// <summary>
-    /// TestDB manages a database that is used during unit testing.  It provides
-    /// services such as connection strings and attach/detach of the DB from
-    /// the test database server
-    /// </summary>
-    public class SqlTestDB : IDisposable
+    public enum ReallyCleanUpDatabase
     {
-        public enum ReallyCleanUpDatabase
+        NotIfItCameFromABackupFile, YesReally,
+    }
+
+    private readonly InstanceInfo instance;
+    private readonly string dbName;
+
+    // Variables for tracking restored DB information
+    private bool cleanupDatabase;
+    private readonly List<string> cleanupScripts;
+    public event EventHandler<EventArgs> Disposing;
+
+    public static SqlTestDB CreateFromDacpac(InstanceInfo instance, string dacpacPath, DacDeployOptions deployOptions = null, bool dropDatabaseOnCleanup = false)
+    {
+        var dbName = Path.GetFileNameWithoutExtension(dacpacPath);
+        var ds = new DacServices(instance.BuildConnectionString(dbName));
+        using (var dp = DacPackage.Load(dacpacPath, DacSchemaModelStorageType.Memory))
         {
-            NotIfItCameFromABackupFile, YesReally,
+            ds.Deploy(dp, dbName, true, deployOptions);
         }
 
-        private readonly InstanceInfo _instance;
-        private readonly string _dbName;
+        var sqlDb = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
+        return sqlDb;
+    }
 
-        // Variables for tracking restored DB information
-        private bool _cleanupDatabase;
-        private readonly List<string> _cleanupScripts;
-        public event EventHandler<EventArgs> Disposing;
-
-        public static SqlTestDB CreateFromDacpac(InstanceInfo instance, string dacpacPath, DacDeployOptions deployOptions = null, bool dropDatabaseOnCleanup = false)
+    public static SqlTestDB CreateFromBacpac(InstanceInfo instance, string bacpacPath, DacImportOptions importOptions = null, bool dropDatabaseOnCleanup = false)
+    {
+        var dbName = Path.GetFileNameWithoutExtension(bacpacPath);
+        var ds = new DacServices(instance.BuildConnectionString(dbName));
+        using (var bp = BacPackage.Load(bacpacPath, DacSchemaModelStorageType.Memory))
         {
-            var dbName = Path.GetFileNameWithoutExtension(dacpacPath);
-            var ds = new DacServices(instance.BuildConnectionString(dbName));
-            using (var dp = DacPackage.Load(dacpacPath, DacSchemaModelStorageType.Memory))
-            {
-                ds.Deploy(dp, dbName, true, deployOptions);
-            }
-
-            var sqlDb = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
-            return sqlDb;
+            importOptions = FillDefaultImportOptionsForTest(importOptions);
+            ds.ImportBacpac(bp, dbName, importOptions);
         }
 
-        public static SqlTestDB CreateFromBacpac(InstanceInfo instance, string bacpacPath, DacImportOptions importOptions = null, bool dropDatabaseOnCleanup = false)
+        var sqlDb = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
+        return sqlDb;
+    }
+
+    public static bool TryCreateFromDacpac(InstanceInfo instance, string dacpacPath, out SqlTestDB db, out string error, DacDeployOptions deployOptions = null, bool dropDatabaseOnCleanup = false)
+    {
+        error = null;
+        var dbName = string.Empty;
+        try
         {
-            var dbName = Path.GetFileNameWithoutExtension(bacpacPath);
-            var ds = new DacServices(instance.BuildConnectionString(dbName));
-            using (var bp = BacPackage.Load(bacpacPath, DacSchemaModelStorageType.Memory))
+            dbName = Path.GetFileNameWithoutExtension(dacpacPath);
+            db = CreateFromDacpac(instance, dacpacPath, deployOptions, dropDatabaseOnCleanup);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = ExceptionText.GetText(ex);
+            db = null;
+
+            var dbCreated = SafeDatabaseExists(instance, dbName);
+            if (dbCreated)
             {
-                importOptions = FillDefaultImportOptionsForTest(importOptions);
-                ds.ImportBacpac(bp, dbName, importOptions);
+                db = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
             }
 
-            var sqlDb = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
-            return sqlDb;
+            return false;
+        }
+    }
+
+    public static bool TryCreateFromBacpac(InstanceInfo instance, string bacpacPath, out SqlTestDB db, out string error, DacImportOptions importOptions = null, bool dropDatabaseOnCleanup = false)
+    {
+        error = null;
+        var dbName = string.Empty;
+        try
+        {
+            dbName = Path.GetFileNameWithoutExtension(bacpacPath);
+            importOptions = FillDefaultImportOptionsForTest(importOptions);
+            db = CreateFromBacpac(instance, bacpacPath, importOptions, dropDatabaseOnCleanup);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = ExceptionText.GetText(ex);
+            db = null;
+
+            var dbCreated = SafeDatabaseExists(instance, dbName);
+            if (dbCreated)
+            {
+                db = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
+            }
+
+            return false;
+        }
+    }
+
+    private static DacImportOptions FillDefaultImportOptionsForTest(DacImportOptions importOptions)
+    {
+        var result = new DacImportOptions();
+
+        if (importOptions != null)
+        {
+            result.CommandTimeout = importOptions.CommandTimeout;
+            result.ImportContributorArguments = importOptions.ImportContributorArguments;
+            result.ImportContributors = importOptions.ImportContributors;
         }
 
-        public static bool TryCreateFromDacpac(InstanceInfo instance, string dacpacPath, out SqlTestDB db, out string error, DacDeployOptions deployOptions = null, bool dropDatabaseOnCleanup = false)
-        {
-            error = null;
-            var dbName = string.Empty;
-            try
-            {
-                dbName = Path.GetFileNameWithoutExtension(dacpacPath);
-                db = CreateFromDacpac(instance, dacpacPath, deployOptions, dropDatabaseOnCleanup);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                error = ExceptionText.GetText(ex);
-                db = null;
+        return result;
+    }
 
-                var dbCreated = SafeDatabaseExists(instance, dbName);
-                if (dbCreated)
+    private static bool SafeDatabaseExists(InstanceInfo instance, string dbName)
+    {
+        try
+        {
+            using var masterDb = new SqlTestDB(instance, "master");
+            using (var connection = masterDb.OpenSqlConnection())
+            {
+                using (var command = connection.CreateCommand())
                 {
-                    db = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
-                }
-
-                return false;
-            }
-        }
-
-        public static bool TryCreateFromBacpac(InstanceInfo instance, string bacpacPath, out SqlTestDB db, out string error, DacImportOptions importOptions = null, bool dropDatabaseOnCleanup = false)
-        {
-            error = null;
-            var dbName = string.Empty;
-            try
-            {
-                dbName = Path.GetFileNameWithoutExtension(bacpacPath);
-                importOptions = FillDefaultImportOptionsForTest(importOptions);
-                db = CreateFromBacpac(instance, bacpacPath, importOptions, dropDatabaseOnCleanup);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                error = ExceptionText.GetText(ex);
-                db = null;
-
-                var dbCreated = SafeDatabaseExists(instance, dbName);
-                if (dbCreated)
-                {
-                    db = new SqlTestDB(instance, dbName, dropDatabaseOnCleanup);
-                }
-
-                return false;
-            }
-        }
-
-        private static DacImportOptions FillDefaultImportOptionsForTest(DacImportOptions importOptions)
-        {
-            var result = new DacImportOptions();
-
-            if (importOptions != null)
-            {
-                result.CommandTimeout = importOptions.CommandTimeout;
-                result.ImportContributorArguments = importOptions.ImportContributorArguments;
-                result.ImportContributors = importOptions.ImportContributors;
-            }
-
-            return result;
-        }
-
-        private static bool SafeDatabaseExists(InstanceInfo instance, string dbName)
-        {
-            try
-            {
-                var masterDb = new SqlTestDB(instance, "master");
-                using (var connection = masterDb.OpenSqlConnection())
-                {
-                    using (var command = connection.CreateCommand())
-                    {
-                        command.CommandText = string.Format(CultureInfo.CurrentCulture, "select count(*) from sys.databases where [name]='{0}'", dbName);
-                        var result = command.ExecuteScalar();
-                        int count;
-                        return result != null && int.TryParse(result.ToString(), out count) && count > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return false;
-            }
-        }
-
-        private SqlTestDB()
-        {
-            _cleanupScripts = [];
-        }
-
-        /// <summary>
-        /// Represents a test Database that was created for tests.  The DB has already been attached/created,
-        /// and will not be removed unless dropDatabaseOnCleanup is true.
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="dropDatabaseOnCleanup">If true the db instance will be dropped when the Cleanup method is called</param>
-        /// <param name="dbName"></param>
-        public SqlTestDB(InstanceInfo instance, string dbName, bool dropDatabaseOnCleanup = false)
-        {
-            if (string.IsNullOrEmpty(dbName))
-            {
-                throw new ArgumentOutOfRangeException(nameof(dbName));
-            }
-
-            _instance = instance ?? throw new ArgumentNullException(nameof(instance));
-            _dbName = dbName;
-
-            _cleanupDatabase = true;
-        }
-
-        /// <summary>
-        /// Server name
-        /// </summary>
-        public string ServerName
-        {
-            get
-            {
-                return _instance.DataSource;
-            }
-        }
-
-        /// <summary>
-        /// Database name
-        /// </summary>
-        public string DatabaseName
-        {
-            get
-            {
-                return _dbName;
-            }
-        }
-
-        /// <summary>
-        /// InstanceInfo
-        /// </summary>
-        public InstanceInfo Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
-
-        public void Dispose()
-        {
-            Cleanup(ReallyCleanUpDatabase.NotIfItCameFromABackupFile);
-
-            var h = Disposing;
-            h?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Build a connection string that can be used to connect to the database
-        /// </summary>
-        /// <returns>
-        /// A new connection string configured to use the current user's domain credentials to
-        /// authenticate to the database
-        /// </returns>
-        public string BuildConnectionString()
-        {
-            return CreateBuilder().ConnectionString;
-        }
-
-        public SqlConnectionStringBuilder CreateBuilder()
-        {
-            return _instance.CreateBuilder(_dbName);
-        }
-
-        public string BuildConnectionString(string userName, string password)
-        {
-            return CreateBuilder(userName, password).ConnectionString;
-        }
-
-        public SqlConnectionStringBuilder CreateBuilder(string userName, string password)
-        {
-            return _instance.CreateBuilder(userName, password, _dbName);
-        }
-
-        /// <summary>
-        /// Retrieve an open connection to the test database
-        /// </summary>
-        /// <returns>An open connection to the </returns>
-        public DbConnection OpenConnection()
-        {
-            return OpenSqlConnection();
-        }
-
-        public SqlConnection OpenSqlConnection()
-        {
-            var conn = new SqlConnection(_instance.BuildConnectionString(_dbName));
-            conn.Open();
-            return conn;
-        }
-
-        public DbConnection OpenConnection(string userName, string password)
-        {
-            var conn = new SqlConnection(_instance.BuildConnectionString(userName, password, _dbName));
-            conn.Open();
-            return conn;
-        }
-
-        public void Execute(string script, int? timeout = null)
-        {
-            var batches = TestUtils.GetBatches(script);
-            using (var connection = OpenSqlConnection())
-            {
-                foreach (var batch in batches)
-                {
-                    Debug.WriteLine(batch);
-                    TestUtils.Execute(connection, batch, timeout);
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
+                    command.CommandText = string.Format(CultureInfo.CurrentCulture, "select count(*) from sys.databases where [name]='{0}'", dbName);
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
+                    var result = command.ExecuteScalar();
+                    int count;
+                    return result != null && int.TryParse(result.ToString(), out count) && count > 0;
                 }
             }
         }
-
-        public void SafeExecute(string script, int? timeout = null)
+        catch (Exception ex)
         {
-            try
-            {
-                Execute(script, timeout);
-            }
-            catch (Exception ex)
-            {
-                var message = string.Format(CultureInfo.CurrentCulture, "Executing script on server '{0}' database '{1}' failed. Error: {2}.\r\n\r\nScript: {3}.)",
-                    Instance.DataSource, DatabaseName, ex.Message, script);
-                Debug.WriteLine(message);
-            }
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+    private SqlTestDB()
+    {
+        cleanupScripts = [];
+    }
+
+    /// <summary>
+    /// Represents a test Database that was created for tests.  The DB has already been attached/created,
+    /// and will not be removed unless dropDatabaseOnCleanup is true.
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <param name="dropDatabaseOnCleanup">If true the db instance will be dropped when the Cleanup method is called</param>
+    /// <param name="dbName"></param>
+    public SqlTestDB(InstanceInfo instance, string dbName, bool dropDatabaseOnCleanup = false)
+    {
+        if (string.IsNullOrEmpty(dbName))
+        {
+            throw new ArgumentOutOfRangeException(nameof(dbName));
         }
 
-        public void ExtractDacpac(string filePath, IEnumerable<Tuple<string, string>> tables = null, DacExtractOptions extractOptions = null)
+        this.instance = instance ?? throw new ArgumentNullException(nameof(instance));
+        this.dbName = dbName;
+
+        cleanupDatabase = true;
+    }
+
+    /// <summary>
+    /// Server name
+    /// </summary>
+    public string ServerName
+    {
+        get
         {
-            var ds = new DacServices(BuildConnectionString());
-            ds.Extract(filePath, DatabaseName, DatabaseName, new Version(1, 0, 0), string.Empty, tables, extractOptions);
+            return instance.DataSource;
         }
+    }
 
-        public bool TryExtractDacpac(string filePath, out string error, IEnumerable<Tuple<string, string>> tables = null, DacExtractOptions extractOptions = null)
+    /// <summary>
+    /// Database name
+    /// </summary>
+    public string DatabaseName
+    {
+        get
         {
-            error = null;
-            try
+            return dbName;
+        }
+    }
+
+    /// <summary>
+    /// InstanceInfo
+    /// </summary>
+    public InstanceInfo Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+
+    public void Dispose()
+    {
+        Cleanup(ReallyCleanUpDatabase.NotIfItCameFromABackupFile);
+
+        var h = Disposing;
+        h?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Build a connection string that can be used to connect to the database
+    /// </summary>
+    /// <returns>
+    /// A new connection string configured to use the current user's domain credentials to
+    /// authenticate to the database
+    /// </returns>
+    public string BuildConnectionString()
+    {
+        return CreateBuilder().ConnectionString;
+    }
+
+    public SqlConnectionStringBuilder CreateBuilder()
+    {
+        return instance.CreateBuilder(dbName);
+    }
+
+    public string BuildConnectionString(string userName, string password)
+    {
+        return CreateBuilder(userName, password).ConnectionString;
+    }
+
+    public SqlConnectionStringBuilder CreateBuilder(string userName, string password)
+    {
+        return instance.CreateBuilder(userName, password, dbName);
+    }
+
+    /// <summary>
+    /// Retrieve an open connection to the test database
+    /// </summary>
+    /// <returns>An open connection to the </returns>
+    public DbConnection OpenConnection()
+    {
+        return OpenSqlConnection();
+    }
+
+    public SqlConnection OpenSqlConnection()
+    {
+        var conn = new SqlConnection(instance.BuildConnectionString(dbName));
+        conn.Open();
+        return conn;
+    }
+
+    public DbConnection OpenConnection(string userName, string password)
+    {
+        var conn = new SqlConnection(instance.BuildConnectionString(userName, password, dbName));
+        conn.Open();
+        return conn;
+    }
+
+    public void Execute(string script, int? timeout = null)
+    {
+        var batches = TestUtils.GetBatches(script);
+        using (var connection = OpenSqlConnection())
+        {
+            foreach (var batch in batches)
             {
-                ExtractDacpac(filePath, tables, extractOptions);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                error = ex.Message;
-                return false;
+                Debug.WriteLine(batch);
+                TestUtils.Execute(connection, batch, timeout);
             }
         }
+    }
 
-        public void ExportBacpac(string filePath, IEnumerable<Tuple<string, string>> tables = null, DacExportOptions extractOptions = null)
+    public void SafeExecute(string script, int? timeout = null)
+    {
+        try
         {
-            var ds = new DacServices(BuildConnectionString());
-            ds.ExportBacpac(filePath, DatabaseName, extractOptions, tables);
+            Execute(script, timeout);
         }
-
-        public bool TryExportBacpac(string filePath, out string error, IEnumerable<Tuple<string, string>> tables = null, DacExportOptions exportOptions = null)
+        catch (Exception ex)
         {
-            error = null;
-            try
-            {
-                ExportBacpac(filePath, tables, exportOptions);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                error = ex.Message;
-                return false;
-            }
+            var message = string.Format(CultureInfo.CurrentCulture, "Executing script on server '{0}' database '{1}' failed. Error: {2}.\r\n\r\nScript: {3}.)",
+                Instance.DataSource, DatabaseName, ex.Message, script);
+            Debug.WriteLine(message);
         }
+    }
 
+    public void ExtractDacpac(string filePath, IEnumerable<Tuple<string, string>> tables = null, DacExtractOptions extractOptions = null)
+    {
+        var ds = new DacServices(BuildConnectionString());
+        ds.Extract(filePath, DatabaseName, DatabaseName, new Version(1, 0, 0), string.Empty, tables, extractOptions);
+    }
 
-        /// <summary>
-        /// Cleanup the DB if it was restored during the testing process.  A restoredDB will
-        /// removed from the server and then .mdf/ldf files deleted from disk
-        /// </summary>
-        /// <param name="reallyCleanUpDatabase">ReallyCleanUpDatabase.NotIfItCameFromABackupFile: means to
-        /// check whether the database came from a backup file or has previously been cleaned. If either
-        /// of those two things is true, then the database is not cleaned up.
-        ///
-        /// ReallyCleanUpDatabase.YesReally: means to clean up the database regardless of its origin.
-        /// </param>
-        public void Cleanup(ReallyCleanUpDatabase reallyCleanUpDatabase = ReallyCleanUpDatabase.YesReally)
+    public bool TryExtractDacpac(string filePath, out string error, IEnumerable<Tuple<string, string>> tables = null, DacExtractOptions extractOptions = null)
+    {
+        error = null;
+        try
         {
-            if (_cleanupDatabase || reallyCleanUpDatabase == ReallyCleanUpDatabase.YesReally)
-            {
-                DoCleanup();
-            }
+            ExtractDacpac(filePath, tables, extractOptions);
+            return true;
         }
-
-        private void DoCleanup()
+        catch (Exception ex)
         {
-            if (_cleanupScripts != null && _cleanupScripts.Count > 0)
+            error = ex.Message;
+            return false;
+        }
+    }
+
+    public void ExportBacpac(string filePath, IEnumerable<Tuple<string, string>> tables = null, DacExportOptions extractOptions = null)
+    {
+        var ds = new DacServices(BuildConnectionString());
+        ds.ExportBacpac(filePath, DatabaseName, extractOptions, tables);
+    }
+
+    public bool TryExportBacpac(string filePath, out string error, IEnumerable<Tuple<string, string>> tables = null, DacExportOptions exportOptions = null)
+    {
+        error = null;
+        try
+        {
+            ExportBacpac(filePath, tables, exportOptions);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            return false;
+        }
+    }
+
+
+    /// <summary>
+    /// Cleanup the DB if it was restored during the testing process.  A restoredDB will
+    /// removed from the server and then .mdf/ldf files deleted from disk
+    /// </summary>
+    /// <param name="reallyCleanUpDatabase">ReallyCleanUpDatabase.NotIfItCameFromABackupFile: means to
+    /// check whether the database came from a backup file or has previously been cleaned. If either
+    /// of those two things is true, then the database is not cleaned up.
+    ///
+    /// ReallyCleanUpDatabase.YesReally: means to clean up the database regardless of its origin.
+    /// </param>
+    public void Cleanup(ReallyCleanUpDatabase reallyCleanUpDatabase = ReallyCleanUpDatabase.YesReally)
+    {
+        if (cleanupDatabase || reallyCleanUpDatabase == ReallyCleanUpDatabase.YesReally)
+        {
+            DoCleanup();
+        }
+    }
+
+    private void DoCleanup()
+    {
+        if (cleanupScripts != null && cleanupScripts.Count > 0)
+        {
+            Log("Running cleanup scripts for DB {0}", dbName);
+            using (var conn = new SqlConnection(instance.BuildConnectionString(dbName)))
             {
-                Log("Running cleanup scripts for DB {0}", _dbName);
-                using (var conn = new SqlConnection(_instance.BuildConnectionString(_dbName)))
+                conn.Open();
+                foreach (var script in cleanupScripts)
                 {
-                    conn.Open();
-                    foreach (var script in _cleanupScripts)
-                    {
-                        TestUtils.Execute(conn, script);
-                    }
+                    TestUtils.Execute(conn, script);
                 }
             }
-
-            Log("Deleting DB {0}", _dbName);
-            try
-            {
-                TestUtils.DropDatabase(_instance, _dbName);
-            }
-            catch (Exception ex)
-            {
-                // We do not want a cleanup failure to block a test's execution result
-                Log("Exception thrown during cleanup of DB " + _dbName + " " + ex);
-            }
-
-            _cleanupDatabase = false;
         }
 
-        private static void Log(string format, params object[] args)
+        Log("Deleting DB {0}", dbName);
+        try
         {
-            Trace.TraceInformation("*** {0} TEST {1}",
-                DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture), string.Format(CultureInfo.InvariantCulture, format, args));
+            TestUtils.DropDatabase(instance, dbName);
+        }
+        catch (Exception ex)
+        {
+            // We do not want a cleanup failure to block a test's execution result
+            Log("Exception thrown during cleanup of DB " + dbName + " " + ex);
         }
 
-        internal void AddCleanupScript(string script)
-        {
-            _cleanupScripts.Add(script);
-        }
+        cleanupDatabase = false;
+    }
+
+    private static void Log(string format, params object[] args)
+    {
+        Trace.TraceInformation("*** {0} TEST {1}",
+            DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture), string.Format(CultureInfo.InvariantCulture, format, args));
+    }
+
+    internal void AddCleanupScript(string script)
+    {
+        cleanupScripts.Add(script);
     }
 }

@@ -31,6 +31,6 @@ public class TestProblem
 
     public override int GetHashCode()
     {
-        return string.Format(CultureInfo.InvariantCulture, "{0}:{1}:{2}", RuleId, StartColumn, StartLine).GetHashCode();
+        return string.Format(CultureInfo.InvariantCulture, "{0}:{1}:{2}", RuleId, StartColumn, StartLine).GetHashCode(StringComparison.OrdinalIgnoreCase);
     }
 }
