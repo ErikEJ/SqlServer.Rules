@@ -33,29 +33,56 @@ namespace SqlServer.Dac
                 case TSqlScript script:
                     foreach (var bch in script.Batches)
                     {
-                        if (bch.RemoveRecursive(remove)) { return true; }
+                        if (bch.RemoveRecursive(remove))
+                        {
+                            return true;
+                        }
                     }
 
                     break;
                 case TSqlBatch batch:
-                    if (RemoveStatementFromList(batch.Statements, remove)) { return true; }
+                    if (RemoveStatementFromList(batch.Statements, remove))
+                    {
+                        return true;
+                    }
+
                     break;
                 case WhileStatement whileBlock:
-                    if (whileBlock.Statement.RemoveRecursive(remove)) { return true; }
+                    if (whileBlock.Statement.RemoveRecursive(remove))
+                    {
+                        return true;
+                    }
+
                     break;
                 case StatementList stmts:
-                    if (RemoveStatementFromList(stmts.Statements, remove)) { return true; }
+                    if (RemoveStatementFromList(stmts.Statements, remove))
+                    {
+                        return true;
+                    }
+
                     break;
                 case BeginEndBlockStatement beBlock:
-                    if (RemoveStatementFromList(beBlock.StatementList.Statements, remove)) { return true; }
+                    if (RemoveStatementFromList(beBlock.StatementList.Statements, remove))
+                    {
+                        return true;
+                    }
+
                     break;
                 case IfStatement ifBlock:
                     if (ifBlock.ThenStatement.RemoveRecursive(remove)
-                        || ifBlock.ElseStatement.RemoveRecursive(remove)) { return true; }
+                        || ifBlock.ElseStatement.RemoveRecursive(remove))
+                    {
+                        return true;
+                    }
+
                     break;
                 case TryCatchStatement tryBlock:
                     if (RemoveStatementFromList(tryBlock.TryStatements.Statements, remove)
-                        || RemoveStatementFromList(tryBlock.CatchStatements.Statements, remove)) { return true; }
+                        || RemoveStatementFromList(tryBlock.CatchStatements.Statements, remove))
+                    {
+                        return true;
+                    }
+
                     break;
                 default:
                     Debug.WriteLine(fragment);
@@ -74,17 +101,15 @@ namespace SqlServer.Dac
                     return statements.Remove(stmt);
                 }
 
-                if (stmt.RemoveRecursive(remove)) { return true; }
+                if (stmt.RemoveRecursive(remove))
+                {
+                    return true;
+                }
             }
 
             return false;
         }
 
-        /// <summary>
-        /// Converts a T-SQL object into a fragment, if it is not already one.
-        /// </summary>
-        /// <param name="forceParse">If true will force the parsing of the SQL into a fragment</param>
-        /// <returns></returns>
         public static TSqlFragment GetFragment(this SqlRuleExecutionContext ruleExecutionContext, bool forceParse = false)
         {
             // if forceparse is true, we don't care about the type, we want to parse the object so as to get the header comments as well
@@ -95,7 +120,10 @@ namespace SqlServer.Dac
                     fragment.GetType() == typeof(TSqlStatement)
                     || fragment.GetType() == typeof(TSqlStatementSnippet)
                     || fragment.GetType() == typeof(TSqlScript)
-                )) { return fragment; }
+                ))
+                {
+                    return fragment;
+                }
             }
 
             return ruleExecutionContext.ModelElement.GetFragment();
@@ -153,20 +181,32 @@ namespace SqlServer.Dac
         {
             // for some odd reason, sometimes the fragments do not pass in properly to the rules....
             // this function can re-parse that fragment into its true fragment, and not a SQL script...
-            if (!(baseFragment is TSqlScript script)) { return baseFragment; }
+            if (!(baseFragment is TSqlScript script))
+            {
+                return baseFragment;
+            }
 
             var stmt = script.Batches.FirstOrDefault()?.Statements.FirstOrDefault();
-            if (stmt == null) { return script; }
+            if (stmt == null)
+            {
+                return script;
+            }
 
             // we don't need to parse the fragment unless it is of type TSqlStatement or TSqlStatementSnippet.... just return the type it found
-            if (!(stmt.GetType() == typeof(TSqlStatement) || stmt.GetType() == typeof(TSqlStatementSnippet))) { return stmt; }
+            if (!(stmt.GetType() == typeof(TSqlStatement) || stmt.GetType() == typeof(TSqlStatementSnippet)))
+            {
+                return stmt;
+            }
 
             var tsqlParser = new TSql140Parser(true);
             using (var stringReader = new StringReader(((TSqlStatementSnippet)stmt).Script))
             {
                 IList<ParseError> parseErrors = new List<ParseError>();
                 var fragment = tsqlParser.Parse(stringReader, out parseErrors);
-                if (parseErrors.Any()) { return script; }
+                if (parseErrors.Any())
+                {
+                    return script;
+                }
 
                 var visitor = new TypesVisitor(typesToLookFor);
                 fragment.Accept(visitor);

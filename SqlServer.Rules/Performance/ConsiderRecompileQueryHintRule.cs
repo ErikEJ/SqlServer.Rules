@@ -9,7 +9,7 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Performance
 {
     /// <summary>
-    /// Consider using <c>RECOMPILE</c> query hint instead of <c>WITH RECOMPILE</c> option 
+    /// Consider using <c>RECOMPILE</c> query hint instead of <c>WITH RECOMPILE</c> option
     /// </summary>
     /// <FriendlyName>Procedure level recompile option</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
@@ -18,12 +18,12 @@ namespace SqlServer.Rules.Performance
     ///     ```sql
     ///     CREATE PROCEDURE dbo.my_proc
     ///     BEGIN
-    ///         SELECT col_A, col_b 
-    ///         FROM some_complicated_set 
-    ///         WHERE some_complicated_filter = 1 
+    ///         SELECT col_A, col_b
+    ///         FROM some_complicated_set
+    ///         WHERE some_complicated_filter = 1
     ///         OPTION(RECOMPILE)
     ///     ```
-    /// 
+    ///
     ///    bad:
     ///     ```sql
     ///     CREATE PROCEDURE dbo.my_proc
@@ -37,7 +37,8 @@ namespace SqlServer.Rules.Performance
     /// the procedure is compiled at run time.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -62,7 +63,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsiderRecompileQueryHintRule"/> class.
         /// </summary>
-        public ConsiderRecompileQueryHintRule() : base(ModelSchema.Procedure)
+        public ConsiderRecompileQueryHintRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -77,7 +79,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var proc = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement)) as CreateProcedureStatement;
 

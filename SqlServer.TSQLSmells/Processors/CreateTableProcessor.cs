@@ -4,11 +4,11 @@ namespace TSQLSmellSCA
 {
     public class CreateTableProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public CreateTableProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         public void ProcessCreateTable(CreateTableStatement TblStmt)
@@ -19,13 +19,13 @@ namespace TSQLSmellSCA
             if (TblStmt.SchemaObjectName.SchemaIdentifier == null &&
                 !isTemp)
             {
-                _smells.SendFeedBack(27, TblStmt);
+                smells.SendFeedBack(27, TblStmt);
             }
 
             {
                 foreach (var colDef in TblStmt.Definition.ColumnDefinitions)
                 {
-                    _smells.ProcessTsqlFragment(colDef);
+                    smells.ProcessTsqlFragment(colDef);
                 }
             }
 
@@ -33,7 +33,9 @@ namespace TSQLSmellSCA
             {
                 foreach (var constDef in TblStmt.Definition.TableConstraints)
                 {
-                    if (constDef.ConstraintIdentifier != null) { }
+                    if (constDef.ConstraintIdentifier != null)
+                    {
+                    }
 
                     switch (FragmentTypeParser.GetFragmentType(constDef))
                     {
@@ -41,7 +43,7 @@ namespace TSQLSmellSCA
                             var unqConst = (UniqueConstraintDefinition)constDef;
                             if (unqConst.IsPrimaryKey)
                             {
-                                _smells.SendFeedBack(38, constDef);
+                                smells.SendFeedBack(38, constDef);
                             }
 
                             break;
@@ -52,22 +54,22 @@ namespace TSQLSmellSCA
                 {
                     if (colDef.DefaultConstraint?.ConstraintIdentifier != null)
                     {
-                        _smells.SendFeedBack(39, colDef);
+                        smells.SendFeedBack(39, colDef);
                     }
 
                     foreach (var constDef in colDef.Constraints)
                     {
-
-                        if (constDef.ConstraintIdentifier != null) { }
+                        if (constDef.ConstraintIdentifier != null)
+                        {
+                        }
 
                         switch (FragmentTypeParser.GetFragmentType(constDef))
                         {
-
                             case "CheckConstraintDefinition":
                                 var chkConst = (CheckConstraintDefinition)constDef;
                                 if (chkConst.ConstraintIdentifier != null)
                                 {
-                                    _smells.SendFeedBack(40, chkConst);
+                                    smells.SendFeedBack(40, chkConst);
                                 }
 
                                 break;

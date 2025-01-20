@@ -128,7 +128,8 @@ END
             SqlConnection conn = null;
             try
             {
-                var scsb = new SqlConnectionStringBuilder(connString) {
+                var scsb = new SqlConnectionStringBuilder(connString)
+                {
                     InitialCatalog = "master",
                     Pooling = false,
                 };
@@ -142,7 +143,8 @@ END
                     if (isAzureDb)
                     {
 #pragma warning disable CA1863 // Use 'CompositeFormat'
-                        dropStatement = string.Format(CultureInfo.InvariantCulture,
+                        dropStatement = string.Format(
+                            CultureInfo.InvariantCulture,
                             DropDatabaseIfExistAzure,
                             databaseName);
 #pragma warning restore CA1863 // Use 'CompositeFormat'
@@ -154,7 +156,8 @@ END
                     {
                         conn.ChangeDatabase(MasterDatabaseName);
 #pragma warning disable CA1863 // Use 'CompositeFormat'
-                        dropStatement = string.Format(CultureInfo.InvariantCulture,
+                        dropStatement = string.Format(
+                            CultureInfo.InvariantCulture,
                             DropDatabaseIfExist,
                             databaseName);
 #pragma warning restore CA1863 // Use 'CompositeFormat'
@@ -193,7 +196,7 @@ END
 
         var result = (int)ExecuteScalar(connection, query);
 
-        return (result == 1);
+        return result == 1;
     }
 
     public static SqlTestDB CreateTestDatabase(InstanceInfo instance, string dbName)
@@ -249,7 +252,7 @@ END
         cmd.CommandTimeout = commandTimeOut;
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
 #pragma warning disable CA1863 // Use 'CompositeFormat'
-        cmd.CommandText = String.Format(CultureInfo.InvariantCulture, SetLockTimeoutDefault, GetLockTimeoutMS());
+        cmd.CommandText = string.Format(CultureInfo.InvariantCulture, SetLockTimeoutDefault, GetLockTimeoutMS());
 #pragma warning restore CA1863 // Use 'CompositeFormat'
         cmd.ExecuteNonQuery();
         cmd.CommandText = sqlCommandText;
@@ -299,7 +302,6 @@ END
 
     public static void ExecuteNonQuery(SqlConnection conn, string sql, int commandTimeout = CommonConstants.DefaultCommandTimeout)
     {
-
         var cmd = conn.CreateCommand();
         try
         {
@@ -321,7 +323,8 @@ END
         catch (SqlException ex)
         {
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
-            Console.WriteLine("Exception{0}{1}{0}While executing TSQL:{0}{2}",
+            Console.WriteLine(
+                "Exception{0}{1}{0}While executing TSQL:{0}{2}",
                 Environment.NewLine,
                 ex,
                 sql);
@@ -329,7 +332,6 @@ END
             throw;
         }
     }
-
 
     /// <summary>
     /// Retrieves the default lock timeout in Milliseconds.  This value should
@@ -348,16 +350,5 @@ END
     public static IList<string> GetBatches(string script)
     {
         return Batch.Split(script).Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
-    }
-}
-
-internal sealed class ArgumentValidation
-{
-    public static void CheckForEmptyString(string arg, string argName)
-    {
-        if (string.IsNullOrEmpty(arg))
-        {
-            throw new ArgumentException(argName);
-        }
     }
 }

@@ -72,7 +72,8 @@ namespace SqlServer.Rules.Performance
     ///   </para>
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -97,7 +98,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidOuterJoinsRule"/> class.
         /// </summary>
-        public AvoidOuterJoinsRule() : base(ProgrammingAndViewSchemas)
+        public AvoidOuterJoinsRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -130,7 +132,11 @@ namespace SqlServer.Rules.Performance
                 foreach (var query in querySpecificationVisitor.Statements)
                 {
                     var fromClause = query.FromClause;
-                    if (fromClause == null) { continue; }
+                    if (fromClause == null)
+                    {
+                        continue;
+                    }
+
                     var joinVisitor = new JoinVisitor();
                     fromClause.Accept(joinVisitor);
 
@@ -141,14 +147,25 @@ namespace SqlServer.Rules.Performance
                             && Ignorables.ShouldNotIgnoreRule(j.ScriptTokenStream, RuleId, j.StartLine)
                          select j).ToList();
 
-                    if (outerJoins.Count == 0) { continue; }
+                    if (outerJoins.Count == 0)
+                    {
+                        continue;
+                    }
+
                     var columns = ColumnReferenceExpressionVisitor.VisitSelectElements(query.SelectElements);
 
                     var whereClause = query.WhereClause;
-                    if (whereClause == null) { continue; }
+                    if (whereClause == null)
+                    {
+                        continue;
+                    }
+
                     var isnullVisitor = new ISNULLVisitor();
                     whereClause.Accept(isnullVisitor);
-                    if (isnullVisitor.Count == 0) { continue; }
+                    if (isnullVisitor.Count == 0)
+                    {
+                        continue;
+                    }
 
                     foreach (var join in outerJoins)
                     {
@@ -179,7 +196,11 @@ namespace SqlServer.Rules.Performance
                         if (isnullVisitor.Statements.Any(nc =>
                         {
                             var col = nc.FirstExpression as ColumnReferenceExpression ?? nc.SecondExpression as ColumnReferenceExpression;
-                            if (col == null) { return false; }
+                            if (col == null)
+                            {
+                                return false;
+                            }
+
                             var colTableName = col.GetName();
                             return Comparer.Equals(tableName, colTableName) || Comparer.Equals(alias, colTableName);
                         }))

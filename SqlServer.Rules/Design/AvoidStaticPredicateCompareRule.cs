@@ -30,7 +30,8 @@ namespace SqlServer.Rules.Design
     /// Checks join and where clause predicates for predicates that will always evaluate to true/false.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -55,7 +56,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidStaticPredicateCompareRule"/> class.
         /// </summary>
-        public AvoidStaticPredicateCompareRule() : base(ProgrammingAndViewSchemas)
+        public AvoidStaticPredicateCompareRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -120,12 +122,12 @@ namespace SqlServer.Rules.Design
             var type1 = expr1.GetType();
             var type2 = expr2.GetType();
 
-            return (
+            return 
                 (
                     (type1 == typeof(IntegerLiteral) || type1 == typeof(StringLiteral))
                     && (type2 == typeof(IntegerLiteral) || type2 == typeof(StringLiteral))
                 )
-                && Comparer.Equals((expr1 as Literal)?.Value, (expr2 as Literal)?.Value));
+                && Comparer.Equals((expr1 as Literal)?.Value, (expr2 as Literal)?.Value);
         }
     }
 }

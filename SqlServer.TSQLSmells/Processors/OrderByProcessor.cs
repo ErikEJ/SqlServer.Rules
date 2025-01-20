@@ -4,26 +4,30 @@ namespace TSQLSmellSCA
 {
     public class OrderByProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public OrderByProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         private void ProcessOrderExpression(ExpressionWithSortOrder Expression)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var SubExpressionType = FragmentTypeParser.GetFragmentType(Expression.Expression);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             switch (SubExpressionType)
             {
                 case "IntegerLiteral":
-                    _smells.SendFeedBack(7, Expression);
+                    smells.SendFeedBack(7, Expression);
                     break;
                 case "CastCall":
-                    var CastCall = (CastCall) Expression.Expression;
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+                    var CastCall = (CastCall)Expression.Expression;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     if (FragmentTypeParser.GetFragmentType(CastCall.Parameter) == "ColumnReferenceExpression")
                     {
-                        _smells.SendFeedBack(6, Expression);
+                        smells.SendFeedBack(6, Expression);
                     }
 
                     break;
@@ -37,10 +41,12 @@ namespace TSQLSmellSCA
                 return;
             }
 
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             foreach (var Expression in OrderClause.OrderByElements)
             {
                 ProcessOrderExpression(Expression);
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
     }
 }

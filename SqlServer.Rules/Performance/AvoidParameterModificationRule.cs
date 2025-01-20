@@ -20,7 +20,8 @@ namespace SqlServer.Rules.Design
     /// compiled with the parameter value first passed in as a parameter to the query.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -50,7 +51,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidParameterModificationRule"/> class.
         /// </summary>
-        public AvoidParameterModificationRule() : base(ModelSchema.Procedure)
+        public AvoidParameterModificationRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -65,18 +67,28 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var name = sqlObj.Name.GetName();
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement));
-            if (fragment.ScriptTokenStream == null) { return problems; }
+            if (fragment.ScriptTokenStream == null)
+            {
+                return problems;
+            }
 
             var parameterVisitor = new ParameterVisitor();
             var selectVisitor = new SelectStatementVisitor();
             fragment.Accept(parameterVisitor);
             fragment.Accept(selectVisitor);
 
-            if (parameterVisitor.Count == 0 || selectVisitor.Count == 0) { return problems; }
+            if (parameterVisitor.Count == 0 || selectVisitor.Count == 0)
+            {
+                return problems;
+            }
 
             var setVisitor = new SetVariableStatementVisitor();
             fragment.Accept(setVisitor);
@@ -84,7 +96,10 @@ namespace SqlServer.Rules.Design
             foreach (var param in parameterVisitor.Statements.Select(p => p.VariableName.Value))
             {
                 var selectsUsingParam = selectVisitor.Statements.GetSelectsUsingParameterInWhere(param).ToList();
-                if (selectsUsingParam.Count == 0) { continue; }
+                if (selectsUsingParam.Count == 0)
+                {
+                    continue;
+                }
 
                 var selectStartLine = selectsUsingParam.FirstOrDefault()?.StartLine;
                 var getAssignmentSelects = selectVisitor.NotIgnoredStatements(RuleId)

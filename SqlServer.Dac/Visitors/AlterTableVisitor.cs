@@ -7,7 +7,11 @@ namespace SqlServer.Dac.Visitors
     {
         public ObjectTypeFilter TypeFilter { get; set; } = ObjectTypeFilter.All;
         public IList<AlterTableStatement> Statements { get; } = new List<AlterTableStatement>();
-        public int Count { get { return Statements.Count; } }
+        public int Count
+        {
+            get { return Statements.Count; }
+        }
+
         public override void Visit(AlterTableStatement node)
         {
             switch (TypeFilter)

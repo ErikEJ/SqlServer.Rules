@@ -15,7 +15,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -40,7 +41,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AliasTablesRule"/> class.
         /// </summary>
-        public AliasTablesRule() : base(ProgrammingAndViewSchemas)
+        public AliasTablesRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -66,20 +68,29 @@ namespace SqlServer.Rules.Design
             var selectStatementVisitor = new SelectStatementVisitor();
             fragment.Accept(selectStatementVisitor);
 
-            if (selectStatementVisitor.Count == 0) { return problems; }
+            if (selectStatementVisitor.Count == 0)
+            {
+                return problems;
+            }
 
             foreach (var select in selectStatementVisitor.Statements)
             {
                 var fromClause = (select.QueryExpression as QuerySpecification)?.FromClause;
 
                 // ignore selects that do not use a from clause with tables
-                if (fromClause == null) { continue; }
+                if (fromClause == null)
+                {
+                    continue;
+                }
 
                 var visitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                 fromClause.Accept(visitor);
 
                 // only scan for aliases if there are more than 1 table in the from clause
-                if (visitor.Count <= 1) { continue; }
+                if (visitor.Count <= 1)
+                {
+                    continue;
+                }
 
                 var offenders =
                     from t in visitor.NotIgnoredStatements(RuleId)

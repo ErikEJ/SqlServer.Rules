@@ -19,7 +19,8 @@ namespace SqlServer.Rules.Performance
     /// the column and if an index exists on the column, the index will not to be used.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -41,11 +42,11 @@ namespace SqlServer.Rules.Performance
         /// </summary>
         public const string Message = RuleDisplayName;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidColumnFunctionsRule"/> class.
         /// </summary>
-        public AvoidColumnFunctionsRule() : base(ProgrammingAndViewSchemas)
+        public AvoidColumnFunctionsRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -60,7 +61,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
 
@@ -84,12 +88,19 @@ namespace SqlServer.Rules.Performance
 
         private static bool CheckFunction(FunctionCall func)
         {
-            if (func == null) { return false; }
+            if (func == null)
+            {
+                return false;
+            }
 
             return func.Parameters.OfType<ColumnReferenceExpression>().Any(col =>
             {
                 var colId = col.MultiPartIdentifier?.GetObjectIdentifier();
-                if (colId == null || colId.Parts.Count == 0) { return false; }
+                if (colId == null || colId.Parts.Count == 0)
+                {
+                    return false;
+                }
+
                 return !Constants.DateParts.Contains(colId.Parts.Last(), Comparer);
             }) && !Constants.Aggregates.Contains(func.FunctionName.Value, Comparer);
         }

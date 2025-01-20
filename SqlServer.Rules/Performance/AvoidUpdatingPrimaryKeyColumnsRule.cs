@@ -33,7 +33,8 @@ namespace SqlServer.Rules.Performance
     ///   </list>
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -58,7 +59,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidUpdatingPrimaryKeyColumnsRule"/> class.
         /// </summary>
-        public AvoidUpdatingPrimaryKeyColumnsRule() : base(ProgrammingSchemas)
+        public AvoidUpdatingPrimaryKeyColumnsRule()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -74,7 +76,10 @@ namespace SqlServer.Rules.Performance
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
             var model = ruleExecutionContext.SchemaModel;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
 
@@ -82,9 +87,9 @@ namespace SqlServer.Rules.Performance
             fragment.Accept(updateVisitor);
             foreach (var update in updateVisitor.NotIgnoredStatements(RuleId))
             {
-                if (!(update.UpdateSpecification.Target is NamedTableReference target) || target.GetName().Contains('#', System.StringComparison.OrdinalIgnoreCase)) 
-                { 
-                    continue; 
+                if (!(update.UpdateSpecification.Target is NamedTableReference target) || target.GetName().Contains('#', System.StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
                 }
 
                 // we have an aliased table we need to find out what the real table is so we can look up its columns
@@ -95,21 +100,29 @@ namespace SqlServer.Rules.Performance
 
                     target = namedTableVisitor.Statements
                         .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, target.SchemaObject.Identifiers.LastOrDefault()?.Value));
-                    if (target == null) 
-                    { 
-                        continue; 
+                    if (target == null)
+                    {
+                        continue;
                     }
                 }
 
                 var targetSqlObj = model.GetObject(Table.TypeClass, target.GetObjectIdentifier(), DacQueryScopes.All);
 
                 var pk = targetSqlObj?.GetReferencing(PrimaryKeyConstraint.Host, DacQueryScopes.UserDefined).FirstOrDefault();
-                if (pk == null) { continue; }
+                if (pk == null)
+                {
+                    continue;
+                }
+
                 var primaryKeyColumns = pk.GetReferenced(PrimaryKeyConstraint.Columns, DacQueryScopes.All);
 
                 var hasOffense = update.UpdateSpecification.SetClauses.OfType<AssignmentSetClause>().Any(setClause =>
                 {
-                    if (setClause.Column?.MultiPartIdentifier == null) { return false; }
+                    if (setClause.Column?.MultiPartIdentifier == null)
+                    {
+                        return false;
+                    }
+
                     return primaryKeyColumns.Any(pkc => pkc.Name.CompareTo(setClause.Column?.MultiPartIdentifier) >= 5);
                 });
 

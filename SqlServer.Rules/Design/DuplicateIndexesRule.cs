@@ -22,7 +22,8 @@ namespace SqlServer.Rules.Design
     /// are probable dead indexes walking.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -52,7 +53,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="DuplicateIndexesRule"/> class.
         /// </summary>
-        public DuplicateIndexesRule() : base(ModelSchema.Table)
+        public DuplicateIndexesRule()
+            : base(ModelSchema.Table)
         {
         }
 
@@ -79,7 +81,10 @@ namespace SqlServer.Rules.Design
                 .Where(x => x.ObjectType == Index.TypeClass).Select(x => x.GetFragment())
                 .ToList();
 
-            if (indexes.Count == 0) { return problems; }
+            if (indexes.Count == 0)
+            {
+                return problems;
+            }
 
             var indexVisitor = new CreateIndexStatementVisitor();
             foreach (var index in indexes)
@@ -95,7 +100,10 @@ namespace SqlServer.Rules.Design
 #pragma warning restore CA1308 // Normalize strings to uppercase
             }
 
-            if (indexInfo.Count == 0) { return problems; }
+            if (indexInfo.Count == 0)
+            {
+                return problems;
+            }
 
             // find all the duplicates where all the columns match
             var dupes = indexInfo.GroupBy(x => string.Join(",", x.Value))
@@ -106,7 +114,10 @@ namespace SqlServer.Rules.Design
             // remove the exact duplicates to try to search for border line duplicates
             indexInfo.RemoveAll((key, value) => dupes.Any(x => x.Key == key));
 
-            if (indexInfo.Count <= 1) { return problems; }
+            if (indexInfo.Count <= 1)
+            {
+                return problems;
+            }
 
             // find all the borderline duplicates where the first column matches
             var borderLineDupes = indexInfo.GroupBy(x => x.Value.First()).Where(x => x.Count() > 1).SelectMany(x => x).ToList();

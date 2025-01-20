@@ -14,11 +14,12 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
-    RuleDisplayName,
-    Description = RuleDisplayName,
-    Category = Constants.Design,
-    RuleScope = SqlRuleScope.Element)]
+    [ExportCodeAnalysisRule(
+        RuleId,
+        RuleDisplayName,
+        Description = RuleDisplayName,
+        Category = Constants.Design,
+        RuleScope = SqlRuleScope.Element)]
     public sealed class AvoidSetRowcountRule : BaseSqlCodeAnalysisRule
     {
         /// <summary>
@@ -39,7 +40,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidSetRowcountRule"/> class.
         /// </summary>
-        public AvoidSetRowcountRule() : base(ProgrammingSchemas)
+        public AvoidSetRowcountRule()
+            : base(ProgrammingSchemas)
         {
         }
 

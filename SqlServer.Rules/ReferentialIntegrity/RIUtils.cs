@@ -10,7 +10,7 @@ using Index = Microsoft.SqlServer.Dac.Model.Index;
 namespace SqlServer.Rules.ReferentialIntegrity
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public static class RIUtils
     {
@@ -28,14 +28,22 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// <exception cref="ArgumentException">The parameter is not of type Table - table</exception>
         public static bool CheckForFkIndex(this TSqlObject table, IList<ObjectIdentifier> columnNames)
         {
-            if (table == null) { throw new ArgumentNullException(nameof(table)); }
-            if (columnNames == null) { throw new ArgumentNullException(nameof(columnNames)); }
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
+            if (columnNames == null)
+            {
+                throw new ArgumentNullException(nameof(columnNames));
+            }
+
             if (table.ObjectType != Table.TypeClass)
             {
                 throw new ArgumentException("The parameter is not of type Table", nameof(table));
             }
 
-            // convert the column names to a list of string 
+            // convert the column names to a list of string
             var fkColumnNames = columnNames.Select(x => x.Parts.Last()).ToList();
 
             // get all the indexes for this table
@@ -44,7 +52,10 @@ namespace SqlServer.Rules.ReferentialIntegrity
                     || x.ObjectType == PrimaryKeyConstraint.TypeClass
                     || x.ObjectType == UniqueConstraint.TypeClass).ToList();
 
-            if (indexes.Count == 0) { return false; }
+            if (indexes.Count == 0)
+            {
+                return false;
+            }
 
             // pull all the column names out of the indexes
             var indexInfo = new Dictionary<string, IList<string>>();
@@ -52,17 +63,17 @@ namespace SqlServer.Rules.ReferentialIntegrity
             {
                 var columns = index.GetReferenced(DacQueryScopes.All)
                     .Where(x => x.ObjectType == Column.TypeClass);
-                indexInfo.Add(index.Name.GetName(),
-                    new List<string>(columns.Select(c => c.Name.Parts.Last()))
-                );
+                indexInfo.Add(
+                    index.Name.GetName(),
+                    new List<string>(columns.Select(c => c.Name.Parts.Last())));
             }
 
             // find any index that contains all the columns from the foreign key
             return indexInfo.Any(ii =>
             {
-                // intersect works, but the index must match the column names in 
+                // intersect works, but the index must match the column names in
                 // the correct order, and the proper ordinal in the index hence the for...
-                // i.Value.Intersect(fkColumnNames).Count() == fkColumnNames.Count()) 
+                // i.Value.Intersect(fkColumnNames).Count() == fkColumnNames.Count())
                 for (var i = 0; i < fkColumnNames.Count; i++)
                 {
                     if (!fkColumnNames[i].StringEquals(ii.Value?.ElementAtOrDefault(i)))
@@ -84,7 +95,11 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// <exception cref="ArgumentException">The parameter is not of type Table - table</exception>
         public static IDictionary<string, ForeignKeyInfo> GetTableFKInfos(this TSqlObject table)
         {
-            if (table == null) { throw new ArgumentNullException(nameof(table)); }
+            if (table == null)
+            {
+                throw new ArgumentNullException(nameof(table));
+            }
+
             if (table.ObjectType != Table.TypeClass)
             {
                 throw new ArgumentException("The parameter is not of type Table", nameof(table));
@@ -113,7 +128,11 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// <exception cref="ArgumentException">The parameter is not of type ForeignKeyConstraint - fk</exception>
         public static ForeignKeyInfo GetFKInfo(this TSqlObject fk)
         {
-            if (fk == null) { throw new ArgumentNullException(nameof(fk)); }
+            if (fk == null)
+            {
+                throw new ArgumentNullException(nameof(fk));
+            }
+
             if (fk.ObjectType != ForeignKeyConstraint.TypeClass)
             {
                 throw new ArgumentException("The parameter is not of type ForeignKeyConstraint", nameof(fk));
@@ -142,10 +161,17 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// <exception cref="ArgumentNullException">from</exception>
         public static IList<JoinInfo> GetFromClauseJoinTables(this FromClause from)
         {
-            if (from == null) { throw new ArgumentNullException(nameof(from)); }
+            if (from == null)
+            {
+                throw new ArgumentNullException(nameof(from));
+            }
+
             var joins = new List<JoinInfo>();
 
-            if (from.TableReferences.Count == 0 || from.TableReferences.First().GetType() != typeof(QualifiedJoin)) { return joins; }
+            if (from.TableReferences.Count == 0 || from.TableReferences.First().GetType() != typeof(QualifiedJoin))
+            {
+                return joins;
+            }
 
             var joinVisitor = new JoinVisitor();
             from.Accept(joinVisitor);
@@ -198,8 +224,16 @@ namespace SqlServer.Rules.ReferentialIntegrity
                         // use table1 if it was supplied in the compare. else scan the joins to find the matching table to the column
                         var tbl = table1 ?? joins.Select(x =>
                         {
-                            if (CheckName(x.Table2, col)) { return x.Table2; }
-                            if (CheckName(x.Table1, col)) { return x.Table1; }
+                            if (CheckName(x.Table2, col))
+                            {
+                                return x.Table2;
+                            }
+
+                            if (CheckName(x.Table1, col))
+                            {
+                                return x.Table1;
+                            }
+
                             return null;
                         }).FirstOrDefault(x => x != null);
 
@@ -208,7 +242,11 @@ namespace SqlServer.Rules.ReferentialIntegrity
                             var tblAlias = tbl.Alias?.Value;
                             var tblName = new ObjectIdentifier(tbl.SchemaObject.Identifiers.Select(x => x.Value));
 
-                            if (join.Table1 == null) { join.Table1 = tbl; }
+                            if (join.Table1 == null)
+                            {
+                                join.Table1 = tbl;
+                            }
+
                             if (tblAlias.StringEquals(colTblName.First()) || tblName.CompareTo(colTblName) >= 5)
                             {
                                 join.Table1JoinColumns.Add(col);
@@ -224,7 +262,10 @@ namespace SqlServer.Rules.ReferentialIntegrity
         private static IList<string> GetTableOrAliasName(ObjectIdentifier identifier)
         {
             var parts = identifier.Parts;
-            if (parts.Count == 1) { return parts; }
+            if (parts.Count == 1)
+            {
+                return parts;
+            }
 
             // take the first parts minus one from the length. as they could use dbo.Table.Column or Table.Column, or t1.Column
             return parts.Take(parts.Count - 1).ToList();
@@ -233,7 +274,10 @@ namespace SqlServer.Rules.ReferentialIntegrity
         private static List<string> GetTableOrAliasName(IEnumerable<Identifier> identifiers)
         {
 #pragma warning disable CA1851 // Possible multiple enumerations of 'IEnumerable' collection
-            if (identifiers.Count() == 1) { return identifiers.Select(x => x.Value).ToList(); }
+            if (identifiers.Count() == 1)
+            {
+                return identifiers.Select(x => x.Value).ToList();
+            }
 
             // take the first parts minus one from the length. as they could use dbo.Table.Column or Table.Column, or t1.Column
             return identifiers.Take(identifiers.Count() - 1).Select(x => x.Value).ToList();
@@ -242,7 +286,11 @@ namespace SqlServer.Rules.ReferentialIntegrity
 
         private static bool CheckName(NamedTableReference tbl, ColumnReferenceExpression col)
         {
-            if (tbl == null) { return false; }
+            if (tbl == null)
+            {
+                return false;
+            }
+
             var colNameParts = col.MultiPartIdentifier.Identifiers;
             var colTableName = new ObjectIdentifier(colNameParts.Take(colNameParts.Count - 1).Select(x => x.Value));
 

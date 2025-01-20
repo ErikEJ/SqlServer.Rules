@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     /// <remarks>Seed values below 1000 have had issues with replication on some versions of SQL Server</remarks>
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="StartIdentity1000Rule"/> class.
         /// </summary>
-        public StartIdentity1000Rule() : base(ModelSchema.Table)
+        public StartIdentity1000Rule()
+            : base(ModelSchema.Table)
         {
         }
 
@@ -63,8 +65,7 @@ namespace SqlServer.Rules.Design
             }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
-                    typeof(CreateTableStatement)
-                );
+                    typeof(CreateTableStatement));
 
             var createTable = fragment as CreateTableStatement;
 
@@ -73,7 +74,10 @@ namespace SqlServer.Rules.Design
                 .FirstOrDefault(c =>
                     c.GetType() == typeof(UniqueConstraintDefinition)
                     && ((UniqueConstraintDefinition)c).IsPrimaryKey);
-            if (pk == null) { return problems; }
+            if (pk == null)
+            {
+                return problems;
+            }
 
             // reduce our pks, just down to a list of their names
             var pkColNames = ((UniqueConstraintDefinition)pk).Columns
@@ -83,7 +87,10 @@ namespace SqlServer.Rules.Design
             var identityColumn = createTable.Definition.ColumnDefinitions
                 .FirstOrDefault(cd => pkColNames.Contains($"[{cd.ColumnIdentifier.Value.ToUpperInvariant()}]") && cd.IdentityOptions != null);
 
-            if (identityColumn == null) { return problems; }
+            if (identityColumn == null)
+            {
+                return problems;
+            }
 
             // if the seed starts less than 1000, flag it
             if (((IntegerLiteral)identityColumn.IdentityOptions.IdentitySeed)?.GetValue() < 1000)

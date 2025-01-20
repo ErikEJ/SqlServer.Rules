@@ -8,17 +8,18 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
-    RuleDisplayName,
-    Description = RuleDisplayName,
-    Category = Constants.Design,
-    RuleScope = SqlRuleScope.Element)]
+    [ExportCodeAnalysisRule(
+        RuleId,
+        RuleDisplayName,
+        Description = RuleDisplayName,
+        Category = Constants.Design,
+        RuleScope = SqlRuleScope.Element)]
     public sealed class ConsiderEXISTSInsteadOfInRule : BaseSqlCodeAnalysisRule
     {
         /// <summary>
@@ -39,7 +40,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsiderEXISTSInsteadOfInRule"/> class.
         /// </summary>
-        public ConsiderEXISTSInsteadOfInRule() : base(ProgrammingAndViewSchemas)
+        public ConsiderEXISTSInsteadOfInRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -54,7 +56,10 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var sqlObjName = ruleExecutionContext.GetObjectName(sqlObj);
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);

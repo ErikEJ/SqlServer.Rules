@@ -19,7 +19,8 @@ namespace SqlServer.Rules.Naming
     /// the `sp_` prefix.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.Naming.NamingViolationRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Naming,
@@ -39,12 +40,14 @@ namespace SqlServer.Rules.Naming
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidSPPrefixRule"/> class.
         /// </summary>
-        public AvoidSPPrefixRule() : base(
+        public AvoidSPPrefixRule()
+            : base(
             RuleId,
             RuleDisplayName,
             "sp_",
             new[] { ModelSchema.Procedure },
             n => n.StartsWith)
-        { }
+        {
+        }
     }
 }

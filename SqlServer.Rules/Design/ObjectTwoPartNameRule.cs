@@ -19,7 +19,8 @@ namespace SqlServer.Rules.Design
     /// across a one part name it has to look up the associated schema to the object.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -44,7 +45,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="ObjectTwoPartNameRule"/> class.
         /// </summary>
-        public ObjectTwoPartNameRule() : base(ProgrammingAndViewSchemas)
+        public ObjectTwoPartNameRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 

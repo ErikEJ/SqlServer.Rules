@@ -5,13 +5,13 @@ namespace TSQLSmellSCA
 {
     public class ProcedureStatementBodyProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
         public bool NoCountSet { get; set; }
         private IList<ProcedureParameter> _parameterList;
 
         public ProcedureStatementBodyProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
 #pragma warning disable CA2227 // Collection properties should be read only
@@ -26,13 +26,13 @@ namespace TSQLSmellSCA
         {
             if (PrcRef.Name.SchemaIdentifier == null)
             {
-                _smells.SendFeedBack(24, PrcRef);
+                smells.SendFeedBack(24, PrcRef);
             }
         }
 
         public void ProcessProcedureStatementBody(ProcedureStatementBody StatementBody)
         {
-            _smells.AssignmentList.Clear();
+            smells.AssignmentList.Clear();
 
             TestProcedureReference(StatementBody.ProcedureReference);
             ParameterList = StatementBody.Parameters;
@@ -40,14 +40,16 @@ namespace TSQLSmellSCA
             NoCountSet = false;
             if (StatementBody.StatementList != null)
             {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                 foreach (TSqlFragment Fragment in StatementBody.StatementList.Statements)
                 {
-                    _smells.ProcessTsqlFragment(Fragment);
+                    smells.ProcessTsqlFragment(Fragment);
                 }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
                 if (!NoCountSet)
                 {
-                    _smells.SendFeedBack(30, StatementBody.ProcedureReference);
+                    smells.SendFeedBack(30, StatementBody.ProcedureReference);
                 }
             }
 

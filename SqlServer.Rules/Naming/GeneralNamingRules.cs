@@ -29,7 +29,8 @@ namespace SqlServer.Rules.Performance
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     /// <seealso cref="SqlServer.Rules.Naming.NamingViolationRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Naming,
@@ -46,11 +47,11 @@ namespace SqlServer.Rules.Performance
         /// </summary>
         public const string RuleDisplayName = "General naming rules.";
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="GeneralNamingRules"/> class.
         /// </summary>
-        public GeneralNamingRules() : base(
+        public GeneralNamingRules()
+            : base(
             ModelSchema.Table,
             ModelSchema.View,
             ModelSchema.ScalarFunction,
@@ -78,7 +79,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment();
 

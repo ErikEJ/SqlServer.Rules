@@ -15,7 +15,8 @@ namespace SqlServer.Rules.Design
     /// <ExampleMd></ExampleMd>
     /// <remarks>Tables that do not have clustered index should be the exception not the rule.</remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -40,7 +41,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="TableMissingClusteredIndexRule"/> class.
         /// </summary>
-        public TableMissingClusteredIndexRule() : base(ModelSchema.Table)
+        public TableMissingClusteredIndexRule()
+            : base(ModelSchema.Table)
         {
         }
 
@@ -55,7 +57,10 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var indexes = sqlObj.GetChildren(DacQueryScopes.All)
                 .Where(x =>

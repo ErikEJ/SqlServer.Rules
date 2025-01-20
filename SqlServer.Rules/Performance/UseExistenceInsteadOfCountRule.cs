@@ -17,7 +17,8 @@ namespace SqlServer.Rules.Performance
     ///  will stop as soon as records are found.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -39,11 +40,11 @@ namespace SqlServer.Rules.Performance
         /// </summary>
         public const string Message = RuleDisplayName;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UseExistenceInsteadOfCountRule"/> class.
         /// </summary>
-        public UseExistenceInsteadOfCountRule() : base(ProgrammingSchemas)
+        public UseExistenceInsteadOfCountRule()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -58,14 +59,20 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
 
             var ifVisitor = new IfStatementVisitor();
             fragment.Accept(ifVisitor);
 
-            if (ifVisitor.Count == 0) { return problems; }
+            if (ifVisitor.Count == 0)
+            {
+                return problems;
+            }
 
             foreach (var ifstmt in ifVisitor.Statements)
             {
@@ -85,7 +92,7 @@ namespace SqlServer.Rules.Performance
         {
             if (ifstmt.Predicate is BooleanComparisonExpression booleanCompare)
             {
-                return (booleanCompare.FirstExpression is IntegerLiteral || booleanCompare.SecondExpression is IntegerLiteral);
+                return booleanCompare.FirstExpression is IntegerLiteral || booleanCompare.SecondExpression is IntegerLiteral;
             }
 
             return false;

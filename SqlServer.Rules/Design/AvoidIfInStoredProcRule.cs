@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidIfInStoredProcRule"/> class.
         /// </summary>
-        public AvoidIfInStoredProcRule() : base(ModelSchema.Procedure)
+        public AvoidIfInStoredProcRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -57,14 +59,21 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null) { return problems; }
+            if (sqlObj == null)
+            {
+                return problems;
+            }
+
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement));
 
             var ifVisitor = new IfStatementVisitor();
 
             fragment.Accept(ifVisitor);
 
-            if (!ifVisitor.Statements.Any()) { return problems; }
+            if (!ifVisitor.Statements.Any())
+            {
+                return problems;
+            }
 
             foreach (var ifStatement in ifVisitor.NotIgnoredStatements(RuleId))
             {

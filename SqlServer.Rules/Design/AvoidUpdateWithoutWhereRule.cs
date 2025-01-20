@@ -19,11 +19,12 @@ namespace SqlServer.Rules.Design
     /// reviewing your code to avoid unintentionally updating all the records in the table.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
-    RuleDisplayName,
-    Description = RuleDisplayName,
-    Category = Constants.Design,
-    RuleScope = SqlRuleScope.Element)]
+    [ExportCodeAnalysisRule(
+        RuleId,
+        RuleDisplayName,
+        Description = RuleDisplayName,
+        Category = Constants.Design,
+        RuleScope = SqlRuleScope.Element)]
     public sealed class AvoidUpdateWithoutWhereRule : BaseSqlCodeAnalysisRule
     {
         /// <summary>
@@ -44,7 +45,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidUpdateWithoutWhereRule"/> class.
         /// </summary>
-        public AvoidUpdateWithoutWhereRule() : base(ProgrammingSchemas)
+        public AvoidUpdateWithoutWhereRule()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -73,7 +75,10 @@ namespace SqlServer.Rules.Design
             foreach (var stmt in visitor.NotIgnoredStatements(RuleId))
             {
                 if (stmt.UpdateSpecification.WhereClause != null
-                    || !(stmt.UpdateSpecification.Target is NamedTableReference reference)) { continue; }
+                    || !(stmt.UpdateSpecification.Target is NamedTableReference reference))
+                {
+                    continue;
+                }
 
                 var tableName = reference.SchemaObject.Identifiers.Last().Value;
 

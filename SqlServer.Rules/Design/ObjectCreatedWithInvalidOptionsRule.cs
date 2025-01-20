@@ -21,7 +21,8 @@ namespace SqlServer.Rules.Design
     /// computed columns or indexed views.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -51,11 +52,13 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="ObjectCreatedWithInvalidOptionsRule"/> class.
         /// </summary>
-        public ObjectCreatedWithInvalidOptionsRule() : base(ModelSchema.Table,
-                ModelSchema.Procedure,
-                ModelSchema.ScalarFunction,
-                ModelSchema.TableValuedFunction,
-                ModelSchema.DmlTrigger
+        public ObjectCreatedWithInvalidOptionsRule()
+            : base(
+            ModelSchema.Table,
+            ModelSchema.Procedure,
+            ModelSchema.ScalarFunction,
+            ModelSchema.TableValuedFunction,
+            ModelSchema.DmlTrigger
         )
         {
         }
@@ -116,8 +119,15 @@ namespace SqlServer.Rules.Design
             if (!ansiNullsOn || !quotedIdentifierOn)
             {
                 var options = new List<string>();
-                if (!ansiNullsOn) { options.Add("ANSI_NULLS OFF"); }
-                if (!quotedIdentifierOn) { options.Add("QUOTED_IDENTIFIER OFF"); }
+                if (!ansiNullsOn)
+                {
+                    options.Add("ANSI_NULLS OFF");
+                }
+
+                if (!quotedIdentifierOn)
+                {
+                    options.Add("QUOTED_IDENTIFIER OFF");
+                }
 
                 var errorMessage = string.Format(CultureInfo.InvariantCulture, impactsFunctionality ? Message : MessageNoEffect, string.Join(", ", options));
                 problems.Add(new SqlRuleProblem(errorMessage, sqlObj));

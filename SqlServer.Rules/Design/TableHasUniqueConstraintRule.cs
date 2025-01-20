@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="TableHasUniqueConstraintRule"/> class.
         /// </summary>
-        public TableHasUniqueConstraintRule() : base(ModelSchema.Table)
+        public TableHasUniqueConstraintRule()
+            : base(ModelSchema.Table)
         {
         }
 
@@ -56,10 +58,16 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var key = sqlObj.GetChildren(DacQueryScopes.All).FirstOrDefault(x => x.ObjectType == ModelSchema.PrimaryKeyConstraint);
-            if (key == null) { return problems; }
+            if (key == null)
+            {
+                return problems;
+            }
 
             var keyColumns = key.GetReferenced().Where(x => x.ObjectType == Column.TypeClass).ToList();
 
@@ -85,7 +93,6 @@ namespace SqlServer.Rules.Design
                     }
                 }
             }
-
 
             return problems;
         }

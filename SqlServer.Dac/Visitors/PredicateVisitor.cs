@@ -7,7 +7,11 @@ namespace SqlServer.Dac.Visitors
     public class PredicateVisitor : BaseVisitor, IVisitor<PredicateSetStatement>
     {
         public IList<PredicateSetStatement> Statements { get; } = new List<PredicateSetStatement>();
-        public int Count { get { return Statements.Count; } }
+        public int Count
+        {
+            get { return Statements.Count; }
+        }
+
         public override void ExplicitVisit(PredicateSetStatement node)
         {
             Statements.Add(node);

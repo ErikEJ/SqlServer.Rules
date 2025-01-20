@@ -14,13 +14,14 @@ namespace SqlServer.Rules.Performance
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <remarks>
-    /// This rule scans triggers to ensure they do not send data back to the caller. 
+    /// This rule scans triggers to ensure they do not send data back to the caller.
     /// Applications that modify tables or views with triggers do not necessarily expect results to
     /// be returned as part of the modification operation. For this reason it is not recommended to
     /// return results from within triggers.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -45,7 +46,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidReturningResultsFromTriggersRule"/> class.
         /// </summary>
-        public AvoidReturningResultsFromTriggersRule() : base(ModelSchema.DmlTrigger)
+        public AvoidReturningResultsFromTriggersRule()
+            : base(ModelSchema.DmlTrigger)
         {
         }
 
@@ -60,11 +62,13 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
-                typeof(CreateTriggerStatement)
-            );
+                typeof(CreateTriggerStatement));
 
             var selectVisitor = new SelectStatementVisitor();
             fragment.Accept(selectVisitor);

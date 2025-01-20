@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="UnusedVariablesRule"/> class.
         /// </summary>
-        public UnusedVariablesRule() : base(ProgrammingSchemas)
+        public UnusedVariablesRule()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -56,11 +58,17 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
-
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
-            if (fragment.ScriptTokenStream == null) { return problems; }
+            if (fragment.ScriptTokenStream == null)
+            {
+                return problems;
+            }
+
             var visitor = new DeclareVariableElementVisitor();
             fragment.Accept(visitor);
 

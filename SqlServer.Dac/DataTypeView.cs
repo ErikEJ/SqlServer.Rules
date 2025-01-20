@@ -17,7 +17,10 @@ namespace SqlServer.Dac
     {
         public DataTypeView(TSqlObject column)
         {
-            if (column.ObjectType != Column.TypeClass) { throw new ArgumentException("Invalid object type for the parameter. Should be of type Column.", nameof(column)); }
+            if (column.ObjectType != Column.TypeClass)
+            {
+                throw new ArgumentException("Invalid object type for the parameter. Should be of type Column.", nameof(column));
+            }
 
             Name = column.Name.Parts.Last();
             Type = DataTypeViewType.Column;

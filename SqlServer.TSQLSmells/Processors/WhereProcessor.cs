@@ -4,20 +4,24 @@ namespace TSQLSmellSCA
 {
     public class WhereProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public WhereProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         private void ProcessWhereBooleanExpression(BooleanExpression BooleanExpression)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var ExpressionType = FragmentTypeParser.GetFragmentType(BooleanExpression);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             switch (ExpressionType)
             {
                 case "BooleanComparisonExpression":
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var BoolComp = (BooleanComparisonExpression)BooleanExpression;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     ProcessWhereScalarExpression(BoolComp.FirstExpression);
                     ProcessWhereScalarExpression(BoolComp.SecondExpression);
                     if ((BoolComp.ComparisonType == BooleanComparisonType.Equals) &&
@@ -25,12 +29,14 @@ namespace TSQLSmellSCA
                          FragmentTypeParser.GetFragmentType(BoolComp.SecondExpression) == "NullLiteral")
                        )
                     {
-                        _smells.SendFeedBack(46, BoolComp);
+                        smells.SendFeedBack(46, BoolComp);
                     }
 
                     break;
                 case "BooleanBinaryExpression":
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var BoolExpression = (BooleanBinaryExpression)BooleanExpression;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     ProcessWhereBooleanExpression(BoolExpression.FirstExpression);
                     ProcessWhereBooleanExpression(BoolExpression.SecondExpression);
                     break;
@@ -41,31 +47,41 @@ namespace TSQLSmellSCA
 
         private void ProcessWhereScalarExpression(ScalarExpression WhereExpression)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var ExpressionType = FragmentTypeParser.GetFragmentType(WhereExpression);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             string ParameterType;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             switch (ExpressionType)
             {
                 case "ConvertCall":
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var ConvertCall = (ConvertCall)WhereExpression;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     ParameterType = FragmentTypeParser.GetFragmentType(ConvertCall.Parameter);
                     if (ParameterType == "ColumnReferenceExpression")
                     {
-                        _smells.SendFeedBack(6, ConvertCall);
+                        smells.SendFeedBack(6, ConvertCall);
                     }
 
                     break;
                 case "CastCall":
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var CastCall = (CastCall)WhereExpression;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     ParameterType = FragmentTypeParser.GetFragmentType(CastCall.Parameter);
                     if (ParameterType == "ColumnReferenceExpression")
                     {
-                        _smells.SendFeedBack(6, CastCall);
+                        smells.SendFeedBack(6, CastCall);
                     }
 
                     break;
                 case "ScalarSubquery":
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var SubQuery = (ScalarSubquery)WhereExpression;
-                    _smells.ProcessQueryExpression(SubQuery.QueryExpression, "RG");
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+                    smells.ProcessQueryExpression(SubQuery.QueryExpression, "RG");
                     break;
             }
         }

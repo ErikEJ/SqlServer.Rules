@@ -4,19 +4,21 @@ namespace TSQLSmellSCA
 {
     public class TopProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public TopProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         public void ProcessTopFilter(TopRowFilter TopFilter)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             IntegerLiteral TopLiteral = null;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             if (FragmentTypeParser.GetFragmentType(TopFilter.Expression) != "ParenthesisExpression")
             {
-                _smells.SendFeedBack(34, TopFilter);
+                smells.SendFeedBack(34, TopFilter);
                 if (FragmentTypeParser.GetFragmentType(TopFilter.Expression) == "IntegerLiteral")
                 {
                     TopLiteral = (IntegerLiteral)TopFilter.Expression;
@@ -24,7 +26,9 @@ namespace TSQLSmellSCA
             }
             else
             {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                 var ParenthesisExpression = (ParenthesisExpression)TopFilter.Expression;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                 if (FragmentTypeParser.GetFragmentType(ParenthesisExpression.Expression) == "IntegerLiteral")
                 {
                     TopLiteral = (IntegerLiteral)ParenthesisExpression.Expression;
@@ -33,7 +37,7 @@ namespace TSQLSmellSCA
 
             if (TopFilter.Percent && TopLiteral != null && TopLiteral.Value == "100")
             {
-                _smells.SendFeedBack(35, TopLiteral);
+                smells.SendFeedBack(35, TopLiteral);
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -13,7 +13,7 @@ namespace SqlServer.Rules.Naming
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     public class NamingViolationRule : BaseSqlCodeAnalysisRule
     {
-        private readonly string _RuleId;
+        private readonly string ruleId;
 
         /// <summary>
         /// The message
@@ -45,7 +45,7 @@ namespace SqlServer.Rules.Naming
             IList<ModelTypeClass> appliesTo,
             Func<string, Predicate<string>> predicate)
         {
-            _RuleId = ruleId;
+            this.ruleId = ruleId;
             Message = message;
             BadCharacters = badPrefix;
             SupportedElementTypes = appliesTo;
@@ -73,7 +73,7 @@ namespace SqlServer.Rules.Naming
             var fragment = ruleExecutionContext.GetFragment();
 
             if (PartialPredicate(name)(BadCharacters)
-                && Ignorables.ShouldNotIgnoreRule(fragment.ScriptTokenStream, _RuleId, fragment.StartLine))
+                && Ignorables.ShouldNotIgnoreRule(fragment.ScriptTokenStream, ruleId, fragment.StartLine))
             {
                 problems.Add(new SqlRuleProblem(Message, sqlObj));
             }

@@ -13,7 +13,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -38,7 +39,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="TableHasPrimaryKeyRule"/> class.
         /// </summary>
-        public TableHasPrimaryKeyRule() : base(ModelSchema.Table)
+        public TableHasPrimaryKeyRule()
+            : base(ModelSchema.Table)
         {
             SupportedElementTypes = new[] { ModelSchema.Table };
         }

@@ -212,8 +212,11 @@ namespace SqlServer.Rules
                     return statementList;
 
                 case "CREATEFUNCTIONSTATEMENT":
-                    var func = (fragment as CreateFunctionStatement);
-                    if (func == null) { return null; }
+                    var func = fragment as CreateFunctionStatement;
+                    if (func == null)
+                    {
+                        return null;
+                    }
 
                     // this is an ITVF, and does not have a statement list, it has one statement in the return block...
                     if (func.StatementList == null && func.ReturnType is SelectFunctionReturnType returnType)
@@ -278,7 +281,11 @@ namespace SqlServer.Rules
         /// <returns></returns>
         protected static string GetDataType(StringLiteral value)
         {
-            if (value.IsNational) { return "nvarchar"; }
+            if (value.IsNational)
+            {
+                return "nvarchar";
+            }
+
             return "varchar";
         }
 
@@ -326,10 +333,16 @@ namespace SqlServer.Rules
         /// <returns></returns>
         protected static string GetDataType(ScalarExpression value, IList<DataTypeView> variables)
         {
-            if (!(value is VariableReference varRef)) { return GetDataType(value); }
+            if (!(value is VariableReference varRef))
+            {
+                return GetDataType(value);
+            }
 
             var var1 = variables.FirstOrDefault(v => Comparer.Equals(v.Name, varRef.Name));
-            if (var1 != null) { return var1.DataType; }
+            if (var1 != null)
+            {
+                return var1.DataType;
+            }
 
             return string.Empty;
         }
@@ -343,12 +356,16 @@ namespace SqlServer.Rules
         /// <param name="variables">The variables.</param>
         /// <param name="model">The model.</param>
         /// <returns></returns>
-        protected static string GetDataType(TSqlObject sqlObj,
+        protected static string GetDataType(
+            TSqlObject sqlObj,
             QuerySpecification query,
             ScalarExpression expression,
             IList<DataTypeView> variables, TSqlModel model = null)
         {
-            if (expression == null) { return null; }
+            if (expression == null)
+            {
+                return null;
+            }
 
             if (expression is ColumnReferenceExpression expression1)
             {
@@ -429,7 +446,11 @@ namespace SqlServer.Rules
             else if (expression is BinaryExpression exprBin)
             {
                 var datatype1 = GetDataType(sqlObj, query, exprBin.FirstExpression, variables, model);
-                if (datatype1 != null) { return datatype1; }
+                if (datatype1 != null)
+                {
+                    return datatype1;
+                }
+
                 return GetDataType(sqlObj, query, exprBin.SecondExpression, variables, model);
             }
             else if (expression is ScalarSubquery exprScalar)
@@ -526,7 +547,10 @@ namespace SqlServer.Rules
                         foreach (var tbl in tbls)
                         {
                             referencedColumn = GetReferencedColumn(tbl, columns, columnName);
-                            if (referencedColumn != null) { break; }
+                            if (referencedColumn != null)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -542,7 +566,10 @@ namespace SqlServer.Rules
                         foreach (var tbl in tablesVisitor.Statements)
                         {
                             referencedColumn = GetReferencedColumn(tbl, columns, columnName);
-                            if (referencedColumn != null) { break; }
+                            if (referencedColumn != null)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -593,13 +620,16 @@ namespace SqlServer.Rules
         {
             TSqlObject referencedColumn = null;
 
-            if (table == null) { return referencedColumn; }
+            if (table == null)
+            {
+                return referencedColumn;
+            }
 
             if (table is NamedTableReference reference)
             {
                 Func<string, string, string, bool> compareNames = (string t1, string t2, string c) =>
-                    (t1.Contains($"{t2}.[{c}]", StringComparison.OrdinalIgnoreCase) 
-                        || t1.Contains($"[{c}]", StringComparison.OrdinalIgnoreCase) 
+                    (t1.Contains($"{t2}.[{c}]", StringComparison.OrdinalIgnoreCase)
+                        || t1.Contains($"[{c}]", StringComparison.OrdinalIgnoreCase)
                     && !t1.Contains('#', StringComparison.OrdinalIgnoreCase));
                 var tableName = reference.GetName();
                 referencedColumn = columns.FirstOrDefault(c => compareNames(c.Name.GetName(), tableName, columnName));
@@ -649,7 +679,10 @@ namespace SqlServer.Rules
                 var fullColumnName = referencedTable.Name + ".[" + column.MultiPartIdentifier.Identifiers.Last().Value + "]";
                 var retColumn = referencedTable.GetReferencedRelationshipInstances(Table.Columns).FirstOrDefault(p => Comparer.Equals(p.ObjectName.ToString(), fullColumnName));
 
-                if (retColumn != null) { return referencedTable; }
+                if (retColumn != null)
+                {
+                    return referencedTable;
+                }
             }
 
             return null;

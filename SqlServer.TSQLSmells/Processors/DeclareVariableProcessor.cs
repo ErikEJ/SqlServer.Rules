@@ -1,35 +1,35 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
     public class DeclareVariableProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public DeclareVariableProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
-        public void ProcessDeclareVariableElement(DeclareVariableElement Element)
+        public void ProcessDeclareVariableElement(DeclareVariableElement element)
         {
-            if (Element.VariableName.Value.Length <= 2)
+            if (element.VariableName.Value.Length <= 2)
             {
-                _smells.SendFeedBack(33, Element);
+                smells.SendFeedBack(33, element);
             }
 
-            _smells.ProcessTsqlFragment(Element.DataType);
-            if (Element.Value != null)
+            smells.ProcessTsqlFragment(element.DataType);
+            if (element.Value != null)
             {
-                _smells.ProcessTsqlFragment(Element.Value);
+                smells.ProcessTsqlFragment(element.Value);
             }
         }
 
-        public void ProcessDeclareVariableStatement(DeclareVariableStatement Statement)
+        public void ProcessDeclareVariableStatement(DeclareVariableStatement statement)
         {
-            foreach (var variable in Statement.Declarations)
+            foreach (var variable in statement.Declarations)
             {
-                _smells.ProcessTsqlFragment(variable);
+                smells.ProcessTsqlFragment(variable);
             }
         }
     }

@@ -4,11 +4,11 @@ namespace TSQLSmellSCA
 {
     public class SetProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public SetProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         private void ProcessGeneralSetCommand(GeneralSetCommand SetCommand)
@@ -16,20 +16,22 @@ namespace TSQLSmellSCA
             switch (SetCommand.CommandType)
             {
                 case GeneralSetCommandType.DateFirst:
-                    _smells.SendFeedBack(9, SetCommand);
+                    smells.SendFeedBack(9, SetCommand);
                     break;
                 case GeneralSetCommandType.DateFormat:
-                    _smells.SendFeedBack(8, SetCommand);
+                    smells.SendFeedBack(8, SetCommand);
                     break;
             }
         }
 
         public void ProcessSetStatement(SetCommandStatement Fragment)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             foreach (GeneralSetCommand SetCommand in Fragment.Commands)
             {
                 ProcessGeneralSetCommand(SetCommand);
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
     }
 }

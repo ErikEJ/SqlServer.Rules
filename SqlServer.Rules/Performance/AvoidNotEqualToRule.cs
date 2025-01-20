@@ -9,7 +9,7 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Performance
 {
     /// <summary>
-    ///  Avoid using not equal operator (&lt;>,!=) in the WHERE clause. (Sargeable) 
+    ///  Avoid using not equal operator (&lt;>,!=) in the WHERE clause. (Sargeable)
     /// </summary>
     /// <FriendlyName>Use of inequality</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
@@ -20,7 +20,8 @@ namespace SqlServer.Rules.Performance
     /// operators (>,>=,&lt;,&lt;=) if possible.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -45,7 +46,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidNotEqualToRule"/> class.
         /// </summary>
-        public AvoidNotEqualToRule() : base(ProgrammingAndViewSchemas)
+        public AvoidNotEqualToRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -60,7 +62,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
 

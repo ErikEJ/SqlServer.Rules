@@ -21,7 +21,8 @@ namespace SqlServer.Rules.Design
     /// when the table structure changes (like adding or dropping a column).
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -46,7 +47,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="UseColumnListWithInsertsRule"/> class.
         /// </summary>
-        public UseColumnListWithInsertsRule() : base(ModelSchema.Procedure)
+        public UseColumnListWithInsertsRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -62,13 +64,20 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement));
             var name = sqlObj.Name.GetName();
 
             var visitor = new InsertStatementVisitor();
             fragment.Accept(visitor);
-            if (visitor.Count == 0) { return problems; }
+            if (visitor.Count == 0)
+            {
+                return problems;
+            }
 
             var offenders = visitor.Statements.Where(s => s.InsertSpecification.Columns.Count == 0).ToList();
 

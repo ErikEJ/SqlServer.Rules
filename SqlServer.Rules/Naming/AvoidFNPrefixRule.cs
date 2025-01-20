@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Naming
     /// Microsoft shipped objects.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.Naming.NamingViolationRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Naming,
@@ -36,12 +37,14 @@ namespace SqlServer.Rules.Naming
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidFNPrefixRule"/> class.
         /// </summary>
-        public AvoidFNPrefixRule() : base(
+        public AvoidFNPrefixRule()
+            : base(
             RuleId,
             RuleDisplayName,
             "fn_",
             new[] { ModelSchema.PartitionFunction, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction },
             n => n.StartsWith)
-        { }
+        {
+        }
     }
 }

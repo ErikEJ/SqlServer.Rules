@@ -1,0 +1,22 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace TSQLSmellsSSDTTest;
+
+[TestClass]
+public class testSelectStarInScalarUDF : TestModel
+{
+    public testSelectStarInScalarUDF()
+    {
+        TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInScalarUDF.sql");
+
+        ExpectedProblems.Add(new TestProblem(9, 10, "Smells.SML005"));
+        ExpectedProblems.Add(new TestProblem(5, 10, "Smells.SML033"));
+    }
+
+    [TestMethod]
+    public void SelectStarInScalarUDF()
+    {
+        RunTest();
+    }
+}
+#pragma warning restore IDE1006 // Naming Styles

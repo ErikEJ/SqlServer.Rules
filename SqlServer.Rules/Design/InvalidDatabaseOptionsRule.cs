@@ -14,10 +14,10 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <remarks>
-    /// The database is configured with invalid options. 
+    /// The database is configured with invalid options.
     /// Many of these options can have an adverse affect as well as affect performance.
     /// <br/>
-    /// Recommended: 
+    /// Recommended:
     /// <list type="table">
     ///   <listheader><term>Option</term><description>State</description></listheader>
     ///   <item><term>ANSI_NULLS</term><description>OFF</description></item>
@@ -29,7 +29,8 @@ namespace SqlServer.Rules.Design
     /// </list>
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -78,12 +79,35 @@ namespace SqlServer.Rules.Design
             var dbOptions = sqlModel.CopyModelOptions();
             var invalidOptions = new List<string>();
 
-            if (!dbOptions.AnsiNullsOn.GetValueOrDefault(true)) { invalidOptions.Add("ANSI_NULLS OFF"); }
-            if (!dbOptions.AnsiPaddingOn.GetValueOrDefault(true)) { invalidOptions.Add("ANSI_PADDING OFF"); }
-            if (!dbOptions.AnsiWarningsOn.GetValueOrDefault(true)) { invalidOptions.Add("ANSI_WARNINGS OFF"); }
-            if (!dbOptions.ArithAbortOn.GetValueOrDefault(true)) { invalidOptions.Add("ARITHABORT OFF"); }
-            if (!dbOptions.ConcatNullYieldsNull.GetValueOrDefault(true)) { invalidOptions.Add("CONCAT_NULL_YIELDS_NULL OFF"); }
-            if (!dbOptions.QuotedIdentifierOn.GetValueOrDefault(true)) { invalidOptions.Add("QUOTED_IDENTIFIER OFF"); }
+            if (!dbOptions.AnsiNullsOn.GetValueOrDefault(true))
+            {
+                invalidOptions.Add("ANSI_NULLS OFF");
+            }
+
+            if (!dbOptions.AnsiPaddingOn.GetValueOrDefault(true))
+            {
+                invalidOptions.Add("ANSI_PADDING OFF");
+            }
+
+            if (!dbOptions.AnsiWarningsOn.GetValueOrDefault(true))
+            {
+                invalidOptions.Add("ANSI_WARNINGS OFF");
+            }
+
+            if (!dbOptions.ArithAbortOn.GetValueOrDefault(true))
+            {
+                invalidOptions.Add("ARITHABORT OFF");
+            }
+
+            if (!dbOptions.ConcatNullYieldsNull.GetValueOrDefault(true))
+            {
+                invalidOptions.Add("CONCAT_NULL_YIELDS_NULL OFF");
+            }
+
+            if (!dbOptions.QuotedIdentifierOn.GetValueOrDefault(true))
+            {
+                invalidOptions.Add("QUOTED_IDENTIFIER OFF");
+            }
 
             if (invalidOptions.Count > 0)
             {

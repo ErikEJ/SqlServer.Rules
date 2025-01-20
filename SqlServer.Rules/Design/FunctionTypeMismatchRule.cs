@@ -22,7 +22,8 @@ namespace SqlServer.Rules.Design
     /// is implicitly converted to the type of the first parameter.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -71,8 +72,7 @@ namespace SqlServer.Rules.Design
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
                 typeof(CreateProcedureStatement),
-                typeof(CreateFunctionStatement)
-            );
+                typeof(CreateFunctionStatement));
 
             var variablesVisitor = new VariablesVisitor();
             fragment.Accept(variablesVisitor);
@@ -86,7 +86,10 @@ namespace SqlServer.Rules.Design
                 var visitor = new FunctionCallVisitor("isnull", "coalesce");
                 query.Accept(visitor);
 
-                if (!visitor.Statements.Any()) { continue; }
+                if (!visitor.Statements.Any())
+                {
+                    continue;
+                }
 
                 var columnDataTypes = new Dictionary<NamedTableView, IDictionary<string, DataTypeView>>();
                 query.GetTableColumnDataTypes(columnDataTypes, ruleExecutionContext.SchemaModel);
@@ -99,7 +102,10 @@ namespace SqlServer.Rules.Design
                         if (parameter is ColumnReferenceExpression colRef)
                         {
                             var dtView = columnDataTypes.GetDataTypeView(colRef);
-                            if (dtView != null) { paramTypes.Add(dtView.DataType); }
+                            if (dtView != null)
+                            {
+                                paramTypes.Add(dtView.DataType);
+                            }
                         }
                         else
                         {

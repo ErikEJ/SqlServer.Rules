@@ -13,16 +13,17 @@ namespace SqlServer.Rules.Design
     /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks the T-SQL code for use <c>DECIMAL</c> or <c>NUMERIC</c> data types without
-    /// specifying length. Avoid defining columns, variables, and parameters using 
+    /// specifying length. Avoid defining columns, variables, and parameters using
     /// <c>DECIMAL</c> or <c>NUMERIC</c> data types without specifying precision, and scale. If no
     /// precision and scale are provided, SQL Server will use its default size <c>NUMERIC(18, 0)</c>.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.Design.TypesMissingParametersRule" />
-    [ExportCodeAnalysisRule(RuleId,
-    RuleDisplayName,
-    Description = RuleDisplayName,
-    Category = Constants.Design,
-    RuleScope = SqlRuleScope.Element)]
+    [ExportCodeAnalysisRule(
+        RuleId,
+        RuleDisplayName,
+        Description = RuleDisplayName,
+        Category = Constants.Design,
+        RuleScope = SqlRuleScope.Element)]
     public sealed class NoPrecisionScaleRule : TypesMissingParametersRule
     {
         /// <summary>
@@ -43,10 +44,13 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="NoPrecisionScaleRule"/> class.
         /// </summary>
-        public NoPrecisionScaleRule() : base(new[]
+        public NoPrecisionScaleRule()
+            : base(
+            new[]
                 {
                     ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table,
                 }, new[] { SqlDataTypeOption.Decimal, SqlDataTypeOption.Numeric }, 2, Message)
-        { }
+        {
+        }
     }
 }

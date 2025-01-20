@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidCHARTypeRule"/> class.
         /// </summary>
-        public AvoidCHARTypeRule() : base(ModelSchema.Table)
+        public AvoidCHARTypeRule()
+            : base(ModelSchema.Table)
         {
         }
 
@@ -57,7 +59,11 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateTableStatement));
             var tableName = sqlObj.Name.GetName();
 
@@ -66,7 +72,8 @@ namespace SqlServer.Rules.Design
 
             var longChars = columnVisitor.NotIgnoredStatements(RuleId)
                 .Where(col => col.DataType?.Name != null)
-                .Select(col => new {
+                .Select(col => new
+                {
                     column = col,
                     name = col.ColumnIdentifier.Value,
                     type = col.DataType.Name.Identifiers.FirstOrDefault()?.Value,

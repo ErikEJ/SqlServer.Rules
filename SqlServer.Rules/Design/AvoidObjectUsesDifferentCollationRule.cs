@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -46,7 +47,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidObjectUsesDifferentCollationRule"/> class.
         /// </summary>
-        public AvoidObjectUsesDifferentCollationRule() : base(ModelSchema.Table)
+        public AvoidObjectUsesDifferentCollationRule()
+            : base(ModelSchema.Table)
         {
         }
 
@@ -62,7 +64,11 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateTableStatement));
             var objName = sqlObj.Name.GetName();
 
@@ -74,8 +80,7 @@ namespace SqlServer.Rules.Design
             var statements = columnVisitor.NotIgnoredStatements(RuleId).ToList();
 
             var columnOffenders = statements.Where(col =>
-                (col.Collation != null && !Comparer.Equals(col.Collation?.Value, dbCollation))
-            ).ToList();
+                (col.Collation != null && !Comparer.Equals(col.Collation?.Value, dbCollation))).ToList();
 
             problems.AddRange(columnOffenders.Select(col => new SqlRuleProblem(MessageColumn, sqlObj, col)));
 

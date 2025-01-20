@@ -31,8 +31,7 @@ public class DocsGenerator
             .Where(t => t.IsClass
                         && !t.IsAbstract
                         && t.IsSubclassOf(typeof(BaseSqlCodeAnalysisRule))
-                        && t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).Any()
-            )
+                        && t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).Any())
             .ToList();
 
         var ruleScripts = CollectRuleScripts(rulesScriptFolder);
@@ -42,8 +41,7 @@ public class DocsGenerator
         var tSqlSmellRules = smellsAssembly.GetTypes()
             .Where(t => t.IsClass
                         && !t.IsAbstract
-                        && t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).Any()
-            )
+                        && t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).Any())
             .ToList();
 
         rules.AddRange(tSqlSmellRules);

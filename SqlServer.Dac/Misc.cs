@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +6,7 @@ namespace SqlServer.Dac
 {
     public static class Misc
     {
-        private static readonly StringComparer _comparer = StringComparer.OrdinalIgnoreCase;
+        private static readonly StringComparer Comparer = StringComparer.OrdinalIgnoreCase;
 
         public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
@@ -52,8 +52,12 @@ namespace SqlServer.Dac
 
         public static bool StringEquals(this object value1, object value2)
         {
-            if (value1 == null || value2 == null) { return false; }
-            return _comparer.Equals(value1, value2);
+            if (value1 == null || value2 == null)
+            {
+                return false;
+            }
+
+            return Comparer.Equals(value1, value2);
         }
     }
 }

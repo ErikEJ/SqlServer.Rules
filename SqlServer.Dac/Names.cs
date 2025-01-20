@@ -133,7 +133,10 @@ namespace SqlServer.Dac
         public static ObjectIdentifier GetObjectName(this TSqlFragment fragment, string assumedSchema = "dbo")
         {
             ObjectIdentifier ret;
-            if (fragment == null) { return null; }
+            if (fragment == null)
+            {
+                return null;
+            }
 
             switch (fragment)
             {

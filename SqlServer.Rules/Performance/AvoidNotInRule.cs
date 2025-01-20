@@ -17,7 +17,8 @@ namespace SqlServer.Rules.Performance
     /// covered by index.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -42,7 +43,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidNotInRule"/> class.
         /// </summary>
-        public AvoidNotInRule() : base(ProgrammingAndViewSchemas)
+        public AvoidNotInRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -57,7 +59,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var sqlObjName = ruleExecutionContext.GetObjectName(sqlObj);
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
@@ -73,7 +78,6 @@ namespace SqlServer.Rules.Performance
                 var offenders = inPredicateVisitor.NotIgnoredStatements(RuleId).Where(i => i.NotDefined);
                 problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
             }
-
 
             return problems;
         }

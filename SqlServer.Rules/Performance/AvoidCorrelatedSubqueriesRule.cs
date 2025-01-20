@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Performance
     /// <ExampleMd></ExampleMd>
     /// <remarks>https://en.wikipedia.org/wiki/Correlated_subquery</remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidCorrelatedSubqueriesRule"/> class.
         /// </summary>
-        public AvoidCorrelatedSubqueriesRule() : base(ProgrammingAndViewSchemas)
+        public AvoidCorrelatedSubqueriesRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -56,7 +58,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
 
@@ -66,7 +71,10 @@ namespace SqlServer.Rules.Performance
             var offenders = scalarSubqueryVisitor.NotIgnoredStatements(RuleId).Where(s =>
             {
                 var whereClause = (s.QueryExpression as QuerySpecification)?.WhereClause;
-                if (whereClause == null) { return false; }
+                if (whereClause == null)
+                {
+                    return false;
+                }
 
                 var booleanCompares = new BooleanComparisonVisitor();
                 whereClause.Accept(booleanCompares);
@@ -75,7 +83,10 @@ namespace SqlServer.Rules.Performance
                 {
                     var colVisitor = new ColumnReferenceExpressionVisitor();
                     booleanCompare.AcceptChildren(colVisitor);
-                    if (colVisitor.Count > 1) { return true; }
+                    if (colVisitor.Count > 1)
+                    {
+                        return true;
+                    }
                 }
 
                 return false;

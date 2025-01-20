@@ -26,7 +26,6 @@ namespace TSQLSmellSCA
         /// </summary>
         public const string ResourceBaseName = "TSQLSmellSCA.Resources";
 
- 
         public const string TSQLSmell_RuleName01 = "TSQLSmell_RuleName01";
         public const string TSQLSmell_RuleName02 = "TSQLSmell_RuleName02";
         public const string TSQLSmell_RuleName03 = "TSQLSmell_RuleName03";
@@ -71,14 +70,14 @@ namespace TSQLSmellSCA
         public const string TSQLSmell_RuleName42 = "TSQLSmell_RuleName42";
         public const string TSQLSmell_RuleName43 = "TSQLSmell_RuleName43";
         public const string TSQLSmell_RuleName44 = "TSQLSmell_RuleName44";
-        public const string TSQLSmell_RuleName45 = "TSQLSmell_RuleName45";
-        public const string TSQLSmell_RuleName46 = "TSQLSmell_RuleName46";
-        public const string TSQLSmell_RuleName47 = "TSQLSmell_RuleName47";
-        public const string TSQLSmell_RuleName48 = "TSQLSmell_RuleName48";
-        public const string TSQLSmell_RuleName49 = "TSQLSmell_RuleName49";
-        public const string TSQLSmell_RuleName50 = "TSQLSmell_RuleName50";
+        public const string TSQLSmellRuleName45 = "TSQLSmell_RuleName45";
+        public const string TSQLSmellRuleName46 = "TSQLSmell_RuleName46";
+        public const string TSQLSmellRuleName47 = "TSQLSmell_RuleName47";
+        public const string TSQLSmellRuleName48 = "TSQLSmell_RuleName48";
+        public const string TSQLSmellRuleName49 = "TSQLSmell_RuleName49";
+        public const string TSQLSmellRuleName50 = "TSQLSmell_RuleName50";
 
-        public const string TSQLSmell_ProblemDescription = "TSQLSmell_ProblemDescription";
+        public const string TSQLSmellProblemDescription = "TSQLSmell_ProblemDescription";
 
         /// <summary>
         /// The design category (should not be localized)

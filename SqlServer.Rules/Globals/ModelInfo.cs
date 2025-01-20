@@ -49,7 +49,10 @@ namespace SqlServer.Rules.Globals
         /// <returns></returns>
         public static DataTypeView GetDataTypeView(this IDictionary<NamedTableView, IDictionary<string, DataTypeView>> list, ColumnReferenceExpression column)
         {
-            if (column == null) { return null; }
+            if (column == null)
+            {
+                return null;
+            }
 
             var colIdentifier = column.MultiPartIdentifier.GetObjectIdentifier(null);
             var colName = colIdentifier.Parts.Last();
@@ -102,7 +105,7 @@ namespace SqlServer.Rules.Globals
                 return result;
             }
 
-           if (int.TryParse(literal.Value, out result))
+            if (int.TryParse(literal.Value, out result))
            {
                 return result;
            }
@@ -118,7 +121,10 @@ namespace SqlServer.Rules.Globals
         /// <param name="model">The model.</param>
         public static void GetTableColumnDataTypes(this TSqlStatement query, IDictionary<NamedTableView, IDictionary<string, DataTypeView>> list, TSqlModel model)
         {
-            if (query == null) { return; }
+            if (query == null)
+            {
+                return;
+            }
 
             // new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             var namedTableReferenceVisitor = new NamedTableReferenceVisitor();
@@ -155,7 +161,10 @@ namespace SqlServer.Rules.Globals
             var ret = new Dictionary<string, DataTypeView>(StringComparer.InvariantCultureIgnoreCase);
 
             var tbl = model.GetObject(ModelSchema.Table, table.SchemaObject.GetObjectIdentifier(), DacQueryScopes.All);
-            if (tbl == null) { return ret; }
+            if (tbl == null)
+            {
+                return ret;
+            }
 
             var columns = tbl.GetChildren(DacQueryScopes.UserDefined).Where(x => x.ObjectType == ModelSchema.Column);
 
@@ -176,7 +185,10 @@ namespace SqlServer.Rules.Globals
         public static IEnumerable<SelectStatement> GetSelectsSettingParameterValue(this IEnumerable<SelectStatement> selects, string parameter)
         {
 #pragma warning disable CA1851 // Possible multiple enumerations of 'IEnumerable' collection
-            if (!selects.Any() || string.IsNullOrWhiteSpace(parameter)) { yield break; }
+            if (!selects.Any() || string.IsNullOrWhiteSpace(parameter))
+            {
+                yield break;
+            }
 
             foreach (var select in selects)
             {
@@ -199,14 +211,20 @@ namespace SqlServer.Rules.Globals
         public static IEnumerable<SelectStatement> GetSelectsUsingParameterInWhere(this IEnumerable<SelectStatement> selects, string parameter)
         {
 #pragma warning disable CA1851 // Possible multiple enumerations of 'IEnumerable' collection
-            if (!selects.Any() || string.IsNullOrWhiteSpace(parameter)) { yield break; }
+            if (!selects.Any() || string.IsNullOrWhiteSpace(parameter))
+            {
+                yield break;
+            }
 
             foreach (var select in selects)
             {
 #pragma warning restore CA1851 // Possible multiple enumerations of 'IEnumerable' collection
                 if (select.QueryExpression is QuerySpecification query)
                 {
-                    if (query.FromClause == null || query.WhereClause == null) { continue; }
+                    if (query.FromClause == null || query.WhereClause == null)
+                    {
+                        continue;
+                    }
 
                     var variableVisitor = new VariableReferenceVisitor();
                     query.WhereClause.Accept(variableVisitor);
@@ -228,14 +246,16 @@ namespace SqlServer.Rules.Globals
         /// <returns></returns>
         public static IEnumerable<decimal> GetDataTypeParameters(this DataTypeReference dataType)
         {
-            if (dataType == null) { return Enumerable.Empty<decimal>(); }
+            if (dataType == null)
+            {
+                return Enumerable.Empty<decimal>();
+            }
 
             if (dataType is ParameterizedDataTypeReference parameterizedDataType)
             {
                 var type = typeof(decimal);
                 return parameterizedDataType.Parameters.Select(l =>
-                    (decimal)Convert.ChangeType((l.Value.StringEquals("MAX") ? "-1" : l.Value), type, CultureInfo.InvariantCulture)
-                );
+                    (decimal)Convert.ChangeType(l.Value.StringEquals("MAX") ? "-1" : l.Value, type, CultureInfo.InvariantCulture));
             }
 
             return Enumerable.Empty<decimal>();

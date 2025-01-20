@@ -358,7 +358,6 @@ public sealed class SqlTestDB : IDisposable
         }
     }
 
-
     /// <summary>
     /// Cleanup the DB if it was restored during the testing process.  A restoredDB will
     /// removed from the server and then .mdf/ldf files deleted from disk
@@ -408,7 +407,8 @@ public sealed class SqlTestDB : IDisposable
 
     private static void Log(string format, params object[] args)
     {
-        Trace.TraceInformation("*** {0} TEST {1}",
+        Trace.TraceInformation(
+            "*** {0} TEST {1}",
             DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture), string.Format(CultureInfo.InvariantCulture, format, args));
     }
 
