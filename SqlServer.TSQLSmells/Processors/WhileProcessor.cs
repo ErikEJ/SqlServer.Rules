@@ -4,17 +4,17 @@ namespace TSQLSmellSCA
 {
     public class WhileProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public WhileProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         public void ProcessWhileStatement(WhileStatement whileStatement)
         {
-            _smells.ProcessTsqlFragment(whileStatement.Predicate);
-            _smells.ProcessTsqlFragment(whileStatement.Statement);
+            smells.ProcessTsqlFragment(whileStatement.Predicate);
+            smells.ProcessTsqlFragment(whileStatement.Statement);
         }
     }
 }

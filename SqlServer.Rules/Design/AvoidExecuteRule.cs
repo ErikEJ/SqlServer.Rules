@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -16,11 +16,12 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
-    RuleDisplayName,
-    Description = RuleDisplayName,
-    Category = Constants.Design,
-    RuleScope = SqlRuleScope.Element)]
+    [ExportCodeAnalysisRule(
+        RuleId,
+        RuleDisplayName,
+        Description = RuleDisplayName,
+        Category = Constants.Design,
+        RuleScope = SqlRuleScope.Element)]
     public sealed class AvoidExecuteRule : BaseSqlCodeAnalysisRule
     {
         /// <summary>
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidExecuteRule"/> class.
         /// </summary>
-        public AvoidExecuteRule() : base(ModelSchema.Procedure)
+        public AvoidExecuteRule()
+            : base(ModelSchema.Procedure)
         {
         }
 

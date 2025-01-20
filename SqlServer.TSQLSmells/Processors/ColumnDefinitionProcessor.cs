@@ -4,21 +4,22 @@ namespace TSQLSmellSCA
 {
     public class ColumnDefinitionProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public ColumnDefinitionProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         public void ProcessColumnDefinition(ColumnDefinition ColumnDef)
         {
-            _smells.ProcessTsqlFragment(ColumnDef.DataType);
+            smells.ProcessTsqlFragment(ColumnDef.DataType);
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             foreach (var Constraint in ColumnDef.Constraints)
             {
-
-                _smells.ProcessTsqlFragment(Constraint);
+                smells.ProcessTsqlFragment(Constraint);
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
     }
 }

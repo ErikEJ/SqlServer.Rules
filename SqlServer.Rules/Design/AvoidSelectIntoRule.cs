@@ -14,7 +14,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -39,7 +40,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidSelectIntoRule"/> class.
         /// </summary>
-        public AvoidSelectIntoRule() : base(ProgrammingSchemas)
+        public AvoidSelectIntoRule()
+            : base(ProgrammingSchemas)
         {
         }
 

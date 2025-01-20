@@ -15,7 +15,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -42,7 +43,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsiderCachingGetDateToVariable"/> class.
         /// </summary>
-        public ConsiderCachingGetDateToVariable() : base(ProgrammingSchemas)
+        public ConsiderCachingGetDateToVariable()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -80,7 +82,10 @@ namespace SqlServer.Rules.Design
             {
                 statements.ForEach(statement =>
                 {
-                    if (DoesStatementHaveDateFunction(statement)) { candidates.Add(statement); }
+                    if (DoesStatementHaveDateFunction(statement))
+                    {
+                        candidates.Add(statement);
+                    }
                 });
             }
 
@@ -126,11 +131,17 @@ namespace SqlServer.Rules.Design
                         var functionVisitor = new FunctionCallVisitor();
                         param.Accept(functionVisitor);
                         hasDateFunctions = hasDateFunctions || CheckFunctionCallsForDateFunction(functionVisitor.Statements);
-                        if (hasDateFunctions) { break; }
+                        if (hasDateFunctions)
+                        {
+                            break;
+                        }
                     }
                 }
 
-                if (hasDateFunctions) { break; }
+                if (hasDateFunctions)
+                {
+                    break;
+                }
             }
 
             return hasDateFunctions;

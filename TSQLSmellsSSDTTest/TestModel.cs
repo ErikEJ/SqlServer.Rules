@@ -22,9 +22,12 @@ public class TestModel
 
     public void AddFilesToModel()
     {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
         foreach (var FileName in TestFiles)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var FileContent = string.Empty;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             using (var reader = new StreamReader(FileName))
             {
                 FileContent += reader.ReadToEnd();
@@ -32,19 +35,24 @@ public class TestModel
 
             Model.AddObjects(FileContent);
         }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
     }
 
     public void SerializeResultOutput(CodeAnalysisResult result)
     {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
         foreach (var Problem in result.Problems)
         {
             // Only concern ourselves with our problems
             if (Problem.RuleId.StartsWith("Smells.", System.StringComparison.OrdinalIgnoreCase))
             {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                 var TestProblem = new TestProblem(Problem.StartLine, Problem.StartColumn, Problem.RuleId);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                 FoundProblems.Add(TestProblem);
             }
         }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
     }
 
     public void RunSCARules()

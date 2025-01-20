@@ -13,7 +13,8 @@ namespace SqlServer.Rules.Performance
     /// <ExampleMd></ExampleMd>
     /// <remarks>Views that use other views in their from cause are extremely inefficient and will result in non-optimal execution plans.</remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -38,7 +39,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="NestedViewRule"/> class.
         /// </summary>
-        public NestedViewRule() : base(ModelSchema.View)
+        public NestedViewRule()
+            : base(ModelSchema.View)
         {
         }
 
@@ -53,7 +55,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var sqlObjName = ruleExecutionContext.GetObjectName(sqlObj);
             foreach (var child in sqlObj.GetReferenced(DacQueryScopes.UserDefined).Where(x => x.ObjectType == ModelSchema.View))

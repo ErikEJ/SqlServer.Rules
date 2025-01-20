@@ -19,7 +19,8 @@ namespace SqlServer.Rules.Design
     /// maintaining unneeded indexes than not to have index when needed.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -44,7 +45,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="ForeignKeysNeedIndexRule"/> class.
         /// </summary>
-        public ForeignKeysNeedIndexRule() : base(ModelSchema.ForeignKeyConstraint)
+        public ForeignKeysNeedIndexRule()
+            : base(ModelSchema.ForeignKeyConstraint)
         {
         }
 

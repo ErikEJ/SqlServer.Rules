@@ -16,10 +16,11 @@ namespace SqlServer.Rules.Performance
     /// <remarks>
     /// Queries that use a high number of joins will cause the compiler to time out trying to find
     ///  a good execution plan. Consider re-arranging the tables in the joins from smallest to
-    ///  largest table and applying the FORCE ORDER query hint. 
+    ///  largest table and applying the FORCE ORDER query hint.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -41,11 +42,11 @@ namespace SqlServer.Rules.Performance
         /// </summary>
         public const string Message = "Query uses {0} joins. This is a high number of joins and can lead to performance issues.";
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryHighJoinCountRule"/> class.
         /// </summary>
-        public QueryHighJoinCountRule() : base(ProgrammingAndViewSchemas)
+        public QueryHighJoinCountRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -61,7 +62,10 @@ namespace SqlServer.Rules.Performance
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
             var selectStatementVisitor = new SelectStatementVisitor();
@@ -70,7 +74,10 @@ namespace SqlServer.Rules.Performance
             foreach (var stmt in selectStatementVisitor.Statements)
             {
                 var hasForceOrder = stmt.OptimizerHints?.Any(oh => oh.HintKind == OptimizerHintKind.ForceOrder);
-                if (hasForceOrder.GetValueOrDefault(false)) { continue; }
+                if (hasForceOrder.GetValueOrDefault(false))
+                {
+                    continue;
+                }
 
                 var querySpecificationVisitor = new QuerySpecificationVisitor();
                 stmt.QueryExpression.Accept(querySpecificationVisitor);
@@ -78,7 +85,10 @@ namespace SqlServer.Rules.Performance
                 foreach (var query in querySpecificationVisitor.Statements)
                 {
                     var fromClause = query.FromClause;
-                    if (fromClause == null) { continue; }
+                    if (fromClause == null)
+                    {
+                        continue;
+                    }
 
                     var namedTableVisitor = new NamedTableReferenceVisitor();
                     fromClause.Accept(namedTableVisitor);
@@ -92,7 +102,6 @@ namespace SqlServer.Rules.Performance
                     }
                 }
             }
-
 
             return problems;
         }

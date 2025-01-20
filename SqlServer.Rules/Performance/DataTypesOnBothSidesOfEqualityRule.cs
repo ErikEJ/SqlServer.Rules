@@ -21,7 +21,8 @@ namespace SqlServer.Rules.Performance
     /// to data truncation and to performance issues appears in query filter.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -46,7 +47,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="DataTypesOnBothSidesOfEqualityRule"/> class.
         /// </summary>
-        public DataTypesOnBothSidesOfEqualityRule() : base(ProgrammingAndViewSchemas)
+        public DataTypesOnBothSidesOfEqualityRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -61,7 +63,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement; // proc / view / function
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
 #pragma warning disable CA1031 // Do not catch general exception types
             try
@@ -87,7 +92,11 @@ namespace SqlServer.Rules.Performance
                                 || x.SecondExpression is ColumnReferenceExpression))
                             .ToList();
 
-                        if (comparisons.Count == 0) { continue; }
+                        if (comparisons.Count == 0)
+                        {
+                            continue;
+                        }
+
                         var dataTypesList = new Dictionary<NamedTableView, IDictionary<string, DataTypeView>>();
                         select.GetTableColumnDataTypes(dataTypesList, ruleExecutionContext.SchemaModel);
 
@@ -101,11 +110,15 @@ namespace SqlServer.Rules.Performance
                             if (col1 != null)
                             {
                                 var dtView = dataTypesList.GetDataTypeView(col1);
-                                if (dtView != null) { datatype1 = dtView.DataType; }
+                                if (dtView != null)
+                                {
+                                    datatype1 = dtView.DataType;
+                                }
                             }
                             else
                             {
-                                datatype1 = GetDataType(sqlObj,
+                                datatype1 = GetDataType(
+                                    sqlObj,
                                     query,
                                     comparison.FirstExpression,
                                     variables,
@@ -115,22 +128,32 @@ namespace SqlServer.Rules.Performance
                             if (col2 != null)
                             {
                                 var dtView = dataTypesList.GetDataTypeView(col2);
-                                if (dtView != null) { datatype2 = dtView.DataType; }
+                                if (dtView != null)
+                                {
+                                    datatype2 = dtView.DataType;
+                                }
                             }
                             else
                             {
-                                datatype2 = GetDataType(sqlObj,
+                                datatype2 = GetDataType(
+                                    sqlObj,
                                     query,
                                     comparison.SecondExpression,
                                     variables,
                                     ruleExecutionContext.SchemaModel);
                             }
 
-                            if (string.IsNullOrWhiteSpace(datatype1) || string.IsNullOrWhiteSpace(datatype2)) { continue; }
+                            if (string.IsNullOrWhiteSpace(datatype1) || string.IsNullOrWhiteSpace(datatype2))
+                            {
+                                continue;
+                            }
 
                             // when checking the numeric literal I am not sure if it is a bit or tinyint.
                             if ((Comparer.Equals(datatype1, "bit") && Comparer.Equals(datatype2, "tinyint"))
-                                || (Comparer.Equals(datatype1, "tinyint") && Comparer.Equals(datatype2, "bit"))) { continue; }
+                                || (Comparer.Equals(datatype1, "tinyint") && Comparer.Equals(datatype2, "bit")))
+                            {
+                                continue;
+                            }
 
                             if (!Comparer.Equals(datatype1, datatype2))
                             {

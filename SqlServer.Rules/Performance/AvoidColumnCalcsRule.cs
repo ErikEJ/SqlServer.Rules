@@ -14,7 +14,8 @@ namespace SqlServer.Rules.Performance
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -36,11 +37,11 @@ namespace SqlServer.Rules.Performance
         /// </summary>
         public const string Message = RuleDisplayName;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidColumnCalcsRule"/> class.
         /// </summary>
-        public AvoidColumnCalcsRule() : base(ProgrammingAndViewSchemas)
+        public AvoidColumnCalcsRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -55,7 +56,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
 

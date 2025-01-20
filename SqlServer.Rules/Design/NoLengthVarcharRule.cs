@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// the length for you (if casting a variable).
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.Design.TypesMissingParametersRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,

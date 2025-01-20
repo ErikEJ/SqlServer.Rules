@@ -16,13 +16,14 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <remarks>
-    /// The rule checks for SELECT INTO,INSERT,DELETE and UPDATE statements which are neither 
+    /// The rule checks for SELECT INTO,INSERT,DELETE and UPDATE statements which are neither
     /// inside <c>TRY..CATCH</c> block. This check is important, because, by default, SQL Server
     /// will not rollback all the previous changes within a transaction if a particular statement
     /// fails and setting <c>XACT_ABORT</c> is not ON.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -47,7 +48,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapStatementsWithTryCatchRule"/> class.
         /// </summary>
-        public WrapStatementsWithTryCatchRule() : base(ModelSchema.Procedure)
+        public WrapStatementsWithTryCatchRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -63,14 +65,22 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement));
             var name = sqlObj.Name.GetName();
 
             var tryCatchVisitor = new TryCatchVisitor();
             var actionStatementVisitor = new ActionStatementVisitor(); // not going to ignore temps for this rule as they should be wrapped in a try
             fragment.Accept(actionStatementVisitor);
-            if (actionStatementVisitor.Count <= 1) { return problems; }
+            if (actionStatementVisitor.Count <= 1)
+            {
+                return problems;
+            }
+
             fragment.Accept(tryCatchVisitor);
             if (tryCatchVisitor.Count == 0)
             {

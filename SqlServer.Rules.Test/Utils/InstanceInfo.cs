@@ -47,7 +47,11 @@ public class InstanceInfo
 
     public string ConnectTimeoutAsString
     {
-        get { return ConnectTimeout.ToString(CultureInfo.InvariantCulture); }
+        get
+        {
+            return ConnectTimeout.ToString(CultureInfo.InvariantCulture);
+        }
+
         set
         {
             int temp;
@@ -139,7 +143,8 @@ public class InstanceInfo
 
     public SqlConnectionStringBuilder CreateBuilder(string userId, string password, string dbName)
     {
-        var scsb = new SqlConnectionStringBuilder {
+        var scsb = new SqlConnectionStringBuilder
+        {
             DataSource = DataSource,
             InitialCatalog = dbName,
             Pooling = false,

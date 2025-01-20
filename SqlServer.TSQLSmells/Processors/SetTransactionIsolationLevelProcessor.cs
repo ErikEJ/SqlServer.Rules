@@ -4,11 +4,11 @@ namespace TSQLSmellSCA
 {
     public class SetTransactionIsolationLevelProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public SetTransactionIsolationLevelProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         public void ProcessSetTransactionIolationLevelStatement(SetTransactionIsolationLevelStatement Statement)
@@ -16,7 +16,7 @@ namespace TSQLSmellSCA
             switch (Statement.Level)
             {
                 case IsolationLevel.ReadUncommitted:
-                    _smells.SendFeedBack(10, Statement);
+                    smells.SendFeedBack(10, Statement);
                     break;
             }
         }

@@ -14,7 +14,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -39,7 +40,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidSelectStarRule"/> class.
         /// </summary>
-        public AvoidSelectStarRule() : base(ProgrammingAndViewSchemas)
+        public AvoidSelectStarRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -55,7 +57,10 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
             var selectStatementVisitor = new SelectStatementVisitor();

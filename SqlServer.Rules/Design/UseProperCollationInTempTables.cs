@@ -20,7 +20,8 @@ namespace SqlServer.Rules.Design
     /// tempdb having a different collation than the database can cause issues and or data instability.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -45,7 +46,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="UseProperCollationInTempTables"/> class.
         /// </summary>
-        public UseProperCollationInTempTables() : base(ModelSchema.Procedure)
+        public UseProperCollationInTempTables()
+            : base(ModelSchema.Procedure)
         {
         }
 

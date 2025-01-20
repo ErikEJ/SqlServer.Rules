@@ -20,7 +20,8 @@ namespace SqlServer.Rules.Design
     ///  can lead to malformed data if only some of the queries succeed.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -45,7 +46,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="WrapStatementsWithTransactionRule"/> class.
         /// </summary>
-        public WrapStatementsWithTransactionRule() : base(ModelSchema.Procedure)
+        public WrapStatementsWithTransactionRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -61,14 +63,22 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement));
             var name = sqlObj.Name.GetName();
 
             var transactionVisitor = new TransactionVisitor();
             var actionStatementVisitor = new ActionStatementVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
             fragment.Accept(actionStatementVisitor);
-            if (actionStatementVisitor.Count <= 1) { return problems; }
+            if (actionStatementVisitor.Count <= 1)
+            {
+                return problems;
+            }
+
             fragment.Accept(transactionVisitor);
             if (transactionVisitor.Count == 0)
             {

@@ -1,23 +1,23 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
     public class IfStatementProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public IfStatementProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
-        public void ProcessIfStatement(IfStatement IfStatement)
+        public void ProcessIfStatement(IfStatement ifStatement)
         {
-            _smells.ProcessTsqlFragment(IfStatement.Predicate);
-            _smells.ProcessTsqlFragment(IfStatement.ThenStatement);
-            if (IfStatement.ElseStatement != null)
+            smells.ProcessTsqlFragment(ifStatement.Predicate);
+            smells.ProcessTsqlFragment(ifStatement.ThenStatement);
+            if (ifStatement.ElseStatement != null)
             {
-                _smells.ProcessTsqlFragment(IfStatement.ElseStatement);
+                smells.ProcessTsqlFragment(ifStatement.ElseStatement);
             }
         }
     }

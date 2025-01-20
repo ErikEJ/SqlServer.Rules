@@ -10,13 +10,14 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// Avoid joining tables with views. 
+    /// Avoid joining tables with views.
     /// </summary>
     /// <FriendlyName>Avoid joining tables with views</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -42,7 +43,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidViewJoinsRule"/> class.
         /// </summary>
-        public AvoidViewJoinsRule() : base(ProgrammingSchemas)
+        public AvoidViewJoinsRule()
+            : base(ProgrammingSchemas)
         {
         }
 

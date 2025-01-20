@@ -4,11 +4,11 @@ namespace TSQLSmellSCA
 {
     public class SqlDataTypeProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public SqlDataTypeProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         public void ProcessSqlDataTypeReference(SqlDataTypeReference DataType)
@@ -24,7 +24,7 @@ namespace TSQLSmellSCA
                 case SqlDataTypeOption.Text:
                 case SqlDataTypeOption.NText:
                 case SqlDataTypeOption.Image:
-                    _smells.SendFeedBack(47, DataType);
+                    smells.SendFeedBack(47, DataType);
                     break;
             }
         }

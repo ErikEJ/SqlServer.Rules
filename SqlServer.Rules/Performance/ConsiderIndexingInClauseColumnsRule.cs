@@ -15,7 +15,8 @@ namespace SqlServer.Rules.Performance
     /// <ExampleMd></ExampleMd>
     /// <remarks>Consider indexing the columns referenced by IN predicates in order to avoid table scans</remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -37,11 +38,11 @@ namespace SqlServer.Rules.Performance
         /// </summary>
         public const string Message = RuleDisplayName;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsiderIndexingInClauseColumnsRule"/> class.
         /// </summary>
-        public ConsiderIndexingInClauseColumnsRule() : base(ProgrammingAndViewSchemas)
+        public ConsiderIndexingInClauseColumnsRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -57,8 +58,10 @@ namespace SqlServer.Rules.Performance
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
             var selectStatementVisitor = new SelectStatementVisitor();
@@ -77,7 +80,10 @@ namespace SqlServer.Rules.Performance
                         .Where(i => !i.NotDefined && i.Expression is ColumnReferenceExpression)
                         .ToList();
 
-                    if (inClauses.Count == 0) { continue; }
+                    if (inClauses.Count == 0)
+                    {
+                        continue;
+                    }
 
                     foreach (var inClause in inClauses)
                     {
@@ -87,7 +93,10 @@ namespace SqlServer.Rules.Performance
                         var table = GetTableFromColumn(sqlObj, query, column);
 
                         // most likely the base is a view.... /sigh
-                        if (table == null) { continue; }
+                        if (table == null)
+                        {
+                            continue;
+                        }
 
                         var indexes = table.GetChildren(DacQueryScopes.All).Where(x => x.ObjectType == ModelSchema.Index);
 
@@ -97,10 +106,16 @@ namespace SqlServer.Rules.Performance
                                 .Any(x =>
                                     x.ObjectType == ModelSchema.Column
                                     && Comparer.Equals(x.Name.Parts.Last(), column.MultiPartIdentifier.Identifiers.Last().Value));
-                            if (indexColumnExists) { break; }
+                            if (indexColumnExists)
+                            {
+                                break;
+                            }
                         }
 
-                        if (!indexColumnExists) { problems.Add(new SqlRuleProblem(Message, sqlObj, inClause)); }
+                        if (!indexColumnExists)
+                        {
+                            problems.Add(new SqlRuleProblem(Message, sqlObj, inClause));
+                        }
                     }
                 }
             }

@@ -22,7 +22,8 @@ namespace SqlServer.Rules.Design
     /// should match in datatype and size.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -87,8 +88,7 @@ namespace SqlServer.Rules.Design
                         DataTypeParameters = GetDataTypeLengthParameters(col),
                         Column = col,
                         Table = table,
-                    }
-                ));
+                    }));
             }
 
             // find all the columns that match by name but differ by data type or length....
@@ -99,9 +99,7 @@ namespace SqlServer.Rules.Design
                     && (
                         !Comparer.Equals(x.DataType, y.DataType)
                         || !Comparer.Equals(x.DataTypeParameters, y.DataTypeParameters)
-                    )
-                )
-            );
+                    )));
 
             problems.AddRange(offenders
                 .Select(col => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, Message, col), col.Table, col.Column)));

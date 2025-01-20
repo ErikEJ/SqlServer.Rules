@@ -20,7 +20,8 @@ namespace SqlServer.Rules.Design
     /// - Index corruption - surely you are not using NOLOCK in INSERT/UPDATE/DELETE statements, but if you are, you should be aware that this syntax is deprecated and that it can cause corruption, even in SQL Server 2014 RTM - see this tip for more information. Note that you should check for the hint in any views that you are trying to update, too.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -45,7 +46,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="DoNotUseNOLOCKRule"/> class.
         /// </summary>
-        public DoNotUseNOLOCKRule() : base(ProgrammingAndViewSchemas)
+        public DoNotUseNOLOCKRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 

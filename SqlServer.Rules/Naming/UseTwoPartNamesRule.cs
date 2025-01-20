@@ -1,5 +1,5 @@
 ﻿/*
- * TIM C: 1/19/2018 Commented this out AS the dacpac ALWAYS reports two part names even when the file is missing the schema. 
+ * TIM C: 1/19/2018 Commented this out AS the dacpac ALWAYS reports two part names even when the file is missing the schema.
  */
 
 using System.Collections.Generic;
@@ -22,7 +22,8 @@ namespace SqlServer.Rules.Naming
     /// not be dbo.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Naming,
@@ -47,7 +48,8 @@ namespace SqlServer.Rules.Naming
         /// <summary>
         /// Initializes a new instance of the <see cref="UseTwoPartNames"/> class.
         /// </summary>
-        public UseTwoPartNames() : base(
+        public UseTwoPartNames()
+            : base(
             ModelSchema.Table,
             ModelSchema.View,
             ModelSchema.Procedure,
@@ -73,7 +75,10 @@ namespace SqlServer.Rules.Naming
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.GetFragment();
             var objectId = fragment.GetObjectName(null);

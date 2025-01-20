@@ -1,32 +1,32 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
     public class FunctionProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public FunctionProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
-        public void ProcessFunctionCall(FunctionCall FunctionCall)
+        public void ProcessFunctionCall(FunctionCall functionCall)
         {
-            if (FunctionCall.OverClause != null)
+            if (functionCall.OverClause != null)
             {
-                if (FunctionCall.OverClause.WindowFrameClause != null)
+                if (functionCall.OverClause.WindowFrameClause != null)
                 {
-                    if (FunctionCall.OverClause.WindowFrameClause.WindowFrameType == WindowFrameType.Range)
+                    if (functionCall.OverClause.WindowFrameClause.WindowFrameType == WindowFrameType.Range)
                     {
-                        _smells.SendFeedBack(25, FunctionCall.OverClause.WindowFrameClause);
+                        smells.SendFeedBack(25, functionCall.OverClause.WindowFrameClause);
                     }
                 }
                 else
                 {
-                    if (FunctionCall.OverClause.OrderByClause != null)
+                    if (functionCall.OverClause.OrderByClause != null)
                     {
-                        switch (FunctionCall.FunctionName.Value.ToUpperInvariant())
+                        switch (functionCall.FunctionName.Value.ToUpperInvariant())
                         {
                             case "ROW_NUMBER":
                             case "RANK":
@@ -36,7 +36,7 @@ namespace TSQLSmellSCA
                             case "LEAD":
                                 break;
                             default:
-                                _smells.SendFeedBack(26, FunctionCall.OverClause);
+                                smells.SendFeedBack(26, functionCall.OverClause);
                                 break;
                         }
                     }

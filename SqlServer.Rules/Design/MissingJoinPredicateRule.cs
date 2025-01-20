@@ -27,7 +27,8 @@ namespace SqlServer.Rules.Design
     /// </list>
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -57,7 +58,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="MissingJoinPredicateRule"/> class.
         /// </summary>
-        public MissingJoinPredicateRule() : base(ProgrammingAndViewSchemas)
+        public MissingJoinPredicateRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -84,28 +86,39 @@ namespace SqlServer.Rules.Design
             var fromClauseVisitor = new FromClauseVisitor();
             fragment.Accept(fromClauseVisitor);
 
-            if (fromClauseVisitor.Count == 0) { return problems; }
+            if (fromClauseVisitor.Count == 0)
+            {
+                return problems;
+            }
 
-            // cache all the fks we find 
+            // cache all the fks we find
             var fkList = new Dictionary<string, ForeignKeyInfo>();
 
             foreach (var from in fromClauseVisitor.Statements.Where(x => x.TableReferences.First() is QualifiedJoin))
             {
                 var joinInfos = from.GetFromClauseJoinTables()
-                    .Where(x => x.Table1JoinColumns.Count > 0 && (x.Table1JoinColumns.Count == x.Table2JoinColumns.Count)
-                ).ToList();
-                if (joinInfos.Count == 0) { continue; }
+                    .Where(x => x.Table1JoinColumns.Count > 0 && (x.Table1JoinColumns.Count == x.Table2JoinColumns.Count)).ToList();
+                if (joinInfos.Count == 0)
+                {
+                    continue;
+                }
 
                 foreach (var join in joinInfos)
                 {
-                    if (join.Table1 == null || join.Table2 == null) { continue; }
+                    if (join.Table1 == null || join.Table2 == null)
+                    {
+                        continue;
+                    }
 
                     // get the tables belonging to this join
                     var table1 = db.GetObject(Table.TypeClass, join.Table1Name, DacQueryScopes.All);
                     var table2 = db.GetObject(Table.TypeClass, join.Table2Name, DacQueryScopes.All);
 
                     // this can happen when one of the tables is a temp table, in that case we do not care to inspect the fks
-                    if (table1 == null || table2 == null) { continue; }
+                    if (table1 == null || table2 == null)
+                    {
+                        continue;
+                    }
 
                     fkList.AddRange(table1.GetTableFKInfos());
 

@@ -8,13 +8,14 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName>Avoid using CHARINDEX</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -39,7 +40,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidCHARINDEXRule"/> class.
         /// </summary>
-        public AvoidCHARINDEXRule() : base(ProgrammingSchemas)
+        public AvoidCHARINDEXRule()
+            : base(ProgrammingSchemas)
         {
         }
 

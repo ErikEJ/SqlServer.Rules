@@ -10,7 +10,7 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
     /// <IsIgnorable>false</IsIgnorable>
@@ -58,8 +58,7 @@ namespace SqlServer.Rules.Design
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
                 typeof(CreateProcedureStatement),
                 typeof(CreateFunctionStatement),
-                typeof(CreateTableStatement)
-            );
+                typeof(CreateTableStatement));
             var variableVisitor = new VariablesVisitor();
             var tableDefinitionVisitor = new TableDefinitionVisitor();
 
@@ -68,7 +67,7 @@ namespace SqlServer.Rules.Design
             var variables =
                 from d in variableVisitor.DeclareVariables
                 from v in d.Declarations
-                let type = (v.DataType as SqlDataTypeReference)
+                let type = v.DataType as SqlDataTypeReference
                 let typeOption = type?.SqlDataTypeOption
                 where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
                 where type?.Parameters.Count != _expectParameterCount
@@ -76,7 +75,7 @@ namespace SqlServer.Rules.Design
 
             var parameters =
                 from p in variableVisitor.ProcedureParameters
-                let type = (p.DataType as SqlDataTypeReference)
+                let type = p.DataType as SqlDataTypeReference
                 let typeOption = type?.SqlDataTypeOption
                 where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
                 where type?.Parameters.Count != _expectParameterCount
@@ -85,7 +84,7 @@ namespace SqlServer.Rules.Design
             var columns =
                 from s in tableDefinitionVisitor.Statements
                 from c in s.ColumnDefinitions
-                let type = (c.DataType as SqlDataTypeReference)
+                let type = c.DataType as SqlDataTypeReference
                 let typeOption = type?.SqlDataTypeOption
                 where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
                 where type?.Parameters.Count != _expectParameterCount
@@ -100,14 +99,14 @@ namespace SqlServer.Rules.Design
             fragment.Accept(castVisitor, convertVisitor);
 
             var castCalls = from c in castVisitor.Statements
-                            let type = (c.DataType as SqlDataTypeReference)
+                            let type = c.DataType as SqlDataTypeReference
                             let typeOption = type?.SqlDataTypeOption
                             where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
                             where type?.Parameters.Count != _expectParameterCount
                             select c;
 
             var convertCalls = from c in convertVisitor.Statements
-                               let type = (c.DataType as SqlDataTypeReference)
+                               let type = c.DataType as SqlDataTypeReference
                                let typeOption = type?.SqlDataTypeOption
                                where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
                                where type?.Parameters.Count != _expectParameterCount

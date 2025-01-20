@@ -20,7 +20,8 @@ namespace SqlServer.Rules.Design
     /// parameters, but with parameters by position.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -45,7 +46,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="UseParameterNamesWithProcsRule"/> class.
         /// </summary>
-        public UseParameterNamesWithProcsRule() : base(ModelSchema.Procedure)
+        public UseParameterNamesWithProcsRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -71,7 +73,10 @@ namespace SqlServer.Rules.Design
             var execVisitor = new ExecuteVisitor();
             fragment.Accept(execVisitor);
 
-            if (execVisitor.Count == 0) { return problems; }
+            if (execVisitor.Count == 0)
+            {
+                return problems;
+            }
 
             foreach (var exec in execVisitor.Statements)
             {

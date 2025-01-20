@@ -1,18 +1,17 @@
 ﻿using System;
 
-namespace SqlServer.Rules.Report
+namespace SqlServer.Rules.Report;
+
+[Serializable]
+public class Information
 {
-    [Serializable]
-    public class Information
+    public string Solution { get; set; }
+    public DateTime ReportDate { get; set; } = DateTime.Now;
+
+    public InspectionScope InspectionScope { get; set; }
+
+    public Information()
     {
-        public string Solution { get; set; }
-        public DateTime ReportDate { get; set; } = DateTime.Now;
-
-        public InspectionScope InspectionScope { get; set; }
-
-        public Information()
-        {
-            InspectionScope = new InspectionScope();
-        }
+        InspectionScope = new InspectionScope();
     }
 }

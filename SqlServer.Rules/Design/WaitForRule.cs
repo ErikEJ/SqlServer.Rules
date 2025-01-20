@@ -17,7 +17,7 @@ namespace SqlServer.Rules.Design
     /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// The rule checks for WAITFOR statement with DELAY or TIME being used inside:
-    /// <list type="bullet"> 
+    /// <list type="bullet">
     ///     <item>stored procedure</item>
     ///     <item>function</item>
     ///     <item>trigger</item>
@@ -26,7 +26,8 @@ namespace SqlServer.Rules.Design
     /// This is not typically wanted in a OLTP system unless for a very specific reason.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -51,10 +52,12 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="WaitForRule"/> class.
         /// </summary>
-        public WaitForRule() : base(ModelSchema.Procedure,
-                ModelSchema.ScalarFunction,
-                ModelSchema.TableValuedFunction,
-                ModelSchema.DmlTrigger
+        public WaitForRule()
+            : base(
+            ModelSchema.Procedure,
+            ModelSchema.ScalarFunction,
+            ModelSchema.TableValuedFunction,
+            ModelSchema.DmlTrigger
         )
         {
         }
@@ -79,8 +82,7 @@ namespace SqlServer.Rules.Design
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
                     typeof(CreateProcedureStatement),
                     typeof(CreateFunctionStatement),
-                    typeof(CreateTriggerStatement)
-                );
+                    typeof(CreateTriggerStatement));
             var visitor = new WaitForVisitor();
 
             fragment.Accept(visitor);

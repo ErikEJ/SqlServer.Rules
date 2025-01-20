@@ -16,9 +16,9 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd>
     ///    ```sql
-    ///     CREATE PROCEDURE dbo.my_proc 
+    ///     CREATE PROCEDURE dbo.my_proc
     ///     AS
-    ///         SELECT some_columns, some_calc 
+    ///         SELECT some_columns, some_calc
     ///         FROM some_set
     ///         WHERE 1=0
     ///         /* GO; */ /* &lt; you might want one of these */
@@ -31,7 +31,8 @@ namespace SqlServer.Rules.Design
     /// procedure are included in the procedure body.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -56,7 +57,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcedureContainsGrantRule"/> class.
         /// </summary>
-        public ProcedureContainsGrantRule() : base(ModelSchema.Procedure)
+        public ProcedureContainsGrantRule()
+            : base(ModelSchema.Procedure)
         {
         }
 

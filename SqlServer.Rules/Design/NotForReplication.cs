@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="NotForReplication"/> class.
         /// </summary>
-        public NotForReplication() : base(
+        public NotForReplication()
+            : base(
             ModelSchema.ForeignKeyConstraint,
             ModelSchema.CheckConstraint,
             ModelSchema.DmlTrigger,

@@ -68,7 +68,6 @@ internal class RuleTest : IDisposable
     /// </summary>
     public SqlServerVersion SqlVersion { get; set; }
 
-
     public AnalysisTarget Target { get; set; }
 
     public TSqlModel ModelForAnalysis { get; set; }
@@ -191,7 +190,8 @@ internal class RuleTest : IDisposable
         // static factory method on TSqlModel class to ensure you have scripts. If you
         // didn't do this some rules would still work as expected, some would not, and
         // a warning message would be included in the AnalysisErrors in the result.
-        return TSqlModel.LoadFromDacpac(dacpacPath,
+        return TSqlModel.LoadFromDacpac(
+            dacpacPath,
             new ModelLoadOptions(DacSchemaModelStorageType.Memory, loadAsScriptBackedModel: true));
     }
 
@@ -249,7 +249,8 @@ internal class RuleTest : IDisposable
 
         DumpErrors(service.GetRuleLoadErrors());
 
-        Assert.IsTrue(service.GetRules().Any(rule => rule.RuleId.Equals(ruleIdToRun, StringComparison.OrdinalIgnoreCase)),
+        Assert.IsTrue(
+            service.GetRules().Any(rule => rule.RuleId.Equals(ruleIdToRun, StringComparison.OrdinalIgnoreCase)),
             "Expected rule '{0}' not found by the service", ruleIdToRun);
         return service;
     }

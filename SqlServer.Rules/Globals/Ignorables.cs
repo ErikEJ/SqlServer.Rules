@@ -8,7 +8,7 @@ using SqlServer.Dac.Visitors;
 namespace SqlServer.Rules.Globals
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public static class Ignorables
     {
@@ -24,7 +24,10 @@ namespace SqlServer.Rules.Globals
         public static IEnumerable<T> NotIgnoredStatements<T>(this IVisitor<T> visitor, string ruleId) where T : TSqlFragment
         {
             var scriptTokenStream = visitor.Statements.FirstOrDefault()?.ScriptTokenStream;
-            if (scriptTokenStream == null) { return visitor.Statements; }
+            if (scriptTokenStream == null)
+            {
+                return visitor.Statements;
+            }
 
             return from s in visitor.Statements
                    where ShouldNotIgnoreRule(scriptTokenStream, ruleId, s.StartLine)
@@ -71,7 +74,7 @@ namespace SqlServer.Rules.Globals
                 where (t.TokenType == TSqlTokenType.SingleLineComment || t.TokenType == TSqlTokenType.MultilineComment)
                     && (
                         ((t.Line == lineNumber || t.Line == lineNumber - 1) && Regex.IsMatch(t.Text, ignoreRegex, RegexOptions.IgnoreCase))
-                        || (Regex.IsMatch(t.Text, globalIgnoreRegex, RegexOptions.IgnoreCase))
+                        || Regex.IsMatch(t.Text, globalIgnoreRegex, RegexOptions.IgnoreCase)
                     )
                 select t.Text;
 

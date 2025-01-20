@@ -18,7 +18,8 @@ namespace SqlServer.Rules.Design
     /// time an action query is run all associated indexes need to be updated as well.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -43,7 +44,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="HighNumberOfIndexesRule"/> class.
         /// </summary>
-        public HighNumberOfIndexesRule() : base(ModelSchema.Table)
+        public HighNumberOfIndexesRule()
+            : base(ModelSchema.Table)
         {
         }
 

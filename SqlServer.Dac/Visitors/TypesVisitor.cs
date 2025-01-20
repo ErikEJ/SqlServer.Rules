@@ -8,10 +8,18 @@ namespace SqlServer.Dac.Visitors
     {
         private readonly List<Type> _types = new List<Type>();
         public IList<TSqlFragment> Statements { get; } = new List<TSqlFragment>();
-        public int Count { get { return Statements.Count; } }
+        public int Count
+        {
+            get { return Statements.Count; }
+        }
+
         public TypesVisitor(params Type[] typesToLookFor)
         {
-            if (typesToLookFor.Length == 0) { throw new ArgumentNullException(nameof(typesToLookFor)); }
+            if (typesToLookFor.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(typesToLookFor));
+            }
+
             _types = new List<Type>(typesToLookFor);
         }
 

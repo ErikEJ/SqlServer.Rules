@@ -1,25 +1,26 @@
-﻿using System;
+using System;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
     public class ExecutableEntityProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public ExecutableEntityProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
-        private bool InjectionTesting(ExecutableStringList StringList)
+        private bool InjectionTesting(ExecutableStringList stringList)
         {
-            foreach (TSqlFragment Fragment in StringList.Strings)
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+            foreach (TSqlFragment Fragment in stringList.Strings)
             {
                 switch (FragmentTypeParser.GetFragmentType(Fragment))
                 {
                     case "VariableReference":
-                        var varRef = (VariableReference) Fragment;
+                        var varRef = (VariableReference)Fragment;
                         if (TestVariableAssigmentChain(varRef.Name))
                         {
                             return true;
@@ -28,74 +29,86 @@ namespace TSQLSmellSCA
                         break;
                 }
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
             return false;
         }
 
-        public void ProcessExecutableEntity(ExecutableEntity ExecutableEntity)
+        public void ProcessExecutableEntity(ExecutableEntity executableEntity)
         {
-            switch (FragmentTypeParser.GetFragmentType(ExecutableEntity))
+            switch (FragmentTypeParser.GetFragmentType(executableEntity))
             {
                 case "ExecutableProcedureReference":
-                    var ProcReference = (ExecutableProcedureReference) ExecutableEntity;
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+                    var ProcReference = (ExecutableProcedureReference)executableEntity;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     if (ProcReference.ProcedureReference.ProcedureReference.Name.SchemaIdentifier == null &&
                         !ProcReference.ProcedureReference.ProcedureReference.Name.BaseIdentifier.Value.StartsWith(
                             "sp_", StringComparison.OrdinalIgnoreCase))
                     {
-                        _smells.SendFeedBack(21, ExecutableEntity);
+                        smells.SendFeedBack(21, executableEntity);
                     }
 
                     if (
                         ProcReference.ProcedureReference.ProcedureReference.Name.BaseIdentifier.Value.Equals(
                             "sp_executesql", StringComparison.OrdinalIgnoreCase))
                     {
-                        foreach (var Param in ExecutableEntity.Parameters)
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+                        foreach (var Param in executableEntity.Parameters)
                         {
                             if (Param.Variable.Name.Equals("@stmt", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (FragmentTypeParser.GetFragmentType(Param.ParameterValue) == "VariableReference")
                                 {
-                                    var var = (VariableReference) Param.ParameterValue;
+                                    var var = (VariableReference)Param.ParameterValue;
                                     if (TestVariableAssigmentChain(var.Name))
                                     {
-                                        _smells.SendFeedBack(43, ExecutableEntity);
+                                        smells.SendFeedBack(43, executableEntity);
                                     }
                                 }
                             }
                         }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     }
 
                     break;
                 case "ExecutableStringList":
-                    var StringList = (ExecutableStringList) ExecutableEntity;
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+                    var StringList = (ExecutableStringList)executableEntity;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     if (InjectionTesting(StringList))
                     {
-                        _smells.SendFeedBack(43, ExecutableEntity);
+                        smells.SendFeedBack(43, executableEntity);
                     }
 
                     break;
             }
         }
 
-        public void ProcessExecuteStatement(ExecuteStatement Fragment)
+        public void ProcessExecuteStatement(ExecuteStatement fragment)
         {
-            var ExecutableEntity = Fragment.ExecuteSpecification.ExecutableEntity;
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+            var ExecutableEntity = fragment.ExecuteSpecification.ExecutableEntity;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             ProcessExecutableEntity(ExecutableEntity);
         }
 
-        public bool TestVariableAssigmentChain(string VarName)
+        public bool TestVariableAssigmentChain(string varName)
         {
-            foreach (var Param in _smells.ProcedureStatementBodyProcessor.ParameterList)
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+            foreach (var Param in smells.ProcedureStatementBodyProcessor.ParameterList)
             {
-                if (Param.VariableName.Value.Equals(VarName, StringComparison.OrdinalIgnoreCase))
+                if (Param.VariableName.Value.Equals(varName, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
-            foreach (var VarOn in _smells.AssignmentList)
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+            foreach (var VarOn in smells.AssignmentList)
             {
-                if (VarOn.VarName.Equals(VarName, StringComparison.OrdinalIgnoreCase))
+                if (VarOn.VarName.Equals(varName, StringComparison.OrdinalIgnoreCase))
                 {
                     if (TestVariableAssigmentChain(VarOn.SrcName))
                     {
@@ -103,6 +116,7 @@ namespace TSQLSmellSCA
                     }
                 }
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
             return false;
         }

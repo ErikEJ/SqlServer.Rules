@@ -15,11 +15,11 @@ namespace SqlServer.Rules.Performance
     ///   <list type="bullet">
     ///     <item> Execution plan choices may not be optimal or stable when a table variable contains a
     ///       large amount of data ( above 100 rows).</item>
-    ///     <item> 
+    ///     <item>
     ///       Table variables are not supported in the SQL Server optimizer's cost-based reasoning
-    ///       model. Therefore, they should not be used when cost-based choices are required to 
-    ///       achieve an efficient query plan. Temporary tables are preferred when cost-based 
-    ///       choices are required. This typically includes queries with joins, parallelism 
+    ///       model. Therefore, they should not be used when cost-based choices are required to
+    ///       achieve an efficient query plan. Temporary tables are preferred when cost-based
+    ///       choices are required. This typically includes queries with joins, parallelism
     ///       decisions, and index selection choices. </item>
     ///     <item> Queries that modify table variables do not generate parallel query execution
     ///       plans. Performance can be affected when very large table variables, or table variables
@@ -38,7 +38,8 @@ namespace SqlServer.Rules.Performance
     ///   </list>
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -63,7 +64,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidTableVariableInJoinsRule"/> class.
         /// </summary>
-        public AvoidTableVariableInJoinsRule() : base(ProgrammingSchemas)
+        public AvoidTableVariableInJoinsRule()
+            : base(ProgrammingSchemas)
         {
         }
 

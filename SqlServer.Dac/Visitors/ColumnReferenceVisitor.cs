@@ -6,7 +6,11 @@ namespace SqlServer.Dac.Visitors
     public class ColumnReferenceExpressionVisitor : BaseVisitor, IVisitor<ColumnReferenceExpression>
     {
         public IList<ColumnReferenceExpression> Statements { get; } = new List<ColumnReferenceExpression>();
-        public int Count { get { return Statements.Count; } }
+        public int Count
+        {
+            get { return Statements.Count; }
+        }
+
         public override void ExplicitVisit(ColumnReferenceExpression node)
         {
             Statements.Add(node);

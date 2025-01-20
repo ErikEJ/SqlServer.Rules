@@ -9,17 +9,18 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
-    RuleDisplayName,
-    Description = RuleDisplayName,
-    Category = Constants.Design,
-    RuleScope = SqlRuleScope.Element)]
+    [ExportCodeAnalysisRule(
+        RuleId,
+        RuleDisplayName,
+        Description = RuleDisplayName,
+        Category = Constants.Design,
+        RuleScope = SqlRuleScope.Element)]
     public sealed class AvoidDeletesWithoutWhereRule : BaseSqlCodeAnalysisRule
     {
         /// <summary>
@@ -40,7 +41,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidDeletesWithoutWhereRule"/> class.
         /// </summary>
-        public AvoidDeletesWithoutWhereRule() : base(ProgrammingSchemas)
+        public AvoidDeletesWithoutWhereRule()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -69,7 +71,10 @@ namespace SqlServer.Rules.Design
             foreach (var stmt in visitor.NotIgnoredStatements(RuleId))
             {
                 if (stmt.DeleteSpecification.WhereClause != null
-                    || !(stmt.DeleteSpecification.Target is NamedTableReference reference)) { continue; }
+                    || !(stmt.DeleteSpecification.Target is NamedTableReference reference))
+                {
+                    continue;
+                }
 
                 var tableName = reference.SchemaObject.Identifiers.Last().Value;
 

@@ -4,34 +4,40 @@ namespace TSQLSmellSCA
 {
     public class InsertProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public InsertProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
         public void ProcessWithCtesAndXmlNamespaces(WithCtesAndXmlNamespaces Cte)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             foreach (var Expression in Cte.CommonTableExpressions)
             {
-                _smells.ProcessQueryExpression(Expression.QueryExpression, "RG", false, Cte);
+                smells.ProcessQueryExpression(Expression.QueryExpression, "RG", false, Cte);
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
 
         public void Process(InsertStatement Fragment)
         {
             if (Fragment.InsertSpecification.Columns.Count == 0)
             {
-                _smells.SendFeedBack(12, Fragment);
+                smells.SendFeedBack(12, Fragment);
             }
 
             switch (FragmentTypeParser.GetFragmentType(Fragment.InsertSpecification.InsertSource))
             {
                 case "SelectInsertSource":
-                    var InsSource = (SelectInsertSource) Fragment.InsertSpecification.InsertSource;
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+                    var InsSource = (SelectInsertSource)Fragment.InsertSpecification.InsertSource;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var Cte = Fragment.WithCtesAndXmlNamespaces;
-                    _smells.ProcessQueryExpression(InsSource.Select, "RG", false, Cte);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+                    smells.ProcessQueryExpression(InsSource.Select, "RG", false, Cte);
                     if (Cte != null)
                     {
                         ProcessWithCtesAndXmlNamespaces(Cte);
@@ -39,11 +45,15 @@ namespace TSQLSmellSCA
 
                     break;
                 case "ExecuteInsertSource":
-                    var ExecSource = (ExecuteInsertSource) Fragment.InsertSpecification.InsertSource;
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+                    var ExecSource = (ExecuteInsertSource)Fragment.InsertSpecification.InsertSource;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
                     // ProcessExecuteSpecification(ExecSource.Execute);
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var ExecutableEntity = ExecSource.Execute.ExecutableEntity;
-                    _smells.ExecutableEntityProcessor.ProcessExecutableEntity(ExecutableEntity);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+                    smells.ExecutableEntityProcessor.ProcessExecutableEntity(ExecutableEntity);
                     break;
             }
         }

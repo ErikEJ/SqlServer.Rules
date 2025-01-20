@@ -17,7 +17,8 @@ namespace SqlServer.Rules.Performance
     /// as soon as it is no longer needed.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -39,11 +40,11 @@ namespace SqlServer.Rules.Performance
         /// </summary>
         public const string Message = RuleDisplayName;
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CursorNotClosedRule"/> class.
         /// </summary>
-        public CursorNotClosedRule() : base(ProgrammingSchemas)
+        public CursorNotClosedRule()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -58,7 +59,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
 

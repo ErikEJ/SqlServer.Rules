@@ -16,7 +16,8 @@ namespace SqlServer.Rules.Design
     /// <c>REAL</c> and <c>FLOAT</c> do not store accurate values. They store <b>Approximate</b> values.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="DoNotUseRealOrFloatRule"/> class.
         /// </summary>
-        public DoNotUseRealOrFloatRule() : base(ModelSchema.Table, ModelSchema.Procedure, ModelSchema.View)
+        public DoNotUseRealOrFloatRule()
+            : base(ModelSchema.Table, ModelSchema.Procedure, ModelSchema.View)
         {
         }
 
@@ -57,12 +59,15 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
 
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
                 typeof(CreateTableStatement),
                 typeof(CreateProcedureStatement),
-                typeof(CreateViewStatement)
-            );
+                typeof(CreateViewStatement));
 
             if (sqlObj.ObjectType == ModelSchema.Procedure)
             {

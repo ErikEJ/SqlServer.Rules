@@ -19,7 +19,8 @@ namespace SqlServer.Rules.Performance
     /// results in an index scan, which defeats the purpose of an index.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -44,7 +45,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidEndsWithOrContainsRule"/> class.
         /// </summary>
-        public AvoidEndsWithOrContainsRule() : base(ProgrammingAndViewSchemas)
+        public AvoidEndsWithOrContainsRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -59,7 +61,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
 

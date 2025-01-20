@@ -20,7 +20,8 @@ namespace SqlServer.Rules.Performance
     /// query the data modifications have to be spooled to tempdb in a two step operation.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -45,7 +46,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidFunctionsInActionQueries"/> class.
         /// </summary>
-        public AvoidFunctionsInActionQueries() : base(ProgrammingSchemas)
+        public AvoidFunctionsInActionQueries()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -60,7 +62,11 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
             var model = ruleExecutionContext.SchemaModel;
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
 
@@ -81,7 +87,10 @@ namespace SqlServer.Rules.Performance
 
                     var fnName = functionCall.GetName();
                     var modelFunction = modelFunctions.FirstOrDefault(mf => Comparer.Equals(mf.Name.GetName(), fnName));
-                    if (modelFunction == null) { continue; }
+                    if (modelFunction == null)
+                    {
+                        continue;
+                    }
 
                     // we need to parse the SQL into a fragment, so we can use the visitors on it
                     fnFragment = modelFunction.GetFragment(out var parseErrors);
@@ -93,7 +102,6 @@ namespace SqlServer.Rules.Performance
                     }
                 }
             }
-
 
             return problems;
         }

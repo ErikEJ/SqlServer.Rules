@@ -10,13 +10,14 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -41,7 +42,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="DoNotMixDMLWithDDLRule"/> class.
         /// </summary>
-        public DoNotMixDMLWithDDLRule() : base(ModelSchema.Procedure)
+        public DoNotMixDMLWithDDLRule()
+            : base(ModelSchema.Procedure)
         {
         }
 
@@ -69,11 +71,13 @@ namespace SqlServer.Rules.Design
                 typeof(UpdateStatement),
                 typeof(DeleteStatement),
                 typeof(InsertStatement),
-                typeof(CreateTableStatement)
-            );
+                typeof(CreateTableStatement));
             fragment.Accept(typesVisitor);
 
-            if (typesVisitor.Count == 0) { return problems; }
+            if (typesVisitor.Count == 0)
+            {
+                return problems;
+            }
 
             var offenders = typesVisitor.Statements
                 .SkipWhile(t => t.GetType() == typeof(CreateTableStatement))

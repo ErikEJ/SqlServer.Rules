@@ -23,7 +23,8 @@ namespace SqlServer.Rules.Performance
     ///  because network traffic is greatly reduced.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Performance,
@@ -48,7 +49,8 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsiderAddingSetNoCountOnRule"/> class.
         /// </summary>
-        public ConsiderAddingSetNoCountOnRule() : base(ModelSchema.Procedure, ModelSchema.DmlTrigger)
+        public ConsiderAddingSetNoCountOnRule()
+            : base(ModelSchema.Procedure, ModelSchema.DmlTrigger)
         {
         }
 
@@ -63,7 +65,10 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
                 typeof(CreateProcedureStatement),

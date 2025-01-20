@@ -9,7 +9,7 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <FriendlyName></FriendlyName>
     /// <IsIgnorable>false</IsIgnorable>
@@ -20,14 +20,15 @@ namespace SqlServer.Rules.Design
     /// <c>ANSI_NULLS</c> option is set to ON. It is recommended to set <c>ANSI_NULLS</c> to ON and
     /// use the <c>IS</c> keyword to compare against NULL constants. Care must be taken when
     /// comparing null values. The behavior of the comparison depends on the setting of the
-    /// <c>SET ANSI_NULLS</c> option. When <c>SET ANSI_NULLS</c> is ON, a comparison in which one 
-    /// or more of the expressions is NULL does not yield either TRUE or FALSE; it yields UNKNOWN. 
-    /// This is because a value that is unknown cannot be compared logically against any other value. 
-    /// This occurs if either an expression is compared to the literal NULL, or if two expressions 
+    /// <c>SET ANSI_NULLS</c> option. When <c>SET ANSI_NULLS</c> is ON, a comparison in which one
+    /// or more of the expressions is NULL does not yield either TRUE or FALSE; it yields UNKNOWN.
+    /// This is because a value that is unknown cannot be compared logically against any other value.
+    /// This occurs if either an expression is compared to the literal NULL, or if two expressions
     /// are compared and one of them evaluates to NULL.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -52,7 +53,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="EqualityCompareWithNULLRule"/> class.
         /// </summary>
-        public EqualityCompareWithNULLRule() : base(ProgrammingAndViewSchemas)
+        public EqualityCompareWithNULLRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 
@@ -67,7 +69,10 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement; // proc / view / function
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
 #pragma warning disable CA1031 // Do not catch general exception types
             try

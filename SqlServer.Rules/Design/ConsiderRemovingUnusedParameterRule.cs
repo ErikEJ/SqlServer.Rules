@@ -16,13 +16,14 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <remarks>
-    /// This rule checks for not used stored procedure or function input parameters. 
+    /// This rule checks for not used stored procedure or function input parameters.
     /// Unused parameters not necessarily negatively affect the performance, but they just add bloat
     /// to your stored procedures and functions.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     /// <seealso cref="SqlServer.Rules.Design.TypesMissingParametersRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -47,7 +48,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsiderRemovingUnusedParameterRule"/> class.
         /// </summary>
-        public ConsiderRemovingUnusedParameterRule() : base(ProgrammingSchemas)
+        public ConsiderRemovingUnusedParameterRule()
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -62,14 +64,19 @@ namespace SqlServer.Rules.Design
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed()) { return problems; }
+            if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
 
             var fragment = sqlObj.GetFragment();
-            if (fragment.ScriptTokenStream == null) { return problems; }
+            if (fragment.ScriptTokenStream == null)
+            {
+                return problems;
+            }
 
             var visitor = new VariablesVisitor();
             fragment.Accept(visitor);
-
 
 #pragma warning disable CA1304 // Specify CultureInfo
 #pragma warning disable CA1311 // Specify a culture or use an invariant version

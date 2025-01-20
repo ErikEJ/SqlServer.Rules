@@ -13,12 +13,13 @@ namespace SqlServer.Rules.Design
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <remarks>
-    /// This rule checks for usages of TOP in queries without an ORDER BY clause. 
+    /// This rule checks for usages of TOP in queries without an ORDER BY clause.
     /// It is generally recommended to specify sort criteria when using TOP clause. Otherwise, the
     /// results produced will be plan dependent and may lead to undesired behavior.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(RuleId,
+    [ExportCodeAnalysisRule(
+        RuleId,
         RuleDisplayName,
         Description = RuleDisplayName,
         Category = Constants.Design,
@@ -43,7 +44,8 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// Initializes a new instance of the <see cref="TopWithoutOrderByRule"/> class.
         /// </summary>
-        public TopWithoutOrderByRule() : base(ProgrammingAndViewSchemas)
+        public TopWithoutOrderByRule()
+            : base(ProgrammingAndViewSchemas)
         {
         }
 

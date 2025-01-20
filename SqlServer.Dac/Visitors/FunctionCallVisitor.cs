@@ -18,14 +18,18 @@ namespace SqlServer.Dac.Visitors
         }
 
         public IList<FunctionCall> Statements { get; } = new List<FunctionCall>();
-        public int Count { get { return Statements.Count; } }
+        public int Count
+        {
+            get { return Statements.Count; }
+        }
+
         public override void ExplicitVisit(FunctionCall node)
         {
             if (!_functionNames.Any())
             {
                 Statements.Add(node);
             }
-            else if (_functionNames.Any(f => _comparer.Equals(f, node.FunctionName.Value)))
+            else if (_functionNames.Any(f => Comparer.Equals(f, node.FunctionName.Value)))
             {
                 Statements.Add(node);
             }

@@ -1,24 +1,26 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
     public class SelectStatementProcessor
     {
-        private readonly Smells _smells;
+        private readonly Smells smells;
 
         public SelectStatementProcessor(Smells smells)
         {
-            _smells = smells;
+            this.smells = smells;
         }
 
-        private void ProcessOptimizerHints(IList<OptimizerHint> OptimizerHints, SelectStatement SelStatement)
+        private void ProcessOptimizerHints(IList<OptimizerHint> optimizerHints, SelectStatement selStatement)
         {
             /* OptimizerHints is not a decendant of TSQLFragment */
-            foreach (var Hint in OptimizerHints)
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+            foreach (var Hint in optimizerHints)
             {
-                ProcessHint(Hint, SelStatement);
+                ProcessHint(Hint, selStatement);
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
 
         public void Process(SelectStatement SelStatement, string ParentType, bool TestTop = false,
@@ -29,37 +31,47 @@ namespace TSQLSmellSCA
                 Cte = SelStatement.WithCtesAndXmlNamespaces;
                 if (Cte != null)
                 {
-                    _smells.InsertProcessor.ProcessWithCtesAndXmlNamespaces(Cte);
+                    smells.InsertProcessor.ProcessWithCtesAndXmlNamespaces(Cte);
                 }
             }
 
-            _smells.ProcessQueryExpression(SelStatement.QueryExpression, ParentType, false, Cte);
+            smells.ProcessQueryExpression(SelStatement.QueryExpression, ParentType, false, Cte);
             ProcessOptimizerHints(SelStatement.OptimizerHints, SelStatement);
         }
 
         private void ProcessSelectElement(SelectElement SelectElement, string ParentType, WithCtesAndXmlNamespaces Cte)
         {
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
             var ElemType = FragmentTypeParser.GetFragmentType(SelectElement);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             switch (ElemType)
             {
                 case "SelectStarExpression":
-                    _smells.SendFeedBack(5, SelectElement);
+                    smells.SendFeedBack(5, SelectElement);
                     break;
                 case "SelectScalarExpression":
 
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var ScalarExpression = (SelectScalarExpression)SelectElement;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var ExpressionType = FragmentTypeParser.GetFragmentType(ScalarExpression.Expression);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     switch (ExpressionType)
                     {
                         case "ScalarSubquery":
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                             var SubQuery = (ScalarSubquery)ScalarExpression.Expression;
-                            _smells.ProcessQueryExpression(SubQuery.QueryExpression, ParentType, false, Cte);
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+                            smells.ProcessQueryExpression(SubQuery.QueryExpression, ParentType, false, Cte);
                             break;
                         case "ColumnReferenceExpression":
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
                             var Expression = (ColumnReferenceExpression)ScalarExpression.Expression;
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
                             break;
                         case "FunctionCall":
-                            _smells.FunctionProcessor.ProcessFunctionCall((FunctionCall)ScalarExpression.Expression);
+                            smells.FunctionProcessor.ProcessFunctionCall((FunctionCall)ScalarExpression.Expression);
                             break;
                         case "IntegerLiteral":
                             break;
@@ -69,18 +81,20 @@ namespace TSQLSmellSCA
 
                     break;
                 case "SelectSetVariable":
-                    _smells.SelectSetProcessor.ProcessSelectSetVariable((SelectSetVariable)SelectElement);
+                    smells.SelectSetProcessor.ProcessSelectSetVariable((SelectSetVariable)SelectElement);
                     break;
             }
         }
 
-        public void ProcessSelectElements(IList<SelectElement> SelectElements, string ParentType,
-            WithCtesAndXmlNamespaces Cte)
+        public void ProcessSelectElements(IList<SelectElement> selectElements, string parentType,
+            WithCtesAndXmlNamespaces cte)
         {
-            foreach (var SelectElement in SelectElements)
+#pragma warning disable SA1312 // Variable names should begin with lower-case letter
+            foreach (var SelectElement in selectElements)
             {
-                ProcessSelectElement(SelectElement, ParentType, Cte);
+                ProcessSelectElement(SelectElement, parentType, cte);
             }
+#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
 
         private void ProcessHint(OptimizerHint Hint, SelectStatement SelStatement)
@@ -95,7 +109,7 @@ namespace TSQLSmellSCA
                 case OptimizerHintKind.HashUnion:
                 case OptimizerHintKind.MergeUnion:
                 case OptimizerHintKind.KeepUnion:
-                    _smells.SendFeedBack(4, SelStatement);
+                    smells.SendFeedBack(4, SelStatement);
                     break;
             }
         }
