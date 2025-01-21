@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,33 +11,29 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessTopFilter(TopRowFilter TopFilter)
+        public void ProcessTopFilter(TopRowFilter topFilter)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            IntegerLiteral TopLiteral = null;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            if (FragmentTypeParser.GetFragmentType(TopFilter.Expression) != "ParenthesisExpression")
+            IntegerLiteral topLiteral = null;
+            if (FragmentTypeParser.GetFragmentType(topFilter.Expression) != "ParenthesisExpression")
             {
-                smells.SendFeedBack(34, TopFilter);
-                if (FragmentTypeParser.GetFragmentType(TopFilter.Expression) == "IntegerLiteral")
+                smells.SendFeedBack(34, topFilter);
+                if (FragmentTypeParser.GetFragmentType(topFilter.Expression) == "IntegerLiteral")
                 {
-                    TopLiteral = (IntegerLiteral)TopFilter.Expression;
+                    topLiteral = (IntegerLiteral)topFilter.Expression;
                 }
             }
             else
             {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                var ParenthesisExpression = (ParenthesisExpression)TopFilter.Expression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                if (FragmentTypeParser.GetFragmentType(ParenthesisExpression.Expression) == "IntegerLiteral")
+                var parenthesisExpression = (ParenthesisExpression)topFilter.Expression;
+                if (FragmentTypeParser.GetFragmentType(parenthesisExpression.Expression) == "IntegerLiteral")
                 {
-                    TopLiteral = (IntegerLiteral)ParenthesisExpression.Expression;
+                    topLiteral = (IntegerLiteral)parenthesisExpression.Expression;
                 }
             }
 
-            if (TopFilter.Percent && TopLiteral != null && TopLiteral.Value == "100")
+            if (topFilter.Percent && topLiteral != null && topLiteral.Value == "100")
             {
-                smells.SendFeedBack(35, TopLiteral);
+                smells.SendFeedBack(35, topLiteral);
             }
         }
     }

@@ -1,30 +1,3 @@
-//------------------------------------------------------------------------------
-// <copyright company="Microsoft">
-//
-//    The MIT License (MIT)
-//
-//    Copyright (c) 2015 Microsoft
-//
-//    Permission is hereby granted, free of charge, to any person obtaining a copy
-//    of this software and associated documentation files (the "Software"), to deal
-//    in the Software without restriction, including without limitation the rights
-//    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//    copies of the Software, and to permit persons to whom the Software is
-//    furnished to do so, subject to the following conditions:
-//
-//    The above copyright notice and this permission notice shall be included in all
-//    copies or substantial portions of the Software.
-//
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//    SOFTWARE.
-// </copyright>
-//------------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -45,15 +18,16 @@ public sealed class SqlTestDB : IDisposable
 {
     public enum ReallyCleanUpDatabase
     {
-        NotIfItCameFromABackupFile, YesReally,
+        NotIfItCameFromABackupFile,
+        YesReally,
     }
 
     private readonly InstanceInfo instance;
     private readonly string dbName;
 
     // Variables for tracking restored DB information
-    private bool cleanupDatabase;
     private readonly List<string> cleanupScripts;
+    private bool cleanupDatabase;
     public event EventHandler<EventArgs> Disposing;
 
     public static SqlTestDB CreateFromDacpac(InstanceInfo instance, string dacpacPath, DacDeployOptions deployOptions = null, bool dropDatabaseOnCleanup = false)
@@ -178,13 +152,6 @@ public sealed class SqlTestDB : IDisposable
         cleanupScripts = [];
     }
 
-    /// <summary>
-    /// Represents a test Database that was created for tests.  The DB has already been attached/created,
-    /// and will not be removed unless dropDatabaseOnCleanup is true.
-    /// </summary>
-    /// <param name="instance"></param>
-    /// <param name="dropDatabaseOnCleanup">If true the db instance will be dropped when the Cleanup method is called</param>
-    /// <param name="dbName"></param>
     public SqlTestDB(InstanceInfo instance, string dbName, bool dropDatabaseOnCleanup = false)
     {
         if (string.IsNullOrEmpty(dbName))
@@ -310,8 +277,13 @@ public sealed class SqlTestDB : IDisposable
         }
         catch (Exception ex)
         {
-            var message = string.Format(CultureInfo.CurrentCulture, "Executing script on server '{0}' database '{1}' failed. Error: {2}.\r\n\r\nScript: {3}.)",
-                Instance.DataSource, DatabaseName, ex.Message, script);
+            var message = string.Format(
+                CultureInfo.CurrentCulture,
+                "Executing script on server '{0}' database '{1}' failed. Error: {2}.\r\n\r\nScript: {3}.)",
+                Instance.DataSource,
+                DatabaseName,
+                ex.Message,
+                script);
             Debug.WriteLine(message);
         }
     }
@@ -409,7 +381,8 @@ public sealed class SqlTestDB : IDisposable
     {
         Trace.TraceInformation(
             "*** {0} TEST {1}",
-            DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture), string.Format(CultureInfo.InvariantCulture, format, args));
+            DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture),
+            string.Format(CultureInfo.InvariantCulture, format, args));
     }
 
     internal void AddCleanupScript(string script)

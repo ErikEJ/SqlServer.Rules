@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,30 +11,30 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessTableVariableStatement(DeclareTableVariableStatement Fragment)
+        public void ProcessTableVariableStatement(DeclareTableVariableStatement fragment)
         {
-            if (Fragment.Body.VariableName.Value.Length <= 2)
+            if (fragment.Body.VariableName.Value.Length <= 2)
             {
-                smells.SendFeedBack(33, Fragment);
+                smells.SendFeedBack(33, fragment);
             }
         }
 
-        public void ProcessTableValuedFunctionReturnType(TableValuedFunctionReturnType Fragment)
+        public void ProcessTableValuedFunctionReturnType(TableValuedFunctionReturnType fragment)
         {
-            smells.ProcessTsqlFragment(Fragment.DeclareTableVariableBody);
+            smells.ProcessTsqlFragment(fragment.DeclareTableVariableBody);
         }
 
-        public void ProcessTableVariableBody(DeclareTableVariableBody Fragment)
+        public void ProcessTableVariableBody(DeclareTableVariableBody fragment)
         {
-            if (Fragment.VariableName.Value.Length <= 2)
+            if (fragment.VariableName.Value.Length <= 2)
             {
-                smells.SendFeedBack(33, Fragment);
+                smells.SendFeedBack(33, fragment);
             }
         }
 
-        public void ProcessExistsPredicate(ExistsPredicate ExistsPredicate)
+        public void ProcessExistsPredicate(ExistsPredicate existsPredicate)
         {
-            smells.ProcessTsqlFragment(ExistsPredicate.Subquery);
+            smells.ProcessTsqlFragment(existsPredicate.Subquery);
         }
     }
 }

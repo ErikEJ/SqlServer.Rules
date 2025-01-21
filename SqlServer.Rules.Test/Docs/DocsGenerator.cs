@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using LoxSmoke.DocXml;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -339,19 +338,5 @@ public class DocsGenerator
         }
 
         return ruleScripts;
-    }
-}
-
-public static class DocsExtensions
-{
-    public static string ToSentence(this string input)
-    {
-        var parts = Regex.Split(input, @"([A-Z]?[a-z]+)").Where(str => !string.IsNullOrEmpty(str));
-        return string.Join(' ', parts);
-    }
-
-    public static string ToId(this string input)
-    {
-        return new string(input.Split('.').Last());
     }
 }

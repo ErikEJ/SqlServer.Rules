@@ -29,10 +29,8 @@ public sealed class DisposableList : List<IDisposable>, IDisposable
         }
     }
 
-    /// <summary>
-    /// Add an item to the list.
-    /// </summary>
-    public T Add<T>(T item) where T : IDisposable
+    public T Add<T>(T item)
+        where T : IDisposable
     {
         base.Add(item);
 

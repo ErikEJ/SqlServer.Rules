@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -41,12 +41,6 @@ namespace SqlServer.Rules.Globals
             return "[dbo].[RfcVersionHistory]".StringEquals(sqlObj.Name.ToString());
         }
 
-        /// <summary>
-        /// Gets the data type view.
-        /// </summary>
-        /// <param name="list">The list.</param>
-        /// <param name="column">The column.</param>
-        /// <returns></returns>
         public static DataTypeView GetDataTypeView(this IDictionary<NamedTableView, IDictionary<string, DataTypeView>> list, ColumnReferenceExpression column)
         {
             if (column == null)
@@ -72,12 +66,6 @@ namespace SqlServer.Rules.Globals
             return null;
         }
 
-        /// <summary>
-        /// Gets the set variable.
-        /// </summary>
-        /// <param name="select">The select.</param>
-        /// <param name="variableName">Name of the variable.</param>
-        /// <returns></returns>
         public static string GetSetVariable(this SelectStatement select, string variableName)
         {
             if (select.QueryExpression is QuerySpecification query)
@@ -91,11 +79,6 @@ namespace SqlServer.Rules.Globals
             return null;
         }
 
-        /// <summary>
-        /// Gets the value.
-        /// </summary>
-        /// <param name="literal">The literal.</param>
-        /// <returns></returns>
         public static int GetValue(this IntegerLiteral literal)
         {
             var result = 0;
@@ -150,12 +133,6 @@ namespace SqlServer.Rules.Globals
             }
         }
 
-        /// <summary>
-        /// Gets the columns and data types.
-        /// </summary>
-        /// <param name="table">The table.</param>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
         public static IDictionary<string, DataTypeView> GetColumnsAndDataTypes(this NamedTableReference table, TSqlModel model)
         {
             var ret = new Dictionary<string, DataTypeView>(StringComparer.InvariantCultureIgnoreCase);
@@ -176,12 +153,6 @@ namespace SqlServer.Rules.Globals
             return ret;
         }
 
-        /// <summary>
-        /// Gets the selects setting parameter value.
-        /// </summary>
-        /// <param name="selects">The selects.</param>
-        /// <param name="parameter">The parameter.</param>
-        /// <returns></returns>
         public static IEnumerable<SelectStatement> GetSelectsSettingParameterValue(this IEnumerable<SelectStatement> selects, string parameter)
         {
 #pragma warning disable CA1851 // Possible multiple enumerations of 'IEnumerable' collection
@@ -202,12 +173,6 @@ namespace SqlServer.Rules.Globals
             yield break;
         }
 
-        /// <summary>
-        /// Gets the selects using parameter in where.
-        /// </summary>
-        /// <param name="selects">The selects.</param>
-        /// <param name="parameter">The parameter.</param>
-        /// <returns></returns>
         public static IEnumerable<SelectStatement> GetSelectsUsingParameterInWhere(this IEnumerable<SelectStatement> selects, string parameter)
         {
 #pragma warning disable CA1851 // Possible multiple enumerations of 'IEnumerable' collection
@@ -239,11 +204,6 @@ namespace SqlServer.Rules.Globals
             yield break;
         }
 
-        /// <summary>
-        /// Gets the data type parameters.
-        /// </summary>
-        /// <param name="dataType">Type of the data.</param>
-        /// <returns></returns>
         public static IEnumerable<decimal> GetDataTypeParameters(this DataTypeReference dataType)
         {
             if (dataType == null)

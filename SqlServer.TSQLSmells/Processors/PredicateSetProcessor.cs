@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,68 +11,68 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessPredicateSetStatement(PredicateSetStatement Fragment)
+        public void ProcessPredicateSetStatement(PredicateSetStatement fragment)
         {
-            switch (Fragment.Options)
+            switch (fragment.Options)
             {
                 case SetOptions.AnsiNulls:
-                    if (!Fragment.IsOn)
+                    if (!fragment.IsOn)
                     {
-                        smells.SendFeedBack(14, Fragment);
+                        smells.SendFeedBack(14, fragment);
                     }
 
                     return;
                 case SetOptions.AnsiPadding:
-                    if (!Fragment.IsOn)
+                    if (!fragment.IsOn)
                     {
-                        smells.SendFeedBack(15, Fragment);
+                        smells.SendFeedBack(15, fragment);
                     }
 
                     return;
                 case SetOptions.AnsiWarnings:
-                    if (!Fragment.IsOn)
+                    if (!fragment.IsOn)
                     {
-                        smells.SendFeedBack(16, Fragment);
+                        smells.SendFeedBack(16, fragment);
                     }
 
                     return;
                 case SetOptions.ArithAbort:
-                    if (!Fragment.IsOn)
+                    if (!fragment.IsOn)
                     {
-                        smells.SendFeedBack(17, Fragment);
+                        smells.SendFeedBack(17, fragment);
                     }
 
                     return;
                 case SetOptions.NumericRoundAbort:
-                    if (Fragment.IsOn)
+                    if (fragment.IsOn)
                     {
-                        smells.SendFeedBack(18, Fragment);
+                        smells.SendFeedBack(18, fragment);
                     }
 
                     return;
                 case SetOptions.QuotedIdentifier:
-                    if (!Fragment.IsOn)
+                    if (!fragment.IsOn)
                     {
-                        smells.SendFeedBack(19, Fragment);
+                        smells.SendFeedBack(19, fragment);
                     }
 
                     return;
                 case SetOptions.ForcePlan:
-                    if (Fragment.IsOn)
+                    if (fragment.IsOn)
                     {
-                        smells.SendFeedBack(20, Fragment);
+                        smells.SendFeedBack(20, fragment);
                     }
 
                     return;
                 case SetOptions.ConcatNullYieldsNull:
-                    if (!Fragment.IsOn)
+                    if (!fragment.IsOn)
                     {
-                        smells.SendFeedBack(13, Fragment);
+                        smells.SendFeedBack(13, fragment);
                     }
 
                     return;
                 case SetOptions.NoCount:
-                    if (Fragment.IsOn)
+                    if (fragment.IsOn)
                     {
                         smells.ProcedureStatementBodyProcessor.NoCountSet = true;
                     }

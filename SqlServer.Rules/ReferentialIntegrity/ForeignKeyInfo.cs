@@ -5,9 +5,6 @@ using SqlServer.Dac;
 
 namespace SqlServer.Rules.ReferentialIntegrity
 {
-    /// <summary>
-    ///
-    /// </summary>
     public class ForeignKeyInfo
     {
         /// <summary>

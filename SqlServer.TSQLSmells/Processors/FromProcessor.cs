@@ -11,7 +11,7 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        private static bool isCteName(SchemaObjectName ObjectName, WithCtesAndXmlNamespaces cte)
+        private static bool IsCteName(SchemaObjectName objectName, WithCtesAndXmlNamespaces cte)
         {
             if (cte == null)
             {
@@ -21,7 +21,7 @@ namespace TSQLSmellSCA
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
             foreach (var Expression in cte.CommonTableExpressions)
             {
-                if (Expression.ExpressionName.Value == ObjectName.BaseIdentifier.Value)
+                if (Expression.ExpressionName.Value == objectName.BaseIdentifier.Value)
                 {
                     return true;
                 }
@@ -31,16 +31,16 @@ namespace TSQLSmellSCA
             return false;
         }
 
-        private void ProcessTableReference(TableReference TableRef, WithCtesAndXmlNamespaces cte)
+        private void ProcessTableReference(TableReference tableRef, WithCtesAndXmlNamespaces cte)
         {
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var Type = FragmentTypeParser.GetFragmentType(TableRef);
+            var Type = FragmentTypeParser.GetFragmentType(tableRef);
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
             switch (Type)
             {
                 case "NamedTableReference":
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var NamedTableRef = (NamedTableReference)TableRef;
+                    var NamedTableRef = (NamedTableReference)tableRef;
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     if (NamedTableRef.SchemaObject.BaseIdentifier.Value[0] != '#' &&
                         NamedTableRef.SchemaObject.BaseIdentifier.Value[0] != '@')
@@ -51,7 +51,7 @@ namespace TSQLSmellSCA
                         }
 
                         if (NamedTableRef.SchemaObject.SchemaIdentifier == null &&
-                            !isCteName(NamedTableRef.SchemaObject, cte))
+                            !IsCteName(NamedTableRef.SchemaObject, cte))
                         {
                             smells.SendFeedBack(2, NamedTableRef);
                         }
@@ -87,7 +87,7 @@ namespace TSQLSmellSCA
                 case "QueryDerivedTable":
 
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var QueryDerivedRef = (QueryDerivedTable)TableRef;
+                    var QueryDerivedRef = (QueryDerivedTable)tableRef;
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
                     var Alias = QueryDerivedRef.Alias.Value;
@@ -107,7 +107,7 @@ namespace TSQLSmellSCA
                     break;
                 case "QualifiedJoin":
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var QualifiedJoin = (QualifiedJoin)TableRef;
+                    var QualifiedJoin = (QualifiedJoin)tableRef;
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
                     ProcessTableReference(QualifiedJoin.FirstTableReference, cte);
                     ProcessTableReference(QualifiedJoin.SecondTableReference, cte);
@@ -115,10 +115,10 @@ namespace TSQLSmellSCA
             }
         }
 
-        public void Process(FromClause FromClause, WithCtesAndXmlNamespaces cte)
+        public void Process(FromClause fromClause, WithCtesAndXmlNamespaces cte)
         {
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            foreach (var TableRef in FromClause.TableReferences)
+            foreach (var TableRef in fromClause.TableReferences)
             {
                 ProcessTableReference(TableRef, cte);
             }

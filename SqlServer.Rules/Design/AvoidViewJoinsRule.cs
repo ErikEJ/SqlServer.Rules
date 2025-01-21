@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -23,7 +23,6 @@ namespace SqlServer.Rules.Design
         Category = Constants.Design,
         RuleScope = SqlRuleScope.Element)]
     public sealed class AvoidViewJoinsRule : BaseSqlCodeAnalysisRule
-
     {
         /// <summary>
         /// The rule identifier

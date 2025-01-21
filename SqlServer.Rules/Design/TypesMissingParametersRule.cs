@@ -9,18 +9,11 @@ using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
 {
-    /// <summary>
-    ///
-    /// </summary>
-    /// <FriendlyName></FriendlyName>
-    /// <IsIgnorable>false</IsIgnorable>
-    /// <ExampleMd></ExampleMd>
-    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     public class TypesMissingParametersRule : BaseSqlCodeAnalysisRule
     {
-        private readonly int _expectParameterCount;
-        private readonly string _message;
-        private readonly IList<SqlDataTypeOption> _types;
+        private readonly int expectParameterCount;
+        private readonly string message;
+        private readonly IList<SqlDataTypeOption> types;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypesMissingParametersRule"/> class.
@@ -32,9 +25,9 @@ namespace SqlServer.Rules.Design
         public TypesMissingParametersRule(IList<ModelTypeClass> supportedElementTypes, IList<SqlDataTypeOption> types, int expectParameterCount, string message)
             : base(supportedElementTypes)
         {
-            _expectParameterCount = expectParameterCount;
-            _message = message;
-            _types = types;
+            this.expectParameterCount = expectParameterCount;
+            this.message = message;
+            this.types = types;
         }
 
         /// <summary>
@@ -69,16 +62,16 @@ namespace SqlServer.Rules.Design
                 from v in d.Declarations
                 let type = v.DataType as SqlDataTypeReference
                 let typeOption = type?.SqlDataTypeOption
-                where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
-                where type?.Parameters.Count != _expectParameterCount
+                where types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
+                where type?.Parameters.Count != expectParameterCount
                 select v;
 
             var parameters =
                 from p in variableVisitor.ProcedureParameters
                 let type = p.DataType as SqlDataTypeReference
                 let typeOption = type?.SqlDataTypeOption
-                where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
-                where type?.Parameters.Count != _expectParameterCount
+                where types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
+                where type?.Parameters.Count != expectParameterCount
                 select p;
 
             var columns =
@@ -86,13 +79,13 @@ namespace SqlServer.Rules.Design
                 from c in s.ColumnDefinitions
                 let type = c.DataType as SqlDataTypeReference
                 let typeOption = type?.SqlDataTypeOption
-                where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
-                where type?.Parameters.Count != _expectParameterCount
+                where types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
+                where type?.Parameters.Count != expectParameterCount
                 select c;
 
-            problems.AddRange(variables.Select(p => new SqlRuleProblem(_message, sqlObj, p)));
-            problems.AddRange(parameters.Select(p => new SqlRuleProblem(_message, sqlObj, p)));
-            problems.AddRange(columns.Select(p => new SqlRuleProblem(_message, sqlObj, p)));
+            problems.AddRange(variables.Select(p => new SqlRuleProblem(message, sqlObj, p)));
+            problems.AddRange(parameters.Select(p => new SqlRuleProblem(message, sqlObj, p)));
+            problems.AddRange(columns.Select(p => new SqlRuleProblem(message, sqlObj, p)));
 
             var castVisitor = new CastCallVisitor();
             var convertVisitor = new ConvertCallVisitor();
@@ -101,19 +94,19 @@ namespace SqlServer.Rules.Design
             var castCalls = from c in castVisitor.Statements
                             let type = c.DataType as SqlDataTypeReference
                             let typeOption = type?.SqlDataTypeOption
-                            where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
-                            where type?.Parameters.Count != _expectParameterCount
+                            where types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
+                            where type?.Parameters.Count != expectParameterCount
                             select c;
 
             var convertCalls = from c in convertVisitor.Statements
                                let type = c.DataType as SqlDataTypeReference
                                let typeOption = type?.SqlDataTypeOption
-                               where _types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
-                               where type?.Parameters.Count != _expectParameterCount
+                               where types.Contains(typeOption.GetValueOrDefault(SqlDataTypeOption.None))
+                               where type?.Parameters.Count != expectParameterCount
                                select c;
 
-            problems.AddRange(castCalls.Select(p => new SqlRuleProblem(_message, sqlObj, p)));
-            problems.AddRange(convertCalls.Select(p => new SqlRuleProblem(_message, sqlObj, p)));
+            problems.AddRange(castCalls.Select(p => new SqlRuleProblem(message, sqlObj, p)));
+            problems.AddRange(convertCalls.Select(p => new SqlRuleProblem(message, sqlObj, p)));
 
             return problems;
         }

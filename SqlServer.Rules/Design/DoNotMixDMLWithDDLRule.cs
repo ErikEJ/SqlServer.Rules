@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -9,13 +9,6 @@ using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
 {
-    /// <summary>
-    ///
-    /// </summary>
-    /// <FriendlyName></FriendlyName>
-    /// <IsIgnorable>false</IsIgnorable>
-    /// <ExampleMd></ExampleMd>
-    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(
         RuleId,
         RuleDisplayName,

@@ -1,9 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace SqlServer.Rules.Report;
-
 
 public class IssueTypeComparer : IEqualityComparer<IssueType>
 {

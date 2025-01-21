@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
@@ -7,7 +7,7 @@ namespace TSQLSmellSCA
     {
         private readonly Smells smells;
         public bool NoCountSet { get; set; }
-        private IList<ProcedureParameter> _parameterList;
+        private IList<ProcedureParameter> parameterList;
 
         public ProcedureStatementBodyProcessor(Smells smells)
         {
@@ -18,38 +18,36 @@ namespace TSQLSmellSCA
         public IList<ProcedureParameter> ParameterList
 #pragma warning restore CA2227 // Collection properties should be read only
         {
-            get { return _parameterList; }
-            set { _parameterList = value; }
+            get { return parameterList; }
+            set { parameterList = value; }
         }
 
-        private void TestProcedureReference(ProcedureReference PrcRef)
+        private void TestProcedureReference(ProcedureReference prcRef)
         {
-            if (PrcRef.Name.SchemaIdentifier == null)
+            if (prcRef.Name.SchemaIdentifier == null)
             {
-                smells.SendFeedBack(24, PrcRef);
+                smells.SendFeedBack(24, prcRef);
             }
         }
 
-        public void ProcessProcedureStatementBody(ProcedureStatementBody StatementBody)
+        public void ProcessProcedureStatementBody(ProcedureStatementBody statementBody)
         {
             smells.AssignmentList.Clear();
 
-            TestProcedureReference(StatementBody.ProcedureReference);
-            ParameterList = StatementBody.Parameters;
+            TestProcedureReference(statementBody.ProcedureReference);
+            ParameterList = statementBody.Parameters;
 
             NoCountSet = false;
-            if (StatementBody.StatementList != null)
+            if (statementBody.StatementList != null)
             {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                foreach (TSqlFragment Fragment in StatementBody.StatementList.Statements)
+                foreach (TSqlFragment fragment in statementBody.StatementList.Statements)
                 {
-                    smells.ProcessTsqlFragment(Fragment);
+                    smells.ProcessTsqlFragment(fragment);
                 }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
                 if (!NoCountSet)
                 {
-                    smells.SendFeedBack(30, StatementBody.ProcedureReference);
+                    smells.SendFeedBack(30, statementBody.ProcedureReference);
                 }
             }
 

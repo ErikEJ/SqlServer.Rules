@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Rules.Globals;
@@ -49,7 +49,10 @@ namespace SqlServer.Rules.Design
             new[]
                 {
                     ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table,
-                }, new[] { SqlDataTypeOption.Decimal, SqlDataTypeOption.Numeric }, 2, Message)
+                },
+            new[] { SqlDataTypeOption.Decimal, SqlDataTypeOption.Numeric },
+            2,
+            Message)
         {
         }
     }

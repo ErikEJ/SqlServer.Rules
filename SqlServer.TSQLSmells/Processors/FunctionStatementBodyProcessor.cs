@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,23 +11,21 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessFunctionStatementBody(FunctionStatementBody Function)
+        public void ProcessFunctionStatementBody(FunctionStatementBody function)
         {
-            if (Function.Name.SchemaIdentifier == null)
+            if (function.Name.SchemaIdentifier == null)
             {
-                smells.SendFeedBack(24, Function.Name);
+                smells.SendFeedBack(24, function.Name);
             }
 
-            smells.ProcessTsqlFragment(Function.ReturnType);
+            smells.ProcessTsqlFragment(function.ReturnType);
 
-            if (Function.StatementList != null)
+            if (function.StatementList != null)
             {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                foreach (TSqlFragment Statement in Function.StatementList.Statements)
+                foreach (TSqlFragment statement in function.StatementList.Statements)
                 {
-                    smells.ProcessTsqlFragment(Statement);
+                    smells.ProcessTsqlFragment(statement);
                 }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
             }
         }
     }

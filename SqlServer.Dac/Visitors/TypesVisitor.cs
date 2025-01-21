@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
@@ -6,7 +6,7 @@ namespace SqlServer.Dac.Visitors
 {
     public class TypesVisitor : BaseVisitor, IVisitor<TSqlFragment>
     {
-        private readonly List<Type> _types = new List<Type>();
+        private readonly List<Type> types = new List<Type>();
         public IList<TSqlFragment> Statements { get; } = new List<TSqlFragment>();
         public int Count
         {
@@ -20,12 +20,12 @@ namespace SqlServer.Dac.Visitors
                 throw new ArgumentNullException(nameof(typesToLookFor));
             }
 
-            _types = new List<Type>(typesToLookFor);
+            types = new List<Type>(typesToLookFor);
         }
 
         public override void Visit(TSqlFragment fragment)
         {
-            if (_types.Contains(fragment.GetType()))
+            if (types.Contains(fragment.GetType()))
             {
                 Statements.Add(fragment);
             }

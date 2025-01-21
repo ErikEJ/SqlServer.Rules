@@ -7,9 +7,6 @@ using SqlServer.Dac;
 
 namespace SqlServer.Rules
 {
-    /// <summary>
-    ///
-    /// </summary>
     public class NamedTableView
     {
         /// <summary>
@@ -33,25 +30,15 @@ namespace SqlServer.Rules
         /// </value>
         public string Name { get; set; }
 
-        /// <summary>
-        /// Gets or sets the aliases.
-        /// </summary>
-        /// <value>
-        /// The aliases.
-        /// </value>
 #pragma warning disable CA1002 // Do not expose generic lists
         public List<string> Aliases { get; private set; } = new List<string>();
 #pragma warning restore CA1002 // Do not expose generic lists
 
-        private static readonly char[] separator = new[] { '.' };
+        private static readonly char[] Separator = new[] { '.' };
 
-        /// <summary>
-        /// Names to identifier.
-        /// </summary>
-        /// <returns></returns>
         public ObjectIdentifier NameToId()
         {
-            return new ObjectIdentifier((Name ?? string.Empty).Split(separator, StringSplitOptions.RemoveEmptyEntries));
+            return new ObjectIdentifier((Name ?? string.Empty).Split(Separator, StringSplitOptions.RemoveEmptyEntries));
         }
 
         /// <summary>

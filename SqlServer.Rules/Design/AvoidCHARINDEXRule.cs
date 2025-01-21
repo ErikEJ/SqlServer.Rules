@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
@@ -8,7 +8,7 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    ///
+    /// Avoid using CHARINDEX function in WHERE clauses.
     /// </summary>
     /// <FriendlyName>Avoid using CHARINDEX</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>

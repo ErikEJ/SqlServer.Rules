@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,20 +11,20 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessSqlDataTypeReference(SqlDataTypeReference DataType)
+        public void ProcessSqlDataTypeReference(SqlDataTypeReference dataType)
         {
-            if (DataType.SqlDataTypeOption == SqlDataTypeOption.Table)
+            if (dataType.SqlDataTypeOption == SqlDataTypeOption.Table)
             {
             }
 
-            switch (DataType.SqlDataTypeOption)
+            switch (dataType.SqlDataTypeOption)
             {
                 case SqlDataTypeOption.Table:
                     break;
                 case SqlDataTypeOption.Text:
                 case SqlDataTypeOption.NText:
                 case SqlDataTypeOption.Image:
-                    smells.SendFeedBack(47, DataType);
+                    smells.SendFeedBack(47, dataType);
                     break;
             }
         }

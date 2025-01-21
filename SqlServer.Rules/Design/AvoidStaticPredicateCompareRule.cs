@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -122,7 +122,7 @@ namespace SqlServer.Rules.Design
             var type1 = expr1.GetType();
             var type2 = expr2.GetType();
 
-            return 
+            return
                 (
                     (type1 == typeof(IntegerLiteral) || type1 == typeof(StringLiteral))
                     && (type2 == typeof(IntegerLiteral) || type2 == typeof(StringLiteral))

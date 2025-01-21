@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace SqlServer.Rules.Globals
 {
-    internal static class Constants
+    public static class Constants
     {
         public const string RuleNameSpace = "SqlServer.Rules.";
         public const string Performance = "Performance";
         public const string Design = "Design";
         public const string Naming = "Naming";
 
-        public static List<string> Aggregates = new List<string>
+#pragma warning disable CA1002 // Do not expose generic lists
+        public static List<string> Aggregates { get; private set; } = new List<string>
         {
             "AVG",
             "MIN",
@@ -26,7 +27,7 @@ namespace SqlServer.Rules.Globals
             "MAX",
         };
 
-        public static List<string> DateParts = new List<string>
+        public static List<string> DateParts { get; private set; } = new List<string>
         {
             "YEAR",
             "YY",
@@ -66,3 +67,4 @@ namespace SqlServer.Rules.Globals
         };
     }
 }
+#pragma warning restore CA1002 // Do not expose generic lists

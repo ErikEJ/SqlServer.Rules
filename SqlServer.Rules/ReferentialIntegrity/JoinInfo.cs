@@ -6,9 +6,6 @@ using SqlServer.Dac;
 
 namespace SqlServer.Rules.ReferentialIntegrity
 {
-    /// <summary>
-    ///
-    /// </summary>
     public class JoinInfo
     {
         /// <summary>
@@ -74,11 +71,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
         /// </value>
         public IList<ColumnReferenceExpression> Table2JoinColumns { get; set; } = new List<ColumnReferenceExpression>();
 #pragma warning restore CA2227 // Collection properties should be read only
-        /// <summary>
-        /// Checks the table names.
-        /// </summary>
-        /// <param name="fkInfo">The fk information.</param>
-        /// <returns></returns>
+
         public bool CheckTableNames(ForeignKeyInfo fkInfo)
         {
             var table1Name = Table1Name;
@@ -88,11 +81,6 @@ namespace SqlServer.Rules.ReferentialIntegrity
                 || (fkInfo.TableName.CompareTo(table2Name) >= 5 && fkInfo.ToTableName.CompareTo(table1Name) >= 5);
         }
 
-        /// <summary>
-        /// Checks the full join.
-        /// </summary>
-        /// <param name="fkInfo">The fk information.</param>
-        /// <returns></returns>
         public bool CheckFullJoin(ForeignKeyInfo fkInfo)
         {
             var table1Name = Table1Name;
@@ -119,7 +107,7 @@ namespace SqlServer.Rules.ReferentialIntegrity
             return false;
         }
 
-        private (IList<string> table1Columns, IList<string> table2Columns, IList<string> fkInfoColumnNames, IList<string> fkInfoToColumnNames) GetColumnNames(ForeignKeyInfo fkInfo)
+        private (IList<string> Table1Columns, IList<string> Table2Columns, IList<string> FkInfoColumnNames, IList<string> FkInfoToColumnNames) GetColumnNames(ForeignKeyInfo fkInfo)
         {
 #pragma warning disable CA1304 // Specify CultureInfo
 #pragma warning disable CA1311 // Specify a culture or use an invariant version
