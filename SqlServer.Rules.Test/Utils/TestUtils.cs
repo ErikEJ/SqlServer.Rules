@@ -184,10 +184,6 @@ END
         return db;
     }
 
-    /// <summary>
-    /// Executes the query, and returns the first column of the first row in the
-    /// result set returned by the query. Extra columns or rows are ignored.
-    /// </summary>
     public static object ExecuteScalar(SqlConnection connection, string sqlCommandText, int commandTimeOut = 30)
     {
         ArgumentValidation.CheckForEmptyString(sqlCommandText, "sqlCommandText");
@@ -198,9 +194,6 @@ END
         }
     }
 
-    /// <summary>
-    /// Executes commands such as Transact-SQL INSERT, DELETE, UPDATE, and SET statements.
-    /// </summary>
     public static void Execute(SqlConnection connection, string sqlCommandText, int? commandTimeOut = null)
     {
         ArgumentValidation.CheckForEmptyString(sqlCommandText, "sqlCommandText");
@@ -306,11 +299,6 @@ END
         }
     }
 
-    /// <summary>
-    /// Retrieves the default lock timeout in Milliseconds.  This value should
-    /// be used to set the lock timeout on a connection.
-    /// </summary>
-    /// <returns></returns>
     private static int GetLockTimeoutMS()
     {
         // For now defaulting timeout to 90 sec. This could be replaced with a better method for calculating a smart timeout

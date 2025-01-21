@@ -19,4 +19,4 @@ public class testSelectStarInScalarUDF : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
+

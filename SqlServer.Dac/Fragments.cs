@@ -20,12 +20,6 @@ namespace SqlServer.Dac
             }
         }
 
-        /// <summary>
-        /// Recursively searches a fragment searching for another fragment and when found removes the fragment when it is found.
-        /// </summary>
-        /// <param name="fragment">The fragment to search.</param>
-        /// <param name="remove">The fragment to remove when found.</param>
-        /// <returns></returns>
         public static bool RemoveRecursive(this TSqlFragment fragment, TSqlFragment remove)
         {
             switch (fragment)
@@ -134,12 +128,6 @@ namespace SqlServer.Dac
             return GetFragment(obj, out var parseErrors);
         }
 
-        /// <summary>
-        /// Converts a T-SQL object into a fragment
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="parseErrors"></param>
-        /// <returns></returns>
         public static TSqlFragment GetFragment(this TSqlObject obj, out IList<ParseError> parseErrors)
         {
             var tsqlParser = new TSql140Parser(true);
@@ -171,12 +159,6 @@ namespace SqlServer.Dac
             return fragment;
         }
 
-        /// <summary>
-        /// Searches the entire fragment, for specific types
-        /// </summary>
-        /// <param name="baseFragment"></param>
-        /// <param name="typesToLookFor"></param>
-        /// <returns></returns>
         public static TSqlFragment GetFragment(this TSqlFragment baseFragment, params Type[] typesToLookFor)
         {
             // for some odd reason, sometimes the fragments do not pass in properly to the rules....

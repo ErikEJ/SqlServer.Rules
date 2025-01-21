@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -118,9 +118,6 @@ namespace SqlServer.Dac
             return tName;
         }
 
-        /// <summary>
-        /// Gets a formatted element name
-        /// </summary>
         public static string GetObjectName(this SqlRuleExecutionContext ruleExecutionContext, TSqlObject modelElement, ElementNameStyle style = ElementNameStyle.EscapedFullyQualifiedName)
         {
             // Get the element name using the built in DisplayServices. This provides a number of useful formatting options to

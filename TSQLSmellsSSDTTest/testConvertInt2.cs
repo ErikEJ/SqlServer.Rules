@@ -18,4 +18,4 @@ public class testConvertInt2 : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
+

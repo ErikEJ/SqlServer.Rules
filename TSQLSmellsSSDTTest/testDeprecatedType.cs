@@ -17,4 +17,4 @@ public class testDeprecatedType : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
+

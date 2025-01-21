@@ -20,4 +20,4 @@ public class testSingleLineComment : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
+

@@ -44,7 +44,7 @@ namespace SqlServer.Dac
         /// <remarks>If we get AT least a score of 5 we must assume it is a match. Then we have at least matched
         /// on the table name. A score of 8 means we have also matched the schema. A score of 4 or below means we
         /// definitely did not match on object name.</remarks>
-        /// <returns></returns>
+        /// <returns>an int.</returns>
         private static int CompareIdentifiers(this ObjectIdentifier identifier, IEnumerable<string> identifiers)
         {
             var ret = 0;

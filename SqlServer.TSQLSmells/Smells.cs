@@ -112,12 +112,11 @@ namespace TSQLSmellSCA
 
             var rm = Resources.ResourceManager;
 
-            var lookup = "TSQLSmell_RuleName" + errorNum.ToString("D2", CultureInfo.InvariantCulture);
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var Out = rm.GetString(lookup, CultureInfo.InvariantCulture);
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
+            var lookup = "TSQLSmellRuleName" + errorNum.ToString("D2", CultureInfo.InvariantCulture);
 
-            problems.Add(new SqlRuleProblem(Out, modelElement, errorFrg));
+            var @out = rm.GetString(lookup, CultureInfo.InvariantCulture);
+
+            problems.Add(new SqlRuleProblem(@out, modelElement, errorFrg));
         }
 
         public void ProcessQueryExpression(
