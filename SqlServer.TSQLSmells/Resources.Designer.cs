@@ -81,450 +81,450 @@ namespace TSQLSmellSCA {
         /// <summary>
         ///   Looks up a localized string similar to Avoid cross server joins.
         /// </summary>
-        internal static string TSQLSmell_RuleName01 {
+        internal static string TSQLSmellRuleName01 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName01", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName01", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Best practice is to use two part naming.
         /// </summary>
-        internal static string TSQLSmell_RuleName02 {
+        internal static string TSQLSmellRuleName02 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName02", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName02", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Dirty Reads cause consistency errors.
         /// </summary>
-        internal static string TSQLSmell_RuleName03 {
+        internal static string TSQLSmellRuleName03 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName03", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName03", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Dont Override the optimizer.
         /// </summary>
-        internal static string TSQLSmell_RuleName04 {
+        internal static string TSQLSmellRuleName04 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName04", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName04", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Avoid use of &apos;Select *&apos;.
         /// </summary>
-        internal static string TSQLSmell_RuleName05 {
+        internal static string TSQLSmellRuleName05 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName05", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName05", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Avoid Explicit Conversion of Columnar data.
         /// </summary>
-        internal static string TSQLSmell_RuleName06 {
+        internal static string TSQLSmellRuleName06 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName06", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName06", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Avoid use of ordinal positions in ORDER BY Clauses.
         /// </summary>
-        internal static string TSQLSmell_RuleName07 {
+        internal static string TSQLSmellRuleName07 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName07", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName07", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Dont Change DateFormat.
         /// </summary>
-        internal static string TSQLSmell_RuleName08 {
+        internal static string TSQLSmellRuleName08 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName08", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName08", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Dont Change DateFirst.
         /// </summary>
-        internal static string TSQLSmell_RuleName09 {
+        internal static string TSQLSmellRuleName09 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName09", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName09", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ReadUnCommitted: Dirty reads can cause consistency errors.
         /// </summary>
-        internal static string TSQLSmell_RuleName10 {
+        internal static string TSQLSmellRuleName10 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName10", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName10", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Single character aliases are poor practice.
         /// </summary>
-        internal static string TSQLSmell_RuleName11 {
+        internal static string TSQLSmellRuleName11 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName11", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName11", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Missing Column specifications on insert.
         /// </summary>
-        internal static string TSQLSmell_RuleName12 {
+        internal static string TSQLSmellRuleName12 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName12", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName12", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to CONCAT_NULL_YIELDS_NULL should be on.
         /// </summary>
-        internal static string TSQLSmell_RuleName13 {
+        internal static string TSQLSmellRuleName13 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName13", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName13", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ANSI_NULLS should be On.
         /// </summary>
-        internal static string TSQLSmell_RuleName14 {
+        internal static string TSQLSmellRuleName14 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName14", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName14", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ANSI_PADDING should be On.
         /// </summary>
-        internal static string TSQLSmell_RuleName15 {
+        internal static string TSQLSmellRuleName15 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName15", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName15", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ANSI_WARNINGS should be On.
         /// </summary>
-        internal static string TSQLSmell_RuleName16 {
+        internal static string TSQLSmellRuleName16 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName16", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName16", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to ARITHABORT should be On.
         /// </summary>
-        internal static string TSQLSmell_RuleName17 {
+        internal static string TSQLSmellRuleName17 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName17", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName17", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to NUMERIC_ROUNDABORT should be Off.
         /// </summary>
-        internal static string TSQLSmell_RuleName18 {
+        internal static string TSQLSmellRuleName18 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName18", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName18", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to QUOTED_IDENTIFIER should be ON.
         /// </summary>
-        internal static string TSQLSmell_RuleName19 {
+        internal static string TSQLSmellRuleName19 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName19", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName19", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to FORCEPLAN should be OFF.
         /// </summary>
-        internal static string TSQLSmell_RuleName20 {
+        internal static string TSQLSmellRuleName20 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName20", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName20", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use 2 part naming in EXECUTE statements.
         /// </summary>
-        internal static string TSQLSmell_RuleName21 {
+        internal static string TSQLSmellRuleName21 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName21", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName21", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Identity value should be agnostic.
         /// </summary>
-        internal static string TSQLSmell_RuleName22 {
+        internal static string TSQLSmellRuleName22 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName22", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName22", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Avoid single line comments.
         /// </summary>
-        internal static string TSQLSmell_RuleName23 {
+        internal static string TSQLSmellRuleName23 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName23", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName23", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use two part naming.
         /// </summary>
-        internal static string TSQLSmell_RuleName24 {
+        internal static string TSQLSmellRuleName24 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName24", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName24", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to RANGE windows are much slower then ROWS (Explicit use).
         /// </summary>
-        internal static string TSQLSmell_RuleName25 {
+        internal static string TSQLSmellRuleName25 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName25", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName25", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to RANGE windows are much slower then ROWS (Implicit use).
         /// </summary>
-        internal static string TSQLSmell_RuleName26 {
+        internal static string TSQLSmellRuleName26 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName26", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName26", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Create table statements should specify schema.
         /// </summary>
-        internal static string TSQLSmell_RuleName27 {
+        internal static string TSQLSmellRuleName27 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName27", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName27", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Ordering in a view does not guarantee result set ordering.
         /// </summary>
-        internal static string TSQLSmell_RuleName28 {
+        internal static string TSQLSmellRuleName28 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName28", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName28", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cursors default to writable.  Specify FAST_FORWARD.
         /// </summary>
-        internal static string TSQLSmell_RuleName29 {
+        internal static string TSQLSmellRuleName29 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName29", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName29", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Include SET NOCOUNT ON inside stored procedures.
         /// </summary>
-        internal static string TSQLSmell_RuleName30 {
+        internal static string TSQLSmellRuleName30 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName30", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName30", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to EXISTS/NOT EXISTS can be more performant than COUNT(*).
         /// </summary>
-        internal static string TSQLSmell_RuleName31 {
+        internal static string TSQLSmellRuleName31 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName31", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName31", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Ordering in a derived table does not guarantee result set ordering.
         /// </summary>
-        internal static string TSQLSmell_RuleName32 {
+        internal static string TSQLSmellRuleName32 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName32", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName32", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Single character variable names are poor practice.
         /// </summary>
-        internal static string TSQLSmell_RuleName33 {
+        internal static string TSQLSmellRuleName33 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName33", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName33", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Expression used with TOP should be wrapped in parenthises.
         /// </summary>
-        internal static string TSQLSmell_RuleName34 {
+        internal static string TSQLSmellRuleName34 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName34", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName34", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to TOP(100) percent is ignored by the optimizer.
         /// </summary>
-        internal static string TSQLSmell_RuleName35 {
+        internal static string TSQLSmellRuleName35 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName35", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName35", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Foreign Key Constraints should be named.
         /// </summary>
-        internal static string TSQLSmell_RuleName36 {
+        internal static string TSQLSmellRuleName36 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName36", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName36", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Check Constraints should be named.
         /// </summary>
-        internal static string TSQLSmell_RuleName37 {
+        internal static string TSQLSmellRuleName37 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName37", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName37", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Primary Key Constraints on temporary tables should not be named.
         /// </summary>
-        internal static string TSQLSmell_RuleName38 {
+        internal static string TSQLSmellRuleName38 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName38", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName38", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Default Constraints on temporary tables should not be named.
         /// </summary>
-        internal static string TSQLSmell_RuleName39 {
+        internal static string TSQLSmellRuleName39 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName39", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName39", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Foreign Key Constraints on temporary tables should not be named.
         /// </summary>
-        internal static string TSQLSmell_RuleName40 {
+        internal static string TSQLSmellRuleName40 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName40", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName40", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Check Constraints on temporary tables should not be named.
         /// </summary>
-        internal static string TSQLSmell_RuleName41 {
+        internal static string TSQLSmellRuleName41 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName41", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName41", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of SET ROWCOUNT is deprecated : use TOP.
         /// </summary>
-        internal static string TSQLSmell_RuleName42 {
+        internal static string TSQLSmellRuleName42 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName42", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName42", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Potential SQL Injection Issue.
         /// </summary>
-        internal static string TSQLSmell_RuleName43 {
+        internal static string TSQLSmellRuleName43 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName43", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName43", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Dont override the optimizer ( FORCESCAN ).
         /// </summary>
-        internal static string TSQLSmell_RuleName44 {
+        internal static string TSQLSmellRuleName44 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName44", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName44", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Dont override the optimizer ( Index Hint).
         /// </summary>
-        internal static string TSQLSmell_RuleName45 {
+        internal static string TSQLSmellRuleName45 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName45", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName45", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &quot;= Null&quot; Comparison.
         /// </summary>
-        internal static string TSQLSmell_RuleName46 {
+        internal static string TSQLSmellRuleName46 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName46", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName46", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Use of deprecated data type.
         /// </summary>
-        internal static string TSQLSmell_RuleName47 {
+        internal static string TSQLSmellRuleName47 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName47", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName47", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TSQLSmell_RuleName48.
+        ///   Looks up a localized string similar to TSQLSmellRuleName48.
         /// </summary>
-        internal static string TSQLSmell_RuleName48 {
+        internal static string TSQLSmellRuleName48 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName48", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName48", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TSQLSmell_RuleName49.
+        ///   Looks up a localized string similar to TSQLSmellRuleName49.
         /// </summary>
-        internal static string TSQLSmell_RuleName49 {
+        internal static string TSQLSmellRuleName49 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName49", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName49", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TSQLSmell_RuleName50.
+        ///   Looks up a localized string similar to TSQLSmellRuleName50.
         /// </summary>
-        internal static string TSQLSmell_RuleName50 {
+        internal static string TSQLSmellRuleName50 {
             get {
-                return ResourceManager.GetString("TSQLSmell_RuleName50", resourceCulture);
+                return ResourceManager.GetString("TSQLSmellRuleName50", resourceCulture);
             }
         }
     }

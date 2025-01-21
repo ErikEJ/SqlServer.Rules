@@ -19,4 +19,4 @@ public class testSelectStarOutOfCteTest : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
+

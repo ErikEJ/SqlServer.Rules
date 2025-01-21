@@ -78,11 +78,6 @@ public class InstanceInfo
     public string UserId { get; set; }
     public string Password { get; set; }
 
-    /// <summary>
-    /// Connection string to this instance with the master database as the default.
-    /// Integrated security is used
-    /// </summary>
-    /// <returns></returns>
     public string BuildConnectionString()
     {
         return CreateBuilder().ConnectionString;
@@ -103,11 +98,6 @@ public class InstanceInfo
         return CreateBuilder(UserId, Password, dbName);
     }
 
-    /// <summary>
-    /// Build a connection string for this instance using the specified
-    /// username/password for security and specifying the dbName as the
-    /// initial catalog
-    /// </summary>
     public string BuildConnectionString(string userId, string password, string dbName)
     {
         var scsb = CreateBuilder(userId, password, dbName);

@@ -19,4 +19,4 @@ public class testWithExistsAndNestedSelectStarInlineIF : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
+

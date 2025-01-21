@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testConvertDateMultipleCond : TestModel
+public class TestConvertDateMultipleCond : TestModel
 {
-    public testConvertDateMultipleCond()
+    public TestConvertDateMultipleCond()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/ConvertDateMultiCond.sql");
 
@@ -19,4 +19,3 @@ public class testConvertDateMultipleCond : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles

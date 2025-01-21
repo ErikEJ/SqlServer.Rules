@@ -13,12 +13,10 @@ namespace TSQLSmellSCA
 
         public void ProcessBeginEndBlockStatement(BeginEndBlockStatement bEStatement)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            foreach (var Statement in bEStatement.StatementList.Statements)
+            foreach (var statement in bEStatement.StatementList.Statements)
             {
-                smells.ProcessTsqlFragment(Statement);
+                smells.ProcessTsqlFragment(statement);
             }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
     }
 }

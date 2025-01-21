@@ -123,154 +123,154 @@
   <data name="ResourceBaseName" xml:space="preserve">
     <value>TSQLSmellSCA.Resources</value>
   </data>
-  <data name="TSQLSmell_RuleName01" xml:space="preserve">
+  <data name="TSQLSmellRuleName01" xml:space="preserve">
     <value>Avoid cross server joins</value>
   </data>
-  <data name="TSQLSmell_RuleName02" xml:space="preserve">
+  <data name="TSQLSmellRuleName02" xml:space="preserve">
     <value>Best practice is to use two part naming</value>
   </data>
-  <data name="TSQLSmell_RuleName03" xml:space="preserve">
+  <data name="TSQLSmellRuleName03" xml:space="preserve">
     <value>Dirty Reads cause consistency errors</value>
   </data>
-  <data name="TSQLSmell_RuleName04" xml:space="preserve">
+  <data name="TSQLSmellRuleName04" xml:space="preserve">
     <value>Dont Override the optimizer</value>
   </data>
-  <data name="TSQLSmell_RuleName05" xml:space="preserve">
+  <data name="TSQLSmellRuleName05" xml:space="preserve">
     <value>Avoid use of 'Select *'</value>
   </data>
-  <data name="TSQLSmell_RuleName06" xml:space="preserve">
+  <data name="TSQLSmellRuleName06" xml:space="preserve">
     <value>Avoid Explicit Conversion of Columnar data</value>
   </data>
-  <data name="TSQLSmell_RuleName07" xml:space="preserve">
+  <data name="TSQLSmellRuleName07" xml:space="preserve">
     <value>Avoid use of ordinal positions in ORDER BY Clauses</value>
   </data>
-  <data name="TSQLSmell_RuleName08" xml:space="preserve">
+  <data name="TSQLSmellRuleName08" xml:space="preserve">
     <value>Dont Change DateFormat</value>
   </data>
-  <data name="TSQLSmell_RuleName09" xml:space="preserve">
+  <data name="TSQLSmellRuleName09" xml:space="preserve">
     <value>Dont Change DateFirst</value>
   </data>
-  <data name="TSQLSmell_RuleName10" xml:space="preserve">
+  <data name="TSQLSmellRuleName10" xml:space="preserve">
     <value>ReadUnCommitted: Dirty reads can cause consistency errors</value>
   </data>
-  <data name="TSQLSmell_RuleName11" xml:space="preserve">
+  <data name="TSQLSmellRuleName11" xml:space="preserve">
     <value>Single character aliases are poor practice</value>
   </data>
-  <data name="TSQLSmell_RuleName12" xml:space="preserve">
+  <data name="TSQLSmellRuleName12" xml:space="preserve">
     <value>Missing Column specifications on insert</value>
   </data>
-  <data name="TSQLSmell_RuleName13" xml:space="preserve">
+  <data name="TSQLSmellRuleName13" xml:space="preserve">
     <value>CONCAT_NULL_YIELDS_NULL should be on</value>
   </data>
-  <data name="TSQLSmell_RuleName14" xml:space="preserve">
+  <data name="TSQLSmellRuleName14" xml:space="preserve">
     <value>ANSI_NULLS should be On</value>
   </data>
-  <data name="TSQLSmell_RuleName15" xml:space="preserve">
+  <data name="TSQLSmellRuleName15" xml:space="preserve">
     <value>ANSI_PADDING should be On</value>
   </data>
-  <data name="TSQLSmell_RuleName16" xml:space="preserve">
+  <data name="TSQLSmellRuleName16" xml:space="preserve">
     <value>ANSI_WARNINGS should be On</value>
   </data>
-  <data name="TSQLSmell_RuleName17" xml:space="preserve">
+  <data name="TSQLSmellRuleName17" xml:space="preserve">
     <value>ARITHABORT should be On</value>
   </data>
-  <data name="TSQLSmell_RuleName18" xml:space="preserve">
+  <data name="TSQLSmellRuleName18" xml:space="preserve">
     <value>NUMERIC_ROUNDABORT should be Off</value>
   </data>
-  <data name="TSQLSmell_RuleName19" xml:space="preserve">
+  <data name="TSQLSmellRuleName19" xml:space="preserve">
     <value>QUOTED_IDENTIFIER should be ON</value>
   </data>
-  <data name="TSQLSmell_RuleName20" xml:space="preserve">
+  <data name="TSQLSmellRuleName20" xml:space="preserve">
     <value>FORCEPLAN should be OFF</value>
   </data>
-  <data name="TSQLSmell_RuleName21" xml:space="preserve">
+  <data name="TSQLSmellRuleName21" xml:space="preserve">
     <value>Use 2 part naming in EXECUTE statements</value>
   </data>
-  <data name="TSQLSmell_RuleName22" xml:space="preserve">
+  <data name="TSQLSmellRuleName22" xml:space="preserve">
     <value>Identity value should be agnostic</value>
   </data>
-  <data name="TSQLSmell_RuleName23" xml:space="preserve">
+  <data name="TSQLSmellRuleName23" xml:space="preserve">
     <value>Avoid single line comments</value>
   </data>
-  <data name="TSQLSmell_RuleName24" xml:space="preserve">
+  <data name="TSQLSmellRuleName24" xml:space="preserve">
     <value>Use two part naming</value>
   </data>
-  <data name="TSQLSmell_RuleName25" xml:space="preserve">
+  <data name="TSQLSmellRuleName25" xml:space="preserve">
     <value>RANGE windows are much slower then ROWS (Explicit use)</value>
   </data>
-  <data name="TSQLSmell_RuleName26" xml:space="preserve">
+  <data name="TSQLSmellRuleName26" xml:space="preserve">
     <value>RANGE windows are much slower then ROWS (Implicit use)</value>
   </data>
-  <data name="TSQLSmell_RuleName27" xml:space="preserve">
+  <data name="TSQLSmellRuleName27" xml:space="preserve">
     <value>Create table statements should specify schema</value>
   </data>
-  <data name="TSQLSmell_RuleName28" xml:space="preserve">
+  <data name="TSQLSmellRuleName28" xml:space="preserve">
     <value>Ordering in a view does not guarantee result set ordering</value>
   </data>
-  <data name="TSQLSmell_RuleName29" xml:space="preserve">
+  <data name="TSQLSmellRuleName29" xml:space="preserve">
     <value>Cursors default to writable.  Specify FAST_FORWARD</value>
   </data>
-  <data name="TSQLSmell_RuleName30" xml:space="preserve">
+  <data name="TSQLSmellRuleName30" xml:space="preserve">
     <value>Include SET NOCOUNT ON inside stored procedures</value>
   </data>
-  <data name="TSQLSmell_RuleName31" xml:space="preserve">
+  <data name="TSQLSmellRuleName31" xml:space="preserve">
     <value>EXISTS/NOT EXISTS can be more performant than COUNT(*)</value>
   </data>
-  <data name="TSQLSmell_RuleName32" xml:space="preserve">
+  <data name="TSQLSmellRuleName32" xml:space="preserve">
     <value>Ordering in a derived table does not guarantee result set ordering</value>
   </data>
-  <data name="TSQLSmell_RuleName33" xml:space="preserve">
+  <data name="TSQLSmellRuleName33" xml:space="preserve">
     <value>Single character variable names are poor practice</value>
   </data>
-  <data name="TSQLSmell_RuleName34" xml:space="preserve">
+  <data name="TSQLSmellRuleName34" xml:space="preserve">
     <value>Expression used with TOP should be wrapped in parenthises</value>
   </data>
-  <data name="TSQLSmell_RuleName35" xml:space="preserve">
+  <data name="TSQLSmellRuleName35" xml:space="preserve">
     <value>TOP(100) percent is ignored by the optimizer</value>
   </data>
-  <data name="TSQLSmell_RuleName36" xml:space="preserve">
+  <data name="TSQLSmellRuleName36" xml:space="preserve">
     <value>Foreign Key Constraints should be named</value>
   </data>
-  <data name="TSQLSmell_RuleName37" xml:space="preserve">
+  <data name="TSQLSmellRuleName37" xml:space="preserve">
     <value>Check Constraints should be named</value>
   </data>
-  <data name="TSQLSmell_RuleName38" xml:space="preserve">
+  <data name="TSQLSmellRuleName38" xml:space="preserve">
     <value>Primary Key Constraints on temporary tables should not be named</value>
   </data>
-  <data name="TSQLSmell_RuleName39" xml:space="preserve">
+  <data name="TSQLSmellRuleName39" xml:space="preserve">
     <value>Default Constraints on temporary tables should not be named</value>
   </data>
-  <data name="TSQLSmell_RuleName40" xml:space="preserve">
+  <data name="TSQLSmellRuleName40" xml:space="preserve">
     <value>Foreign Key Constraints on temporary tables should not be named</value>
   </data>
-  <data name="TSQLSmell_RuleName41" xml:space="preserve">
+  <data name="TSQLSmellRuleName41" xml:space="preserve">
     <value>Check Constraints on temporary tables should not be named</value>
   </data>
-  <data name="TSQLSmell_RuleName42" xml:space="preserve">
+  <data name="TSQLSmellRuleName42" xml:space="preserve">
     <value>Use of SET ROWCOUNT is deprecated : use TOP</value>
   </data>
-  <data name="TSQLSmell_RuleName43" xml:space="preserve">
+  <data name="TSQLSmellRuleName43" xml:space="preserve">
     <value>Potential SQL Injection Issue</value>
   </data>
-  <data name="TSQLSmell_RuleName44" xml:space="preserve">
+  <data name="TSQLSmellRuleName44" xml:space="preserve">
     <value>Dont override the optimizer ( FORCESCAN )</value>
   </data>
-  <data name="TSQLSmell_RuleName45" xml:space="preserve">
+  <data name="TSQLSmellRuleName45" xml:space="preserve">
     <value>Dont override the optimizer ( Index Hint)</value>
   </data>
-  <data name="TSQLSmell_RuleName46" xml:space="preserve">
+  <data name="TSQLSmellRuleName46" xml:space="preserve">
     <value>"= Null" Comparison</value>
   </data>
-  <data name="TSQLSmell_RuleName47" xml:space="preserve">
+  <data name="TSQLSmellRuleName47" xml:space="preserve">
     <value>Use of deprecated data type</value>
   </data>
-  <data name="TSQLSmell_RuleName48" xml:space="preserve">
-    <value>TSQLSmell_RuleName48</value>
+  <data name="TSQLSmellRuleName48" xml:space="preserve">
+    <value>TSQLSmellRuleName48</value>
   </data>
-  <data name="TSQLSmell_RuleName49" xml:space="preserve">
-    <value>TSQLSmell_RuleName49</value>
+  <data name="TSQLSmellRuleName49" xml:space="preserve">
+    <value>TSQLSmellRuleName49</value>
   </data>
-  <data name="TSQLSmell_RuleName50" xml:space="preserve">
-    <value>TSQLSmell_RuleName50</value>
+  <data name="TSQLSmellRuleName50" xml:space="preserve">
+    <value>TSQLSmellRuleName50</value>
   </data>
 </root>

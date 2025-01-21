@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TSQLSmellsSSDTTest;
 
@@ -19,4 +19,4 @@ public class TestConvertDate : TestModel
         RunTest();
     }
 }
-#pragma warning restore IDE1006 // Naming Styles
+
