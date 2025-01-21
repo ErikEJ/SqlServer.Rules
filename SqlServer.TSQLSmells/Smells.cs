@@ -9,103 +9,103 @@ namespace TSQLSmellSCA
 {
     public class Smells
     {
-        private readonly List<VarAssignment> _assignmentList = new List<VarAssignment>();
+        private readonly List<VarAssignment> assignmentList = new List<VarAssignment>();
 
-        private int _iRule;
-        private TSqlObject _modelElement;
-        private List<SqlRuleProblem> _problems;
-        private readonly SelectStatementProcessor _selectStatementProcessor;
-        private readonly InsertProcessor _insertProcessor;
-        private readonly ExecutableEntityProcessor _executableEntityProcessor;
-        private readonly FromProcessor _fromProcessor;
-        private readonly WhereProcessor _whereProcessor;
-        private readonly OrderByProcessor _orderByProcessor;
-        private readonly WhileProcessor _whileProcessor;
-        private readonly PredicateSetProcessor _predicateSetProcessor;
-        private readonly SetProcessor _setProcessor;
-        private readonly FunctionProcessor _functionProcessor;
-        private readonly TopProcessor _topProcessor;
-        private readonly CreateTableProcessor _createTableProcessor;
-        private readonly SelectSetProcessor _selectSetProcessor;
-        private readonly SqlDataTypeProcessor _sqlDataTypeProcessor;
-        private readonly ViewStatementProcessor _viewStatementProcessor;
-        private readonly SetTransactionIsolationLevelProcessor _setTransactionIsolationLevelProcessor;
-        private readonly CursorProcessor _cursorProcessor;
-        private readonly BeginEndBlockProcessor _beginEndBlockProcessor;
-        private readonly SelectFunctionReturnTypeProcessor _selectFunctionReturnTypeProcessor;
-        private readonly FunctionStatementBodyProcessor _functionStatementBodyProcessor;
-        private readonly ProcedureStatementBodyProcessor _procedureStatementBodyProcessor;
-        private readonly IfStatementProcessor _ifStatementProcessor;
-        private readonly DeclareVariableProcessor _declareVariableProcessor;
-        private readonly TableVariableProcessor _tableVariableProcessor;
-        private readonly ReturnStatementProcessor _returnStatementProcessor;
-        private readonly ColumnDefinitionProcessor _columnDefinitionProcessor;
+        private readonly SelectStatementProcessor selectStatementProcessor;
+        private readonly InsertProcessor insertProcessor;
+        private readonly ExecutableEntityProcessor executableEntityProcessor;
+        private readonly FromProcessor fromProcessor;
+        private readonly WhereProcessor whereProcessor;
+        private readonly OrderByProcessor orderByProcessor;
+        private readonly WhileProcessor whileProcessor;
+        private readonly PredicateSetProcessor predicateSetProcessor;
+        private readonly SetProcessor setProcessor;
+        private readonly FunctionProcessor functionProcessor;
+        private readonly TopProcessor topProcessor;
+        private readonly CreateTableProcessor createTableProcessor;
+        private readonly SelectSetProcessor selectSetProcessor;
+        private readonly SqlDataTypeProcessor sqlDataTypeProcessor;
+        private readonly ViewStatementProcessor viewStatementProcessor;
+        private readonly SetTransactionIsolationLevelProcessor setTransactionIsolationLevelProcessor;
+        private readonly CursorProcessor cursorProcessor;
+        private readonly BeginEndBlockProcessor beginEndBlockProcessor;
+        private readonly SelectFunctionReturnTypeProcessor selectFunctionReturnTypeProcessor;
+        private readonly FunctionStatementBodyProcessor functionStatementBodyProcessor;
+        private readonly ProcedureStatementBodyProcessor procedureStatementBodyProcessor;
+        private readonly IfStatementProcessor ifStatementProcessor;
+        private readonly DeclareVariableProcessor declareVariableProcessor;
+        private readonly TableVariableProcessor tableVariableProcessor;
+        private readonly ReturnStatementProcessor returnStatementProcessor;
+        private readonly ColumnDefinitionProcessor columnDefinitionProcessor;
+        private int iRule;
+        private TSqlObject modelElement;
+        private List<SqlRuleProblem> problems;
 
         public Smells()
         {
-            _selectStatementProcessor = new SelectStatementProcessor(this);
-            _insertProcessor = new InsertProcessor(this);
-            _executableEntityProcessor = new ExecutableEntityProcessor(this);
-            _fromProcessor = new FromProcessor(this);
-            _whereProcessor = new WhereProcessor(this);
-            _orderByProcessor = new OrderByProcessor(this);
-            _whileProcessor = new WhileProcessor(this);
-            _predicateSetProcessor = new PredicateSetProcessor(this);
-            _setProcessor = new SetProcessor(this);
-            _functionProcessor = new FunctionProcessor(this);
-            _topProcessor = new TopProcessor(this);
-            _createTableProcessor = new CreateTableProcessor(this);
-            _selectSetProcessor = new SelectSetProcessor(this);
-            _sqlDataTypeProcessor = new SqlDataTypeProcessor(this);
-            _viewStatementProcessor = new ViewStatementProcessor(this);
-            _setTransactionIsolationLevelProcessor = new SetTransactionIsolationLevelProcessor(this);
-            _cursorProcessor = new CursorProcessor(this);
-            _beginEndBlockProcessor = new BeginEndBlockProcessor(this);
-            _selectFunctionReturnTypeProcessor = new SelectFunctionReturnTypeProcessor(this);
-            _functionStatementBodyProcessor = new FunctionStatementBodyProcessor(this);
-            _procedureStatementBodyProcessor = new ProcedureStatementBodyProcessor(this);
-            _ifStatementProcessor = new IfStatementProcessor(this);
-            _declareVariableProcessor = new DeclareVariableProcessor(this);
-            _tableVariableProcessor = new TableVariableProcessor(this);
-            _returnStatementProcessor = new ReturnStatementProcessor(this);
-            _columnDefinitionProcessor = new ColumnDefinitionProcessor(this);
+            selectStatementProcessor = new SelectStatementProcessor(this);
+            insertProcessor = new InsertProcessor(this);
+            executableEntityProcessor = new ExecutableEntityProcessor(this);
+            fromProcessor = new FromProcessor(this);
+            whereProcessor = new WhereProcessor(this);
+            orderByProcessor = new OrderByProcessor(this);
+            whileProcessor = new WhileProcessor(this);
+            predicateSetProcessor = new PredicateSetProcessor(this);
+            setProcessor = new SetProcessor(this);
+            functionProcessor = new FunctionProcessor(this);
+            topProcessor = new TopProcessor(this);
+            createTableProcessor = new CreateTableProcessor(this);
+            selectSetProcessor = new SelectSetProcessor(this);
+            sqlDataTypeProcessor = new SqlDataTypeProcessor(this);
+            viewStatementProcessor = new ViewStatementProcessor(this);
+            setTransactionIsolationLevelProcessor = new SetTransactionIsolationLevelProcessor(this);
+            cursorProcessor = new CursorProcessor(this);
+            beginEndBlockProcessor = new BeginEndBlockProcessor(this);
+            selectFunctionReturnTypeProcessor = new SelectFunctionReturnTypeProcessor(this);
+            functionStatementBodyProcessor = new FunctionStatementBodyProcessor(this);
+            procedureStatementBodyProcessor = new ProcedureStatementBodyProcessor(this);
+            ifStatementProcessor = new IfStatementProcessor(this);
+            declareVariableProcessor = new DeclareVariableProcessor(this);
+            tableVariableProcessor = new TableVariableProcessor(this);
+            returnStatementProcessor = new ReturnStatementProcessor(this);
+            columnDefinitionProcessor = new ColumnDefinitionProcessor(this);
         }
 
         public InsertProcessor InsertProcessor
         {
-            get { return _insertProcessor; }
+            get { return insertProcessor; }
         }
 
         public ExecutableEntityProcessor ExecutableEntityProcessor
         {
-            get { return _executableEntityProcessor; }
+            get { return executableEntityProcessor; }
         }
 
         public FunctionProcessor FunctionProcessor
         {
-            get { return _functionProcessor; }
+            get { return functionProcessor; }
         }
 
         public SelectSetProcessor SelectSetProcessor
         {
-            get { return _selectSetProcessor; }
+            get { return selectSetProcessor; }
         }
 
 #pragma warning disable CA1002 // Do not expose generic lists
         public List<VarAssignment> AssignmentList
 #pragma warning restore CA1002 // Do not expose generic lists
         {
-            get { return _assignmentList; }
+            get { return assignmentList; }
         }
 
         public ProcedureStatementBodyProcessor ProcedureStatementBodyProcessor
         {
-            get { return _procedureStatementBodyProcessor; }
+            get { return procedureStatementBodyProcessor; }
         }
 
         public void SendFeedBack(int errorNum, TSqlFragment errorFrg)
         {
-            if (errorNum != _iRule)
+            if (errorNum != iRule)
             {
                 return;
             }
@@ -117,10 +117,13 @@ namespace TSQLSmellSCA
             var Out = rm.GetString(lookup, CultureInfo.InvariantCulture);
 #pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
-            _problems.Add(new SqlRuleProblem(Out, _modelElement, errorFrg));
+            problems.Add(new SqlRuleProblem(Out, modelElement, errorFrg));
         }
 
-        public void ProcessQueryExpression(QueryExpression queryExpression, string parentType, bool testTop = false,
+        public void ProcessQueryExpression(
+            QueryExpression queryExpression,
+            string parentType,
+            bool testTop = false,
             WithCtesAndXmlNamespaces cte = null)
         {
             var expressionType = FragmentTypeParser.GetFragmentType(queryExpression);
@@ -129,20 +132,20 @@ namespace TSQLSmellSCA
                 case "QuerySpecification":
                     // {$Query = $Stmt.QueryExpression;
                     var querySpec = (QuerySpecification)queryExpression;
-                    _selectStatementProcessor.ProcessSelectElements(querySpec.SelectElements, parentType, cte);
+                    selectStatementProcessor.ProcessSelectElements(querySpec.SelectElements, parentType, cte);
                     if (querySpec.FromClause != null)
                     {
-                        _fromProcessor.Process(querySpec.FromClause, cte);
+                        fromProcessor.Process(querySpec.FromClause, cte);
                     }
 
                     if (querySpec.WhereClause != null)
                     {
-                        _whereProcessor.Process(querySpec.WhereClause);
+                        whereProcessor.Process(querySpec.WhereClause);
                     }
 
                     if (querySpec.OrderByClause != null)
                     {
-                        _orderByProcessor.Process(querySpec.OrderByClause);
+                        orderByProcessor.Process(querySpec.OrderByClause);
                         if (parentType == "VW")
                         {
                             SendFeedBack(28, querySpec.OrderByClause);
@@ -151,7 +154,7 @@ namespace TSQLSmellSCA
 
                     if (querySpec.TopRowFilter != null)
                     {
-                        _topProcessor.ProcessTopFilter(querySpec.TopRowFilter);
+                        topProcessor.ProcessTopFilter(querySpec.TopRowFilter);
                     }
 
                     break;
@@ -182,38 +185,38 @@ namespace TSQLSmellSCA
             switch (stmtType)
             {
                 case "DeclareCursorStatement":
-                    _cursorProcessor.ProcessCursorStatement((DeclareCursorStatement)fragment);
+                    cursorProcessor.ProcessCursorStatement((DeclareCursorStatement)fragment);
                     break;
                 case "BeginEndBlockStatement":
-                    _beginEndBlockProcessor.ProcessBeginEndBlockStatement((BeginEndBlockStatement)fragment);
+                    beginEndBlockProcessor.ProcessBeginEndBlockStatement((BeginEndBlockStatement)fragment);
                     break;
                 case "CreateFunctionStatement":
                 case "AlterFunctionStatement":
-                    _functionStatementBodyProcessor.ProcessFunctionStatementBody((FunctionStatementBody)fragment);
+                    functionStatementBodyProcessor.ProcessFunctionStatementBody((FunctionStatementBody)fragment);
                     break;
                 case "SelectFunctionReturnType":
-                    _selectFunctionReturnTypeProcessor.ProcessSelectFunctionReturnType((SelectFunctionReturnType)fragment);
+                    selectFunctionReturnTypeProcessor.ProcessSelectFunctionReturnType((SelectFunctionReturnType)fragment);
                     return;
                 case "SetTransactionIsolationLevelStatement":
-                    _setTransactionIsolationLevelProcessor.ProcessSetTransactionIolationLevelStatement((SetTransactionIsolationLevelStatement)fragment);
+                    setTransactionIsolationLevelProcessor.ProcessSetTransactionIolationLevelStatement((SetTransactionIsolationLevelStatement)fragment);
                     break;
                 case "WhileStatement":
-                    _whileProcessor.ProcessWhileStatement((WhileStatement)fragment);
+                    whileProcessor.ProcessWhileStatement((WhileStatement)fragment);
                     break;
                 case "InsertStatement":
                     InsertProcessor.Process((InsertStatement)fragment);
                     break;
                 case "SelectStatement":
-                    _selectStatementProcessor.Process((SelectStatement)fragment, "RG", true);
+                    selectStatementProcessor.Process((SelectStatement)fragment, "RG", true);
                     break;
                 case "SetRowCountStatement":
                     SendFeedBack(42, fragment);
                     break;
                 case "IfStatement":
-                    _ifStatementProcessor.ProcessIfStatement((IfStatement)fragment);
+                    ifStatementProcessor.ProcessIfStatement((IfStatement)fragment);
                     break;
                 case "PredicateSetStatement":
-                    _predicateSetProcessor.ProcessPredicateSetStatement((PredicateSetStatement)fragment);
+                    predicateSetProcessor.ProcessPredicateSetStatement((PredicateSetStatement)fragment);
                     break;
                 case "ExecuteStatement":
                     ExecutableEntityProcessor.ProcessExecuteStatement((ExecuteStatement)fragment);
@@ -222,21 +225,21 @@ namespace TSQLSmellSCA
                     SendFeedBack(22, fragment);
                     break;
                 case "SetCommandStatement":
-                    _setProcessor.ProcessSetStatement((SetCommandStatement)fragment);
+                    setProcessor.ProcessSetStatement((SetCommandStatement)fragment);
                     break;
 
                 case "CreateTableStatement":
-                    _createTableProcessor.ProcessCreateTable((CreateTableStatement)fragment);
+                    createTableProcessor.ProcessCreateTable((CreateTableStatement)fragment);
                     break;
 
                 case "CreateProcedureStatement":
                 case "AlterProcedureStatement":
                     ProcedureStatementBodyProcessor.ProcessProcedureStatementBody((ProcedureStatementBody)fragment);
-                    _assignmentList.Clear();
+                    assignmentList.Clear();
                     break;
                 case "CreateViewStatement":
                 case "AlterViewStatement":
-                    _viewStatementProcessor.ProcessViewStatementBody((ViewStatementBody)fragment);
+                    viewStatementProcessor.ProcessViewStatementBody((ViewStatementBody)fragment);
                     break;
                 case "TSqlBatch":
                     var batch = (TSqlBatch)fragment;
@@ -282,39 +285,39 @@ namespace TSQLSmellSCA
                     ProcessQueryExpression(scalarSubquery.QueryExpression, "RG");
                     break;
                 case "ReturnStatement":
-                    _returnStatementProcessor.ProcessReturnStatement((ReturnStatement)fragment);
+                    returnStatementProcessor.ProcessReturnStatement((ReturnStatement)fragment);
                     break;
                 case "IntegerLiteral":
                     break;
                 case "DeclareVariableStatement":
-                    _declareVariableProcessor.ProcessDeclareVariableStatement((DeclareVariableStatement)fragment);
+                    declareVariableProcessor.ProcessDeclareVariableStatement((DeclareVariableStatement)fragment);
                     break;
                 case "DeclareVariableElement":
-                    _declareVariableProcessor.ProcessDeclareVariableElement((DeclareVariableElement)fragment);
+                    declareVariableProcessor.ProcessDeclareVariableElement((DeclareVariableElement)fragment);
                     break;
                 case "PrintStatement":
                     break;
                 case "SqlDataTypeReference":
-                    _sqlDataTypeProcessor.ProcessSqlDataTypeReference((SqlDataTypeReference)fragment);
+                    sqlDataTypeProcessor.ProcessSqlDataTypeReference((SqlDataTypeReference)fragment);
                     break;
                 case "DeclareTableVariableStatement":
-                    _tableVariableProcessor.ProcessTableVariableStatement((DeclareTableVariableStatement)fragment);
+                    tableVariableProcessor.ProcessTableVariableStatement((DeclareTableVariableStatement)fragment);
                     break;
                 case "TableValuedFunctionReturnType":
-                    _tableVariableProcessor.ProcessTableValuedFunctionReturnType((TableValuedFunctionReturnType)fragment);
+                    tableVariableProcessor.ProcessTableValuedFunctionReturnType((TableValuedFunctionReturnType)fragment);
                     break;
                 case "DeclareTableVariableBody":
-                    _tableVariableProcessor.ProcessTableVariableBody((DeclareTableVariableBody)fragment);
+                    tableVariableProcessor.ProcessTableVariableBody((DeclareTableVariableBody)fragment);
                     break;
                 case "VariableReference":
                     // ProcessVariableReference((VariableReference)Fragment);
                     break;
                 case "ExistsPredicate":
-                    _tableVariableProcessor.ProcessExistsPredicate((ExistsPredicate)fragment);
+                    tableVariableProcessor.ProcessExistsPredicate((ExistsPredicate)fragment);
                     break;
 
                 case "ColumnDefinition":
-                    _columnDefinitionProcessor.ProcessColumnDefinition((ColumnDefinition)fragment);
+                    columnDefinitionProcessor.ProcessColumnDefinition((ColumnDefinition)fragment);
                     break;
             }
         }
@@ -324,9 +327,9 @@ namespace TSQLSmellSCA
 #pragma warning restore CA1002 // Do not expose generic lists
         {
             var problems = new List<SqlRuleProblem>();
-            _problems = problems;
-            _modelElement = sqlObject;
-            _iRule = iRule;
+            this.problems = problems;
+            modelElement = sqlObject;
+            this.iRule = iRule;
 
             TSqlFragment frg;
             if (TSqlModelUtils.TryGetFragmentForAnalysis(sqlObject, out frg))

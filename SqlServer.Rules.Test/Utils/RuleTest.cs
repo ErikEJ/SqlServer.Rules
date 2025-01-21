@@ -113,7 +113,6 @@ internal class RuleTest : IDisposable
         //            LoadAsScriptBackedModel = true,
         //            ModelStorageType = Microsoft.SqlServer.Dac.DacSchemaModelStorageType.Memory
         //        });
-
         return model;
     }
 
@@ -251,7 +250,8 @@ internal class RuleTest : IDisposable
 
         Assert.IsTrue(
             service.GetRules().Any(rule => rule.RuleId.Equals(ruleIdToRun, StringComparison.OrdinalIgnoreCase)),
-            "Expected rule '{0}' not found by the service", ruleIdToRun);
+            "Expected rule '{0}' not found by the service",
+            ruleIdToRun);
         return service;
     }
 

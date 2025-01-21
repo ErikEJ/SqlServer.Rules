@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,11 +11,11 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessReturnStatement(ReturnStatement ReturnStatement)
+        public void ProcessReturnStatement(ReturnStatement returnStatement)
         {
-            if (ReturnStatement.Expression != null)
+            if (returnStatement.Expression != null)
             {
-                smells.ProcessTsqlFragment(ReturnStatement.Expression);
+                smells.ProcessTsqlFragment(returnStatement.Expression);
             }
         }
     }

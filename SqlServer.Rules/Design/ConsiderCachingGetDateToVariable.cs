@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -8,13 +8,6 @@ using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
 {
-    /// <summary>
-    ///
-    /// </summary>
-    /// <FriendlyName></FriendlyName>
-    /// <IsIgnorable>true</IsIgnorable>
-    /// <ExampleMd></ExampleMd>
-    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(
         RuleId,
         RuleDisplayName,
@@ -38,7 +31,7 @@ namespace SqlServer.Rules.Design
         /// </summary>
         public const string Message = RuleDisplayName;
 
-        private readonly List<string> FunctionNames = new List<string> { "GETDATE", "GETUTCDATE", "SYSDATETIME", "SYSUTCDATETIME", "SYSDATETIMEOFFSET" };
+        private readonly List<string> functionNames = new List<string> { "GETDATE", "GETUTCDATE", "SYSDATETIME", "SYSUTCDATETIME", "SYSDATETIMEOFFSET" };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsiderCachingGetDateToVariable"/> class.
@@ -102,7 +95,7 @@ namespace SqlServer.Rules.Design
 
             statement.Accept(allFunctions);
 
-            if (allFunctions.Statements.Any(p => FunctionNames.Contains(p.FunctionName.Value.ToUpperInvariant())))
+            if (allFunctions.Statements.Any(p => functionNames.Contains(p.FunctionName.Value.ToUpperInvariant())))
             {
                 hasDateFunction = true;
             }
@@ -120,7 +113,7 @@ namespace SqlServer.Rules.Design
 
             foreach (var functionCall in functionCalls)
             {
-                if (FunctionNames.Contains(functionCall.FunctionName.Value.ToUpperInvariant()))
+                if (functionNames.Contains(functionCall.FunctionName.Value.ToUpperInvariant()))
                 {
                     hasDateFunctions = true;
                 }

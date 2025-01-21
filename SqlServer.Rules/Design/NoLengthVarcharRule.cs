@@ -47,7 +47,10 @@ namespace SqlServer.Rules.Design
                 new[]
                 {
                     ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table,
-                }, new[] { SqlDataTypeOption.VarChar, SqlDataTypeOption.NVarChar, SqlDataTypeOption.Char, SqlDataTypeOption.NChar }, 1, Message)
+                },
+                new[] { SqlDataTypeOption.VarChar, SqlDataTypeOption.NVarChar, SqlDataTypeOption.Char, SqlDataTypeOption.NChar },
+                1,
+                Message)
         {
         }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,15 +11,13 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessColumnDefinition(ColumnDefinition ColumnDef)
+        public void ProcessColumnDefinition(ColumnDefinition columnDef)
         {
-            smells.ProcessTsqlFragment(ColumnDef.DataType);
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            foreach (var Constraint in ColumnDef.Constraints)
+            smells.ProcessTsqlFragment(columnDef.DataType);
+            foreach (var constraint in columnDef.Constraints)
             {
-                smells.ProcessTsqlFragment(Constraint);
+                smells.ProcessTsqlFragment(constraint);
             }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
     }
 }

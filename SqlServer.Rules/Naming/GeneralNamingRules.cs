@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -57,7 +57,6 @@ namespace SqlServer.Rules.Performance
             ModelSchema.ScalarFunction,
             ModelSchema.TableValuedFunction,
             ModelSchema.Procedure,
-
             ModelSchema.PrimaryKeyConstraint,
             ModelSchema.Index,
             ModelSchema.ForeignKeyConstraint,

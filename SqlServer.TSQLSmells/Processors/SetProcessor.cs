@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,27 +11,25 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        private void ProcessGeneralSetCommand(GeneralSetCommand SetCommand)
+        private void ProcessGeneralSetCommand(GeneralSetCommand setCommand)
         {
-            switch (SetCommand.CommandType)
+            switch (setCommand.CommandType)
             {
                 case GeneralSetCommandType.DateFirst:
-                    smells.SendFeedBack(9, SetCommand);
+                    smells.SendFeedBack(9, setCommand);
                     break;
                 case GeneralSetCommandType.DateFormat:
-                    smells.SendFeedBack(8, SetCommand);
+                    smells.SendFeedBack(8, setCommand);
                     break;
             }
         }
 
-        public void ProcessSetStatement(SetCommandStatement Fragment)
+        public void ProcessSetStatement(SetCommandStatement fragment)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            foreach (GeneralSetCommand SetCommand in Fragment.Commands)
+            foreach (GeneralSetCommand setCommand in fragment.Commands)
             {
-                ProcessGeneralSetCommand(SetCommand);
+                ProcessGeneralSetCommand(setCommand);
             }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,9 +11,9 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessSelectFunctionReturnType(SelectFunctionReturnType ReturnType)
+        public void ProcessSelectFunctionReturnType(SelectFunctionReturnType returnType)
         {
-            smells.ProcessTsqlFragment(ReturnType.SelectStatement);
+            smells.ProcessTsqlFragment(returnType.SelectStatement);
         }
     }
 }

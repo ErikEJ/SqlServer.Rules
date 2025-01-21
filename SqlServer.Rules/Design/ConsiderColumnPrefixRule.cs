@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -9,13 +9,6 @@ using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
 {
-    /// <summary>
-    ///
-    /// </summary>
-    /// <FriendlyName></FriendlyName>
-    /// <IsIgnorable>true</IsIgnorable>
-    /// <ExampleMd></ExampleMd>
-    /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(
         RuleId,
         RuleDisplayName,
@@ -23,7 +16,6 @@ namespace SqlServer.Rules.Design
         Category = Constants.Design,
         RuleScope = SqlRuleScope.Element)]
     public sealed class ConsiderColumnPrefixRule : BaseSqlCodeAnalysisRule
-
     {
         /// <summary>
         /// The rule identifier

@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,12 +11,12 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessSetTransactionIolationLevelStatement(SetTransactionIsolationLevelStatement Statement)
+        public void ProcessSetTransactionIolationLevelStatement(SetTransactionIsolationLevelStatement statement)
         {
-            switch (Statement.Level)
+            switch (statement.Level)
             {
                 case IsolationLevel.ReadUncommitted:
-                    smells.SendFeedBack(10, Statement);
+                    smells.SendFeedBack(10, statement);
                     break;
             }
         }

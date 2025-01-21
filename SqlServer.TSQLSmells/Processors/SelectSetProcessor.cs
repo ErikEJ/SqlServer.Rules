@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,54 +11,42 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        private void ProcessVariableReference(VariableReference VarRef, string VarName)
+        private void ProcessVariableReference(VariableReference varRef, string varName)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var VarAssignment = new VarAssignment
+            var varAssignment = new VarAssignment
             {
-                SrcName = VarRef.Name,
-                VarName = VarName,
+                SrcName = varRef.Name,
+                VarName = varName,
             };
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            smells.AssignmentList.Add(VarAssignment);
+            smells.AssignmentList.Add(varAssignment);
         }
 
-        private void ProcessSelectSetFragment(TSqlFragment Expression, string VarName)
+        private void ProcessSelectSetFragment(TSqlFragment expression, string varName)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var ElemType = FragmentTypeParser.GetFragmentType(Expression);
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            switch (ElemType)
+            var elemType = FragmentTypeParser.GetFragmentType(expression);
+            switch (elemType)
             {
                 case "BinaryExpression":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var BinaryExpression = (BinaryExpression)Expression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    ProcessSelectSetFragment(BinaryExpression.FirstExpression, VarName);
-                    ProcessSelectSetFragment(BinaryExpression.SecondExpression, VarName);
+                    var binaryExpression = (BinaryExpression)expression;
+                    ProcessSelectSetFragment(binaryExpression.FirstExpression, varName);
+                    ProcessSelectSetFragment(binaryExpression.SecondExpression, varName);
                     break;
                 case "VariableReference":
-                    ProcessVariableReference((VariableReference)Expression, VarName);
+                    ProcessVariableReference((VariableReference)expression, varName);
                     break;
                 case "FunctionCall":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var Func = (FunctionCall)Expression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    foreach (TSqlFragment Parameter in Func.Parameters)
+                    var func = (FunctionCall)expression;
+                    foreach (TSqlFragment parameter in func.Parameters)
                     {
-                        ProcessSelectSetFragment(Parameter, VarName);
+                        ProcessSelectSetFragment(parameter, varName);
                     }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
 
                     break;
                 case "CastCall":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var Cast = (CastCall)Expression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    if (FragmentTypeParser.GetFragmentType(Cast.Parameter) == "VariableReference")
+                    var cast = (CastCall)expression;
+                    if (FragmentTypeParser.GetFragmentType(cast.Parameter) == "VariableReference")
                     {
-                        ProcessVariableReference((VariableReference)Cast.Parameter, VarName);
+                        ProcessVariableReference((VariableReference)cast.Parameter, varName);
                     }
 
                     break;
@@ -67,15 +55,11 @@ namespace TSQLSmellSCA
             }
         }
 
-        public void ProcessSelectSetVariable(SelectSetVariable SelectElement)
+        public void ProcessSelectSetVariable(SelectSetVariable selectElement)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var VarName = SelectElement.Variable.Name;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var Expression = SelectElement.Expression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            ProcessSelectSetFragment(Expression, VarName);
+            var varName = selectElement.Variable.Name;
+            var expression = selectElement.Expression;
+            ProcessSelectSetFragment(expression, varName);
         }
     }
 }

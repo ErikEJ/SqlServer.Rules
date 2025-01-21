@@ -11,19 +11,19 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessCreateTable(CreateTableStatement TblStmt)
+        public void ProcessCreateTable(CreateTableStatement tblStmt)
         {
-            var isTemp = TblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith('#') ||
-                          TblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith('@');
+            var isTemp = tblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith('#') ||
+                          tblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith('@');
 
-            if (TblStmt.SchemaObjectName.SchemaIdentifier == null &&
+            if (tblStmt.SchemaObjectName.SchemaIdentifier == null &&
                 !isTemp)
             {
-                smells.SendFeedBack(27, TblStmt);
+                smells.SendFeedBack(27, tblStmt);
             }
 
             {
-                foreach (var colDef in TblStmt.Definition.ColumnDefinitions)
+                foreach (var colDef in tblStmt.Definition.ColumnDefinitions)
                 {
                     smells.ProcessTsqlFragment(colDef);
                 }
@@ -31,7 +31,7 @@ namespace TSQLSmellSCA
 
             if (isTemp)
             {
-                foreach (var constDef in TblStmt.Definition.TableConstraints)
+                foreach (var constDef in tblStmt.Definition.TableConstraints)
                 {
                     if (constDef.ConstraintIdentifier != null)
                     {
@@ -50,7 +50,7 @@ namespace TSQLSmellSCA
                     }
                 }
 
-                foreach (var colDef in TblStmt.Definition.ColumnDefinitions)
+                foreach (var colDef in tblStmt.Definition.ColumnDefinitions)
                 {
                     if (colDef.DefaultConstraint?.ConstraintIdentifier != null)
                     {

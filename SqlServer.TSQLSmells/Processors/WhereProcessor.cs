@@ -11,86 +11,70 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        private void ProcessWhereBooleanExpression(BooleanExpression BooleanExpression)
+        private void ProcessWhereBooleanExpression(BooleanExpression booleanExpression)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var ExpressionType = FragmentTypeParser.GetFragmentType(BooleanExpression);
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            switch (ExpressionType)
+            var expressionType = FragmentTypeParser.GetFragmentType(booleanExpression);
+            switch (expressionType)
             {
                 case "BooleanComparisonExpression":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var BoolComp = (BooleanComparisonExpression)BooleanExpression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    ProcessWhereScalarExpression(BoolComp.FirstExpression);
-                    ProcessWhereScalarExpression(BoolComp.SecondExpression);
-                    if ((BoolComp.ComparisonType == BooleanComparisonType.Equals) &&
-                        (FragmentTypeParser.GetFragmentType(BoolComp.FirstExpression) == "NullLiteral" ||
-                         FragmentTypeParser.GetFragmentType(BoolComp.SecondExpression) == "NullLiteral")
+                    var boolComp = (BooleanComparisonExpression)booleanExpression;
+                    ProcessWhereScalarExpression(boolComp.FirstExpression);
+                    ProcessWhereScalarExpression(boolComp.SecondExpression);
+                    if ((boolComp.ComparisonType == BooleanComparisonType.Equals) &&
+                        (FragmentTypeParser.GetFragmentType(boolComp.FirstExpression) == "NullLiteral" ||
+                         FragmentTypeParser.GetFragmentType(boolComp.SecondExpression) == "NullLiteral")
                        )
                     {
-                        smells.SendFeedBack(46, BoolComp);
+                        smells.SendFeedBack(46, boolComp);
                     }
 
                     break;
                 case "BooleanBinaryExpression":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var BoolExpression = (BooleanBinaryExpression)BooleanExpression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    ProcessWhereBooleanExpression(BoolExpression.FirstExpression);
-                    ProcessWhereBooleanExpression(BoolExpression.SecondExpression);
+                    var boolExpression = (BooleanBinaryExpression)booleanExpression;
+                    ProcessWhereBooleanExpression(boolExpression.FirstExpression);
+                    ProcessWhereBooleanExpression(boolExpression.SecondExpression);
                     break;
                 default:
                     break;
             }
         }
 
-        private void ProcessWhereScalarExpression(ScalarExpression WhereExpression)
+        private void ProcessWhereScalarExpression(ScalarExpression whereExpression)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var ExpressionType = FragmentTypeParser.GetFragmentType(WhereExpression);
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            string ParameterType;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            switch (ExpressionType)
+            var expressionType = FragmentTypeParser.GetFragmentType(whereExpression);
+            string parameterType;
+            switch (expressionType)
             {
                 case "ConvertCall":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var ConvertCall = (ConvertCall)WhereExpression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    ParameterType = FragmentTypeParser.GetFragmentType(ConvertCall.Parameter);
-                    if (ParameterType == "ColumnReferenceExpression")
+                    var convertCall = (ConvertCall)whereExpression;
+                    parameterType = FragmentTypeParser.GetFragmentType(convertCall.Parameter);
+                    if (parameterType == "ColumnReferenceExpression")
                     {
-                        smells.SendFeedBack(6, ConvertCall);
+                        smells.SendFeedBack(6, convertCall);
                     }
 
                     break;
                 case "CastCall":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var CastCall = (CastCall)WhereExpression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    ParameterType = FragmentTypeParser.GetFragmentType(CastCall.Parameter);
-                    if (ParameterType == "ColumnReferenceExpression")
+                    var castCall = (CastCall)whereExpression;
+                    parameterType = FragmentTypeParser.GetFragmentType(castCall.Parameter);
+                    if (parameterType == "ColumnReferenceExpression")
                     {
-                        smells.SendFeedBack(6, CastCall);
+                        smells.SendFeedBack(6, castCall);
                     }
 
                     break;
                 case "ScalarSubquery":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var SubQuery = (ScalarSubquery)WhereExpression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    smells.ProcessQueryExpression(SubQuery.QueryExpression, "RG");
+                    var subQuery = (ScalarSubquery)whereExpression;
+                    smells.ProcessQueryExpression(subQuery.QueryExpression, "RG");
                     break;
             }
         }
 
-        public void Process(WhereClause WhereClause)
+        public void Process(WhereClause whereClause)
         {
-            if (WhereClause?.SearchCondition != null)
+            if (whereClause?.SearchCondition != null)
             {
-                ProcessWhereBooleanExpression(WhereClause.SearchCondition);
+                ProcessWhereBooleanExpression(whereClause.SearchCondition);
             }
         }
     }

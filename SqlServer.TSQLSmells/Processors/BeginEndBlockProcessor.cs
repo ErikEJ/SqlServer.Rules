@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,10 +11,10 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        public void ProcessBeginEndBlockStatement(BeginEndBlockStatement BEStatement)
+        public void ProcessBeginEndBlockStatement(BeginEndBlockStatement bEStatement)
         {
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            foreach (var Statement in BEStatement.StatementList.Statements)
+            foreach (var Statement in bEStatement.StatementList.Statements)
             {
                 smells.ProcessTsqlFragment(Statement);
             }

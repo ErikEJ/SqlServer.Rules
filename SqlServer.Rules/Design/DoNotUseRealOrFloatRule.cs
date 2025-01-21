@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -86,7 +86,7 @@ namespace SqlServer.Rules.Design
                     }
                 }
             }
-            else // tables, views
+            else
             {
                 var columns = sqlObj.GetReferenced().Where(x => x.ObjectType == ModelSchema.Column);
 

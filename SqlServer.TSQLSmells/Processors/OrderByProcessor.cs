@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,42 +11,36 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        private void ProcessOrderExpression(ExpressionWithSortOrder Expression)
+        private void ProcessOrderExpression(ExpressionWithSortOrder expression)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var SubExpressionType = FragmentTypeParser.GetFragmentType(Expression.Expression);
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            switch (SubExpressionType)
+            var subExpressionType = FragmentTypeParser.GetFragmentType(expression.Expression);
+            switch (subExpressionType)
             {
                 case "IntegerLiteral":
-                    smells.SendFeedBack(7, Expression);
+                    smells.SendFeedBack(7, expression);
                     break;
                 case "CastCall":
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                    var CastCall = (CastCall)Expression.Expression;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                    if (FragmentTypeParser.GetFragmentType(CastCall.Parameter) == "ColumnReferenceExpression")
+                    var castCall = (CastCall)expression.Expression;
+                    if (FragmentTypeParser.GetFragmentType(castCall.Parameter) == "ColumnReferenceExpression")
                     {
-                        smells.SendFeedBack(6, Expression);
+                        smells.SendFeedBack(6, expression);
                     }
 
                     break;
             }
         }
 
-        public void Process(OrderByClause OrderClause)
+        public void Process(OrderByClause orderClause)
         {
-            if (OrderClause == null)
+            if (orderClause == null)
             {
                 return;
             }
 
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            foreach (var Expression in OrderClause.OrderByElements)
+            foreach (var expression in orderClause.OrderByElements)
             {
-                ProcessOrderExpression(Expression);
+                ProcessOrderExpression(expression);
             }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
         }
     }
 }

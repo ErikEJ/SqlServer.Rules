@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -9,7 +9,7 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    ///
+    /// Equality and inequality comparisons involving a NULL constant found. Use IS NULL or IS NOT NULL.
     /// </summary>
     /// <FriendlyName></FriendlyName>
     /// <IsIgnorable>false</IsIgnorable>

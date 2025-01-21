@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace TSQLSmellSCA
 {
@@ -11,18 +11,18 @@ namespace TSQLSmellSCA
             this.smells = smells;
         }
 
-        private void TestViewReference(SchemaObjectName ObjectName)
+        private void TestViewReference(SchemaObjectName objectName)
         {
-            if (ObjectName.SchemaIdentifier == null)
+            if (objectName.SchemaIdentifier == null)
             {
-                smells.SendFeedBack(24, ObjectName);
+                smells.SendFeedBack(24, objectName);
             }
         }
 
-        public void ProcessViewStatementBody(ViewStatementBody StatementBody)
+        public void ProcessViewStatementBody(ViewStatementBody statementBody)
         {
-            TestViewReference(StatementBody.SchemaObjectName);
-            new SelectStatementProcessor(smells).Process(StatementBody.SelectStatement, "VW", true);
+            TestViewReference(statementBody.SchemaObjectName);
+            new SelectStatementProcessor(smells).Process(statementBody.SelectStatement, "VW", true);
         }
     }
 }

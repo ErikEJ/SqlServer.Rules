@@ -58,7 +58,7 @@ namespace SqlServer.Rules
 #pragma warning restore CA1002 // Do not expose generic lists
 
         // really not proud of this... could not figure out another way. has to be maintained with each new SQL Server version.
-        private static readonly Dictionary<string, string> _functions = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+        private static readonly Dictionary<string, string> Functions = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
         {
             /*Date and Time Data Types and Functions (Transact-SQL)*/
             { "CURRENT_DATE", "date" },
@@ -192,11 +192,6 @@ namespace SqlServer.Rules
             { "USER_NAME", "nvarchar" },
         };
 
-        /// <summary>
-        /// Gets the statement list.
-        /// </summary>
-        /// <param name="fragment">The fragment.</param>
-        /// <returns></returns>
         public static StatementList GetStatementList(TSqlFragment fragment)
         {
             var fragmentTypeName = fragment.GetType().Name;
@@ -254,31 +249,16 @@ namespace SqlServer.Rules
             SupportedElementTypes = supportedElementTypes;
         }
 
-        /// <summary>
-        /// Gets the data type of the value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
         protected static string GetDataType(IntegerLiteral value)
         {
             return value.LiteralType.ToString();
         }
 
-        /// <summary>
-        /// Gets the data type of the value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
         protected static string GetDataType(NumericLiteral value)
         {
             return value.LiteralType.ToString();
         }
 
-        /// <summary>
-        /// Gets the data type of the value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
         protected static string GetDataType(StringLiteral value)
         {
             if (value.IsNational)
@@ -289,11 +269,6 @@ namespace SqlServer.Rules
             return "varchar";
         }
 
-        /// <summary>
-        /// Gets the data type of the value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
         protected static string GetDataType(ScalarExpression value)
         {
             if (value is IntegerLiteral exprInt)
@@ -308,7 +283,7 @@ namespace SqlServer.Rules
 
             if (value is FunctionCall exprFunc)
             {
-                if (_functions.TryGetValue(exprFunc.FunctionName.Value, out var type))
+                if (Functions.TryGetValue(exprFunc.FunctionName.Value, out var type))
                 {
                     return type;
                 }
@@ -325,12 +300,6 @@ namespace SqlServer.Rules
             return null;
         }
 
-        /// <summary>
-        /// Gets the data type of the value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="variables">The variables.</param>
-        /// <returns></returns>
         protected static string GetDataType(ScalarExpression value, IList<DataTypeView> variables)
         {
             if (!(value is VariableReference varRef))
@@ -347,20 +316,12 @@ namespace SqlServer.Rules
             return string.Empty;
         }
 
-        /// <summary>
-        /// Gets the data type of the value.
-        /// </summary>
-        /// <param name="sqlObj">The SQL object.</param>
-        /// <param name="query">The query.</param>
-        /// <param name="expression">The expression.</param>
-        /// <param name="variables">The variables.</param>
-        /// <param name="model">The model.</param>
-        /// <returns></returns>
         protected static string GetDataType(
             TSqlObject sqlObj,
             QuerySpecification query,
             ScalarExpression expression,
-            IList<DataTypeView> variables, TSqlModel model = null)
+            IList<DataTypeView> variables,
+            TSqlModel model = null)
         {
             if (expression == null)
             {
@@ -391,7 +352,8 @@ namespace SqlServer.Rules
             {
                 var val = long.Parse(exprInt.Value, CultureInfo.InvariantCulture);
 
-                if (val >= 0 && val <= 255) // to bit or not to bit? NFC.
+                // to bit or not to bit? NFC.
+                if (val >= 0 && val <= 255)
                 {
                     return "tinyint";
                 }
@@ -438,7 +400,7 @@ namespace SqlServer.Rules
             {
                 // TIM C: sigh, this does not work for all functions. the api does not allow for me to look up built in functions. nor does it allow me to get the
                 // data types of parameters, so I am not able to type ALL functions like DATEADD, the parameter could be a column, string literal, variable, function etc...
-                if (_functions.TryGetValue(exprFunc.FunctionName.Value, out var type))
+                if (Functions.TryGetValue(exprFunc.FunctionName.Value, out var type))
                 {
                     return type;
                 }
@@ -472,30 +434,6 @@ namespace SqlServer.Rules
             return null;
         }
 
-        // protected string GetColumnDataType(ColumnReferenceExpression value, Dictionary<NamedTableView, IDictionary<string, DataTypeView>> columnDataTypes)
-        // {
-        //    var columnName = value.MultiPartIdentifier.Identifiers.GetName().ToLower();
-        //    var types = columnDataTypes.Where(t => t.Key.Name.ToLower().Contains(columnName));
-        //    //so.... technically this could resolve to multiple columns, but I have no clue which one to pick as the column does not have any reference to the parent query.
-        //    var typ = types.FirstOrDefault();
-
-        // if (typ.Key != null)
-        //    {
-        //        //return typ.Value..DataType.;
-        //    }
-
-        // return null;
-        // }
-
-        /// <summary>
-        /// Gets the data type of the column.
-        /// </summary>
-        /// <param name="sqlObj">The SQL object.</param>
-        /// <param name="query">The query.</param>
-        /// <param name="column">The column.</param>
-        /// <param name="model">The model.</param>
-        /// <param name="variables">The variables.</param>
-        /// <returns></returns>
         protected static string GetColumnDataType(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column, TSqlModel model, IList<DataTypeView> variables)
         {
             TSqlObject referencedColumn = null;
@@ -609,13 +547,6 @@ namespace SqlServer.Rules
             return null;
         }
 
-        /// <summary>
-        /// Gets the referenced column.
-        /// </summary>
-        /// <param name="table">The table.</param>
-        /// <param name="columns">The columns.</param>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns></returns>
         private static TSqlObject GetReferencedColumn(TableReference table, List<TSqlObject> columns, string columnName)
         {
             TSqlObject referencedColumn = null;
@@ -629,8 +560,8 @@ namespace SqlServer.Rules
             {
                 Func<string, string, string, bool> compareNames = (string t1, string t2, string c) =>
                     (t1.Contains($"{t2}.[{c}]", StringComparison.OrdinalIgnoreCase)
-                        || t1.Contains($"[{c}]", StringComparison.OrdinalIgnoreCase)
-                    && !t1.Contains('#', StringComparison.OrdinalIgnoreCase));
+                        || (t1.Contains($"[{c}]", StringComparison.OrdinalIgnoreCase)
+                    && !t1.Contains('#', StringComparison.OrdinalIgnoreCase)));
                 var tableName = reference.GetName();
                 referencedColumn = columns.FirstOrDefault(c => compareNames(c.Name.GetName(), tableName, columnName));
             }
@@ -648,13 +579,6 @@ namespace SqlServer.Rules
             return referencedColumn;
         }
 
-        /// <summary>
-        /// Gets the table from column.
-        /// </summary>
-        /// <param name="sqlObj">The SQL object.</param>
-        /// <param name="query">The query.</param>
-        /// <param name="column">The column.</param>
-        /// <returns></returns>
         protected static TSqlObject GetTableFromColumn(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column)
         {
             var tables = new List<NamedTableReference>();
