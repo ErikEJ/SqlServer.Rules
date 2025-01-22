@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testWithNoLockIndexhint : TestModel
+public class TestWithNoLockIndexhint : TestModel
 {
-    public testWithNoLockIndexhint()
+    public TestWithNoLockIndexhint()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockIndexhint.sql");
 

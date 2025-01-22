@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testTempTableWithNamedPK : TestModel
+public class TestTempTableWithNamedPK : TestModel
 {
-    public testTempTableWithNamedPK()
+    public TestTempTableWithNamedPK()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedPK.sql");
 

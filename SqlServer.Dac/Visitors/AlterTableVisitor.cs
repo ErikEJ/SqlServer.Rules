@@ -6,7 +6,9 @@ namespace SqlServer.Dac.Visitors
     public class AlterTableVisitor : BaseVisitor, IVisitor<AlterTableStatement>
     {
         public ObjectTypeFilter TypeFilter { get; set; } = ObjectTypeFilter.All;
+
         public IList<AlterTableStatement> Statements { get; } = new List<AlterTableStatement>();
+
         public int Count
         {
             get { return Statements.Count; }

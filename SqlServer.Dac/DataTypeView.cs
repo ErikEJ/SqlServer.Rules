@@ -44,8 +44,11 @@ namespace SqlServer.Dac
         }
 
         public string Name { get; set; }
+
         public string DataType { get; set; }
+
         public DataTypeViewType Type { get; set; }
+
         public int Length { get; set; }
 
         public override string ToString()

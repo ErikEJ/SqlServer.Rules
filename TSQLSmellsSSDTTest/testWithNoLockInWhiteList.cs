@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testWithNoLockInWhiteList : TestModel
+public class TestWithNoLockInWhiteList : TestModel
 {
-    public testWithNoLockInWhiteList()
+    public TestWithNoLockInWhiteList()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockInWhiteList.sql");
 

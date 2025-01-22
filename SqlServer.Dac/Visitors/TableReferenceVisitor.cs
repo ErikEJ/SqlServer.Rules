@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class TableReferenceVisitor : BaseVisitor, IVisitor<TableReference>
     {
         public IList<TableReference> Statements { get; } = new List<TableReference>();
+
         public int Count
         {
             get { return Statements.Count; }

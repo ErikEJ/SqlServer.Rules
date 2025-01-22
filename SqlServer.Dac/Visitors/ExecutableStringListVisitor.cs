@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class ExecutableStringListVisitor : BaseVisitor, IVisitor<ExecutableStringList>
     {
         public IList<ExecutableStringList> Statements { get; } = new List<ExecutableStringList>();
+
         public int Count
         {
             get { return Statements.Count; }

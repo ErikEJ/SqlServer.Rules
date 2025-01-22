@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectTopNoParen : TestModel
+public class TestSelectTopNoParen : TestModel
 {
-    public testSelectTopNoParen()
+    public TestSelectTopNoParen()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/SelectTopNoParen.sql");
 

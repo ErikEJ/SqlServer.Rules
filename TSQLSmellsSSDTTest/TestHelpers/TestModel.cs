@@ -9,7 +9,9 @@ namespace TSQLSmellsSSDTTest.TestHelpers;
 public class TestModel
 {
     public List<TestProblem> ExpectedProblems { get; private set; } = [];
+
     public List<TestProblem> FoundProblems { get; private set; } = [];
+
     public List<string> TestFiles { get; private set; } = [];
 
     private TSqlModel Model { get; set; }

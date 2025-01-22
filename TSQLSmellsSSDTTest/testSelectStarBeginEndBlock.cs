@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectStarBeginEndBlock : TestModel
+public class TestSelectStarBeginEndBlock : TestModel
 {
-    public testSelectStarBeginEndBlock()
+    public TestSelectStarBeginEndBlock()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarBeginEndBlock.sql");
 

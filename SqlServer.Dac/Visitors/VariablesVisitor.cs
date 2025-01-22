@@ -7,8 +7,11 @@ namespace SqlServer.Dac.Visitors
     public class VariablesVisitor : BaseVisitor, IBaseVisitor
     {
         public IList<DeclareVariableStatement> DeclareVariables { get; } = new List<DeclareVariableStatement>();
+
         public IList<ProcedureParameter> ProcedureParameters { get; } = new List<ProcedureParameter>();
+
         public IList<VariableReference> VariableReferences { get; } = new List<VariableReference>();
+
         public IList<SelectSetVariable> SelectSetVariables { get; } = new List<SelectSetVariable>();
 
         public int Count

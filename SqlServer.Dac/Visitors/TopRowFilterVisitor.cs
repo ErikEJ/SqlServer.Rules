@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class TopRowFilterVisitor : BaseVisitor, IVisitor<TopRowFilter>
     {
         public IList<TopRowFilter> Statements { get; } = new List<TopRowFilter>();
+
         public int Count
         {
             get { return Statements.Count; }

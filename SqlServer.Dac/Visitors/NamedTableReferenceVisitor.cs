@@ -6,7 +6,9 @@ namespace SqlServer.Dac.Visitors
     public class NamedTableReferenceVisitor : BaseVisitor, IVisitor<NamedTableReference>
     {
         public ObjectTypeFilter TypeFilter { get; set; } = ObjectTypeFilter.All;
+
         public IList<NamedTableReference> Statements { get; } = new List<NamedTableReference>();
+
         public int Count
         {
             get { return Statements.Count; }

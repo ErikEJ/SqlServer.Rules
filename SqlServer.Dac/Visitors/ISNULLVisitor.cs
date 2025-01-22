@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class ISNULLVisitor : BaseVisitor, IVisitor<NullIfExpression>
     {
         public IList<NullIfExpression> Statements { get; } = new List<NullIfExpression>();
+
         public int Count
         {
             get { return Statements.Count; }

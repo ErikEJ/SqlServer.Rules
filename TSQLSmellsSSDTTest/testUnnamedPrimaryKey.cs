@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testUnnamedPrimaryKey : TestModel
+public class TestUnnamedPrimaryKey : TestModel
 {
-    public testUnnamedPrimaryKey()
+    public TestUnnamedPrimaryKey()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/UnnamedPK.sql");
 

@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class FunctionStatementBodyVisitor : BaseVisitor, IVisitor<FunctionStatementBody>
     {
         public IList<FunctionStatementBody> Statements { get; } = new List<FunctionStatementBody>();
+
         public int Count
         {
             get { return Statements.Count; }

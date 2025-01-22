@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testTableHints : TestModel
+public class TestTableHints : TestModel
 {
-    public testTableHints()
+    public TestTableHints()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TableHints.sql");
 

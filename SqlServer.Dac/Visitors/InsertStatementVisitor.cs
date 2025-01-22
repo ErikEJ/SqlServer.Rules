@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class InsertStatementVisitor : BaseVisitor, IVisitor<InsertStatement>
     {
         public IList<InsertStatement> Statements { get; } = new List<InsertStatement>();
+
         public int Count
         {
             get { return Statements.Count; }

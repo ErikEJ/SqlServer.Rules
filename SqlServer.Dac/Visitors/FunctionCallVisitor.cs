@@ -7,6 +7,7 @@ namespace SqlServer.Dac.Visitors
     public class FunctionCallVisitor : BaseVisitor, IVisitor<FunctionCall>
     {
         private readonly IList<string> functionNames;
+
         public FunctionCallVisitor()
         {
             functionNames = new List<string>();
@@ -18,6 +19,7 @@ namespace SqlServer.Dac.Visitors
         }
 
         public IList<FunctionCall> Statements { get; } = new List<FunctionCall>();
+
         public int Count
         {
             get { return Statements.Count; }

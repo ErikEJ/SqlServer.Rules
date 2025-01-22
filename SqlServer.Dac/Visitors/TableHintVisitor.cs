@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class TableHintVisitor : BaseVisitor, IVisitor<TableHint>
     {
         public IList<TableHint> Statements { get; } = new List<TableHint>();
+
         public int Count
         {
             get { return Statements.Count; }
