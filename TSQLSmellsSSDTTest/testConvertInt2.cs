@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testConvertInt2 : TestModel
+public class TestConvertInt2 : TestModel
 {
-    public testConvertInt2()
+    public TestConvertInt2()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/ConvertInt2.sql");
 

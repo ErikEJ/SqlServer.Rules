@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testCrossServerJoin : TestModel
+public class TestCrossServerJoin : TestModel
 {
-    public testCrossServerJoin()
+    public TestCrossServerJoin()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestCrossServerJoin.sql");
 

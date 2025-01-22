@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testDeprecatedTypeSP : TestModel
+public class TestDeprecatedTypeSP : TestModel
 {
-    public testDeprecatedTypeSP()
+    public TestDeprecatedTypeSP()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/DeprecatedTypesSP.sql");
         ExpectedProblems.Add(new TestProblem(4, 14, "Smells.SML047"));

@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testInsertMissingColumnSpecifiers : TestModel
+public class TestInsertMissingColumnSpecifiers : TestModel
 {
-    public testInsertMissingColumnSpecifiers()
+    public TestInsertMissingColumnSpecifiers()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/InsertMissingColumnSpecifiers.sql");
 

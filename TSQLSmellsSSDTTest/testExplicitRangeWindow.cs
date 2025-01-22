@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testExplicitRangeWindow : TestModel
+public class TestExplicitRangeWindow : TestModel
 {
-    public testExplicitRangeWindow()
+    public TestExplicitRangeWindow()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/ExplicitRangeWindow.sql");
 

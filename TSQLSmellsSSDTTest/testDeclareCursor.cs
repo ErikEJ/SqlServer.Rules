@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testDeclareCursor : TestModel
+public class TestDeclareCursor : TestModel
 {
-    public testDeclareCursor()
+    public TestDeclareCursor()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/DeclareCursor.sql");
 

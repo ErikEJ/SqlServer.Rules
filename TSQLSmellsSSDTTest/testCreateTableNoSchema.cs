@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testCreateTableNoSchema : TestModel
+public class TestCreateTableNoSchema : TestModel
 {
-    public testCreateTableNoSchema()
+    public TestCreateTableNoSchema()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/CreateTableNoSchema.sql");
 

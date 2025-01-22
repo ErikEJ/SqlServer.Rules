@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace TSQLSmellsSSDTTest;
+namespace TSQLSmellsSSDTTest.TestHelpers;
 
 public class TestProblem
 {

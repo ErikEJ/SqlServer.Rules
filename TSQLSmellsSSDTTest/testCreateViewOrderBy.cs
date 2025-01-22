@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testCreateViewOrderBy : TestModel
+public class TestCreateViewOrderBy : TestModel
 {
-    public testCreateViewOrderBy()
+    public TestCreateViewOrderBy()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/CreateViewOrderBy.sql");
 

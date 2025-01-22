@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testOrderByOrdinal : TestModel
+public class TestOrderByOrdinal : TestModel
 {
-    public testOrderByOrdinal()
+    public TestOrderByOrdinal()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/orderbyordinal.sql");
 
