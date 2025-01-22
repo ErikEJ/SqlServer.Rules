@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testExec1PartName : TestModel
+public class TestExec1PartName : TestModel
 {
-    public testExec1PartName()
+    public TestExec1PartName()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/Exec1PartName.sql");
 

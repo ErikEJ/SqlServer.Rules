@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testForceScan : TestModel
+public class TestForceScan : TestModel
 {
-    public testForceScan()
+    public TestForceScan()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/ForceScan.sql");
 

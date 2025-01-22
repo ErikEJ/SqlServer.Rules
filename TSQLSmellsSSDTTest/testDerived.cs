@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testDerived : TestModel
+public class TestDerived : TestModel
 {
-    public testDerived()
+    public TestDerived()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/Derived.sql");
 

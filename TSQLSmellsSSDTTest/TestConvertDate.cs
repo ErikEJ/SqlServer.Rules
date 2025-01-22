@@ -1,8 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
-#pragma warning disable IDE1006 // Naming Styles
 [TestClass]
 public class TestConvertDate : TestModel
 {

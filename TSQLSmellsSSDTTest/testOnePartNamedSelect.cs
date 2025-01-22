@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testOnePartNamedSelect : TestModel
+public class TestOnePartNamedSelect : TestModel
 {
-    public testOnePartNamedSelect()
+    public TestOnePartNamedSelect()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestOnePartNamedSelect.sql");
 

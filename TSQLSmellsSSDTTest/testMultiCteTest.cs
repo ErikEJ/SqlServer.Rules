@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testMultiCteTest : TestModel
+public class TestMultiCteTest : TestModel
 {
-    public testMultiCteTest()
+    public TestMultiCteTest()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/MultiCteTest.sql");
 

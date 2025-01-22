@@ -4,7 +4,7 @@ using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TSQLSmellsSSDTTest;
+namespace TSQLSmellsSSDTTest.TestHelpers;
 
 public class TestModel
 {

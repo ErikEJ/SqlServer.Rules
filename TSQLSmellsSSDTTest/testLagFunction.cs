@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testLagFunction : TestModel
+public class TestLagFunction : TestModel
 {
-    public testLagFunction()
+    public TestLagFunction()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/LAGFunction.sql");
 

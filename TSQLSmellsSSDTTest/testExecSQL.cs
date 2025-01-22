@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testExecSQL : TestModel
+public class TestExecSQL : TestModel
 {
-    public testExecSQL()
+    public TestExecSQL()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/ExecSQL.sql");
 

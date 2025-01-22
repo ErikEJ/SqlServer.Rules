@@ -1,11 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testEqualsNull : TestModel
+public class TestEqualsNull : TestModel
 {
-    public testEqualsNull()
+    public TestEqualsNull()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/EqualsNull.sql");
         ExpectedProblems.Add(new TestProblem(13, 39, "Smells.SML046"));
