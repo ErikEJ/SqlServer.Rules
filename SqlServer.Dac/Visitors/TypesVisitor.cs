@@ -7,7 +7,9 @@ namespace SqlServer.Dac.Visitors
     public class TypesVisitor : BaseVisitor, IVisitor<TSqlFragment>
     {
         private readonly List<Type> types = new List<Type>();
+
         public IList<TSqlFragment> Statements { get; } = new List<TSqlFragment>();
+
         public int Count
         {
             get { return Statements.Count; }

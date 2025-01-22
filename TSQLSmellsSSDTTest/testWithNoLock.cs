@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testWithNoLock : TestModel
+public class TestWithNoLock : TestModel
 {
-    public testWithNoLock()
+    public TestWithNoLock()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLock.sql");
 

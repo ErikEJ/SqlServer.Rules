@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class OrderByVisitor : BaseVisitor, IVisitor<OrderByClause>
     {
         public IList<OrderByClause> Statements { get; } = new List<OrderByClause>();
+
         public int Count
         {
             get { return Statements.Count; }

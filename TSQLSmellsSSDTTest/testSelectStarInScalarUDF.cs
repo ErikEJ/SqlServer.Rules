@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectStarInScalarUDF : TestModel
+public class TestSelectStarInScalarUDF : TestModel
 {
-    public testSelectStarInScalarUDF()
+    public TestSelectStarInScalarUDF()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInScalarUDF.sql");
 

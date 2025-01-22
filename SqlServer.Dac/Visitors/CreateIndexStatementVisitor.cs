@@ -6,7 +6,9 @@ namespace SqlServer.Dac.Visitors
     public class CreateIndexStatementVisitor : BaseVisitor, IVisitor<CreateIndexStatement>
     {
         public ObjectTypeFilter TypeFilter { get; set; } = ObjectTypeFilter.All;
+
         public IList<CreateIndexStatement> Statements { get; } = new List<CreateIndexStatement>();
+
         public int Count
         {
             get { return Statements.Count; }

@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class TransactionVisitor : BaseVisitor, IVisitor<TransactionStatement>
     {
         public IList<TransactionStatement> Statements { get; } = new List<TransactionStatement>();
+
         public int Count
         {
             get { return Statements.Count; }

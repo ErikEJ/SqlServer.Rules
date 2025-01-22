@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectStarOutOfCteTest : TestModel
+public class TestSelectStarOutOfCteTest : TestModel
 {
-    public testSelectStarOutOfCteTest()
+    public TestSelectStarOutOfCteTest()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/SelectStarOutOfCteTest.sql");
 

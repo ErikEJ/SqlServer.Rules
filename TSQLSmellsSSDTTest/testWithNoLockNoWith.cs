@@ -4,9 +4,9 @@ using TSQLSmellsSSDTTest.TestHelpers;
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testWithNoLockNoWith : TestModel
+public class TestWithNoLockNoWith : TestModel
 {
-    public testWithNoLockNoWith()
+    public TestWithNoLockNoWith()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestWithNoLockNoWith.sql");
 

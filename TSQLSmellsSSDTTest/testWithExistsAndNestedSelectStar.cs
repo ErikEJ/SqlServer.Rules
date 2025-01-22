@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testWithExistsAndNestedSelectStar : TestModel
+public class TestWithExistsAndNestedSelectStar : TestModel
 {
-    public testWithExistsAndNestedSelectStar()
+    public TestWithExistsAndNestedSelectStar()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestWithExistsAndNestedSelectStar.sql");
 

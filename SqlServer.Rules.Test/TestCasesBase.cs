@@ -12,6 +12,7 @@ namespace SqlServer.Rules.Tests;
 public class TestCasesBase
 {
     protected const SqlServerVersion SqlVersion = SqlServerVersion.Sql150;
+
     public StringComparer Comparer { get; private set; } = StringComparer.OrdinalIgnoreCase;
 
     public virtual TestContext TestContext { get; set; }

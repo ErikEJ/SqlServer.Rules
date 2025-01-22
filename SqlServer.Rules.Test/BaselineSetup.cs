@@ -19,8 +19,11 @@ internal sealed class BaselineSetup : RuleTest
     private const string SqlExtension = ".sql";
 
     public string ScriptsFolder { get; private set; }
+
     public string SetupFolder { get; private set; }
+
     public string OutputFilePath { get; private set; }
+
     public string BaselineFilePath { get; private set; }
 
     public BaselineSetup(TestContext testContext, string testName, TSqlModelOptions databaseOptions, SqlServerVersion sqlServerVersion = SqlServerVersion.Sql150)

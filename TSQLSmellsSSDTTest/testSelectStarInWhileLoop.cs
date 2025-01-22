@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectStarInWhileLoop : TestModel
+public class TestSelectStarInWhileLoop : TestModel
 {
-    public testSelectStarInWhileLoop()
+    public TestSelectStarInWhileLoop()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInWhileLoop.sql");
 

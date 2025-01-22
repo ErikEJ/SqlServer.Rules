@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectStarInMultiStatementTVF : TestModel
+public class TestSelectStarInMultiStatementTVF : TestModel
 {
-    public testSelectStarInMultiStatementTVF()
+    public TestSelectStarInMultiStatementTVF()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInMultiStatementTVF.sql");
 

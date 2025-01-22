@@ -572,9 +572,5 @@ guidelines = 120
 ##########################################
 [*.{cs,csx,cake,razor}]
 dotnet_diagnostic.CA1062.severity = none            # https://github.com/atc-net/atc-coding-rules/blob/main/documentation/CodeAnalyzersRules/MicrosoftCodeAnalysis/CA1062.md
-dotnet_diagnostic.CA1812.severity = none            # https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1812
-dotnet_diagnostic.SA1516.severity = none            # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1516.md
 dotnet_diagnostic.SA1518.severity = none            # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1518.md
-csharp_style_namespace_declarations = file_scoped:warning
-
 dotnet_diagnostic.CS1591.severity = none

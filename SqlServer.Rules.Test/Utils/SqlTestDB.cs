@@ -28,6 +28,7 @@ public sealed class SqlTestDB : IDisposable
     // Variables for tracking restored DB information
     private readonly List<string> cleanupScripts;
     private bool cleanupDatabase;
+
     public event EventHandler<EventArgs> Disposing;
 
     public static SqlTestDB CreateFromDacpac(InstanceInfo instance, string dacpacPath, DacDeployOptions deployOptions = null, bool dropDatabaseOnCleanup = false)

@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSingleLineComment : TestModel
+public class TestSingleLineComment : TestModel
 {
-    public testSingleLineComment()
+    public TestSingleLineComment()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/SingleLineComment.sql");
 

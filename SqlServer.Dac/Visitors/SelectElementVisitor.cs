@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class SelectElementVisitor : BaseVisitor, IVisitor<SelectElement>
     {
         public IList<SelectElement> Statements { get; } = new List<SelectElement>();
+
         public int Count
         {
             get { return Statements.Count; }

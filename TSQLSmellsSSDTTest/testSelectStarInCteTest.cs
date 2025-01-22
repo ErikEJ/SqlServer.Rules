@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectStarInCteTest : TestModel
+public class TestSelectStarInCteTest : TestModel
 {
-    public testSelectStarInCteTest()
+    public TestSelectStarInCteTest()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TestSelectStarInCteTest.sql");
 

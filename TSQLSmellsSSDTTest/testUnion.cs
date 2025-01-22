@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testUnion : TestModel
+public class TestUnion : TestModel
 {
-    public testUnion()
+    public TestUnion()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/UnionTest.sql");
 

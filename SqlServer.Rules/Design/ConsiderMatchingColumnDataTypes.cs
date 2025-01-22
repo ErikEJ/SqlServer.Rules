@@ -120,10 +120,15 @@ namespace SqlServer.Rules.Design
         private sealed class TableColumnInfo
         {
             public string TableName { get; set; }
+
             public string ColumnName { get; set; }
+
             public string DataType { get; set; }
+
             public string DataTypeParameters { get; set; }
+
             public ColumnDefinition Column { get; set; }
+
             public TSqlObject Table { get; set; }
 
             public override string ToString()

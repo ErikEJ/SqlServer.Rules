@@ -6,7 +6,9 @@ namespace TSQLSmellsSSDTTest.TestHelpers;
 public class TestProblem
 {
     public int StartColumn { get; set; }
+
     public int StartLine { get; set; }
+
     public string RuleId { get; set; }
 
     public TestProblem(int startLine, int startColumn, string ruleId)

@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testTempTableWithNamedDefConstraint : TestModel
+public class TestTempTableWithNamedDefConstraint : TestModel
 {
-    public testTempTableWithNamedDefConstraint()
+    public TestTempTableWithNamedDefConstraint()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/TempTableWithNamedDefConstraint.sql");
 

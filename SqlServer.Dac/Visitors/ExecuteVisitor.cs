@@ -8,6 +8,7 @@ namespace SqlServer.Dac.Visitors
     public class ExecuteVisitor : BaseVisitor, IVisitor<ExecuteStatement>
     {
         private readonly IList<string> procNames;
+
         public ExecuteVisitor()
         {
             procNames = new List<string>();
@@ -19,6 +20,7 @@ namespace SqlServer.Dac.Visitors
         }
 
         public IList<ExecuteStatement> Statements { get; } = new List<ExecuteStatement>();
+
         public int Count
         {
             get { return Statements.Count; }

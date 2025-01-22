@@ -6,7 +6,9 @@ namespace SqlServer.Dac.Visitors
     public class AlterProcedureVisitor : BaseVisitor, IVisitor<AlterProcedureStatement>
     {
         public ObjectTypeFilter TypeFilter { get; set; } = ObjectTypeFilter.All;
+
         public IList<AlterProcedureStatement> Statements { get; } = new List<AlterProcedureStatement>();
+
         public int Count
         {
             get { return Statements.Count; }

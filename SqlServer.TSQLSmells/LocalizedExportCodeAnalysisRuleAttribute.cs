@@ -18,7 +18,9 @@ namespace TSQLSmellSCA
     internal sealed class LocalizedExportCodeAnalysisRuleAttribute : ExportCodeAnalysisRuleAttribute
     {
         public string ResourceBaseName { get; }
+
         public string DisplayNameResourceId { get; }
+
         public string DescriptionResourceId { get; }
 
         private ResourceManager resourceManager;

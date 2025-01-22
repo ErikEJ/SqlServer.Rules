@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSelectFromTableVar : TestModel
+public class TestSelectFromTableVar : TestModel
 {
-    public testSelectFromTableVar()
+    public TestSelectFromTableVar()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/SelectFromTableVar.sql");
 

@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSets2 : TestModel
+public class TestSets2 : TestModel
 {
-    public testSets2()
+    public TestSets2()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/SETs2.sql");
 

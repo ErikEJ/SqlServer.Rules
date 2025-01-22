@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSetNoCountON : TestModel
+public class TestSetNoCountON : TestModel
 {
-    public testSetNoCountON()
+    public TestSetNoCountON()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/SetNoCountON.sql");
 

@@ -6,6 +6,7 @@ namespace SqlServer.Dac.Visitors
     public class CreateLoginVisitor : BaseVisitor, IVisitor<CreateLoginStatement>
     {
         public IList<CreateLoginStatement> Statements { get; } = new List<CreateLoginStatement>();
+
         public int Count
         {
             get { return Statements.Count; }

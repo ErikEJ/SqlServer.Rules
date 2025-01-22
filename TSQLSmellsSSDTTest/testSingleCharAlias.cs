@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TSQLSmellsSSDTTest.TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 
 [TestClass]
-public class testSingleCharAlias : TestModel
+public class TestSingleCharAlias : TestModel
 {
-    public testSingleCharAlias()
+    public TestSingleCharAlias()
     {
         TestFiles.Add("../../../../TSQLSmellsTest/SingleCharAlias.sql");
 
