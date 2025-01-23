@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -116,7 +116,7 @@ namespace SqlServer.Rules.Design
                     if (!paramTypes.All(x => Comparer.Equals(x, paramTypes.First())))
                     {
                         var funcName = func.FunctionName.Value;
-                        problems.Add(new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, Message, funcName), sqlObj, func));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, funcName), RuleId), sqlObj, func));
                     }
                 }
             }

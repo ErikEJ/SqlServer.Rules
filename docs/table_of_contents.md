@@ -98,12 +98,12 @@
 | [SRD0046](Design/SRD0046.md) | Use of approximate data type |   | Do not use the real or float data types for parameters or columns as they are approximate value data types. |   |
 | [SRD0047](Design/SRD0047.md) | Ambiguous column name across design | Yes | Avoid using columns that match other columns by name, but are different in type or size. |   |
 | [SRD0050](Design/SRD0050.md) | Expression reducible to constaint | Yes | The comparison expression always evaluates to TRUE or FALSE. | Yes |
-| [SRD0051](Design/SRD0051.md) | Do Not Use Deprecated Types Rule |   | Don't use deprecated TEXT, NTEXT and IMAGE data types. |   |
+| [SRD0051](Design/SRD0051.md) | Do Not Use Deprecated Types Rule | Yes | Don't use deprecated TEXT, NTEXT and IMAGE data types. |   |
 | [SRD0052](Design/SRD0052.md) | Duplicate/Overlapping Index |   | Index has exact duplicate or borderline overlapping index. |   |
 | [SRD0053](Design/SRD0053.md) | Explicit collation other | Yes | Object has different collation than the rest of the database. Try to avoid using a different collation unless by design. |   |
 | [SRD0055](Design/SRD0055.md) | Object level option override |   | The object was created with invalid options. |   |
 | [SRD0056](Design/SRD0056.md) | Unsafe identity retrieval | Yes | Use OUTPUT or SCOPE_IDENTITY() instead of @@IDENTITY. |   |
-| [SRD0057](Design/SRD0057.md) | Do Not Mix DML With DDL Rule |   | Do not mix DML with DDL statements. Group DDL statements at the beginning of procedures followed by DML statements. |   |
+| [SRD0057](Design/SRD0057.md) | Do Not Mix DML With DDL Rule | Yes | Do not mix DML with DDL statements. Group DDL statements at the beginning of procedures followed by DML statements. |   |
 | [SRD0058](Design/SRD0058.md) | Ordinal parameters used |   | Always use parameter names when calling stored procedures. |   |
 | [SRD0060](Design/SRD0060.md) | Permission change in stored procedure |   | The procedure grants itself permissions. Possible missing GO command. | Yes |
 | [SRD0061](Design/SRD0061.md) | Invalid database configured options |   | The database is configured with invalid options. |   |

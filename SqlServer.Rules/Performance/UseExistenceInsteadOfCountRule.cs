@@ -81,7 +81,7 @@ namespace SqlServer.Rules.Performance
 
                 if (functionVisitor.Statements.Any() && CheckIf(ifstmt))
                 {
-                    problems.Add(new SqlRuleProblem(Message, sqlObj, ifstmt));
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, ifstmt));
                 }
             }
 

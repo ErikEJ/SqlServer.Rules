@@ -79,7 +79,7 @@ namespace SqlServer.Rules.Design
                                  where TestClause(be)
                                  select be).ToList();
 
-                problems.AddRange(offenders.Select(o => new SqlRuleProblem(Message, sqlObj, o)));
+                problems.AddRange(offenders.Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
             }
 
             return problems;

@@ -66,7 +66,7 @@ namespace SqlServer.Rules.Design
                 whereClause.Accept(inPredicateVisitor);
 
                 var offenders = inPredicateVisitor.NotIgnoredStatements(RuleId).Where(i => i.Subquery != null);
-                problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+                problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
             }
 
             return problems;

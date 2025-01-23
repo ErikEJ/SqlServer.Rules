@@ -101,7 +101,7 @@ namespace SqlServer.Rules.Design
                                 || comparison.ComparisonType == BooleanComparisonType.NotEqualToExclamation) // probably can remove the ComparisonTypeCheck
                                 )
                             {
-                                problems.Add(new SqlRuleProblem(Message, sqlObj, comparison));
+                                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, comparison));
                             }
                         }
                     }

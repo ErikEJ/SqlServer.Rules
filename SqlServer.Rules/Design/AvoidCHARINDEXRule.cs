@@ -73,7 +73,7 @@ namespace SqlServer.Rules.Design
                 var functionVisitor = new FunctionCallVisitor("charindex");
                 clause.Accept(functionVisitor);
 
-                problems.AddRange(functionVisitor.NotIgnoredStatements(RuleId).Select(f => new SqlRuleProblem(Message, sqlObj, f)));
+                problems.AddRange(functionVisitor.NotIgnoredStatements(RuleId).Select(f => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, f)));
             }
 
             return problems;

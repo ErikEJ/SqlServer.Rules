@@ -116,6 +116,8 @@ namespace TSQLSmellSCA
 
             var @out = rm.GetString(lookup, CultureInfo.InvariantCulture);
 
+            @out = $"{@out}. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/CodeSmells/SML{errorNum.ToString("D3", CultureInfo.InvariantCulture)}.md)";
+
             problems.Add(new SqlRuleProblem(@out, modelElement, errorFrg));
         }
 

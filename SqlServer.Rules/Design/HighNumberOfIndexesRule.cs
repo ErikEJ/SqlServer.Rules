@@ -73,7 +73,7 @@ namespace SqlServer.Rules.Design
             var count = indexes.Count();
             if (count > 15)
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
             }
 
             return problems;

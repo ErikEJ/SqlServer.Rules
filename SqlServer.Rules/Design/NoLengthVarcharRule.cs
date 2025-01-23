@@ -50,7 +50,7 @@ namespace SqlServer.Rules.Design
                 },
                 new[] { SqlDataTypeOption.VarChar, SqlDataTypeOption.NVarChar, SqlDataTypeOption.Char, SqlDataTypeOption.NChar },
                 1,
-                Message)
+                MessageFormatter.FormatMessage(Message, RuleId))
         {
         }
     }

@@ -88,7 +88,7 @@ namespace SqlServer.Rules.Design
                         var indexes = sqlObj.GetChildren(DacQueryScopes.All).Where(x => x.ObjectType == ModelSchema.Index);
                         if (!indexes.Any(ix => Convert.ToBoolean(ix.GetProperty(Index.Unique), CultureInfo.InvariantCulture)))
                         {
-                            problems.Add(new SqlRuleProblem(Message, sqlObj));
+                            problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
                         }
                     }
                 }

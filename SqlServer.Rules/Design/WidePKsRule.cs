@@ -85,7 +85,7 @@ namespace SqlServer.Rules.Design
             var dataTypeName = dataType.Name.Parts.Last();
             if (Comparer.Equals(dataTypeName, "uniqueidentifier"))
             {
-                problems.Add(new SqlRuleProblem(GuidMessage, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(GuidMessage, RuleId), sqlObj));
             }
 
             if (columns.Any(col =>
@@ -96,7 +96,7 @@ namespace SqlServer.Rules.Design
                     || (Comparer.Equals(dataTypeName, "nvarchar") && len > 100);
             }))
             {
-                problems.Add(new SqlRuleProblem(WideVarcharMessage, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(WideVarcharMessage, RuleId), sqlObj));
             }
 
             return problems;

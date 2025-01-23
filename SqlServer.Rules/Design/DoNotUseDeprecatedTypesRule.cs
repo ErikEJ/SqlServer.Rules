@@ -75,7 +75,7 @@ namespace SqlServer.Rules.Design
                     || Comparer.Equals(x.type, "ntext")
                     || Comparer.Equals(x.type, "image"));
 
-            problems.AddRange(offenders.Select(col => new SqlRuleProblem(Message, sqlObj, col.column)));
+            problems.AddRange(offenders.Select(col => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, col.column)));
 
             return problems;
         }

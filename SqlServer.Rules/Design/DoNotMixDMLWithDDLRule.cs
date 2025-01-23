@@ -76,7 +76,7 @@ namespace SqlServer.Rules.Design
                 .SkipWhile(t => t.GetType() == typeof(CreateTableStatement))
                 .Where(t1 => t1.GetType() == typeof(CreateTableStatement));
 
-            problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+            problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
 
             return problems;
         }

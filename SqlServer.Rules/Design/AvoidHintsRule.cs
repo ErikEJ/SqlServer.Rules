@@ -89,9 +89,9 @@ namespace SqlServer.Rules.Design
                     && @join.JoinHint != JoinHint.None
                 select j as QualifiedJoin;
 
-            problems.AddRange(tableOffenders.Select(o => new SqlRuleProblem(Message, sqlObj, o)));
-            problems.AddRange(queryOffenders.Select(o => new SqlRuleProblem(Message, sqlObj, o)));
-            problems.AddRange(joinOffenders.Select(o => new SqlRuleProblem(Message, sqlObj, o)));
+            problems.AddRange(tableOffenders.Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
+            problems.AddRange(queryOffenders.Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
+            problems.AddRange(joinOffenders.Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
 
             return problems;
         }

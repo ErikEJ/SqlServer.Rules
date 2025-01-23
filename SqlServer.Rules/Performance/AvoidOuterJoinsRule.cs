@@ -205,7 +205,7 @@ namespace SqlServer.Rules.Performance
                             return Comparer.Equals(tableName, colTableName) || Comparer.Equals(alias, colTableName);
                         }))
                         {
-                            problems.Add(new SqlRuleProblem(Message, sqlObj, join));
+                            problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, join));
                         }
                     }
                 }

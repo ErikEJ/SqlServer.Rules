@@ -83,7 +83,7 @@ namespace SqlServer.Rules.Performance
                             if (function.UniqueRowFilter == UniqueRowFilter.Distinct
                                 && Constants.Aggregates.Contains(function.FunctionName.Value.ToUpperInvariant()))
                             {
-                                problems.Add(new SqlRuleProblem(Message, sqlObj, statement));
+                                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, statement));
                             }
                         }
                     }

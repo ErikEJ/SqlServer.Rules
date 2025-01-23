@@ -85,7 +85,7 @@ namespace SqlServer.Rules.Performance
 
             if (!predicates.Any() && Ignorables.ShouldNotIgnoreRule(fragment.ScriptTokenStream, RuleId, createToken.Line))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
             }
 
             return problems;

@@ -69,7 +69,7 @@ namespace SqlServer.Rules.Design
                     || x.ObjectType == ModelSchema.PrimaryKeyConstraint).ToList();
             if (!indexes.Any(i => IsClustered(i)))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
             }
 
             return problems;

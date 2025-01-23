@@ -84,7 +84,7 @@ namespace SqlServer.Rules.Design
             fragment.Accept(tryCatchVisitor);
             if (tryCatchVisitor.Count == 0)
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
                 return problems;
             }
 
@@ -97,7 +97,7 @@ namespace SqlServer.Rules.Design
                 possibleOffenders.RemoveAll(st => st.StartLine > startLine && st.StartLine < endline);
             }
 
-            problems.AddRange(possibleOffenders.Select(po => new SqlRuleProblem(Message, sqlObj, po)));
+            problems.AddRange(possibleOffenders.Select(po => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, po)));
 
             return problems;
         }

@@ -67,7 +67,7 @@ namespace SqlServer.Rules.Design
             {
                 var parentObj = sqlObj.Name.HasName ? sqlObj : sqlObj.GetParent(DacQueryScopes.All);
 
-                problems.Add(new SqlRuleProblem(Message, parentObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), parentObj));
             }
 
             return problems;

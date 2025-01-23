@@ -63,7 +63,7 @@ namespace SqlServer.Rules.Performance
             var sqlObjName = ruleExecutionContext.GetObjectName(sqlObj);
             foreach (var child in sqlObj.GetReferenced(DacQueryScopes.UserDefined).Where(x => x.ObjectType == ModelSchema.View))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj) /* { Severity = SqlRuleProblemSeverity.Error } */);
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj) /* { Severity = SqlRuleProblemSeverity.Error } */);
             }
 
             return problems;

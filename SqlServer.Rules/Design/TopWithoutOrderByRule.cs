@@ -77,7 +77,7 @@ namespace SqlServer.Rules.Design
                 fragment.Accept(orderByvisitor);
                 if (orderByvisitor.Count < 1)
                 {
-                    problems.Add(new SqlRuleProblem(Message, sqlObj, topVisitor.Statements[0]));
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, topVisitor.Statements[0]));
                 }
             }
 

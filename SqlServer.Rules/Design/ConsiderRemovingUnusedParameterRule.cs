@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -91,7 +91,7 @@ namespace SqlServer.Rules.Design
                 .Where(g => g.Count() == 1).Select(g => g.First());
 #pragma warning restore CA1304 // Specify CultureInfo
 #pragma warning restore CA1311 // Specify a culture or use an invariant version
-            problems.AddRange(unusedParms.Select(rp => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, Message, rp.VariableName.Value), sqlObj, rp)));
+            problems.AddRange(unusedParms.Select(rp => new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, rp.VariableName.Value), RuleId), sqlObj, rp)));
 
             return problems;
         }

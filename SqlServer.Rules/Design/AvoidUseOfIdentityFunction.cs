@@ -72,7 +72,7 @@ namespace SqlServer.Rules.Design
 
             fragment.Accept(visitor);
 
-            problems.AddRange(visitor.NotIgnoredStatements(RuleId).Select(s => new SqlRuleProblem(Message, sqlObj, s)));
+            problems.AddRange(visitor.NotIgnoredStatements(RuleId).Select(s => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, s)));
 
             return problems;
         }

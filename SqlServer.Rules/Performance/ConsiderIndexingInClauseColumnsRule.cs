@@ -114,7 +114,7 @@ namespace SqlServer.Rules.Performance
 
                         if (!indexColumnExists)
                         {
-                            problems.Add(new SqlRuleProblem(Message, sqlObj, inClause));
+                            problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, inClause));
                         }
                     }
                 }

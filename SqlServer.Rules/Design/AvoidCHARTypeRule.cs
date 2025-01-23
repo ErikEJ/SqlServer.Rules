@@ -81,7 +81,7 @@ namespace SqlServer.Rules.Design
                 })
                 .Where(x => (Comparer.Equals(x.type, "char") || Comparer.Equals(x.type, "nchar")) && x.length > 9);
 
-            problems.AddRange(longChars.Select(col => new SqlRuleProblem(Message, sqlObj, col.column)));
+            problems.AddRange(longChars.Select(col => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, col.column)));
 
             return problems;
         }

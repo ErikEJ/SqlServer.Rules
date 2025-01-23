@@ -157,7 +157,7 @@ namespace SqlServer.Rules.Performance
 
                             if (!Comparer.Equals(datatype1, datatype2))
                             {
-                                problems.Add(new SqlRuleProblem(Message, sqlObj, comparison));
+                                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, comparison));
                             }
                         }
                     }

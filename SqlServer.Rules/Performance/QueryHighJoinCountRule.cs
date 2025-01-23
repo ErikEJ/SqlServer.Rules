@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -98,7 +98,7 @@ namespace SqlServer.Rules.Performance
                     if (tableCount > 8)
                     {
                         var msg = string.Format(CultureInfo.InvariantCulture, Message, tableCount);
-                        problems.Add(new SqlRuleProblem(msg, sqlObj, fromClause));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(msg, RuleId), sqlObj, fromClause));
                     }
                 }
             }

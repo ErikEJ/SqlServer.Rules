@@ -82,7 +82,7 @@ namespace SqlServer.Rules.Design
                 });
             }
 
-            problems.AddRange(candidates.Select(s => new SqlRuleProblem(Message, sqlObj, s)));
+            problems.AddRange(candidates.Select(s => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, s)));
 
             return problems;
         }

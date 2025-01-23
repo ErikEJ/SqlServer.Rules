@@ -86,7 +86,7 @@ namespace SqlServer.Rules.Design
                                 || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.Char
                                 || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.NVarChar
                                 || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.NChar));
-                problems.AddRange(noCollationColumns.Select(s => new SqlRuleProblem(Message, sqlObj, s)));
+                problems.AddRange(noCollationColumns.Select(s => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, s)));
             }
 
             return problems;

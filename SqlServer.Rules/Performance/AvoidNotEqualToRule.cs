@@ -83,7 +83,7 @@ namespace SqlServer.Rules.Performance
                         || c.ComparisonType == BooleanComparisonType.NotEqualToExclamation);
 
                 var sqlObjName = ruleExecutionContext.GetObjectName(sqlObj);
-                problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+                problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
             }
 
             return problems;

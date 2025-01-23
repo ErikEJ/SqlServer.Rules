@@ -68,7 +68,7 @@ namespace SqlServer.Rules.Design
             var visitor = new ExecutableStringListVisitor();
             fragment.Accept(visitor);
 
-            problems.AddRange(visitor.NotIgnoredStatements(RuleId).Select(o => new SqlRuleProblem(Message, sqlObj, o)));
+            problems.AddRange(visitor.NotIgnoredStatements(RuleId).Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
 
             return problems;
         }

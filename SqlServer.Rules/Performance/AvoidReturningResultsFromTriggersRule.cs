@@ -73,7 +73,7 @@ namespace SqlServer.Rules.Performance
             var selectVisitor = new SelectStatementVisitor();
             fragment.Accept(selectVisitor);
 
-            problems.AddRange(selectVisitor.NotIgnoredStatements(RuleId).Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+            problems.AddRange(selectVisitor.NotIgnoredStatements(RuleId).Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
 
             return problems;
         }

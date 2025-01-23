@@ -86,7 +86,7 @@ namespace SqlServer.Rules.Performance
 
                     if (literal != null)
                     {
-                        problems.Add(new SqlRuleProblem(Message, sqlObj, like));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, like));
                         break;
                     }
                 }

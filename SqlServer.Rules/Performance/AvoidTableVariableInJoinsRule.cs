@@ -95,7 +95,7 @@ namespace SqlServer.Rules.Performance
                 var tableVarVisitor = new TableVariableVisitor();
                 join.Accept(tableVarVisitor);
 
-                problems.AddRange(tableVarVisitor.NotIgnoredStatements(RuleId).Select(tv => new SqlRuleProblem(Message, sqlObj, tv)));
+                problems.AddRange(tableVarVisitor.NotIgnoredStatements(RuleId).Select(tv => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, tv)));
             }
 
             return problems;

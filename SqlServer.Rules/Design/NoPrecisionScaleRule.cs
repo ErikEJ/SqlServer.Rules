@@ -52,7 +52,7 @@ namespace SqlServer.Rules.Design
                 },
             new[] { SqlDataTypeOption.Decimal, SqlDataTypeOption.Numeric },
             2,
-            Message)
+            MessageFormatter.FormatMessage(Message, RuleId))
         {
         }
     }

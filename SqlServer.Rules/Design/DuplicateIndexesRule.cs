@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -109,7 +109,7 @@ namespace SqlServer.Rules.Design
             var dupes = indexInfo.GroupBy(x => string.Join(",", x.Value))
                 .Where(x => x.Count() > 1).SelectMany(x => x).ToList();
             problems.AddRange(dupes
-                .Select(ix => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, MessageDuplicate, ix.Key.Name.Value), sqlObj, ix.Key)));
+                .Select(ix => new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, MessageDuplicate, ix.Key.Name.Value), RuleId), sqlObj, ix.Key)));
 
             // remove the exact duplicates to try to search for border line duplicates
             indexInfo.RemoveAll((key, value) => dupes.Any(x => x.Key == key));
@@ -122,7 +122,7 @@ namespace SqlServer.Rules.Design
             // find all the borderline duplicates where the first column matches
             var borderLineDupes = indexInfo.GroupBy(x => x.Value.First()).Where(x => x.Count() > 1).SelectMany(x => x).ToList();
             problems.AddRange(borderLineDupes
-                .Select(ix => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, MessageBorderLine, ix.Key.Name.Value), sqlObj, ix.Key)));
+                .Select(ix => new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, MessageBorderLine, ix.Key.Name.Value), RuleId), sqlObj, ix.Key)));
 
             return problems;
         }

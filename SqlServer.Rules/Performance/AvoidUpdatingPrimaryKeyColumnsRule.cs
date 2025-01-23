@@ -128,7 +128,7 @@ namespace SqlServer.Rules.Performance
 
                 if (hasOffense)
                 {
-                    problems.Add(new SqlRuleProblem(Message, sqlObj, update));
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, update));
                 }
             }
 

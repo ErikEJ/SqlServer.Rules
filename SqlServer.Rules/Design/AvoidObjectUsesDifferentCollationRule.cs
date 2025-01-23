@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -42,7 +42,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The message default
         /// </summary>
-        public const string MessageDefault = "This default constraint has a different collation than the rest of the database. Try to avoid using a different collation unless by design.";
+        public const string Message = "This default constraint has a different collation than the rest of the database. Try to avoid using a different collation unless by design.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidObjectUsesDifferentCollationRule"/> class.
@@ -91,7 +91,7 @@ namespace SqlServer.Rules.Design
                 return collation != null && !Comparer.Equals(collation.Value, dbCollation);
             }).ToList();
 
-            problems.AddRange(defaultOffenders.Select(col => new SqlRuleProblem(MessageDefault, sqlObj, col.DefaultConstraint)));
+            problems.AddRange(defaultOffenders.Select(col => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, col.DefaultConstraint)));
 
             return problems;
         }

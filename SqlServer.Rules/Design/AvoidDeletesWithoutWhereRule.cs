@@ -86,7 +86,7 @@ namespace SqlServer.Rules.Design
 
                 if (!(tableName.StartsWith('#') || tableName.StartsWith('@')))
                 {
-                    problems.Add(new SqlRuleProblem(Message, sqlObj, stmt));
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, stmt));
                 }
             }
 

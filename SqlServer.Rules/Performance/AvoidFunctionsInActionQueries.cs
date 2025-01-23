@@ -98,7 +98,7 @@ namespace SqlServer.Rules.Performance
 
                     if (!createFunctionVisitor.Statements.Any(crfn => crfn.Options != null && crfn.Options.Any(o => o.OptionKind == FunctionOptionKind.SchemaBinding)))
                     {
-                        problems.Add(new SqlRuleProblem(Message, sqlObj, functionCall));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, functionCall));
                     }
                 }
             }
