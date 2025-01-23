@@ -8,10 +8,6 @@
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.7.0" />
     <PackageReference Include="MSTest.TestFramework" Version="3.7.0" />
-    <!--<PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="1.1.2">
-       <PrivateAssets>all</PrivateAssets>
-       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>-->
   </ItemGroup>
 
   <ItemGroup>
