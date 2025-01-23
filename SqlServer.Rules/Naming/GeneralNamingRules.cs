@@ -91,18 +91,18 @@ namespace SqlServer.Rules.Performance
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                problems.Add(new SqlRuleProblem($"{objectType} found without a name.", parentObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"{objectType} found without a name.", RuleId), parentObj));
                 return problems;
             }
 
             if (Regex.IsMatch(name, @"^\d"))
             {
-                problems.Add(new SqlRuleProblem($"Name '{name}' starts with a number.", sqlObj, fragment));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Name '{name}' starts with a number.", RuleId), sqlObj, fragment));
             }
 
             if (Regex.IsMatch(name, @"^[^A-z0-9_]*$"))
             {
-                problems.Add(new SqlRuleProblem($"Name '{name}' contains invalid characters. Please only use alphanumerics and underscores.", sqlObj, fragment));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Name '{name}' contains invalid characters. Please only use alphanumerics and underscores.", RuleId), sqlObj, fragment));
             }
 
             var tableName = parentObj.Name.Parts.LastOrDefault();
@@ -111,7 +111,7 @@ namespace SqlServer.Rules.Performance
                 case "PRIMARYKEYCONSTRAINT":
                     if (!Regex.IsMatch(name, $"^PK_{tableName}$", RegexOptions.IgnoreCase))
                     {
-                        problems.Add(new SqlRuleProblem($"Primary Key '{name}' does not follow the company naming standard. Please use the name PK_{tableName}.", sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Primary Key '{name}' does not follow the company naming standard. Please use the name PK_{tableName}.", RuleId), sqlObj, fragment));
                     }
 
                     break;
@@ -133,7 +133,7 @@ namespace SqlServer.Rules.Performance
 
                     if (!Regex.IsMatch(name, re, RegexOptions.IgnoreCase))
                     {
-                        problems.Add(new SqlRuleProblem($"Index '{name}' does not follow the company naming standard. Please use a format that starts with {naming}.", sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Index '{name}' does not follow the company naming standard. Please use a format that starts with {naming}.", RuleId), sqlObj, fragment));
                     }
 
                     break;
@@ -146,14 +146,14 @@ namespace SqlServer.Rules.Performance
 
                     if (!Regex.IsMatch(name, $@"^FK_{tableName}_{foreignTableName}.*", RegexOptions.IgnoreCase))
                     {
-                        problems.Add(new SqlRuleProblem($"Foreign Key '{name}' does not follow the company naming standard. Please use a format that starts with FK_{tableName}_{foreignTableName}", sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Foreign Key '{name}' does not follow the company naming standard. Please use a format that starts with FK_{tableName}_{foreignTableName}", RuleId), sqlObj, fragment));
                     }
 
                     break;
                 case "CHECKCONSTRAINT":
                     if (!Regex.IsMatch(name, $@"^CK_{tableName}_.*", RegexOptions.IgnoreCase))
                     {
-                        problems.Add(new SqlRuleProblem($"Check Constraint '{name}' does not follow the company naming standard. Please use a format that starts with CK_{tableName}*.", sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Check Constraint '{name}' does not follow the company naming standard. Please use a format that starts with CK_{tableName}*.", RuleId), sqlObj, fragment));
                     }
 
                     break;
@@ -163,7 +163,7 @@ namespace SqlServer.Rules.Performance
                     // allow two formats for this one
                     if (!Regex.IsMatch(name, $@"^DF_{tableName}_{columnName}$", RegexOptions.IgnoreCase))
                     {
-                        problems.Add(new SqlRuleProblem($"Constraint '{name}' does not follow the company naming standard. Please use the name DF_{tableName}_{columnName}.", sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Constraint '{name}' does not follow the company naming standard. Please use the name DF_{tableName}_{columnName}.", RuleId), sqlObj, fragment));
                     }
 
                     // ADD OTHER TYPES IF DESIRED IF YOU WANT THEM TO MATCH A SPECIFIC FORMAT

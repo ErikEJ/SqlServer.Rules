@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -130,7 +130,7 @@ namespace SqlServer.Rules.Design
                 }
 
                 var errorMessage = string.Format(CultureInfo.InvariantCulture, impactsFunctionality ? Message : MessageNoEffect, string.Join(", ", options));
-                problems.Add(new SqlRuleProblem(errorMessage, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(errorMessage, RuleId), sqlObj));
             }
 
             return problems;

@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Rules.Globals;
 
@@ -40,7 +40,7 @@ namespace SqlServer.Rules.Naming
         public AvoidFNPrefixRule()
             : base(
             RuleId,
-            RuleDisplayName,
+            MessageFormatter.FormatMessage(RuleDisplayName, RuleId),
             "fn_",
             new[] { ModelSchema.PartitionFunction, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction },
             n => n.StartsWith)

@@ -93,7 +93,7 @@ namespace SqlServer.Rules.Design
 
                     if (offenders.Any())
                     {
-                        problems.Add(new SqlRuleProblem(Message, sqlObj, select));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, select));
                     }
                 }
             }

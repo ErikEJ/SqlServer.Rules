@@ -1,4 +1,4 @@
-﻿using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Rules.Globals;
 
@@ -43,7 +43,7 @@ namespace SqlServer.Rules.Naming
         public AvoidSPPrefixRule()
             : base(
             RuleId,
-            RuleDisplayName,
+            MessageFormatter.FormatMessage(RuleDisplayName, RuleId),
             "sp_",
             new[] { ModelSchema.Procedure },
             n => n.StartsWith)

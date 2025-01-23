@@ -81,7 +81,7 @@ namespace SqlServer.Rules.Design
 
             var offenders = visitor.Statements.Where(s => s.InsertSpecification.Columns.Count == 0).ToList();
 
-            problems.AddRange(offenders.Select(o => new SqlRuleProblem(Message, sqlObj, o)));
+            problems.AddRange(offenders.Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
 
             return problems;
         }

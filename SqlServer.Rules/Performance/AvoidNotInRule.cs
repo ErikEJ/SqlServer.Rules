@@ -76,7 +76,7 @@ namespace SqlServer.Rules.Performance
                 whereClause.Accept(inPredicateVisitor);
 
                 var offenders = inPredicateVisitor.NotIgnoredStatements(RuleId).Where(i => i.NotDefined);
-                problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+                problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
             }
 
             return problems;

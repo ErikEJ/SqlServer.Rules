@@ -141,7 +141,7 @@ namespace SqlServer.Rules.Design
                     // check to see if all of the columns match
                     if (!possibleFks.Any(f => join.CheckFullJoin(f.Value)))
                     {
-                        problems.Add(new SqlRuleProblem(Message, sqlObj, join.Table2));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, join.Table2));
                     }
                 }
             }

@@ -75,7 +75,7 @@ namespace SqlServer.Rules.Performance
                 {
                     if (CheckBinaryExpression(comparison).GetValueOrDefault(false))
                     {
-                        problems.Add(new SqlRuleProblem(Message, sqlObj, comparison));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, comparison));
                     }
                 }
             }

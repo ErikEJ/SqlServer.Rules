@@ -95,7 +95,7 @@ namespace SqlServer.Rules.Design
             // if the seed starts less than 1000, flag it
             if (((IntegerLiteral)identityColumn.IdentityOptions.IdentitySeed)?.GetValue() < 1000)
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj, identityColumn));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, identityColumn));
             }
 
             return problems;

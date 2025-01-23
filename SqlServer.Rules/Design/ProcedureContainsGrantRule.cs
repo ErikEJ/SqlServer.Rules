@@ -88,7 +88,7 @@ namespace SqlServer.Rules.Design
             if (grantVisitor.Statements
                 .Any(g => g.SecurityTargetObject.ObjectName.MultiPartIdentifier.CompareTo(sqlObj.Name) >= 5))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
             }
 
             return problems;

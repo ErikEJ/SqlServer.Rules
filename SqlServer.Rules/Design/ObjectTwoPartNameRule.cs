@@ -89,8 +89,8 @@ namespace SqlServer.Rules.Design
 
             var execOffenders = execVisitor.Statements.Where(proc => CheckProc(proc));
 
-            problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
-            problems.AddRange(execOffenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+            problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
+            problems.AddRange(execOffenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
 
             return problems;
         }

@@ -93,7 +93,7 @@ namespace SqlServer.Rules.Design
                     where TestCompare(cmp)
                     select cmp;
 
-                problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+                problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
             }
 
             var actionStatementVisitor = new ActionStatementVisitor();
@@ -109,7 +109,7 @@ namespace SqlServer.Rules.Design
                     where TestCompare(cmp)
                     select cmp;
 
-                problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+                problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
             }
 
             return problems;

@@ -75,7 +75,7 @@ namespace SqlServer.Rules.Design
 
             foreach (var offender in offenders)
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj, offender));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, offender));
             }
 
             return problems;

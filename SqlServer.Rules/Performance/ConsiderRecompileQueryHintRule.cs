@@ -90,7 +90,7 @@ namespace SqlServer.Rules.Performance
                 o.OptionKind == ProcedureOptionKind.Recompile)
                 && Ignorables.ShouldNotIgnoreRule(proc.ScriptTokenStream, RuleId, proc.StartLine))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
             }
 
             return problems;

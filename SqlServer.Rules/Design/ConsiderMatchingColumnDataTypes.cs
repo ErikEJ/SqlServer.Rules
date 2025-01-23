@@ -102,7 +102,7 @@ namespace SqlServer.Rules.Design
                     )));
 
             problems.AddRange(offenders
-                .Select(col => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, Message, col), col.Table, col.Column)));
+                .Select(col => new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, col), RuleId), col.Table, col.Column)));
 
             return problems;
         }

@@ -19,7 +19,7 @@ public sealed class PerformanceTestCases : TestCasesBase
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "nonsargable.sql")));
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "nonsargable2.sql")));
 
-        Assert.IsTrue(problems.All(problem => Comparer.Equals(problem.Description, AvoidEndsWithOrContainsRule.Message)));
+        Assert.IsTrue(problems.All(problem => problem.Description.StartsWith(AvoidEndsWithOrContainsRule.Message, System.StringComparison.Ordinal)));
         Assert.IsTrue(problems.All(problem => problem.Severity == SqlRuleProblemSeverity.Warning));
     }
 
@@ -33,7 +33,7 @@ public sealed class PerformanceTestCases : TestCasesBase
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "ansi_not_equal.sql")));
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "alternate_not_equal.sql")));
 
-        Assert.IsTrue(problems.All(problem => Comparer.Equals(problem.Description, AvoidNotEqualToRule.Message)));
+        Assert.IsTrue(problems.All(problem => problem.Description.StartsWith(AvoidNotEqualToRule.Message, System.StringComparison.Ordinal)));
         Assert.IsTrue(problems.All(problem => problem.Severity == SqlRuleProblemSeverity.Warning));
     }
 
@@ -46,7 +46,7 @@ public sealed class PerformanceTestCases : TestCasesBase
 
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "calc_on_column.sql")));
 
-        Assert.IsTrue(problems.All(problem => Comparer.Equals(problem.Description, AvoidColumnCalcsRule.Message)));
+        Assert.IsTrue(problems.All(problem => problem.Description.StartsWith(AvoidColumnCalcsRule.Message, System.StringComparison.Ordinal)));
         Assert.IsTrue(problems.All(problem => problem.Severity == SqlRuleProblemSeverity.Warning));
     }
 
@@ -59,7 +59,7 @@ public sealed class PerformanceTestCases : TestCasesBase
 
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "func_on_column.sql")));
 
-        Assert.IsTrue(problems.All(problem => Comparer.Equals(problem.Description, AvoidColumnFunctionsRule.Message)));
+        Assert.IsTrue(problems.All(problem => problem.Description.StartsWith(AvoidColumnFunctionsRule.Message, System.StringComparison.Ordinal)));
         Assert.IsTrue(problems.All(problem => problem.Severity == SqlRuleProblemSeverity.Warning));
     }
 }

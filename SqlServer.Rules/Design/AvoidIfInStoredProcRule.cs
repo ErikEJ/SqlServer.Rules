@@ -80,7 +80,7 @@ namespace SqlServer.Rules.Design
                 var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                 ifStatement.ThenStatement?.Accept(tableVisitor);
                 ifStatement.ElseStatement?.Accept(tableVisitor);
-                problems.AddRange(tableVisitor.Statements.Select(s => new SqlRuleProblem(Message, sqlObj, s)));
+                problems.AddRange(tableVisitor.Statements.Select(s => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, s)));
             }
 
             return problems;

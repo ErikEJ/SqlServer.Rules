@@ -71,7 +71,7 @@ namespace SqlServer.Rules.Design
                 from c in visitor.NotIgnoredStatements(RuleId)
                 select c.Cursor;
 
-            problems.AddRange(offenders.Select(c => new SqlRuleProblem(Message, sqlObj, c)));
+            problems.AddRange(offenders.Select(c => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, c)));
 
             return problems;
         }

@@ -73,7 +73,7 @@ namespace SqlServer.Rules.Design
                 where s.Into != null && !(tn.StartsWith('#') || !tn.StartsWith('@'))
                 select s.Into;
 
-            problems.AddRange(offenders.Select(s => new SqlRuleProblem(Message, sqlObj, s)));
+            problems.AddRange(offenders.Select(s => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, s)));
 
             return problems;
         }

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlServer.Rules.Design;
@@ -21,7 +21,7 @@ public class DesignTestCases : TestCasesBase
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "fk_table2_table1_1_not_for_replication.sql")));
         Assert.IsTrue(problems.Count(problem => Comparer.Equals(problem.SourceName, "table3.sql")) == 2);
 
-        Assert.IsTrue(problems.All(problem => Comparer.Equals(problem.Description, NotForReplication.Message)));
+        Assert.IsTrue(problems.All(problem => problem.Description.StartsWith(NotForReplication.Message, System.StringComparison.Ordinal)));
         Assert.IsTrue(problems.All(problem => problem.Severity == SqlRuleProblemSeverity.Warning));
     }
 

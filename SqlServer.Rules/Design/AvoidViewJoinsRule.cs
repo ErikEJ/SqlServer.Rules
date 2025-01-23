@@ -85,7 +85,7 @@ namespace SqlServer.Rules.Design
                     && views.Contains((o.SecondTableReference as NamedTableReference)?.SchemaObject.Identifiers.Last().Value)
                 select o.SecondTableReference as NamedTableReference;
 
-            problems.AddRange(leftSideOffenders.Union(rightSideOffenders).Select(o => new SqlRuleProblem(Message, sqlObj, o)));
+            problems.AddRange(leftSideOffenders.Union(rightSideOffenders).Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
 
             return problems;
         }

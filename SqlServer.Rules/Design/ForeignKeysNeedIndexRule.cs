@@ -72,14 +72,14 @@ namespace SqlServer.Rules.Design
             var table = ruleExecutionContext.SchemaModel.GetObject(Table.TypeClass, fkinfo.TableName, DacQueryScopes.All);
             if (!table.CheckForFkIndex(fkinfo.ColumnNames))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
                 return problems;
             }
 
             table = ruleExecutionContext.SchemaModel.GetObject(Table.TypeClass, fkinfo.ToTableName, DacQueryScopes.All);
             if (!table.CheckForFkIndex(fkinfo.ToColumnNames))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));
                 return problems;
             }
 

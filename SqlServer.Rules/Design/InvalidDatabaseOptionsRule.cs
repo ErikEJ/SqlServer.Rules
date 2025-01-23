@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -113,7 +113,7 @@ namespace SqlServer.Rules.Design
             {
                 // cant pass null into the SqlRuleProblem ctor so we have to create or get a tsqlobject
                 var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).First();
-                problems.Add(new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, Message, string.Join(", ", invalidOptions)), options));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, string.Join(", ", invalidOptions)), RuleId), options));
             }
 
             return problems;

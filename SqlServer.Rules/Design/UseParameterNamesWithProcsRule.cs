@@ -83,7 +83,7 @@ namespace SqlServer.Rules.Design
                 if (exec.ExecuteSpecification.ExecutableEntity is ExecutableProcedureReference proc
                     && proc.Parameters.Any(p => p.Variable == null))
                 {
-                    problems.Add(new SqlRuleProblem(Message, sqlObj, exec));
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, exec));
                 }
             }
 

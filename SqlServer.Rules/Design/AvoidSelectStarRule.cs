@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
@@ -72,7 +72,7 @@ namespace SqlServer.Rules.Design
                 select.AcceptChildren(selectStarVisitor);
 
                 problems.AddRange(selectStarVisitor.NotIgnoredStatements(RuleId)
-                    .Select(ss => new SqlRuleProblem(Message, sqlObj, ss)));
+                    .Select(ss => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, ss)));
             }
 
             return problems;

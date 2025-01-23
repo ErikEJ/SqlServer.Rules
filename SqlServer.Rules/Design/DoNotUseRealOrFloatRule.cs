@@ -82,7 +82,7 @@ namespace SqlServer.Rules.Design
                     });
                     if (datatypes.Any())
                     {
-                        problems.Add(new SqlRuleProblem(Message, parameter));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), parameter));
                     }
                 }
             }
@@ -99,7 +99,7 @@ namespace SqlServer.Rules.Design
                     });
                     if (datatypes.Any())
                     {
-                        problems.Add(new SqlRuleProblem(Message, column));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), column));
                     }
                 }
             }

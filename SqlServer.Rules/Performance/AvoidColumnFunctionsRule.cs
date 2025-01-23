@@ -80,7 +80,7 @@ namespace SqlServer.Rules.Performance
                                 where CheckFunction(f)
                                 select f;
 
-                problems.AddRange(offenders.Select(f => new SqlRuleProblem(Message, sqlObj, f)));
+                problems.AddRange(offenders.Select(f => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, f)));
             }
 
             return problems;

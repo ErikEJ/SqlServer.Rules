@@ -82,7 +82,7 @@ namespace SqlServer.Rules.Performance
 
                 foreach (var cursor in unclosedCursors)
                 {
-                    problems.Add(new SqlRuleProblem(Message, sqlObj, cursor));
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, cursor));
                 }
             }
 

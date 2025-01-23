@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -97,7 +97,7 @@ namespace SqlServer.Rules.Design
                     where t.Alias == null
                     select t;
 
-                problems.AddRange(offenders.Select(t => new SqlRuleProblem(Message, sqlObj, t)));
+                problems.AddRange(offenders.Select(t => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, t)));
             }
 
             return problems;

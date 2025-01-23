@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -80,7 +80,7 @@ namespace SqlServer.Rules.Design
 
             var unusedVars = vars.GroupBy(p => p.VariableName.Value).Where(g => g.Count() == 1).Select(g => g.First());
 
-            problems.AddRange(unusedVars.Select(v => new SqlRuleProblem(string.Format(CultureInfo.InvariantCulture, Message, v.VariableName.Value), sqlObj, v)));
+            problems.AddRange(unusedVars.Select(v => new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, v.VariableName.Value), RuleId), sqlObj, v)));
 
             return problems;
         }

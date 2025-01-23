@@ -75,7 +75,7 @@ namespace SqlServer.Rules.Naming
             if (PartialPredicate(name)(BadCharacters)
                 && Ignorables.ShouldNotIgnoreRule(fragment.ScriptTokenStream, ruleId, fragment.StartLine))
             {
-                problems.Add(new SqlRuleProblem(Message, sqlObj));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, ruleId), sqlObj));
             }
 
             return problems;

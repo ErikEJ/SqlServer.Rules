@@ -107,8 +107,8 @@ namespace SqlServer.Rules.Design
                 var setStatements = setVisitor.NotIgnoredStatements(RuleId)
                     .Where(set => Comparer.Equals(set.Variable.Name, param) && set.StartLine < selectStartLine);
 
-                problems.AddRange(getAssignmentSelects.Select(x => new SqlRuleProblem(Message, sqlObj, x)));
-                problems.AddRange(setStatements.Select(x => new SqlRuleProblem(Message, sqlObj, x)));
+                problems.AddRange(getAssignmentSelects.Select(x => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, x)));
+                problems.AddRange(setStatements.Select(x => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, x)));
             }
 
             return problems;
