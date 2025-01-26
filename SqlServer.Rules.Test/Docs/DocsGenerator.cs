@@ -202,14 +202,6 @@ public class DocsGenerator
             stringBuilder.Append(CultureInfo.InvariantCulture, $"{TrimLeadingWhitespace(exampleMd)}");
         }
 
-        if (!string.IsNullOrWhiteSpace(comments.Remarks))
-        {
-            stringBuilder.AppendLine(spaces);
-            stringBuilder.AppendLine("### Remarks");
-            stringBuilder.AppendLine(spaces);
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{comments.Remarks}");
-        }
-
         if (scriptExamples.Any())
         {
             stringBuilder.AppendLine(spaces);
@@ -219,6 +211,14 @@ public class DocsGenerator
                 stringBuilder.AppendLine(script.Trim(Environment.NewLine.ToCharArray()).Trim());
                 stringBuilder.AppendLine("```");
             }
+        }
+
+        if (!string.IsNullOrWhiteSpace(comments.Remarks))
+        {
+            stringBuilder.AppendLine(spaces);
+            stringBuilder.AppendLine("### Remarks");
+            stringBuilder.AppendLine(spaces);
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{comments.Remarks}");
         }
 
         stringBuilder.AppendLine(spaces);
@@ -297,6 +297,10 @@ public class DocsGenerator
                 {
                     friendlyName = ruleAttribute.Description;
                     isIgnorable = " ";
+                }
+
+                if (exampleMd == " ")
+                {
                     exampleMd = ruleScripts.Any(x => x.Key.Contains(ruleAttribute.Id.ToId(), StringComparison.OrdinalIgnoreCase)) ? "Yes" : " ";
                 }
 

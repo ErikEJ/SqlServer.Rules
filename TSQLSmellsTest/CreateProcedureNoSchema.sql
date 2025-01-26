@@ -5,4 +5,4 @@ SET NOCOUNT ON;
 select Col1 from [dbo].TestTableSSDT
 RETURN 1
 
--- SML024
+-- SML024, SRN0006
