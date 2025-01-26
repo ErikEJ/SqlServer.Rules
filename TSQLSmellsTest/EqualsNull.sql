@@ -13,4 +13,4 @@ SET NOCOUNT ON
 	Select ID1 from dbo.EqualsNull where ID1 =NULL
 END
 
--- SML046
+-- SML046, SRD0011

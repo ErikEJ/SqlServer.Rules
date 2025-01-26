@@ -6,4 +6,4 @@ IF EXISTS(SELECT * FROM dbo.TestTableSSDT) BEGIN
 	SELECT Idcol from dbo.TestTableSSDT
 end
 
--- SML005
+-- SML005, SRD0063
