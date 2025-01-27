@@ -83,7 +83,7 @@ public class ReportFactory
         SendNotification($"Running rules complete, elapsed: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}");
 
         // create report object
-        var report = new Report(
+        var report = new ReportEntity(
             request.Solution,
             GetIssueTypes(service.GetRules(), request.SuppressIssueTypes).ToList(),
             request.FileName,
@@ -192,9 +192,9 @@ public class ReportFactory
                };
     }
 
-    private static void SerializeReport(Report report, string outputPath)
+    private static void SerializeReport(ReportEntity report, string outputPath)
     {
-        var serializer = new XmlSerializer(typeof(Report));
+        var serializer = new XmlSerializer(typeof(ReportEntity));
         var ns = new XmlSerializerNamespaces([new XmlQualifiedName(string.Empty, string.Empty)]);
         var xmlSettings = new XmlWriterSettings
         {
@@ -209,7 +209,7 @@ public class ReportFactory
         }
     }
 
-    private static void SerializeReportToCSV(Report report, string outputPath)
+    private static void SerializeReportToCSV(ReportEntity report, string outputPath)
     {
         var sb = new StringBuilder();
         sb.AppendLine("Issue Id,Message,Line/Offset,File Name");

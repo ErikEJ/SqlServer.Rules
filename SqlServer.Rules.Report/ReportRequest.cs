@@ -7,6 +7,7 @@ namespace SqlServer.Rules.Report;
 public class ReportRequest
 {
     public string Solution { get; set; }
+
     public string InputPath { get; set; }
 
     public string SolutionName
@@ -17,6 +18,7 @@ public class ReportRequest
     public string OutputDirectory { get; set; } = string.Empty;
 
     private string outputFileName;
+
     public string OutputFileName
     {
         get
