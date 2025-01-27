@@ -4,7 +4,7 @@
 
 ## Overview
 
-A library of SQL best practices implement as more than 150 [database code analysis rules](https://learn.microsoft.com/sql/tools/sql-database-projects/concepts/sql-code-analysis/sql-code-analysis?view=sql-server-ver15&pivots=sq1-visual-studio-sdk#sql-project-file-sample-and-syntax) checked at build.
+A library of SQL best practices implemented as more than 150 [database code analysis rules](https://learn.microsoft.com/sql/tools/sql-database-projects/concepts/sql-code-analysis/sql-code-analysis?view=sql-server-ver15&pivots=sq1-visual-studio-sdk#sql-project-file-sample-and-syntax) checked at build.
 
 The rules can be added as NuGet packages to SQL projects based on either [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx)
 
