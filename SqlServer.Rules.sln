@@ -193,6 +193,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeSmells", "CodeSmells", 
 		docs\CodeSmells\SML047.md = docs\CodeSmells\SML047.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AW", "AW\AW.csproj", "{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -231,6 +233,10 @@ Global
 		{58DB81BD-4FDC-4CA8-9E64-7757ED5C2D7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58DB81BD-4FDC-4CA8-9E64-7757ED5C2D7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58DB81BD-4FDC-4CA8-9E64-7757ED5C2D7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -249,6 +255,7 @@ Global
 		{3F96C1BE-A925-4DA8-A8F6-24575E677B48} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
 		{58DB81BD-4FDC-4CA8-9E64-7757ED5C2D7B} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
 		{34C26AAF-CF8D-450B-B2E7-CDACFB55C1BE} = {596B2FD7-2684-4DC5-BD46-31EE223C49E4}
+		{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67B59E89-8C35-419D-A49B-9C2C19584900}

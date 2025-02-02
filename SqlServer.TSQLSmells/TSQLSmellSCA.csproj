@@ -3,11 +3,11 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>ErikEJ.DacFX.TSQLSmellSCA</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/davebally/TSQL-Smells</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
-    <PackageReleaseNotes>Docs link</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix NRE</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <MinClientVersion>5.0</MinClientVersion>
     <RepositoryUrl>https://github.com/ErikEJ/SqlServer.Rules</RepositoryUrl>

@@ -7,7 +7,7 @@
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/tcartwright/SqlServer.Rules/blob/master/docs/table_of_contents.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
-    <PackageReleaseNotes>Docs link</PackageReleaseNotes>
+    <PackageReleaseNotes>Single .dll</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <MinClientVersion>5.0</MinClientVersion>
     <RepositoryUrl>https://github.com/ErikEJ/SqlServer.Rules</RepositoryUrl>
