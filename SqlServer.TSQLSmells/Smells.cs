@@ -127,6 +127,11 @@ namespace TSQLSmellSCA
             bool testTop = false,
             WithCtesAndXmlNamespaces cte = null)
         {
+            if (queryExpression == null)
+            {
+                return;
+            }
+
             var expressionType = FragmentTypeParser.GetFragmentType(queryExpression);
             switch (expressionType)
             {
@@ -180,6 +185,11 @@ namespace TSQLSmellSCA
         // void ProcessSelectElements(
         public void ProcessTsqlFragment(TSqlFragment fragment)
         {
+            if (fragment == null)
+            {
+                return;
+            }
+
             var stmtType = FragmentTypeParser.GetFragmentType(fragment);
 
             // Console.WriteLine(StmtType);
