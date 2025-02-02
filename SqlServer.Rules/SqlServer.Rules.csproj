@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackageId>ErikEJ.DacFX.SqlServer.Rules</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/tcartwright/SqlServer.Rules/blob/master/docs/table_of_contents.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
@@ -33,12 +33,6 @@
   </ItemGroup>
 
  <ItemGroup>
-    <None Include="..\SqlServer.Dac\bin\$(Configuration)\netstandard2.1\SqlServer.Dac.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\netstandard2.1\SqlServer.Rules.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SqlServer.Dac\SqlServer.Dac.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
   </ItemGroup>
 </Project>
