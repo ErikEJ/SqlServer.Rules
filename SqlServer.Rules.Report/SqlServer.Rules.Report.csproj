@@ -21,7 +21,4 @@
     </PackageReference>
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SqlServer.Dac\SqlServer.Dac.csproj" />
-  </ItemGroup>
 </Project>
