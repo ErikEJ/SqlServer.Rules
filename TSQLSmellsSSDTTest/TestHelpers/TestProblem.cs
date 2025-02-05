@@ -21,6 +21,12 @@ public class TestProblem
     public override bool Equals(object obj)
     {
         var prb = obj as TestProblem;
+
+        if (prb == null)
+        {
+            return false;
+        }
+
         if (prb.RuleId.Equals(RuleId, StringComparison.OrdinalIgnoreCase) &&
             prb.StartColumn == StartColumn &&
             prb.StartLine == StartLine)

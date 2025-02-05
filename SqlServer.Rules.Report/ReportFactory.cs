@@ -136,14 +136,14 @@ public class ReportFactory
         var outDir = string.IsNullOrWhiteSpace(request.OutputDirectory) ? currentDir : request.OutputDirectory;
 
         // not sure where this " is coming from, but it throws an exception trying to use the path
-        outDir = outDir.Replace("\"", string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
+        outDir = outDir!.Replace("\"", string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"OUT DIRECTORY: ' {outDir} '");
         Console.ResetColor();
 
         if (!Path.IsPathRooted(outDir))
         {
-            outDir = Path.Combine(currentDir, outDir);
+            outDir = Path.Combine(currentDir!, outDir);
         }
 
         return outDir;

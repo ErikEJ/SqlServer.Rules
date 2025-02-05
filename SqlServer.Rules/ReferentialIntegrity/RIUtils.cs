@@ -179,6 +179,12 @@ namespace SqlServer.Rules.ReferentialIntegrity
                     for (var i = 0; i < 2; i++)
                     {
                         var col = (i == 0 ? compare.FirstExpression : compare.SecondExpression) as ColumnReferenceExpression;
+
+                        if (col == null)
+                        {
+                            continue;
+                        }
+
                         var colTblName = GetTableOrAliasName(col.MultiPartIdentifier.Identifiers);
                         if (table2Alias.StringEquals(colTblName.First()) || table2Name.CompareTo(colTblName) >= 5)
                         {

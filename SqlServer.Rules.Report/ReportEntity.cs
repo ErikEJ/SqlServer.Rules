@@ -24,7 +24,7 @@ public class ReportEntity
 
     public ReportEntity(string solutionName, List<IssueType> issueTypes, string projectName, List<Issue> problems)
     {
-        ToolsVersion = typeof(ReportEntity).Assembly.GetName().Version.ToString();
+        ToolsVersion = typeof(ReportEntity).Assembly.GetName()?.Version?.ToString() ?? "1.0.0";
         Information = new Information { Solution = $"{solutionName}.sln" };
         IssueTypes = issueTypes;
         Issues =

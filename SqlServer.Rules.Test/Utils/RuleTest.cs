@@ -168,7 +168,8 @@ internal class RuleTest : IDisposable
         }
 
         var dacpacDir = Path.GetDirectoryName(path);
-        if (!Directory.Exists(dacpacDir))
+
+        if (dacpacDir != null && !Directory.Exists(dacpacDir))
         {
             Directory.CreateDirectory(dacpacDir);
         }

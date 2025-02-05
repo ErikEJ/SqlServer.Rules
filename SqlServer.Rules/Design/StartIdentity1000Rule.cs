@@ -69,6 +69,11 @@ namespace SqlServer.Rules.Design
 
             var createTable = fragment as CreateTableStatement;
 
+            if (createTable == null)
+            {
+                return problems;
+            }
+
             // find the pk columns
             var pk = createTable.Definition.TableConstraints
                 .FirstOrDefault(c =>
