@@ -418,6 +418,12 @@ namespace SqlServer.Rules
             else if (expression is ScalarSubquery exprScalar)
             {
                 var scalarQuery = exprScalar.QueryExpression as QuerySpecification;
+
+                if (scalarQuery == null)
+                {
+                    return null;
+                }
+
                 var selectElement = scalarQuery.SelectElements.First();
 
                 return GetDataType(sqlObj, scalarQuery, ((SelectScalarExpression)selectElement).Expression, variables, model);

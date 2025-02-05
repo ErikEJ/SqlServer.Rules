@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -85,6 +85,11 @@ namespace SqlServer.Rules.Performance
             }
 
             var proc = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement)) as CreateProcedureStatement;
+
+            if (proc == null)
+            {
+                return problems;
+            }
 
             if (proc.Options.Any(o =>
                 o.OptionKind == ProcedureOptionKind.Recompile)

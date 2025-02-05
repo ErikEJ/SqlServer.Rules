@@ -11,7 +11,7 @@ internal sealed class RuleTestUtils
         try
         {
             var directory = Path.GetDirectoryName(filename);
-            if (!Directory.Exists(directory))
+            if (directory != null && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }

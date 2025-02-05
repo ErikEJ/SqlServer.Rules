@@ -3,6 +3,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest-all</AnalysisLevel>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nullable>warnings</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

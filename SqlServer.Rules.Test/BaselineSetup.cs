@@ -37,7 +37,7 @@ internal sealed class BaselineSetup : RuleTest
 
         var outputDir = testContext.TestResultsDirectory;
         var outputFilename = $"{testName}-{Output}.txt";
-        OutputFilePath = Path.Combine(outputDir, testName, outputFilename);
+        OutputFilePath = Path.Combine(outputDir!, testName, outputFilename);
 
         var baselineFilename = $"{testName}-{Baseline}.txt";
         BaselineFilePath = Path.Combine(ScriptsFolder, baselineFilename);

@@ -76,13 +76,15 @@ namespace SqlServer.Rules.Design
             var leftSideOffenders =
                 from o in joins
                 where o.FirstTableReference != null
-                    && views.Contains((o.FirstTableReference as NamedTableReference)?.SchemaObject.Identifiers.Last().Value)
+                    && o.FirstTableReference is NamedTableReference
+                    && views.Contains((o.FirstTableReference as NamedTableReference)!.SchemaObject.Identifiers.Last().Value)
                 select o.FirstTableReference as NamedTableReference;
 
             var rightSideOffenders =
                 from o in joins
                 where o.SecondTableReference != null
-                    && views.Contains((o.SecondTableReference as NamedTableReference)?.SchemaObject.Identifiers.Last().Value)
+                    && o.SecondTableReference is NamedTableReference
+                    && views.Contains((o.SecondTableReference as NamedTableReference)!.SchemaObject.Identifiers.Last().Value)
                 select o.SecondTableReference as NamedTableReference;
 
             problems.AddRange(leftSideOffenders.Union(rightSideOffenders).Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));

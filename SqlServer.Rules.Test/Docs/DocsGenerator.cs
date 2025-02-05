@@ -48,7 +48,7 @@ public class DocsGenerator
         var categories = rules.Select(t =>
         {
             var ruleAttribute = t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault() as ExportCodeAnalysisRuleAttribute;
-            return ruleAttribute.Category;
+            return ruleAttribute!.Category;
         }).Distinct().Order().ToList();
 
         CreateFolders(docsFolder, categories);
@@ -64,7 +64,7 @@ public class DocsGenerator
 
             var elements = GetRuleElements(t, ruleAttribute);
 
-            GenerateRuleMarkdown(comments, elements, ruleScripts, ruleAttribute, Path.Combine(docsFolder, ruleAttribute.Category), t.Assembly.GetName().Name, t.Namespace, t.Name);
+            GenerateRuleMarkdown(comments, elements, ruleScripts, ruleAttribute, Path.Combine(docsFolder, ruleAttribute!.Category), t.Assembly.GetName().Name, t.Namespace, t.Name);
         });
 
         GenerateTocMarkdown(rules, categories, ruleScripts, reader, docsFolder);
@@ -177,7 +177,7 @@ public class DocsGenerator
         stringBuilder.AppendLine(spaces);
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{attribute.Description}");
 
-        if (!string.IsNullOrWhiteSpace(comments.Summary))
+        if (!string.IsNullOrWhiteSpace(comments?.Summary))
         {
             stringBuilder.AppendLine(spaces);
             stringBuilder.AppendLine("## Summary");
@@ -211,7 +211,7 @@ public class DocsGenerator
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(comments.Remarks))
+        if (!string.IsNullOrWhiteSpace(comments?.Remarks))
         {
             stringBuilder.AppendLine(spaces);
             stringBuilder.AppendLine("### Remarks");
@@ -256,8 +256,8 @@ public class DocsGenerator
             stringBuilder.AppendLine("| Rule Id | Friendly Name | Ignorable | Description | Example? |");
             stringBuilder.AppendLine("|----|----|----|----|----|");
             var categoryRules = sqlServerRules
-                .Where(t => ((ExportCodeAnalysisRuleAttribute)t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault()).Category == category)
-                .OrderBy(t => ((ExportCodeAnalysisRuleAttribute)t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault()).Id)
+                .Where(t => ((ExportCodeAnalysisRuleAttribute)t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault())!.Category == category)
+                .OrderBy(t => ((ExportCodeAnalysisRuleAttribute)t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault())!.Id)
                 .ToList();
             foreach (var rule in categoryRules)
             {
@@ -287,21 +287,27 @@ public class DocsGenerator
 
                 exampleMd = string.IsNullOrWhiteSpace(exampleMd) ? " " : "Yes";
 
-                var ruleAttribute = (ExportCodeAnalysisRuleAttribute)rule.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault();
+                var ruleAttribute = rule.GetCustomAttributes<ExportCodeAnalysisRuleAttribute>(false).First();
 
-                if (ruleAttribute.Id.StartsWith("Smells.", StringComparison.OrdinalIgnoreCase))
+                if (ruleAttribute != null)
                 {
-                    friendlyName = ruleAttribute.Description;
-                    isIgnorable = " ";
-                }
+                    if (ruleAttribute.Id.StartsWith("Smells.", StringComparison.OrdinalIgnoreCase))
+                    {
+                        friendlyName = ruleAttribute.Description;
+                        isIgnorable = " ";
+                    }
 
-                if (exampleMd == " ")
-                {
-                    exampleMd = ruleScripts.Any(x => x.Key.Contains(ruleAttribute.Id.ToId(), StringComparison.OrdinalIgnoreCase)) ? "Yes" : " ";
-                }
+                    if (exampleMd == " ")
+                    {
+                        exampleMd = ruleScripts.Any(x => x.Key.Contains(ruleAttribute.Id.ToId(), StringComparison.OrdinalIgnoreCase)) ? "Yes" : " ";
+                    }
 
-                var ruleLink = $"[{ruleAttribute.Id.ToId()}]({category}/{ruleAttribute.Id.ToId()}.md)";
-                stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| {ruleLink} | {friendlyName} | {isIgnorable} | {ruleAttribute.Description?.Replace("|", "&#124;", StringComparison.OrdinalIgnoreCase)} | {exampleMd} |");
+                    var ruleLink = string.Empty;
+
+                    ruleLink = $"[{ruleAttribute.Id.ToId()}]({category}/{ruleAttribute.Id.ToId()}.md)";
+
+                    stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| {ruleLink} | {friendlyName} | {isIgnorable} | {ruleAttribute!.Description?.Replace("|", "&#124;", StringComparison.OrdinalIgnoreCase)} | {exampleMd} |");
+                }
             }
         }
 

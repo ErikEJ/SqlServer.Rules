@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -87,6 +87,12 @@ namespace SqlServer.Rules.Design
             else if (sqlObj.ObjectType == Table.TypeClass)
             {
                 var createTable = ruleExecutionContext.ScriptFragment as CreateTableStatement;
+
+                if (createTable == null)
+                {
+                    return problems;
+                }
+
                 var identityColumn = createTable.Definition.ColumnDefinitions.FirstOrDefault(cd => cd.IdentityOptions != null);
                 if (identityColumn != null)
                 {

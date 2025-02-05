@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -89,6 +89,11 @@ namespace SqlServer.Rules.Performance
                     {
                         var indexColumnExists = false;
                         var column = inClause.Expression as ColumnReferenceExpression;
+
+                        if (column == null)
+                        {
+                            continue;
+                        }
 
                         var table = GetTableFromColumn(sqlObj, query, column);
 
