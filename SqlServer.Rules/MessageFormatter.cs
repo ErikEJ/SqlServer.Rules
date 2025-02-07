@@ -1,3 +1,7 @@
+#if NETFRAMEWORK
+using SqlServer.Dac;
+#endif
+
 namespace SqlServer.Rules
 {
     internal static class MessageFormatter

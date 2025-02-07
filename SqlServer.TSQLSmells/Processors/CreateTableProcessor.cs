@@ -13,8 +13,13 @@ namespace TSQLSmellSCA
 
         public void ProcessCreateTable(CreateTableStatement tblStmt)
         {
+#if NETSTANDARD
             var isTemp = tblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith('#') ||
                           tblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith('@');
+#else
+            var isTemp = tblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith("#", System.StringComparison.Ordinal) ||
+                          tblStmt.SchemaObjectName.BaseIdentifier.Value.StartsWith("@", System.StringComparison.Ordinal);
+#endif
 
             if (tblStmt.SchemaObjectName.SchemaIdentifier == null &&
                 !isTemp)
