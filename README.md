@@ -6,7 +6,9 @@
 
 A library of SQL best practices implemented as more than 120 [database code analysis rules](https://learn.microsoft.com/sql/tools/sql-database-projects/concepts/sql-code-analysis/sql-code-analysis?view=sql-server-ver15&pivots=sq1-visual-studio-sdk#sql-project-file-sample-and-syntax) checked at build.
 
-The rules can be added as NuGet packages to SQL projects based on either [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx)
+The rules can be added as NuGet packages to modern SQL Database projects based on either [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx).
+
+You can also download and manually use the rules with Visual Studio and "classic" SQL Database projects, as described in my [blog post here](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html#addrules).
 
 For a complete list of the current rules we have implemented see [here](docs/table_of_contents.md).
 
