@@ -59,5 +59,54 @@ namespace SqlServer.Dac
 
             return Comparer.Equals(value1, value2);
         }
+
+#if NETFRAMEWORK
+        public static bool Contains(this string str, char value, StringComparison comparison)
+        {
+            return str.IndexOf(new string(value, 1), comparison) >= 0;
+        }
+
+        public static bool Contains(this string str, string value, StringComparison comparison)
+        {
+            return str.IndexOf(value, comparison) >= 0;
+        }
+
+        public static bool StartsWith(this string str, char value)
+        {
+            return str.Length > 0 && str[0] == value;
+        }
+
+        public static string Replace(this string str, string find, string replace, StringComparison comparison)
+        {
+            var index = str.IndexOf(find, comparison);
+
+            while (index >= 0)
+            {
+                str = str.Remove(index, find.Length).Insert(index, replace);
+                index = str.IndexOf(find, index + replace.Length, comparison);
+            }
+
+            return str;
+        }
+
+        public static int GetHashCode(this string str, StringComparison comparison)
+        {
+            return GetComparer(comparison).GetHashCode(str);
+        }
+
+        private static StringComparer GetComparer(this StringComparison comparison)
+        {
+            return comparison switch
+            {
+                StringComparison.CurrentCulture => StringComparer.CurrentCulture,
+                StringComparison.CurrentCultureIgnoreCase => StringComparer.CurrentCultureIgnoreCase,
+                StringComparison.InvariantCulture => StringComparer.InvariantCulture,
+                StringComparison.InvariantCultureIgnoreCase => StringComparer.InvariantCultureIgnoreCase,
+                StringComparison.Ordinal => StringComparer.Ordinal,
+                StringComparison.OrdinalIgnoreCase => StringComparer.OrdinalIgnoreCase,
+                _ => throw new ArgumentOutOfRangeException(nameof(comparison), comparison, null),
+            };
+        }
+#endif
     }
 }
