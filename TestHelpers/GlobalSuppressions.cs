@@ -5,4 +5,5 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+[assembly: SuppressMessage("Design", "CA1002:Do not expose generic lists", Justification = "Test")]
 [assembly: SuppressMessage("Maintainability", "CA1515:Consider making public types internal", Justification = "Test")]

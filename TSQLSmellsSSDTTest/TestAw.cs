@@ -1,6 +1,6 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TSQLSmellsSSDTTest.TestHelpers;
+using TestHelpers;
 
 namespace TSQLSmellsSSDTTest;
 

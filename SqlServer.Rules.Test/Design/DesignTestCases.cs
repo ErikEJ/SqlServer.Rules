@@ -3,7 +3,7 @@ using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlServer.Rules.Design;
 
-namespace SqlServer.Rules.Tests.Performance;
+namespace SqlServer.Rules.Tests.Design;
 
 [TestClass]
 [TestCategory("Design")]
