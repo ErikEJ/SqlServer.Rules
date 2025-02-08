@@ -4,23 +4,25 @@ using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TSQLSmellsSSDTTest.TestHelpers;
+namespace TestHelpers;
 
 public class TestModel
 {
+    private TSqlModel Model { get; set; }
+
+    private string Prefix { get; set; }
+
+    public TestModel(string prefix = "Smells.")
+    {
+        Model = new TSqlModel(SqlServerVersion.Sql150, null);
+        Prefix = prefix;
+    }
+
     public List<TestProblem> ExpectedProblems { get; private set; } = [];
 
     public List<TestProblem> FoundProblems { get; private set; } = [];
 
     public List<string> TestFiles { get; private set; } = [];
-
-    private TSqlModel Model { get; set; }
-
-    public void BuildModel()
-    {
-        Model = new TSqlModel(SqlServerVersion.Sql110, null);
-        AddFilesToModel();
-    }
 
     public void AddFilesToModel()
     {
@@ -46,7 +48,7 @@ public class TestModel
         foreach (var Problem in result.Problems)
         {
             // Only concern ourselves with our problems
-            if (Problem.RuleId.StartsWith("Smells.", System.StringComparison.OrdinalIgnoreCase))
+            if (Problem.RuleId.StartsWith(Prefix, System.StringComparison.OrdinalIgnoreCase))
             {
 #pragma warning disable SA1312 // Variable names should begin with lower-case letter
                 var TestProblem = new TestProblem(Problem.StartLine, Problem.StartColumn, Problem.RuleId);
@@ -68,7 +70,7 @@ public class TestModel
 
     public void RunTest()
     {
-        BuildModel();
+        AddFilesToModel();
         RunSCARules();
     }
 }
