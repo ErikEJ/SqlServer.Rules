@@ -26,37 +26,30 @@ public class TestModel
 
     public void AddFilesToModel()
     {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-        foreach (var FileName in TestFiles)
+        foreach (var fileName in TestFiles)
         {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-            var FileContent = string.Empty;
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-            using (var reader = new StreamReader(FileName))
+            var fileContent = string.Empty;
+            using (var reader = new StreamReader(fileName))
             {
-                FileContent += reader.ReadToEnd();
+                fileContent += reader.ReadToEnd();
             }
 
-            Model.AddObjects(FileContent);
+            Model.AddObjects(fileContent);
         }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
     }
 
     public void SerializeResultOutput(CodeAnalysisResult result)
     {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-        foreach (var Problem in result.Problems)
+        foreach (var problem in result.Problems)
         {
             // Only concern ourselves with our problems
-            if (Problem.RuleId.StartsWith(Prefix, System.StringComparison.OrdinalIgnoreCase))
+            if (problem.RuleId.StartsWith(Prefix, System.StringComparison.OrdinalIgnoreCase))
             {
-#pragma warning disable SA1312 // Variable names should begin with lower-case letter
-                var TestProblem = new TestProblem(Problem.StartLine, Problem.StartColumn, Problem.RuleId);
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
-                FoundProblems.Add(TestProblem);
+                var testProblem = new TestProblem(problem.StartLine, problem.StartColumn, problem.RuleId);
+
+                FoundProblems.Add(testProblem);
             }
         }
-#pragma warning restore SA1312 // Variable names should begin with lower-case letter
     }
 
     public void RunSCARules()
