@@ -38,15 +38,22 @@ You can read more about using and customizing the rules in the [readme here](htt
 
 `src`
 
-- `SqlServer.Dac` - This hold visitors and other utility code
 - `SqlServer.Rules` - This holds the rules derived from `SqlCodeAnalysisRule`
 - `TSQLSmellSCA` - an additional set of rules `TSQL Smells` forked from [TSQL-Smells](https://github.com/davebally/TSQL-Smells)
 
 `test`
 
+- `SqlServer.Rules.Tests` - a few test to demonstrate unit testing of rules
+- `TSQLSmellsSSDTTest` - unit tests of some of the `TSQL Smells` rules
+- `TestHelpers` - shared test base classes
+
+`test/rulescli`
+
 - `SqlServer.Rules.Generator` - a quick console app to report on all rules in a SQL Project.
 - `SqlServer.Rules.Report` - Library for evaluating a rule and serializing the result.
-- `SqlServer.Rules.Tests` - a few test to demonstrate unit testing of rules
+
+`test/sqlprojects`
+
+- `AW` - AdventureWorks schema SQL Project for rules validation
 - `TestDatabase` - a small SQL Database Project with some rule violations
-- `TSQLSmellsSSDTTest` - unit tests of some of the `TSQL Smells` rules
 - `TSQLSmellsTest` - a SQL Database Project with some rule violations
