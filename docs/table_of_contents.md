@@ -111,6 +111,7 @@
 | [SRD0063](Design/SRD0063.md) | Avoid wrapping SQL in IF statement | Yes | Do not use IF statements containing queries in stored procedures. | Yes |
 | [SRD0064](Design/SRD0064.md) | Consider Caching Get Date To Variable | Yes | Cache multiple calls to GETDATE or SYSDATETIME into a variable. |   |
 | [SRD0065](Design/SRD0065.md) | Avoid NOT FOR REPLICATION |   | Avoid 'NOT FOR REPLICATION' unless this is the desired behavior and replication is in use. |   |
+| [SRD0066](Design/SRD0066.md) | BEGIN and END symbols inside conditional statements. | Yes | Use BEGIN and END symbols inside conditional statements. | Yes |
   
 ## Naming
   
@@ -133,7 +134,7 @@
 | [SRP0006](Performance/SRP0006.md) | Use of inequality | Yes | Try to avoid using not equal operator (<>,!=) in the WHERE clause if possible. (Sargable) |   |
 | [SRP0007](Performance/SRP0007.md) | Dangling cursor |   | Local cursor not closed. |   |
 | [SRP0008](Performance/SRP0008.md) | Unfreed cursor |   | Local cursor not explicitly deallocated. |   |
-| [SRP0009](Performance/SRP0009.md) | Filtering on calculated value | Yes | Avoid wrapping columns within a function in the WHERE clause. (Sargable) |   |
+| [SRP0009](Performance/SRP0009.md) | Filtering on calculated value | Yes | Avoid wrapping columns within a function in the WHERE clause. (Sargable) | Yes |
 | [SRP0010](Performance/SRP0010.md) | Function in data modification | Yes | Avoid the use of user defined functions with UPDATE/INSERT/DELETE statements. (Halloween Protection) |   |
 | [SRP0011](Performance/SRP0011.md) | Non-member test in predicate | Yes | Avoid using the NOT IN predicate in a WHERE clause. (Sargable) |   |
 | [SRP0012](Performance/SRP0012.md) | Un-indexed membership test | Yes | Consider indexing the columns referenced by IN predicates in order to avoid table scans. |   |
