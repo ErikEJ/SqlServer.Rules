@@ -58,7 +58,7 @@ public class TestModel
         var result = service.Analyze(Model);
         SerializeResultOutput(result);
 
-        CollectionAssert.AreEquivalent(FoundProblems, ExpectedProblems);
+        CollectionAssert.AreEquivalent(ExpectedProblems, FoundProblems);
     }
 
     public void RunTest()
