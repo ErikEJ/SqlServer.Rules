@@ -9,29 +9,58 @@ namespace ErikEJ.SqlAnalyzer;
 
 internal sealed class AnalyzerFactory
 {
+    private readonly SqlFileCollector sqlFileCollector = new();
+    private readonly HashSet<string> ignoredRules = new();
+    private readonly HashSet<string> ignoredRuleSets = new();
+    private readonly HashSet<string> errorRuleSets = new();
+    private readonly char[] separator = [';'];
+
     public int Create(AnalyzerOptions request)
     {
-        // TODO Collect all script paths and validate that they exist
-        // if no files found, return with error message
-        var fileName = request.Scripts.First();
-
         var sw = Stopwatch.StartNew();
 
-        using var model = new TSqlModel(SqlServerVersion.Sql160, new TSqlModelOptions());
+        if (!string.IsNullOrWhiteSpace(request.Rules))
+        {
+            BuildRuleLists(request.Rules);
+        }
 
-        model.AddOrUpdateObjects(File.ReadAllText(fileName), fileName, new TSqlObjectOptions());
+        SendNotification($"Loading files", Color.Default);
+
+        var files = sqlFileCollector.ProcessList(request.Scripts);
+
+        if (files.Count == 0)
+        {
+            DisplayService.Error("No files found to analyze");
+            return 1;
+        }
+
+        using var model = new TSqlModel(request.SqlVersion, new TSqlModelOptions());
+
+        foreach (var (fileName, fileContents) in files)
+        {
+            model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
+        }
 
         var factory = new CodeAnalysisServiceFactory();
         var service = factory.CreateAnalysisService(model);
 
-        // TODO supress and ignore rules - see PackageAnalyzer implementation
+        if (ignoredRules.Count > 0
+                    || ignoredRuleSets.Count > 0)
+        {
+            service.SetProblemSuppressor(p => ignoredRules.Contains(p.Rule.RuleId)
+                || ignoredRuleSets.Any(s => p.Rule.RuleId.StartsWith(s, StringComparison.OrdinalIgnoreCase)));
+        }
+
         sw.Stop();
         SendNotification($"Loading files completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Default);
 
         sw = Stopwatch.StartNew();
 
-        // process non-suppressed rules
-        var result = service.Analyze(model);
+        var result = DisplayService.Wait(
+            "Analyzing scripts...",
+            () => service.Analyze(model));
+
+        sw.Stop();
 
         foreach (var err in result.InitializationErrors)
         {
@@ -52,17 +81,65 @@ internal sealed class AnalyzerFactory
         {
             foreach (var err in result.Problems)
             {
-                // TODO Add support for error wild cards parameter here
-                SendNotification(err.GetOutputMessage([]), Color.Yellow);
+                var warning = err.GetOutputMessage(errorRuleSets);
+
+                DisplayService.MarkupLine(
+                () => DisplayService.Markup("warning:", Color.Yellow),
+                () => DisplayService.Markup(
+                    warning
+                    .Replace("[", "[[", StringComparison.OrdinalIgnoreCase)
+                    .Replace("]", "]]", StringComparison.OrdinalIgnoreCase),
+                    Decoration.None));
             }
+
+            SendNotification($"Analysis completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)} with {result.Problems.Count} problems", Color.Default);
+
+            return 0;
         }
 
-        SendNotification($"Analysis completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Default);
-        return 0;
+        DisplayService.Error($"Analysis failed");
+
+        return 1;
     }
 
     private void SendNotification(string message, Color color)
     {
+        DisplayService.MarkupLine(string.Empty, color);
         DisplayService.MarkupLine(message, color);
+    }
+
+    private void BuildRuleLists(string rulesExpression)
+    {
+        rulesExpression = rulesExpression.Remove(0, 6);
+
+        if (!string.IsNullOrWhiteSpace(rulesExpression))
+        {
+            foreach (var rule in rulesExpression.Split(
+                separator,
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Where(rule => rule
+                        .StartsWith('-')
+                            && rule.Length > 1))
+            {
+                if (rule.Length > 2 && rule.EndsWith('*'))
+                {
+                    ignoredRuleSets.Add(rule[1..^1]);
+                }
+                else
+                {
+                    ignoredRules.Add(rule[1..]);
+                }
+            }
+
+            foreach (var rule in rulesExpression.Split(
+                separator,
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Where(rule => rule
+                        .StartsWith("+!", StringComparison.OrdinalIgnoreCase)
+                            && rule.Length > 2))
+            {
+                errorRuleSets.Add(rule[2..]);
+            }
+        }
     }
 }

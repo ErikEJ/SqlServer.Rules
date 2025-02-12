@@ -69,9 +69,10 @@ internal static class Program
         Console.WriteLine(HelpText.AutoBuild(parserResult, h =>
         {
             h.AddPostOptionsLine("SAMPLES:");
-            h.AddPostOptionsLine(@"  tsqlanalyze C:\scripts\sproc.sql");
-
-            // TODO : Add more samples
+            h.AddPostOptionsLine(@"  tsqlanalyze -i C:\scripts\sproc.sql");
+            h.AddPostOptionsLine(@"  tsqlanalyze -i file_one.sql file_two.sql ""c:\database scripts""");
+            h.AddPostOptionsLine(@"  tsqlanalyze -i c:\database_scripts\sp_ *.sql");
+            h.AddPostOptionsLine(@"  tsqlanalyze -i C:\scripts\sproc.sql - ""-SqlServer.Rules.SRD0004"" -s SqlAzure");
             return h;
         }));
 
