@@ -27,7 +27,7 @@ internal static class PackageService
             var resource = await repository.GetResourceAsync<PackageMetadataResource>().ConfigureAwait(false);
 
             var packages = await resource.GetMetadataAsync(
-                "ErikEJ.TSQLAnalyzer.Cli",
+                "ErikEJ.DacFX.TSQLAnalyzer.Cli",
                 includePrerelease: false,
                 includeUnlisted: false,
                 cache,

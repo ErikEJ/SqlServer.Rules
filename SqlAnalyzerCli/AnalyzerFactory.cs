@@ -26,7 +26,7 @@ internal sealed class AnalyzerFactory
 
         // TODO supress and ignore rules - see PackageAnalyzer implementation
         sw.Stop();
-        SendNotification($"Loading files completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Green);
+        SendNotification($"Loading files completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Default);
 
         sw = Stopwatch.StartNew();
 
@@ -35,17 +35,17 @@ internal sealed class AnalyzerFactory
 
         foreach (var err in result.InitializationErrors)
         {
-            SendNotification(err.Message, Color.Red);
+            DisplayService.Error(err.Message);
         }
 
         foreach (var err in result.SuppressionErrors)
         {
-            SendNotification(err.Message, Color.Red);
+            DisplayService.Error(err.Message);
         }
 
         foreach (var err in result.AnalysisErrors)
         {
-            SendNotification(err.Message, Color.Red);
+            DisplayService.Error(err.Message);
         }
 
         if (result.AnalysisSucceeded)
@@ -57,7 +57,7 @@ internal sealed class AnalyzerFactory
             }
         }
 
-        SendNotification($"Analysis completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Green);
+        SendNotification($"Analysis completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Default);
         return 0;
     }
 

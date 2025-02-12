@@ -39,12 +39,6 @@ internal static class DisplayService
         AnsiConsole.MarkupLine(string.Join(' ', messages!.Select(func => func())));
     }
 
-    public static string Markup<TEnum>(string message, TEnum decoration)
-        where TEnum : struct
-    {
-        return $"[{decoration}]{message}[/]";
-    }
-
     public static void Error(string message)
     {
         AnsiConsole.MarkupLineInterpolated(CultureInfo.InvariantCulture, $"[red]error: {message}[/]");

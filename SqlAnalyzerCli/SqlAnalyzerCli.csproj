@@ -12,7 +12,7 @@
     <Copyright>Copyright © ErikEJ 2025 - https://github.com/ErikEJ/SqlServer.Rules</Copyright>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tsqlanalyze</ToolCommandName>
-    <PackageId>ErikEJ.TSQLAnalyzer.Cli</PackageId>
+    <PackageId>ErikEJ.DacFX.TSQLAnalyzer.Cli</PackageId>
     <Description>T-SQL script analyzer command line tool</Description>
     <!--<PackageReadmeFile>readme.md</PackageReadmeFile>-->
     <PackageVersion>0.0.1-preview.1</PackageVersion>
