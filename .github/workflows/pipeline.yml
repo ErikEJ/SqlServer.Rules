@@ -10,6 +10,7 @@ name: .NET Pipeline
 # Publish NuGet (IF BRANCH==MASTER) - will publish new package if version has been manually bumped
 
 on:
+  workflow_dispatch:
   push:
     branches: [master]
   pull_request:
