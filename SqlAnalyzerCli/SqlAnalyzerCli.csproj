@@ -15,9 +15,9 @@
     <PackageId>ErikEJ.DacFX.TSQLAnalyzer.Cli</PackageId>
     <Description>T-SQL script analyzer command line tool</Description>
     <!--<PackageReadmeFile>readme.md</PackageReadmeFile>-->
-    <PackageVersion>0.0.1-preview.1</PackageVersion>
-    <InformationalVersion>0.0.1-preview.1</InformationalVersion>
-    <Version>0.0.1</Version>
+    <PackageVersion>0.9.1</PackageVersion>
+    <InformationalVersion>0.9.1</InformationalVersion>
+    <Version>0.9.1</Version>
     <RepositoryUrl>https://github.com/ErikEJ/SqlServer.Rules</RepositoryUrl>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
     <Authors>ErikEJ</Authors>
@@ -42,7 +42,7 @@
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" PrivateAssets="All" />
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="NuGet.Protocol" Version="6.12.1" />
+    <PackageReference Include="NuGet.Protocol" Version="6.13.1" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
   </ItemGroup>
 

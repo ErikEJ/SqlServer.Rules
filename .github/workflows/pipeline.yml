@@ -35,6 +35,10 @@ jobs:
       - name: Run Unit Tests
         run: dotnet test --no-build --configuration Release --verbosity normal
 
+      - name: Package CLI
+        if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
+        run: dotnet pack SqlAnalyzerCli\SqlAnalyzerCli.csproj -p:PackageVersion=0.9.${{ env.VERSION }}-nightly -p:InformationalVersion=0.9.${{ env.VERSION }}-nightly
+
       - name: Publish NuGet
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
         run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET }} --skip-duplicate
