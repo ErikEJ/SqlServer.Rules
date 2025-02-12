@@ -37,6 +37,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.2" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" PrivateAssets="All" />
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
