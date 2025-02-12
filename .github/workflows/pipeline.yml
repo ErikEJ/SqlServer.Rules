@@ -37,7 +37,7 @@ jobs:
 
       - name: Package CLI
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
-        run: dotnet pack SqlAnalyzerCli\SqlAnalyzerCli.csproj -p:PackageVersion=0.9.${{ env.VERSION }}-nightly -p:InformationalVersion=0.9.${{ env.VERSION }}-nightly
+        run: dotnet pack SqlAnalyzerCli/SqlAnalyzerCli.csproj -p:PackageVersion=0.9.${{ env.VERSION }}-nightly -p:InformationalVersion=0.9.${{ env.VERSION }}-nightly
 
       - name: Publish NuGet
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
