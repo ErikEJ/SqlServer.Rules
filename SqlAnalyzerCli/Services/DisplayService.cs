@@ -50,9 +50,9 @@ internal static class DisplayService
         AnsiConsole.MarkupLineInterpolated(CultureInfo.InvariantCulture, $"[red]error: {message}[/]");
     }
 
-    public static T Wait<T>(string message, Func<T> doFunc)
+    public static T? Wait<T>(string message, Func<T> doFunc)
     {
-        T result = default;
+        T? result = default;
         AnsiConsole.Status()
             .Start(message, ctx =>
             {
@@ -63,5 +63,4 @@ internal static class DisplayService
 
         return result;
     }
-
 }

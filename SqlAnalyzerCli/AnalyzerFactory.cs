@@ -62,6 +62,12 @@ internal sealed class AnalyzerFactory
 
         sw.Stop();
 
+        if (result == null)
+        {
+            DisplayService.Error("Analysis failed");
+            return 1;
+        }
+
         foreach (var err in result.InitializationErrors)
         {
             DisplayService.Error(err.Message);
