@@ -14,7 +14,7 @@
     <ToolCommandName>tsqlanalyze</ToolCommandName>
     <PackageId>ErikEJ.DacFX.TSQLAnalyzer.Cli</PackageId>
     <Description>T-SQL script analyzer command line tool</Description>
-    <!--<PackageReadmeFile>readme.md</PackageReadmeFile>-->
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageVersion>0.9.1</PackageVersion>
     <InformationalVersion>0.9.1</InformationalVersion>
     <Version>0.9.1</Version>
@@ -29,17 +29,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="1.2.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="1.2.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <None Include="readme.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="1.2.1" />
+    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="1.2.1" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.2" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" />
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="NuGet.Protocol" Version="6.13.1" />

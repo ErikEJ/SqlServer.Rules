@@ -71,8 +71,8 @@ internal static class Program
             h.AddPostOptionsLine("SAMPLES:");
             h.AddPostOptionsLine(@"  tsqlanalyze -i C:\scripts\sproc.sql");
             h.AddPostOptionsLine(@"  tsqlanalyze -i file_one.sql file_two.sql ""c:\database scripts""");
-            h.AddPostOptionsLine(@"  tsqlanalyze -i c:\database_scripts\sp_ *.sql");
-            h.AddPostOptionsLine(@"  tsqlanalyze -i C:\scripts\sproc.sql - ""-SqlServer.Rules.SRD0004"" -s SqlAzure");
+            h.AddPostOptionsLine(@"  tsqlanalyze -i c:\database_scripts\sp_*.sql");
+            h.AddPostOptionsLine(@"  tsqlanalyze -i C:\scripts\sproc.sql -r Rules:-SqlServer.Rules.SRD0004 -s SqlAzure");
             return h;
         }));
 
