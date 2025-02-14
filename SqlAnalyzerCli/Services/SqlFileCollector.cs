@@ -1,6 +1,5 @@
-using Microsoft.Extensions.FileSystemGlobbing;
 using System.Collections.Concurrent;
-using System.Text.RegularExpressions;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace SqlAnalyzerCli.Services
 {
