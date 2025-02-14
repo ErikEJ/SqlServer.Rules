@@ -1,4 +1,6 @@
+using Microsoft.Extensions.FileSystemGlobbing;
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 
 namespace SqlAnalyzerCli.Services
 {
@@ -6,7 +8,14 @@ namespace SqlAnalyzerCli.Services
     {
         private readonly ConcurrentDictionary<string, string> files = new();
 
-        private readonly GlobPatternMatcher matcher = new();
+        private readonly GlobPatternMatcher globPatternMatcher;
+
+        public SqlFileCollector()
+        {
+            var matcher = new Matcher();
+            matcher.AddInclude("**/*.sql");
+            globPatternMatcher = new GlobPatternMatcher(matcher);
+        }
 
         public Dictionary<string, string> ProcessList(IList<string> filePaths)
         {
@@ -45,9 +54,9 @@ namespace SqlAnalyzerCli.Services
 
         private void ProcessDirectory(string path)
         {
-            Parallel.ForEach(matcher.GetResultsInFullPath(path), (file) =>
+            Parallel.ForEach(globPatternMatcher.GetResultsInFullPath(path), (file) =>
             {
-                ProcessList(matcher.GetResultsInFullPath(path).ToList());
+                ProcessIfSqlFile(file);
             });
         }
 
