@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-i C:\\Code\\Github\\SqlServer.Rules\\TSQLSmellsTest\\UpperFunction.sql \"C:\\Code\\Github\\SqlServer.Rules\\AW\\Tables\\*.sql\" -r Rules:-SqlServer.Rules.SRD0004 -s SqlAzure"
+      "commandLineArgs": "-i \"C:\\Temp\\Cnug\\Sql\\Stored Procedures\""
     }
   }
 }
