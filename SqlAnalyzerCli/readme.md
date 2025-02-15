@@ -8,7 +8,7 @@ It evaluates more than [140 rules](https://github.com/ErikEJ/SqlServer.Rules/blo
 
 The tool runs on any system with the .NET 8.0 runtime installed. 
 
-### Installing the tool
+### Installing the tool (currently in preview)
 
 ```bash
 dotnet tool install --global ErikEJ.DacFX.TSQLAnalyzer.Cli --version *-*
