@@ -95,7 +95,7 @@ internal sealed class AnalyzerFactory
 
                 if (request.NoLogo)
                 {
-                    DisplayService.MarkupLine(warning, Color.Default);
+                    Console.WriteLine(warning);
                 }
                 else
                 {
