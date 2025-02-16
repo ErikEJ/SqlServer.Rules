@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-i \"C:\\Temp\\Cnug\\Sql\\Stored Procedures\""
+      "commandLineArgs": "-n -i \"C:\\Temp\\Cnug\\Sql\\Stored Procedures\""
     }
   }
 }

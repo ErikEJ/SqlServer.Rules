@@ -49,7 +49,11 @@ internal static class Program
 
     private static int Run(AnalyzerOptions options)
     {
-        DisplayHeader(options);
+        if (!options.NoLogo)
+        {
+            DisplayHeader(options);
+        }
+
         var analyzerFactory = new AnalyzerFactory();
         return analyzerFactory.Create(options);
     }

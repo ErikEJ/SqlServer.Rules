@@ -27,4 +27,11 @@ internal sealed class AnalyzerOptions
         Required = false,
         HelpText = "Used to specify the server release version, like 'Sql160' or 'SqlAzure' - defaults to 'Sql160'")]
     public SqlServerVersion SqlVersion { get; set; } = SqlServerVersion.Sql160;
+
+    [Option(
+    'n',
+    longName: "nologo",
+    Required = false,
+    HelpText = "Compact output without logo and informational messages")]
+    public bool NoLogo { get; set; }
 }

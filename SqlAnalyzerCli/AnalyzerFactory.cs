@@ -24,7 +24,7 @@ internal sealed class AnalyzerFactory
             BuildRuleLists(request.Rules);
         }
 
-        SendNotification($"Loading files", Color.Default);
+        SendNotification($"Loading files", Color.Default, request.NoLogo);
 
         var files = sqlFileCollector.ProcessList(request.Scripts);
 
@@ -52,7 +52,7 @@ internal sealed class AnalyzerFactory
         }
 
         sw.Stop();
-        SendNotification($"Loading files completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Default);
+        SendNotification($"Loading files completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}", Color.Default, request.NoLogo);
 
         sw = Stopwatch.StartNew();
 
@@ -89,16 +89,23 @@ internal sealed class AnalyzerFactory
             {
                 var warning = err.GetOutputMessage(errorRuleSets);
 
-                DisplayService.MarkupLine(
-                () => DisplayService.Markup("warning:", Color.Yellow),
-                () => DisplayService.Markup(
-                    warning
+                warning = warning
                     .Replace("[", "[[", StringComparison.OrdinalIgnoreCase)
-                    .Replace("]", "]]", StringComparison.OrdinalIgnoreCase),
-                    Decoration.None));
+                    .Replace("]", "]]", StringComparison.OrdinalIgnoreCase);
+
+                if (request.NoLogo)
+                {
+                    DisplayService.MarkupLine(warning, Color.Default);
+                }
+                else
+                {
+                    DisplayService.MarkupLine(
+                    () => DisplayService.Markup("warning:", Color.Yellow),
+                    () => DisplayService.Markup(warning, Decoration.None));
+                }
             }
 
-            SendNotification($"Analysis completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)} with {result.Problems.Count} problems", Color.Default);
+            SendNotification($"Analysis completed in: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)} with {result.Problems.Count} problems", Color.Default, request.NoLogo);
 
             return 0;
         }
@@ -108,8 +115,13 @@ internal sealed class AnalyzerFactory
         return 1;
     }
 
-    private void SendNotification(string message, Color color)
+    private void SendNotification(string message, Color color, bool noLogo)
     {
+        if (noLogo)
+        {
+            return;
+        }
+
         DisplayService.MarkupLine(string.Empty, color);
         DisplayService.MarkupLine(message, color);
     }
