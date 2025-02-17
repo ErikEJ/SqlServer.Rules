@@ -10,7 +10,7 @@ The rules can be added as NuGet packages to modern SQL Database projects based o
 
 You can also download and manually use the rules with Visual Studio and "classic" SQL Database projects, as described in my [blog post here](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html#addrules).
 
-For a complete list of the current rules we have implemented see [here](docs/table_of_contents.md).
+For a complete list of the current rules we have implemented see [here](docs/readme.md).
 
 > This fork also contains an additional set of rules `TSQL Smells` forked from [TSQL-Smells](https://github.com/davebally/TSQL-Smells)
 

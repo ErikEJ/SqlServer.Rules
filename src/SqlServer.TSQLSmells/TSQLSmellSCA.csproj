@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net462</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
@@ -6,7 +6,7 @@
     <PackageId>ErikEJ.DacFX.TSQLSmellSCA</PackageId>
     <Version>1.3.0</Version>
     <Authors>ErikEJ</Authors>
-    <Description>A package with some DacFX T-SQL analyzers - see https://github.com/davebally/TSQL-Smells</Description>
+    <Description>A package with some DacFX T-SQL analyzers - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
     <PackageReleaseNotes>Fix NRE</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

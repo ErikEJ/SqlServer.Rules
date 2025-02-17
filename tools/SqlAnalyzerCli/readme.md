@@ -2,7 +2,7 @@
 
 T-SQL Analyzer is a command line tool for identifying, and reporting the presence of anti-patterns in T-SQL scripts. 
 
-It evaluates more than [140 rules](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/table_of_contents.md) for design, naming and performance issues.
+It evaluates more than [140 rules](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md) for design, naming and performance issues.
 
 ## Getting started
 
