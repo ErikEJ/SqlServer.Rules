@@ -27,7 +27,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.6.0" Condition=" '$(TargetFramework)' == 'net462' " />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.2" Condition=" '$(TargetFramework)' == 'net462' " />
   </ItemGroup>
 
   <ItemGroup>
