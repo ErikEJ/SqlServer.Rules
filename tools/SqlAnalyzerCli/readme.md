@@ -36,4 +36,17 @@ The SQL Server verison values are documented [here](https://learn.microsoft.com/
 
 ## Sample output
 
+The tool will output a summary of the rules that were violated, and the line numbers where the violations occurred.
+
+Table3.sql:
+
+```sql
+CREATE TABLE [dbo].[Table3]
+(
+	[Id] INT NOT NULL, 
+    [Wang] NCHAR(500) NOT NULL, 
+    [Chung] NCHAR(10) NOT NULL 
+)
+```
+
 ![Sample](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/cli.png)

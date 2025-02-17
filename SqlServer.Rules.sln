@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A3CF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8FF2252D-599A-43EC-B907-AFFDDEAF0552}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\cli.yml = .github\workflows\cli.yml
 		.github\workflows\generate_docs.ps1 = .github\workflows\generate_docs.ps1
 		.github\workflows\pipeline.yml = .github\workflows\pipeline.yml
 	EndProjectSection
@@ -198,7 +199,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AW", "sqlprojects\AW\AW.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sqlprojects", "sqlprojects", "{4EB38410-F29F-4143-A19E-BE8AE8FEED26}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rulescli", "rulescli", "{AB713AEF-EE54-487A-AE70-8DD69973A2F9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{AB713AEF-EE54-487A-AE70-8DD69973A2F9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHelpers", "test\TestHelpers\TestHelpers.csproj", "{3C7202DD-13D0-4A99-A997-ADB664A88B0A}"
 EndProject
