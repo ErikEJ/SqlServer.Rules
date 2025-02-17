@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules", "SqlServer.Rules\SqlServer.Rules.csproj", "{352B071F-CE87-434D-9432-C118C6A9F523}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules", "src\SqlServer.Rules\SqlServer.Rules.csproj", "{352B071F-CE87-434D-9432-C118C6A9F523}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3405B639-54DE-4180-80A1-3B8A22AD693D}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,11 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules.Generator", "SqlServer.Rules.Generator\SqlServer.Rules.Generator.csproj", "{FA176464-41C2-4EF5-8FBC-ADA435F33FAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules.Generator", "tools\SqlServer.Rules.Generator\SqlServer.Rules.Generator.csproj", "{FA176464-41C2-4EF5-8FBC-ADA435F33FAE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules.Report", "SqlServer.Rules.Report\SqlServer.Rules.Report.csproj", "{B8C13F50-FE33-4416-AA9B-9502F4C039F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules.Report", "tools\SqlServer.Rules.Report\SqlServer.Rules.Report.csproj", "{B8C13F50-FE33-4416-AA9B-9502F4C039F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules.Tests", "SqlServer.Rules.Test\SqlServer.Rules.Tests.csproj", "{54816BB2-6952-4573-BA7C-B387D86D5425}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules.Tests", "test\SqlServer.Rules.Test\SqlServer.Rules.Tests.csproj", "{54816BB2-6952-4573-BA7C-B387D86D5425}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A3CFDF6A-9D73-4814-BE43-DD223FE1C275}"
 	ProjectSection(SolutionItems) = preProject
@@ -93,6 +93,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Design", "Design", "{544D4A
 		docs\Design\SRD0063.md = docs\Design\SRD0063.md
 		docs\Design\SRD0064.md = docs\Design\SRD0064.md
 		docs\Design\SRD0065.md = docs\Design\SRD0065.md
+		docs\Design\SRD0066.md = docs\Design\SRD0066.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Naming", "Naming", "{B1B0D9D0-3F3A-476A-A71A-58FFEC5A47FB}"
@@ -130,13 +131,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance"
 		docs\Performance\SRP0024.md = docs\Performance\SRP0024.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLSmellSCA", "SqlServer.TSQLSmells\TSQLSmellSCA.csproj", "{0E07F4CD-6CDB-4B3A-B8D5-F88B3B26E58C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLSmellSCA", "src\SqlServer.TSQLSmells\TSQLSmellSCA.csproj", "{0E07F4CD-6CDB-4B3A-B8D5-F88B3B26E58C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDatabase", "TestDatabase\TestDatabase.csproj", "{F07AAB67-97A5-4D2D-B808-145886DD960D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDatabase", "sqlprojects\TestDatabase\TestDatabase.csproj", "{F07AAB67-97A5-4D2D-B808-145886DD960D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLSmellsSSDTTest", "TSQLSmellsSSDTTest\TSQLSmellsSSDTTest.csproj", "{3F96C1BE-A925-4DA8-A8F6-24575E677B48}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLSmellsSSDTTest", "test\TSQLSmellsSSDTTest\TSQLSmellsSSDTTest.csproj", "{3F96C1BE-A925-4DA8-A8F6-24575E677B48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLSmellsTest", "TSQLSmellsTest\TSQLSmellsTest.csproj", "{58DB81BD-4FDC-4CA8-9E64-7757ED5C2D7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLSmellsTest", "sqlprojects\TSQLSmellsTest\TSQLSmellsTest.csproj", "{58DB81BD-4FDC-4CA8-9E64-7757ED5C2D7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C0D903F7-17F9-4855-A9C7-5AC113467B37}"
 EndProject
@@ -193,15 +194,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeSmells", "CodeSmells", 
 		docs\CodeSmells\SML047.md = docs\CodeSmells\SML047.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AW", "AW\AW.csproj", "{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AW", "sqlprojects\AW\AW.csproj", "{5C1EBE40-9F1A-449A-B025-6F0A623FB5C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sqlprojects", "sqlprojects", "{4EB38410-F29F-4143-A19E-BE8AE8FEED26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rulescli", "rulescli", "{AB713AEF-EE54-487A-AE70-8DD69973A2F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHelpers", "TestHelpers\TestHelpers.csproj", "{3C7202DD-13D0-4A99-A997-ADB664A88B0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHelpers", "test\TestHelpers\TestHelpers.csproj", "{3C7202DD-13D0-4A99-A997-ADB664A88B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlAnalyzerCli", "SqlAnalyzerCli\SqlAnalyzerCli.csproj", "{E9D0C71E-D3A0-4D87-8E82-7DDBB42F7F07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlAnalyzerCli", "tools\SqlAnalyzerCli\SqlAnalyzerCli.csproj", "{E9D0C71E-D3A0-4D87-8E82-7DDBB42F7F07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
