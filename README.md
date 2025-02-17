@@ -47,12 +47,13 @@ You can read more about using and customizing the rules in the [readme here](htt
 - `TSQLSmellsSSDTTest` - unit tests of some of the `TSQL Smells` rules
 - `TestHelpers` - shared test base classes
 
-`test/rulescli`
+`tools`
 
+- `SqlAnalyzerCli` - a command line tool to run rules against a SQL Project
 - `SqlServer.Rules.Generator` - a quick console app to report on all rules in a SQL Project.
 - `SqlServer.Rules.Report` - Library for evaluating a rule and serializing the result.
 
-`test/sqlprojects`
+`sqlprojects`
 
 - `AW` - AdventureWorks schema SQL Project for rules validation
 - `TestDatabase` - a small SQL Database Project with some rule violations

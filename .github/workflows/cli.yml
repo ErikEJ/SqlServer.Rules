@@ -2,10 +2,6 @@ name: .NET Pipeline
 
 on:
   workflow_dispatch:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
 
 env:
   VERSION: ${{ github.run_number }}
@@ -27,8 +23,9 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Run Unit Tests
-        run: dotnet test --no-build --configuration Release --verbosity normal
+      - name: Package CLI
+        if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
+        run: dotnet pack SqlAnalyzerCli/SqlAnalyzerCli.csproj -p:PackageVersion=1.0.0-preview.{{ env.VERSION }} -p:InformationalVersion=1.0.0-preview.${{ env.VERSION }}
 
       - name: Publish NuGet
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
