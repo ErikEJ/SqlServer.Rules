@@ -1,4 +1,4 @@
-name: .NET Pipeline
+name: CLI Pipeline
 
 on:
   workflow_dispatch:
@@ -25,7 +25,7 @@ jobs:
 
       - name: Package CLI
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
-        run: dotnet pack SqlAnalyzerCli/SqlAnalyzerCli.csproj -p:PackageVersion=1.0.0-preview.{{ env.VERSION }} -p:InformationalVersion=1.0.0-preview.${{ env.VERSION }}
+        run: dotnet pack tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj -p:PackageVersion=1.0.0-preview.{{ env.VERSION }} -p:InformationalVersion=1.0.0-preview.${{ env.VERSION }}
 
       - name: Publish NuGet
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
