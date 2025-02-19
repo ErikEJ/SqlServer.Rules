@@ -50,6 +50,7 @@ You can read more about using and customizing the rules in the [readme here](htt
 `tools`
 
 - `SqlAnalyzerCli` - a command line tool to run rules against a SQL Project
+- `ErikEJ.DacFX.TSQLAnalyzer` - library and NuGet package for running rules against SQL scripts and reporting results. Used by `SqlAnalyzerCli`
 - `SqlServer.Rules.Generator` - a quick console app to report on all rules in a SQL Project.
 - `SqlServer.Rules.Report` - Library for evaluating a rule and serializing the result.
 
