@@ -44,6 +44,16 @@ public static class SqlRuleProblemExtensions
             sqlRuleProblemSeverity = SqlRuleProblemSeverity.Error;
         }
 
+        var link = string.Empty;
+
+        if (sqlRuleProblem.ShortRuleId.StartsWith("SR00", StringComparison.Ordinal))
+        {
+            if (RulesInfo.MicrosoftRules.TryGetValue(sqlRuleProblem.ShortRuleId, out var ruleInfo))
+            {
+                link = $" ({ruleInfo.Item1})";
+            }
+        }
+
         var stringBuilder = new StringBuilder();
         stringBuilder.Append(sqlRuleProblem.SourceName);
         stringBuilder.Append('(');
@@ -54,7 +64,7 @@ public static class SqlRuleProblemExtensions
         stringBuilder.Append(' ');
         stringBuilder.Append(sqlRuleProblemSeverity);
         stringBuilder.Append(' ');
-        stringBuilder.Append(sqlRuleProblem.ErrorMessageString);
+        stringBuilder.Append(sqlRuleProblem.ErrorMessageString + link);
 
         return stringBuilder.ToString();
     }
