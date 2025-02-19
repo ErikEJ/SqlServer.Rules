@@ -5,11 +5,11 @@
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackageId>ErikEJ.DacFX.TSQLAnalyzer</PackageId>
-    <Version>0.9.0-preview.1</Version>
+    <Version>0.9.0-preview.2</Version>
     <Authors>ErikEJ</Authors>
     <Description>A library for ad-hoc analysis of SQL scripts - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
-    <PackageReleaseNotes>Initial</PackageReleaseNotes>
+    <PackageReleaseNotes>MS links</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <MinClientVersion>5.0</MinClientVersion>
     <RepositoryUrl>https://github.com/ErikEJ/SqlServer.Rules</RepositoryUrl>
