@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-n -i \"C:\\Temp\\Cnug\\Sql\\Stored Procedures\""
+      "commandLineArgs": "-n -i C:\\Code\\Github\\SqlServer.Rules\\tools\\SqlAnalyzerCli\\testfiles\\broken.sql"
     }
   }
 }
