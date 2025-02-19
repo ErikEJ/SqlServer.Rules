@@ -49,4 +49,4 @@ CREATE TABLE [dbo].[Table3]
 )
 ```
 
-![Sample](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/cli.png)
+![Sample](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/cli.png)

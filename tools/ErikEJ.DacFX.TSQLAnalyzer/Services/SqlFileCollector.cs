@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.FileSystemGlobbing;
 
-namespace SqlAnalyzerCli.Services
+namespace ErikEJ.DacFX.TSQLAnalyzer.Services
 {
-    public class SqlFileCollector
+    internal sealed class SqlFileCollector
     {
         private readonly ConcurrentDictionary<string, string> files = new();
 
@@ -73,7 +73,7 @@ namespace SqlAnalyzerCli.Services
                 || filePath.Contains('?', StringComparison.OrdinalIgnoreCase);
             if (!containsWildCard)
             {
-                DisplayService.Error($"{filePath} is not a valid file path.");
+                ////DisplayService.Error($"{filePath} is not a valid file path.");
                 return;
             }
 
@@ -85,7 +85,7 @@ namespace SqlAnalyzerCli.Services
 
             if (!Directory.Exists(dirPath))
             {
-                DisplayService.Error($"Directory does not exist: {dirPath}");
+                ////DisplayService.Error($"Directory does not exist: {dirPath}");
                 return;
             }
 
