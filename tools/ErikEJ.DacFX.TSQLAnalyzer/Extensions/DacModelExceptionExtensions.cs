@@ -1,9 +1,9 @@
 using System.Text;
 using Microsoft.SqlServer.Dac.Model;
 
-namespace SqlAnalyzerCli.Extensions;
+namespace ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 
-internal static class DacModelExceptionExtensions
+public static class DacModelExceptionExtensions
 {
     public static string Format(this DacModelException exception, string fileName)
     {
@@ -30,5 +30,4 @@ internal static class DacModelExceptionExtensions
 
         return stringBuilder.ToString();
     }
-
 }

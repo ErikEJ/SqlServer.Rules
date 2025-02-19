@@ -1,8 +1,8 @@
 using Microsoft.Extensions.FileSystemGlobbing;
 
-namespace SqlAnalyzerCli.Services
+namespace ErikEJ.DacFX.TSQLAnalyzer.Services
 {
-    public class GlobPatternMatcher
+    internal sealed class GlobPatternMatcher
     {
         private readonly Matcher matcher = new Matcher();
 

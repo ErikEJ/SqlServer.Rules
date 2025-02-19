@@ -3,7 +3,7 @@ using Microsoft.SqlServer.Dac.Model;
 
 namespace ErikEJ.SqlAnalyzer;
 
-internal sealed class AnalyzerOptions
+internal sealed class CliAnalyzerOptions
 {
     [Value(0, MetaName = "output", HelpText = "Output file name", Required = false)]
 

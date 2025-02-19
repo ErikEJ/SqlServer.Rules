@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using CommandLine;
 using CommandLine.Text;
+using ErikEJ.DacFX.TSQLAnalyzer;
+using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 using Spectre.Console;
 using SqlAnalyzerCli.Services;
 
@@ -31,7 +33,7 @@ internal static class Program
             c.CaseInsensitiveEnumValues = true;
         });
 
-        var parserResult = parser.ParseArguments<AnalyzerOptions>(args);
+        var parserResult = parser.ParseArguments<CliAnalyzerOptions>(args);
 
         var res = 0;
 
@@ -47,18 +49,91 @@ internal static class Program
         return res;
     }
 
-    private static int Run(AnalyzerOptions options)
+    private static int Run(CliAnalyzerOptions options)
     {
         if (!options.NoLogo)
         {
             DisplayHeader(options);
         }
 
-        var analyzerFactory = new AnalyzerFactory();
-        return analyzerFactory.Create(options);
+        var analyzerOptions = new AnalyzerOptions
+        {
+            Rules = options.Rules,
+            SqlVersion = options.SqlVersion,
+        };
+
+        analyzerOptions.Scripts.AddRange(options.Scripts);
+
+        var analyzerFactory = new AnalyzerFactory(analyzerOptions);
+
+        AnalyzerResult result;
+
+        try
+        {
+            result = analyzerFactory.Analyze();
+        }
+        catch (ArgumentException aex)
+        {
+            DisplayService.Error(aex.Message);
+            return 1;
+        }
+
+        if (result?.Result == null)
+        {
+            DisplayService.Error("No result from analysis");
+            return 1;
+        }
+
+        foreach (var err in result.Result.InitializationErrors)
+        {
+            DisplayService.Error(err.Message);
+        }
+
+        foreach (var err in result.Result.SuppressionErrors)
+        {
+            DisplayService.Error(err.Message);
+        }
+
+        foreach (var err in result.Result.AnalysisErrors)
+        {
+            DisplayService.Error(err.Message);
+        }
+
+        if (result.ModelErrors.Count > 0)
+        {
+            foreach (var dex in result.ModelErrors)
+            {
+                DisplayService.Error(dex.Value.Format(dex.Key));
+            }
+        }
+
+        if (result.Result.AnalysisSucceeded)
+        {
+            foreach (var err in result.Result.Problems)
+            {
+                var warning = err.GetOutputMessage(analyzerOptions.Rules);
+
+                warning = warning
+                    .Replace("[", "[[", StringComparison.OrdinalIgnoreCase)
+                    .Replace("]", "]]", StringComparison.OrdinalIgnoreCase);
+
+                if (options.NoLogo)
+                {
+                    Console.WriteLine(warning);
+                }
+                else
+                {
+                    DisplayService.MarkupLine(
+                    () => DisplayService.Markup("warning:", Color.Yellow),
+                    () => DisplayService.Markup(warning, Decoration.None));
+                }
+            }
+        }
+
+        return 0;
     }
 
-    private static void DisplayHeader(AnalyzerOptions options)
+    private static void DisplayHeader(CliAnalyzerOptions options)
     {
         DisplayService.Title("T-SQL Analyze");
         DisplayService.MarkupLine(
@@ -68,7 +143,7 @@ internal static class Program
         DisplayService.MarkupLine();
     }
 
-    private static int DisplayHelp(ParserResult<AnalyzerOptions> parserResult, IEnumerable<Error> errors)
+    private static int DisplayHelp(ParserResult<CliAnalyzerOptions> parserResult, IEnumerable<Error> errors)
     {
         Console.WriteLine(HelpText.AutoBuild(parserResult, h =>
         {
