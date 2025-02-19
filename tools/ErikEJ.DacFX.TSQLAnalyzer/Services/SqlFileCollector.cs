@@ -73,8 +73,7 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
                 || filePath.Contains('?', StringComparison.OrdinalIgnoreCase);
             if (!containsWildCard)
             {
-                ////DisplayService.Error($"{filePath} is not a valid file path.");
-                return;
+                throw new ArgumentException($"{filePath} is not a valid file path.");
             }
 
             var dirPath = Path.GetDirectoryName(filePath);
@@ -85,8 +84,7 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
 
             if (!Directory.Exists(dirPath))
             {
-                ////DisplayService.Error($"Directory does not exist: {dirPath}");
-                return;
+                throw new ArgumentException($"Directory does not exist: {dirPath}");
             }
 
             var searchPattern = Path.GetFileName(filePath);
