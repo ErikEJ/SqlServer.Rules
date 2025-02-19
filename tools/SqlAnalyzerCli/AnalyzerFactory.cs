@@ -3,6 +3,7 @@ using System.Globalization;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Spectre.Console;
+using SqlAnalyzerCli.Extensions;
 using SqlAnalyzerCli.Services;
 
 namespace ErikEJ.SqlAnalyzer;
@@ -36,9 +37,25 @@ internal sealed class AnalyzerFactory
 
         using var model = new TSqlModel(request.SqlVersion, new TSqlModelOptions());
 
+        var filesAdded = 0;
+
         foreach (var (fileName, fileContents) in files)
         {
-            model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
+            try
+            {
+                model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
+                filesAdded++;
+            }
+            catch (DacModelException dex)
+            {
+                DisplayService.Error(dex.Format(fileName));
+            }
+        }
+
+        if (filesAdded == 0)
+        {
+            DisplayService.Error("No valid files to analyze");
+            return 1;
         }
 
         var factory = new CodeAnalysisServiceFactory();
