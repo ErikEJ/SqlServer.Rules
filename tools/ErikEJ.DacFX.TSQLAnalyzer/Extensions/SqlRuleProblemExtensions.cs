@@ -15,7 +15,7 @@ public static class SqlRuleProblemExtensions
         HashSet<string> errorRuleSets = new();
         char[] separator = [';'];
 
-        if (rules != null)
+        if (!string.IsNullOrEmpty(rules) && rules.Length > 6)
         {
             var rulesExpression = rules.Remove(0, 6);
 
