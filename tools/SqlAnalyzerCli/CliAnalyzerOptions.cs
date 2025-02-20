@@ -10,9 +10,9 @@ internal sealed class CliAnalyzerOptions
     [Option(
         'i',
         "input",
-        HelpText = ".sql script file(s) to analyze",
-        Required = true)]
-    public IList<string> Scripts { get; set; } = [];
+        HelpText = ".sql script file(s) to analyze - if not supplied, assumes all .sql files under current directory.",
+        Required = false)]
+    public IList<string>? Scripts { get; set; } = [];
 
     [Option(
         'r',

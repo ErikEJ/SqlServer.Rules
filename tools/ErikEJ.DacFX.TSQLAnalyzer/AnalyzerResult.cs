@@ -8,4 +8,6 @@ public class AnalyzerResult
     public CodeAnalysisResult? Result { get; internal set; }
 
     public Dictionary<string, DacModelException> ModelErrors { get; } = [];
+
+    public int FileCount { get; internal set; }
 }
