@@ -32,6 +32,8 @@ public class AnalyzerFactory
 
         var files = sqlFileCollector.ProcessList(request.Scripts);
 
+        result.FileCount = files.Count;
+
         if (files.Count == 0)
         {
             throw new ArgumentException("No files found to analyze");

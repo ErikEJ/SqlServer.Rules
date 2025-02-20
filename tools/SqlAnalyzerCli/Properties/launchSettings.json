@@ -2,7 +2,8 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-i C:\\Code\\Github\\SqlServer.Rules\\tools\\SqlAnalyzerCli\\testfiles\\sproc.sql"
+      "commandLineArgs": "--help",
+      "workingDirectory": "C:\\Temp\\Cnug\\Sql\\Tables"
     }
   }
 }

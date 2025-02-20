@@ -51,6 +51,8 @@ internal static class Program
 
     private static int Run(CliAnalyzerOptions options)
     {
+        var sw = Stopwatch.StartNew();
+
         if (!options.NoLogo)
         {
             DisplayHeader(options);
@@ -62,7 +64,15 @@ internal static class Program
             SqlVersion = options.SqlVersion,
         };
 
-        analyzerOptions.Scripts.AddRange(options.Scripts);
+        if (options.Scripts?.Count == 0)
+        {
+            analyzerOptions.Scripts.Add(Directory.GetCurrentDirectory());
+        }
+
+        if (options.Scripts?.Count > 0)
+        {
+            analyzerOptions.Scripts.AddRange(options.Scripts);
+        }
 
         var analyzerFactory = new AnalyzerFactory(analyzerOptions);
 
@@ -130,6 +140,10 @@ internal static class Program
             }
         }
 
+        DisplayService.MarkupLine();
+        DisplayService.MarkupLine(
+            () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds} seconds.", Decoration.Bold));
+
         return 0;
     }
 
@@ -137,7 +151,7 @@ internal static class Program
     {
         DisplayService.Title("T-SQL Analyze");
         DisplayService.MarkupLine(
-            $"T-SQL Analyze CLI {PackageService.CurrentPackageVersion()}",
+            $"T-SQL Analyzer CLI {PackageService.CurrentPackageVersion()}",
             Color.Cyan1);
         DisplayService.MarkupLine("https://github.com/ErikEJ/SqlServer.Rules", Color.Blue, DisplayService.Link);
         DisplayService.MarkupLine();
@@ -148,10 +162,25 @@ internal static class Program
         Console.WriteLine(HelpText.AutoBuild(parserResult, h =>
         {
             h.AddPostOptionsLine("SAMPLES:");
-            h.AddPostOptionsLine(@"  tsqlanalyze -i C:\scripts\sproc.sql");
-            h.AddPostOptionsLine(@"  tsqlanalyze -i file_one.sql file_two.sql ""c:\database scripts""");
-            h.AddPostOptionsLine(@"  tsqlanalyze -i c:\database_scripts\sp_*.sql");
-            h.AddPostOptionsLine(@"  tsqlanalyze -i C:\scripts\sproc.sql -r Rules:-SqlServer.Rules.SRD0004 -s SqlAzure");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("# Analyze all scripts in current folder and sub-folders");
+            h.AddPostOptionsLine("tsqlanalyze");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a single script");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\sproc.sql");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze scripts in a folder");
+            h.AddPostOptionsLine("tsqlanalyze -i \"c:\\database scripts\"");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze scripts in folders with a wildcard path and a full folder path");
+            h.AddPostOptionsLine("tsqlanalyze -i c:\\database_scripts\\sp_*.sql \"c:\\old scripts\"");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a script with a rule filter");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\sproc.sql -r Rules:-SqlServer.Rules.SRD0004");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a script for a specific SQL Server version");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\sproc.sql -s SqlAzure");
+
             return h;
         }));
 

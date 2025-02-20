@@ -37,7 +37,8 @@ internal static class PackageService
             var latestVersion = packages.Select(v => v.Identity.Version).MaxBy(v => v);
             if (latestVersion != null && latestVersion > CurrentPackageVersion())
             {
-                DisplayService.MarkupLine("Your are not using the latest version of the tool, please update to get the latest bug fixes, features and support", Color.Yellow);
+                DisplayService.MarkupLine();
+                DisplayService.MarkupLine("Your are not using the latest version of the tool, please update to get the latest bug fixes, features and support.", Color.Yellow);
                 DisplayService.MarkupLine($"Latest version is '{latestVersion}'", Color.Yellow);
                 DisplayService.MarkupLine($"Run 'dotnet tool install --global ErikEJ.DacFX.TSQLAnalyzer.Cli' to get the latest version.", Color.Yellow);
             }
