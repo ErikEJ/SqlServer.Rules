@@ -20,4 +20,10 @@ public class AnalyzerOptions
     /// Used to specify the server release version, like 'Sql160' or 'SqlAzure' - defaults to 'Sql160'
     /// </summary>
     public SqlServerVersion SqlVersion { get; set; } = SqlServerVersion.Sql160;
+
+    /// <summary>
+    /// Used to specify the full filename for an optional output file.
+    /// Supported format is 'xml'
+    /// </summary>
+    public FileInfo? OutputFile { get; set; }
 }

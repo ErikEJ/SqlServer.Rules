@@ -46,5 +46,5 @@ public class ReportRequest
         get { return Path.GetFileNameWithoutExtension(InputPath); }
     }
 
-    public ReportOutputType ReportOutputType { get; set; } = ReportOutputType.XML;
+    public ReportOutputType ReportOutputType { get; set; } = ReportOutputType.HTML;
 }

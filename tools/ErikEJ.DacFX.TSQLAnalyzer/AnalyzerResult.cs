@@ -10,4 +10,6 @@ public class AnalyzerResult
     public Dictionary<string, DacModelException> ModelErrors { get; } = [];
 
     public int FileCount { get; internal set; }
+
+    public string? OutputFile { get; internal set; }
 }
