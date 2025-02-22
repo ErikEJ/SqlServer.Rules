@@ -34,4 +34,11 @@ internal sealed class CliAnalyzerOptions
     Required = false,
     HelpText = "Compact output without logo and informational messages")]
     public bool NoLogo { get; set; }
+
+    [Option(
+        'o',
+        longName: "output",
+        Required = false,
+        HelpText = "Optional file name of output file in .xml format")]
+    public string? OutputFile { get; set; }
 }

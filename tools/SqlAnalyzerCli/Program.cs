@@ -62,6 +62,7 @@ internal static class Program
         {
             Rules = options.Rules,
             SqlVersion = options.SqlVersion,
+            OutputFile = options.OutputFile != null ? new FileInfo(options.OutputFile) : null,
         };
 
         if (options.Scripts?.Count == 0)
@@ -137,6 +138,13 @@ internal static class Program
                     () => DisplayService.Markup("warning:", Color.Yellow),
                     () => DisplayService.Markup(warning, Decoration.None));
                 }
+            }
+
+            if (analyzerOptions.OutputFile != null)
+            {
+                DisplayService.MarkupLine();
+                DisplayService.MarkupLine(
+                    () => DisplayService.Markup($"Writing report to '{analyzerOptions.OutputFile.FullName}'", Decoration.Bold));
             }
         }
 

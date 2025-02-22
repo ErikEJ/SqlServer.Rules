@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "--help",
+      "commandLineArgs": "-o C:\\temp\\Cnug\\Sql\\report.xml",
       "workingDirectory": "C:\\Temp\\Cnug\\Sql\\Tables"
     }
   }

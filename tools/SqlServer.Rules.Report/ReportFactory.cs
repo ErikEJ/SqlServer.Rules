@@ -78,7 +78,7 @@ public class ReportFactory
             SendNotification(err.ErrorMessageString, NotificationType.Warning);
         }
 
-        result.SerializeResultsToXml(GetOutputFileName(request, ReportOutputType.XML));
+        result.SerializeResultsToXml(GetOutputFileName(request, ReportOutputType.HTML));
         sw.Stop();
         SendNotification($"Running rules complete, elapsed: {sw.Elapsed.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)}");
 
@@ -95,7 +95,7 @@ public class ReportFactory
         // write out the xml
         switch (request.ReportOutputType)
         {
-            case ReportOutputType.XML:
+            case ReportOutputType.HTML:
                 var outFileName = GetOutputFileName(request, request.ReportOutputType);
                 SerializeReport(report, outFileName);
                 var outDir = GetOutputDirectory(request);
@@ -151,7 +151,7 @@ public class ReportFactory
 
     private static string GetOutputFileName(ReportRequest request, ReportOutputType outputType)
     {
-        var ext = outputType == ReportOutputType.XML ? ".xml" : ".csv";
+        var ext = outputType == ReportOutputType.HTML ? ".xml" : ".csv";
         var outDir = GetOutputDirectory(request);
         if (!Directory.Exists(outDir))
         {

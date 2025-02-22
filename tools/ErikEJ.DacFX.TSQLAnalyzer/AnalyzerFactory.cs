@@ -25,6 +25,8 @@ public class AnalyzerFactory
             BuildRuleLists(request.Rules);
         }
 
+        var outputFile = GetOutputFile(request.OutputFile);
+
         if (request.Scripts.Count == 0)
         {
             throw new ArgumentException("No files to analyze");
@@ -75,6 +77,21 @@ public class AnalyzerFactory
 
         if (analysisResult.AnalysisSucceeded)
         {
+            if (outputFile != null)
+            {
+                if (outputFile.Exists)
+                {
+                    outputFile.Delete();
+                }
+
+                if (outputFile.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    analysisResult.SerializeResultsToXml(outputFile.FullName);
+
+                    result.OutputFile = outputFile.FullName;
+                }
+            }
+
             result.Result = analysisResult;
         }
 
@@ -105,5 +122,25 @@ public class AnalyzerFactory
                 }
             }
         }
+    }
+
+    private static FileInfo? GetOutputFile(FileInfo? fileInfo)
+    {
+        if (fileInfo == null)
+        {
+            return null;
+        }
+
+        if (!fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("Output file must be of type 'xml'");
+        }
+
+        if (!Path.IsPathRooted(fileInfo.FullName))
+        {
+            return new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), fileInfo.FullName));
+        }
+
+        return fileInfo;
     }
 }
