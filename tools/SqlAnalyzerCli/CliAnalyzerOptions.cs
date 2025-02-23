@@ -15,6 +15,13 @@ internal sealed class CliAnalyzerOptions
     public IList<string>? Scripts { get; set; } = [];
 
     [Option(
+        'c',
+        "connectionstring",
+        HelpText = "Connection string of the database to analyze",
+        Required = false)]
+    public string? ConnectionString { get; set; }
+
+    [Option(
         'r',
         longName: "rules",
         Required = false,

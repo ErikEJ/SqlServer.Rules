@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.Dac.Model;
 
 namespace ErikEJ.DacFX.TSQLAnalyzer;
@@ -5,11 +6,18 @@ namespace ErikEJ.DacFX.TSQLAnalyzer;
 public class AnalyzerOptions
 {
     /// <summary>
-    /// Used to specify the scripts to analyze, can be a single file or a directory. Required.
+    /// Used to specify the scripts to analyze, can be a single file or a directory or a wildcard. Required if connection string is not set.
     /// </summary>
+#pragma warning disable CA2227 // Collection properties should be read only
 #pragma warning disable CA1002 // Do not expose generic lists
-    public List<string> Scripts { get; private set; } = [];
+    public List<string>? Scripts { get; set; } = [];
 #pragma warning restore CA1002 // Do not expose generic lists
+
+    /// <summary>
+    /// Used to specify the connection string to a SQL Server database. Required if scripts is not set.
+    /// </summary>
+    public SqlConnectionStringBuilder? ConnectionString { get; set; }
+#pragma warning restore CA2227 // Collection properties should be read only
 
     /// <summary>
     /// Used to specify a rules expression similar to 'Rules:-SqlServer.Rules.SRD0010;+!SqlServer.Rules.SRN0005'. Optional.
