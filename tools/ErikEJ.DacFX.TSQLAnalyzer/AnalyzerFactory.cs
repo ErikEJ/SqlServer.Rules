@@ -1,4 +1,5 @@
 using ErikEJ.DacFX.TSQLAnalyzer.Services;
+using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 
@@ -20,42 +21,21 @@ public class AnalyzerFactory
     {
         var result = new AnalyzerResult();
 
+        if (request.Scripts == null && request.ConnectionString == null)
+        {
+            throw new ArgumentException("No scripts or connection string specified");
+        }
+
         if (!string.IsNullOrWhiteSpace(request.Rules))
         {
             BuildRuleLists(request.Rules);
         }
 
-        var outputFile = GetOutputFile(request.OutputFile);
+        using var model = GenerateTSqlModel(result);
 
-        if (request.Scripts.Count == 0)
+        if (model == null)
         {
-            throw new ArgumentException("No files to analyze");
-        }
-
-        var files = sqlFileCollector.ProcessList(request.Scripts);
-
-        result.FileCount = files.Count;
-
-        if (files.Count == 0)
-        {
-            throw new ArgumentException("No files found to analyze");
-        }
-
-        using var model = new TSqlModel(request.SqlVersion, new TSqlModelOptions());
-
-        var filesAdded = 0;
-
-        foreach (var (fileName, fileContents) in files)
-        {
-            try
-            {
-                model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
-                filesAdded++;
-            }
-            catch (DacModelException dex)
-            {
-                result.ModelErrors.Add(fileName, dex);
-            }
+            throw new ArgumentException("Model creation failed");
         }
 
         var factory = new CodeAnalysisServiceFactory();
@@ -77,6 +57,8 @@ public class AnalyzerFactory
 
         if (analysisResult.AnalysisSucceeded)
         {
+            var outputFile = GetOutputFile(request.OutputFile);
+
             if (outputFile != null)
             {
                 if (outputFile.Exists)
@@ -96,6 +78,69 @@ public class AnalyzerFactory
         }
 
         return result;
+    }
+
+    private TSqlModel GenerateTSqlModel(AnalyzerResult result)
+    {
+        var model = new TSqlModel(request.SqlVersion, new TSqlModelOptions());
+
+        if (request.Scripts != null && request.ConnectionString == null)
+        {
+            if (request.Scripts.Count == 0)
+            {
+                throw new ArgumentException("No files to analyze");
+            }
+
+            var files = sqlFileCollector.ProcessList(request.Scripts);
+
+            result.FileCount = files.Count;
+
+            if (files.Count == 0)
+            {
+                throw new ArgumentException("No files found to analyze");
+            }
+
+            if (files.Count == 1 && files.First().Key.EndsWith(".dacpac", StringComparison.OrdinalIgnoreCase))
+            {
+                model = TSqlModel.LoadFromDacpac(
+                    files.First().Key,
+                    new ModelLoadOptions
+                    {
+                        LoadAsScriptBackedModel = true,
+                        ModelStorageType = Microsoft.SqlServer.Dac.DacSchemaModelStorageType.Memory,
+                    });
+            }
+            else
+            {
+                foreach (var (fileName, fileContents) in files)
+                {
+                    var options = new TSqlObjectOptions();
+                    try
+                    {
+                        model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
+                    }
+                    catch (DacModelException dex)
+                    {
+                        result.ModelErrors.Add(fileName, dex);
+                    }
+                }
+            }
+        }
+        else if (request.ConnectionString != null)
+        {
+            var extractOptions = new ModelExtractOptions
+            {
+                VerifyExtraction = true,
+                IgnorePermissions = true,
+                IgnoreUserLoginMappings = true,
+                IgnoreExtendedProperties = true,
+                Storage = DacSchemaModelStorageType.Memory,
+            };
+
+            model = TSqlModel.LoadFromDatabase(request.ConnectionString.ConnectionString, extractOptions);
+        }
+
+        return model;
     }
 
     private void BuildRuleLists(string rulesExpression)

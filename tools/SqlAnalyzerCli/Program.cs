@@ -3,6 +3,7 @@ using CommandLine;
 using CommandLine.Text;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
+using Microsoft.Data.SqlClient;
 using Spectre.Console;
 using SqlAnalyzerCli.Services;
 
@@ -58,21 +59,52 @@ internal static class Program
             DisplayHeader(options);
         }
 
+        SqlConnectionStringBuilder? sqlConnectionStringBuilder = null;
+        if (!string.IsNullOrWhiteSpace(options.ConnectionString))
+        {
+            if (options.Scripts?.Count > 0)
+            {
+                DisplayService.Error("Cannot specify both scripts and connection string");
+                return 1;
+            }
+
+#pragma warning disable CA1031 // Do not catch general exception types
+            try
+            {
+                sqlConnectionStringBuilder = new SqlConnectionStringBuilder(options.ConnectionString);
+                DisplayService.MarkupLine();
+                DisplayService.MarkupLine(
+                    () => DisplayService.Markup($"Connecting to database '{sqlConnectionStringBuilder.InitialCatalog}' on server '{sqlConnectionStringBuilder.DataSource}'", Decoration.Bold));
+            }
+            catch (Exception aex)
+            {
+                DisplayService.Error("Invalid connection string: " + aex.Message);
+                return 1;
+            }
+#pragma warning restore CA1031 // Do not catch general exception types
+        }
+
         var analyzerOptions = new AnalyzerOptions
         {
             Rules = options.Rules,
             SqlVersion = options.SqlVersion,
             OutputFile = options.OutputFile != null ? new FileInfo(options.OutputFile) : null,
+            ConnectionString = sqlConnectionStringBuilder,
         };
 
-        if (options.Scripts?.Count == 0)
+        if (options.Scripts?.Count == 0 && options.ConnectionString == null)
         {
-            analyzerOptions.Scripts.Add(Directory.GetCurrentDirectory());
+            analyzerOptions.Scripts = new List<string>();
+            analyzerOptions.Scripts!.Add(Directory.GetCurrentDirectory());
         }
 
         if (options.Scripts?.Count > 0)
         {
-            analyzerOptions.Scripts.AddRange(options.Scripts);
+            analyzerOptions.Scripts = new List<string>();
+            foreach (var script in options.Scripts)
+            {
+                analyzerOptions.Scripts!.Add(script);
+            }
         }
 
         var analyzerFactory = new AnalyzerFactory(analyzerOptions);
@@ -188,6 +220,12 @@ internal static class Program
             h.AddPostOptionsLine(string.Empty);
             h.AddPostOptionsLine("## Analyze a script for a specific SQL Server version");
             h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\sproc.sql -s SqlAzure");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a .dacpac");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\Chinook.dacpac");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a live database");
+            h.AddPostOptionsLine("tsqlanalyze -c \"Data Source=.\\SQLEXPRESS;Initial Catalog=Chinook;Integrated Security=True;Encrypt=false\"");
 
             return h;
         }));

@@ -65,6 +65,11 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
             {
                 ProcessFile(fileName);
             }
+
+            if (Path.GetExtension(fileName).Equals(".dacpac", StringComparison.OrdinalIgnoreCase))
+            {
+                AddToProcessing(fileName, string.Empty);
+            }
         }
 
         private void ProcessWildCard(string filePath)

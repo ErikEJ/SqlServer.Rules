@@ -2,8 +2,9 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-o C:\\temp\\Cnug\\Sql\\report.xml",
-      "workingDirectory": "C:\\Temp\\Cnug\\Sql\\Tables"
+      "commandLineArgs": "-i Chinook.dacpac\r\n",
+      "workingDirectory": "C:\\Code\\Github\\SqlServer.Rules\\tools\\SqlAnalyzerCli\\testfiles",
+      "remoteDebugEnabled": false
     }
   }
 }
