@@ -17,6 +17,9 @@ dotnet tool install --global ErikEJ.DacFX.TSQLAnalyzer.Cli
 ### Usage
 
 ```bash
+# Analyze all .sql scripts in current folder and sub-folders
+tsqlanalyze
+
 ## Analyze a single file
 tsqlanalyze -i C:\scripts\sproc.sql
 
@@ -28,11 +31,17 @@ tsqlanalyze -i c:\database_scripts\sp_*.sql "c:\old scripts"
 
 ## Analyze a script with a rule settings filter and for a specific SQL Server version
 tsqlanalyze -i C:\scripts\sproc.sql -r Rules:-SqlServer.Rules.SRD0004 -s SqlAzure
+
+## Analyze a .dacpac
+tsqlanalyze -i C:\scripts\Chinook.dacpac
+
+## Analyze a live database
+tsqlanalyze -c "Data Source=.\SQLEXPRESS;Initial Catalog=Chinook;Integrated Security=True;Encrypt=false"
 ```
 
 Rule settings filters are demonstrated [here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
 
-The SQL Server verison values are documented [here](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.dac.model.sqlserverversion)
+The SQL Server version values are documented [here](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.dac.model.sqlserverversion)
 
 ## Sample output
 

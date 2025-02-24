@@ -102,13 +102,7 @@ public class AnalyzerFactory
 
             if (files.Count == 1 && files.First().Key.EndsWith(".dacpac", StringComparison.OrdinalIgnoreCase))
             {
-                model = TSqlModel.LoadFromDacpac(
-                    files.First().Key,
-                    new ModelLoadOptions
-                    {
-                        LoadAsScriptBackedModel = true,
-                        ModelStorageType = Microsoft.SqlServer.Dac.DacSchemaModelStorageType.Memory,
-                    });
+                model = CreateDacpacModel(files.First().Key);
             }
             else
             {
@@ -128,20 +122,23 @@ public class AnalyzerFactory
         }
         else if (request.ConnectionString != null)
         {
-            var extractOptions = new ModelExtractOptions
-            {
-                VerifyExtraction = true,
-                IgnorePermissions = true,
-                IgnoreUserLoginMappings = true,
-                IgnoreExtendedProperties = true,
-                Storage = DacSchemaModelStorageType.Memory,
-            };
+            var dacpacExtractor = new DacpacExtractor(request.ConnectionString);
+            var dbDacpac = dacpacExtractor.ExtractDacpac();
 
-            model = TSqlModel.LoadFromDatabase(request.ConnectionString.ConnectionString, extractOptions);
+            model = CreateDacpacModel(dbDacpac.FullName);
         }
 
         return model;
     }
+
+    private static TSqlModel CreateDacpacModel(string dacpacPath)
+        => TSqlModel.LoadFromDacpac(
+                dacpacPath,
+                new ModelLoadOptions
+                {
+                    LoadAsScriptBackedModel = true,
+                    ModelStorageType = DacSchemaModelStorageType.Memory,
+                });
 
     private void BuildRuleLists(string rulesExpression)
     {
