@@ -68,7 +68,6 @@ internal static class Program
                 return 1;
             }
 
-#pragma warning disable CA1031 // Do not catch general exception types
             try
             {
                 sqlConnectionStringBuilder = new SqlConnectionStringBuilder(options.ConnectionString);
@@ -76,12 +75,11 @@ internal static class Program
                 DisplayService.MarkupLine(
                     () => DisplayService.Markup($"Connecting to database '{sqlConnectionStringBuilder.InitialCatalog}' on server '{sqlConnectionStringBuilder.DataSource}'", Decoration.Bold));
             }
-            catch (Exception aex)
+            catch (Exception aex) when (aex is FormatException or KeyNotFoundException or ArgumentException)
             {
                 DisplayService.Error("Invalid connection string: " + aex.Message);
                 return 1;
             }
-#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         var analyzerOptions = new AnalyzerOptions
@@ -94,26 +92,24 @@ internal static class Program
 
         if (options.Scripts?.Count == 0 && options.ConnectionString == null)
         {
-            analyzerOptions.Scripts = new List<string>();
-            analyzerOptions.Scripts!.Add(Directory.GetCurrentDirectory());
+            analyzerOptions.Scripts = [];
+            analyzerOptions.Scripts.Add(Directory.GetCurrentDirectory());
         }
 
         if (options.Scripts?.Count > 0)
         {
-            analyzerOptions.Scripts = new List<string>();
-            foreach (var script in options.Scripts)
-            {
-                analyzerOptions.Scripts!.Add(script);
-            }
+            analyzerOptions.Scripts = [.. options.Scripts];
         }
 
         var analyzerFactory = new AnalyzerFactory(analyzerOptions);
 
-        AnalyzerResult result;
+        AnalyzerResult? result;
 
         try
         {
-            result = analyzerFactory.Analyze();
+            result = DisplayService.Wait(
+                "Running T-SQL Analysis...",
+                () => analyzerFactory.Analyze());
         }
         catch (ArgumentException aex)
         {
@@ -178,13 +174,23 @@ internal static class Program
                 DisplayService.MarkupLine(
                     () => DisplayService.Markup($"Writing report to '{analyzerOptions.OutputFile.FullName}'", Decoration.Bold));
             }
+
+            DisplayService.MarkupLine();
+            if (result.FileCount > 0)
+            {
+                DisplayService.MarkupLine(
+                    () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds} seconds.", Decoration.Bold));
+            }
+            else
+            {
+                DisplayService.MarkupLine(
+                    () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds} seconds.", Decoration.Bold));
+            }
+
+            return 0;
         }
 
-        DisplayService.MarkupLine();
-        DisplayService.MarkupLine(
-            () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds} seconds.", Decoration.Bold));
-
-        return 0;
+        return 1;
     }
 
     private static void DisplayHeader(CliAnalyzerOptions options)
