@@ -34,7 +34,7 @@ public class TestModel
                 fileContent += reader.ReadToEnd();
             }
 
-            Model.AddObjects(fileContent);
+            Model.AddOrUpdateObjects(fileContent, fileName, new TSqlObjectOptions());
         }
     }
 
