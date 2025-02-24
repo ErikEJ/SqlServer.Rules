@@ -9,7 +9,7 @@
     <Authors>ErikEJ</Authors>
     <Description>A library for ad-hoc analysis of SQL scripts - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
-    <PackageReleaseNotes>MS links</PackageReleaseNotes>
+    <PackageReleaseNotes>.dacpac and SQL Server support</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <MinClientVersion>5.0</MinClientVersion>
     <RepositoryUrl>https://github.com/ErikEJ/SqlServer.Rules</RepositoryUrl>
@@ -17,7 +17,6 @@
     <DebugType>embedded</DebugType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
   <PropertyGroup>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
