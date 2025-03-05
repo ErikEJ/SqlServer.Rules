@@ -4,7 +4,7 @@
     <LangVersion>8.0</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>ErikEJ.DacFX.TSQLSmellSCA</PackageId>
-    <Version>1.3.0</Version>
+    <Version>2.0.0-preview.1</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
@@ -17,10 +17,16 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <DevelopmentDependency>true</DevelopmentDependency>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="key.snk" />
   </ItemGroup>
 
   <ItemGroup>
