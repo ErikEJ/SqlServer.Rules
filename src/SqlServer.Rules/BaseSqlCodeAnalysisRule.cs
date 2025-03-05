@@ -170,6 +170,7 @@ namespace SqlServer.Rules
             "READTEXT",
             "RECONFIGURE",
             "REFERENCES",
+            "RELEASE",
             "REPLICATION",
             "RESTORE",
             "RESTRICT",

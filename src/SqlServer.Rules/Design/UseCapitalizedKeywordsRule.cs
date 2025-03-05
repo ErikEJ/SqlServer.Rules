@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -51,7 +52,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The message
         /// </summary>
-        public const string Message = "Use capitalized keywords for enhanced readability.";
+        public const string Message = "Capitalize the keyword '{0}' for enhanced readability.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UseCapitalizedKeywordsRule"/> class.
@@ -81,11 +82,16 @@ namespace SqlServer.Rules.Design
 
             var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement), typeof(CreateFunctionStatement), typeof(CreateTriggerStatement), typeof(CreateTableStatement), typeof(CreateViewStatement));
 
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             for (var index = 0; index < fragment.ScriptTokenStream?.Count; index++)
             {
                 var token = fragment.ScriptTokenStream[index];
 
-                if (token is null || !token.Text.All(t => char.IsLetter(t)))
+                if (token is null)
                 {
                     continue;
                 }
@@ -100,7 +106,7 @@ namespace SqlServer.Rules.Design
                     continue;
                 }
 
-                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, fragment));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, token.Text), RuleId), sqlObj, fragment));
             }
 
             return problems;

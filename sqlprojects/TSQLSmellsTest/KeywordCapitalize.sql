@@ -12,6 +12,8 @@ CREATE TABLE bar
 );
 GO
 
+CREATE PROCEDURE hip
+AS
 SELECT foo FROM foo 
 		WHERE foo = 'foo' and
 		foo != 'foo'

@@ -1,6 +1,6 @@
-Create Procedure dbo.BeginEnd
-    @parm int
-as
+CREATE PROCEDURE dbo.BeginEnd
+    @parm INT
+AS
 SET NOCOUNT ON;
 
 IF(@parm = 1)

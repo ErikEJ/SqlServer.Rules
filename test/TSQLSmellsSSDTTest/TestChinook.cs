@@ -7,17 +7,14 @@ namespace TSQLSmellsSSDTTest;
 [TestClass]
 public class TestChinook : TestModel
 {
-    public TestChinook()
+    [TestMethod]
+    public void TestChinookDatabase()
     {
         foreach (var fileName in Directory.GetFiles("../../../../../sqlprojects/Chinook/Tables", "*.sql"))
         {
             TestFiles.Add(fileName);
         }
-    }
 
-    [TestMethod]
-    public void TestChinookDatabase()
-    {
         RunTest();
     }
 }
