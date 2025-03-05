@@ -1,5 +1,5 @@
-Create Procedure dbo.UpperFunction
-as
+CREATE PROCEDURE dbo.UpperFunction
+AS
 SET NOCOUNT ON;
 SELECT user_name 
 FROM dbo.MyTable

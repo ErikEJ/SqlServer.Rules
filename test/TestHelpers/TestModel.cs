@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -57,6 +58,11 @@ public class TestModel
         var service = new CodeAnalysisServiceFactory().CreateAnalysisService(Model.Version);
         var result = service.Analyze(Model);
         SerializeResultOutput(result);
+
+        foreach (var problem in FoundProblems)
+        {
+            Debug.WriteLine($"ExpectedProblems.Add(new TestProblem({problem.StartLine}, {problem.StartColumn}, \"{problem.RuleId}\"));");
+        }
 
         CollectionAssert.AreEquivalent(ExpectedProblems, FoundProblems);
     }
