@@ -1,0 +1,6 @@
+CREATE TABLE dbo.bad (absolute INT CONSTRAINT [PK_bad] PRIMARY KEY);
+GO
+CREATE TABLE dbo.good (absalute INT CONSTRAINT [PK_good] PRIMARY KEY);
+GO
+
+-- SRD0069
