@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -11,22 +10,22 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// Use capitalized keywords.
+    /// Avoid future keywords.
     /// </summary>
-    /// <FriendlyName>Use capitalized keywords for enhanced readability.</FriendlyName>
+    /// <FriendlyName>Avoid the use of future keywords as identifiers.</FriendlyName>
     /// <IsIgnorable>false</IsIgnorable>
     /// <ExampleMd>
     /// Examples of **incorrect** code for this rule:
     /// ```tsql
-    /// select * from foo;
+    /// CREATE TABLE bad (absolute int);
     /// ```
     /// Examples of ** correct** code for this rule:
     /// ```tsql
-    /// SELECT * FROM foo;
+    /// CREATE TABLE good (absalute int);
     /// ```
     /// </ExampleMd>
     /// <remarks>
-    /// Capitalizing SQL keywords enhances readability and provides a clear separation between keywords and objects.
+    /// Future keywords could be reserved in future releases of SQL Server as new features are implemented. Consider avoiding the use of these words as identifiers.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     [ExportCodeAnalysisRule(
@@ -35,32 +34,32 @@ namespace SqlServer.Rules.Design
         Description = RuleDisplayName,
         Category = Constants.Design,
         RuleScope = SqlRuleScope.Element)]
-    public sealed class UseCapitalizedKeywordsRule : BaseSqlCodeAnalysisRule
+    public sealed class AvoidFutureKeywordsRule : BaseSqlCodeAnalysisRule
     {
         private readonly HashSet<string> sqlWords;
 
         /// <summary>
         /// The rule identifier
         /// </summary>
-        public const string RuleId = Constants.RuleNameSpace + "SRD0067";
+        public const string RuleId = Constants.RuleNameSpace + "SRD0069";
 
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Use capitalized keywords for enhanced readability.";
+        public const string RuleDisplayName = "Avoid the use of future keywords as identifiers.";
 
         /// <summary>
         /// The message
         /// </summary>
-        public const string Message = "Capitalize the keyword '{0}' for enhanced readability.";
+        public const string Message = "Avoid using the future keyword '{0}'.";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UseCapitalizedKeywordsRule"/> class.
+        /// Initializes a new instance of the <see cref="AvoidFutureKeywordsRule"/> class.
         /// </summary>
-        public UseCapitalizedKeywordsRule()
+        public AvoidFutureKeywordsRule()
             : base(ModelSchema.Procedure, ModelSchema.Table, ModelSchema.View, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction)
         {
-            sqlWords = new HashSet<string>(TSqlKeywords.Concat(TSqlDataTypes), StringComparer.OrdinalIgnoreCase);
+            sqlWords = new HashSet<string>(TSqlFutureKeywords, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -96,25 +95,18 @@ namespace SqlServer.Rules.Design
                     continue;
                 }
 
-                if (!sqlWords.Contains(token.Text))
+                if (token.TokenType != TSqlTokenType.Identifier)
                 {
                     continue;
                 }
 
-                if (IsUpperCase(token.Text))
+                if (sqlWords.Contains(token.Text))
                 {
-                    continue;
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, token.Text), RuleId), sqlObj, fragment));
                 }
-
-                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, token.Text), RuleId), sqlObj, fragment));
             }
 
             return problems;
-        }
-
-        private static bool IsUpperCase(string input)
-        {
-            return input.All(t => !char.IsLetter(t) || char.IsUpper(t));
         }
     }
 }

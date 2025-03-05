@@ -2,7 +2,7 @@ create table foo
 ( 
 	ID VARCHAR(64) not null
 	, Name VARCHAR(128) NOT NULL
-	, Value VARCHAR(256) NOT NULL
+	, Valu VARCHAR(256) NOT NULL
 );
 GO
 
