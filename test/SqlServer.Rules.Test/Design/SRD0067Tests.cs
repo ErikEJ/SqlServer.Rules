@@ -16,6 +16,9 @@ public class SRD0067Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/KeywordCapitalize.sql");
 
+        ExpectedProblems.Add(new TestProblem(2, 5, "SqlServer.Rules.SRD0047"));
+        ExpectedProblems.Add(new TestProblem(2, 5, "SqlServer.Rules.SRD0047"));
+        ExpectedProblems.Add(new TestProblem(2, 5, "SqlServer.Rules.SRD0047"));
         ExpectedProblems.Add(new TestProblem(17, 17, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(15, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(15, 1, "SqlServer.Rules.SRN0006"));
@@ -32,6 +35,11 @@ public class SRD0067Tests : TestModel
         ExpectedProblems.Add(new TestProblem(9, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(9, 1, "SqlServer.Rules.SRN0006"));
         ExpectedProblems.Add(new TestProblem(9, 1, "SqlServer.Rules.SRP0020"));
+        ExpectedProblems.Add(new TestProblem(22, 1, "SqlServer.Rules.SRD0067"));
+        ExpectedProblems.Add(new TestProblem(22, 1, "SqlServer.Rules.SRD0067"));
+        ExpectedProblems.Add(new TestProblem(22, 1, "SqlServer.Rules.SRD0067"));
+        ExpectedProblems.Add(new TestProblem(27, 5, "SqlServer.Rules.SRD0003"));
+        ExpectedProblems.Add(new TestProblem(27, 5, "SqlServer.Rules.SRN0007"));
 
         RunTest();
     }

@@ -96,17 +96,37 @@ namespace SqlServer.Rules.Design
                     continue;
                 }
 
-                if (!sqlWords.Contains(token.Text))
+                var text = token.Text;
+
+                if (string.IsNullOrWhiteSpace(text))
                 {
                     continue;
                 }
 
-                if (IsUpperCase(token.Text))
+                if (token.TokenType == TSqlTokenType.QuotedIdentifier && text.Length > 2)
+                {
+                    text = text.Substring(1, text.Length - 2);
+                }
+
+                if (text.All(char.IsWhiteSpace))
                 {
                     continue;
                 }
 
-                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, token.Text), RuleId), sqlObj, fragment));
+                if (!text.All(char.IsLetter))
+                {
+                    continue;
+                }
+
+                if (IsUpperCase(text))
+                {
+                    continue;
+                }
+
+                if (sqlWords.Contains(text))
+                {
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(string.Format(CultureInfo.InvariantCulture, Message, text), RuleId), sqlObj, fragment));
+                }
             }
 
             return problems;
@@ -114,7 +134,7 @@ namespace SqlServer.Rules.Design
 
         private static bool IsUpperCase(string input)
         {
-            return input.All(t => !char.IsLetter(t) || char.IsUpper(t));
+            return input.All(char.IsUpper);
         }
     }
 }

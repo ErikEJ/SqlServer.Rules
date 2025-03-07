@@ -438,7 +438,6 @@ namespace SqlServer.Rules
             "REGR_SXY",
             "REGR_SYY",
             "RELATIVE",
-            "RELEASE",
             "RESULT",
             "RETURNS",
             "ROLE",
