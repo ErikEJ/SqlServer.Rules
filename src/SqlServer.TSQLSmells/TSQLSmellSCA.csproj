@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net462</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
@@ -52,6 +52,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.6.0" Condition=" '$(TargetFramework)' == 'net462' " />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.3" Condition=" '$(TargetFramework)' == 'net462' " />
   </ItemGroup>
 </Project>
