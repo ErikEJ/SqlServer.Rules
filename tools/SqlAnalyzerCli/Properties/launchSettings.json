@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "\r\n",
+      "commandLineArgs": "-i \"C:\\temp\\UserProfile.zip\"\r\n",
       "workingDirectory": "C:\\Users\\ErikEjlskovJensen(De",
       "remoteDebugEnabled": false
     }

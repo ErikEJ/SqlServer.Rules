@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using ErikEJ.DacFX.TSQLAnalyzer.Services;
 using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -86,38 +87,25 @@ public class AnalyzerFactory
 
         if (request.Scripts != null && request.ConnectionString == null)
         {
-            if (request.Scripts.Count == 0)
-            {
-                throw new ArgumentException("No files to analyze");
-            }
-
             var files = sqlFileCollector.ProcessList(request.Scripts);
-
-            result.FileCount = files.Count;
-
-            if (files.Count == 0)
-            {
-                throw new ArgumentException("No files found to analyze");
-            }
 
             if (files.Count == 1 && files.First().Key.EndsWith(".dacpac", StringComparison.OrdinalIgnoreCase))
             {
                 model = CreateDacpacModel(files.First().Key);
             }
+            else if (files.Count == 1 && files.First().Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+            {
+                var zipFile = files.First().Key;
+                var targetDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                ZipFile.ExtractToDirectory(zipFile, targetDirectory);
+
+                files = sqlFileCollector.ProcessList([targetDirectory]);
+
+                AddFilesToModel(result, model, files);
+            }
             else
             {
-                foreach (var (fileName, fileContents) in files)
-                {
-                    var options = new TSqlObjectOptions();
-                    try
-                    {
-                        model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
-                    }
-                    catch (DacModelException dex)
-                    {
-                        result.ModelErrors.Add(fileName, dex);
-                    }
-                }
+                AddFilesToModel(result, model, files);
             }
         }
         else if (request.ConnectionString != null)
@@ -129,6 +117,29 @@ public class AnalyzerFactory
         }
 
         return model;
+    }
+
+    private static void AddFilesToModel(AnalyzerResult result, TSqlModel model, Dictionary<string, string> files)
+    {
+        if (files.Count == 0)
+        {
+            throw new ArgumentException("No files found to analyze");
+        }
+
+        result.FileCount = files.Count;
+
+        foreach (var (fileName, fileContents) in files)
+        {
+            var options = new TSqlObjectOptions();
+            try
+            {
+                model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
+            }
+            catch (DacModelException dex)
+            {
+                result.ModelErrors.Add(fileName, dex);
+            }
+        }
     }
 
     private static TSqlModel CreateDacpacModel(string dacpacPath)
