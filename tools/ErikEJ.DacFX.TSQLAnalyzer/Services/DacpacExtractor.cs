@@ -22,7 +22,7 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
             var extractOptions = new DacExtractOptions
             {
                 CommandTimeout = 300,
-                VerifyExtraction = true,
+                VerifyExtraction = false,
                 IgnorePermissions = true,
                 IgnoreUserLoginMappings = true,
                 IgnoreExtendedProperties = true,
