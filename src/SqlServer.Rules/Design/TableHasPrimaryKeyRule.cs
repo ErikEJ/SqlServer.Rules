@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -57,6 +59,14 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
             if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
+            var colstoreIndex = sqlObj.GetChildren(DacQueryScopes.All)
+                .FirstOrDefault(x => x.ObjectType == ModelSchema.ColumnStoreIndex);
+
+            if (colstoreIndex != null && Convert.ToBoolean(colstoreIndex.GetProperty(ColumnStoreIndex.Clustered), CultureInfo.InvariantCulture) == true)
             {
                 return problems;
             }
