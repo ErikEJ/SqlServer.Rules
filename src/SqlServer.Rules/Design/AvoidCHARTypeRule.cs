@@ -79,7 +79,7 @@ namespace SqlServer.Rules.Design
                     type = col.DataType.Name.Identifiers.FirstOrDefault()?.Value,
                     length = GetDataTypeLength(col),
                 })
-                .Where(x => (Comparer.Equals(x.type, "char") || Comparer.Equals(x.type, "nchar")) && x.length > 9);
+                .Where(x => (Comparer.Equals(x.type, "char") || Comparer.Equals(x.type, "nchar")) && x.length > 19);
 
             problems.AddRange(longChars.Select(col => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, col.column)));
 
