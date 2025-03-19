@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using Microsoft.Extensions.FileSystemGlobbing;
+using System.Security;
 
 namespace ErikEJ.DacFX.TSQLAnalyzer.Services
 {
@@ -7,14 +7,21 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
     {
         private readonly ConcurrentDictionary<string, string> files = new();
 
-        private readonly GlobPatternMatcher globPatternMatcher;
-
-        public SqlFileCollector()
+        private static EnumerationOptions Recursive => new()
         {
-            var matcher = new Matcher();
-            matcher.AddInclude("**/*.sql");
-            globPatternMatcher = new GlobPatternMatcher(matcher);
-        }
+            RecurseSubdirectories = true,
+            MatchType = MatchType.Simple,
+            AttributesToSkip = FileAttributes.Hidden | FileAttributes.System | FileAttributes.ReparsePoint,
+            IgnoreInaccessible = true,
+        };
+
+        private static EnumerationOptions TopOnly => new()
+        {
+            RecurseSubdirectories = false,
+            MatchType = MatchType.Simple,
+            AttributesToSkip = FileAttributes.Hidden | FileAttributes.System | FileAttributes.ReparsePoint | FileAttributes.Offline,
+            IgnoreInaccessible = true,
+        };
 
         public Dictionary<string, string> ProcessList(IList<string> filePaths)
         {
@@ -43,6 +50,12 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
         private void ProcessFile(string filePath)
         {
             var fileStream = GetFileContents(filePath);
+
+            if (fileStream == null)
+            {
+                return;
+            }
+
             AddToProcessing(filePath, fileStream);
         }
 
@@ -53,7 +66,8 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
 
         private void ProcessDirectory(string path)
         {
-            Parallel.ForEach(globPatternMatcher.GetResultsInFullPath(path), (file) =>
+            var files = Directory.EnumerateFiles(path, "*.sql", Recursive);
+            Parallel.ForEach(files, (file) =>
             {
                 ProcessIfSqlFile(file);
             });
@@ -93,16 +107,33 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
             }
 
             var searchPattern = Path.GetFileName(filePath);
-            var files = Directory.EnumerateFiles(dirPath, searchPattern, SearchOption.TopDirectoryOnly);
+            var files = Directory.EnumerateFiles(dirPath, searchPattern, TopOnly);
             Parallel.ForEach(files, (file) =>
             {
                 ProcessIfSqlFile(file);
             });
         }
 
-        private string GetFileContents(string filePath)
+        private string? GetFileContents(string filePath)
         {
-            return File.ReadAllText(filePath);
+            try
+            {
+                return File.ReadAllText(filePath);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Ignore
+            }
+            catch (SecurityException)
+            {
+                // Ignore
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return null;
         }
     }
 }
