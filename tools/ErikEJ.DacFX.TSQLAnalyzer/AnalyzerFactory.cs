@@ -39,8 +39,19 @@ public class AnalyzerFactory
             throw new ArgumentException("Model creation failed");
         }
 
+        var settings = new CodeAnalysisServiceSettings();
+
+        if (request.AdditionalAnalyzers?.Count > 0)
+        {
+            settings.AssemblyLookupPath = string.Join(';', request.AdditionalAnalyzers.Distinct());
+        }
+
         var factory = new CodeAnalysisServiceFactory();
-        var service = factory.CreateAnalysisService(model);
+        var service = factory.CreateAnalysisService(model, settings);
+
+        var rules = service.GetRules();
+
+        result.Analyzers = string.Join(", ", rules.Select(a => a.Namespace).Distinct());
 
         if (ignoredRules.Count > 0
                     || ignoredRuleSets.Count > 0)

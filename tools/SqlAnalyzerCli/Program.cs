@@ -101,6 +101,11 @@ internal static class Program
             analyzerOptions.Scripts = [.. options.Scripts];
         }
 
+        if (options.AdditionalAnalyzers?.Count > 0)
+        {
+            analyzerOptions.AdditionalAnalyzers = [.. options.AdditionalAnalyzers];
+        }
+
         var analyzerFactory = new AnalyzerFactory(analyzerOptions);
 
         AnalyzerResult? result;
@@ -179,12 +184,12 @@ internal static class Program
             if (result.FileCount > 0)
             {
                 DisplayService.MarkupLine(
-                    () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds} seconds.", Decoration.Bold));
+                    () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds using '{result.Analyzers}'.", Decoration.Bold));
             }
             else
             {
                 DisplayService.MarkupLine(
-                    () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds} seconds.", Decoration.Bold));
+                    () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds.", Decoration.Bold));
             }
 
             return 0;

@@ -48,4 +48,11 @@ internal sealed class CliAnalyzerOptions
         Required = false,
         HelpText = "Optional file name of output file in .xml format")]
     public string? OutputFile { get; set; }
+
+    [Option(
+        'a',
+        "analyzers",
+        HelpText = "Directory path of additional analyzer .dll files, can be specified multiple times.",
+        Required = false)]
+    public IList<string>? AdditionalAnalyzers { get; set; } = [];
 }

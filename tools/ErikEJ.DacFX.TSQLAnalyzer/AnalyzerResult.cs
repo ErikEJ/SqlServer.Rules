@@ -12,4 +12,6 @@ public class AnalyzerResult
     public int FileCount { get; internal set; }
 
     public string? OutputFile { get; internal set; }
+
+    public string? Analyzers { get; internal set; }
 }

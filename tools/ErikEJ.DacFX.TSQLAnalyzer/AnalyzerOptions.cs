@@ -11,6 +11,11 @@ public class AnalyzerOptions
 #pragma warning disable CA2227 // Collection properties should be read only
 #pragma warning disable CA1002 // Do not expose generic lists
     public List<string>? Scripts { get; set; } = [];
+
+    /// <summary>
+    /// Used to specify additional analyzers to include in the analysis.
+    /// </summary>
+    public List<string>? AdditionalAnalyzers { get; set; } = [];
 #pragma warning restore CA1002 // Do not expose generic lists
 
     /// <summary>
