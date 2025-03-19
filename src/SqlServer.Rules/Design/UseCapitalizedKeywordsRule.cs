@@ -6,6 +6,7 @@ using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
+using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
@@ -87,6 +88,9 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
+            var fromClauseVisitor = new FromClauseVisitor();
+            fragment.Accept(fromClauseVisitor);
+
             for (var index = 0; index < fragment.ScriptTokenStream?.Count; index++)
             {
                 var token = fragment.ScriptTokenStream[index];
@@ -99,6 +103,11 @@ namespace SqlServer.Rules.Design
                 var text = token.Text;
 
                 if (string.IsNullOrWhiteSpace(text))
+                {
+                    continue;
+                }
+
+                if (fromClauseVisitor.Statements.Any(s => s.FirstTokenIndex <= index && s.LastTokenIndex >= index))
                 {
                     continue;
                 }
