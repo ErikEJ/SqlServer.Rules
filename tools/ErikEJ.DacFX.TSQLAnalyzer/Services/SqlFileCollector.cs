@@ -84,6 +84,11 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
             {
                 AddToProcessing(fileName, string.Empty);
             }
+
+            if (Path.GetExtension(fileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            {
+                AddToProcessing(fileName, string.Empty);
+            }
         }
 
         private void ProcessWildCard(string filePath)

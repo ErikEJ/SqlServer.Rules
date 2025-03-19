@@ -230,6 +230,9 @@ internal static class Program
             h.AddPostOptionsLine("## Analyze a .dacpac");
             h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\Chinook.dacpac");
             h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a .zip file with .sql files");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\Fabric.zip");
+            h.AddPostOptionsLine(string.Empty);
             h.AddPostOptionsLine("## Analyze a live database");
             h.AddPostOptionsLine("tsqlanalyze -c \"Data Source=.\\SQLEXPRESS;Initial Catalog=Chinook;Integrated Security=True;Encrypt=false\"");
 
