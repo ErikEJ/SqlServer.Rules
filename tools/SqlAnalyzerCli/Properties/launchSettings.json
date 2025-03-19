@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-i \"C:\\temp\\UserProfile.zip\"\r\n",
+      "commandLineArgs": "-i \"C:\\temp\\UserProfile.zip\" -a C:\\dev\\GitHub\\DemoRepos\\TsqlAnalysis\\sample\\bin\\Debug\\netstandard2.1\r\n",
       "workingDirectory": "C:\\Users\\ErikEjlskovJensen(De",
       "remoteDebugEnabled": false
     }
