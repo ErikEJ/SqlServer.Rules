@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackageId>ErikEJ.DacFX.TSQLAnalyzer</PackageId>
-    <Version>1.0.0</Version>
     <Authors>ErikEJ</Authors>
     <Description>A library for ad-hoc analysis of SQL scripts - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>

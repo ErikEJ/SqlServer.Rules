@@ -76,9 +76,6 @@ public class TestAW : TestModel
         ExpectedProblems.Add(new TestProblem(4, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(4, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(4, 1, "SqlServer.Rules.SRD0067"));
-        ExpectedProblems.Add(new TestProblem(4, 1, "SqlServer.Rules.SRD0067"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
@@ -122,7 +119,6 @@ public class TestAW : TestModel
         ExpectedProblems.Add(new TestProblem(27, 10, "SqlServer.Rules.SRD0038"));
         ExpectedProblems.Add(new TestProblem(27, 10, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(19, 24, "SqlServer.Rules.SRD0039"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(9, 5, "SqlServer.Rules.SRD0028"));
         ExpectedProblems.Add(new TestProblem(27, 10, "SqlServer.Rules.SRD0038"));

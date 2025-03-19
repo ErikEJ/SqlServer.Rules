@@ -28,4 +28,13 @@ CREATE TABLE [dbo].[xxx]
 )
 GO
 
+CREATE VIEW dbo.CaseView
+AS
+SELECT
+     [CASEID] AS [Id]
+	, CASE [STATUS]
+		WHEN 0 THEN 'X'
+	  END AS [Status]
+FROM [dbo].[Case]
+
 -- SRD0067
