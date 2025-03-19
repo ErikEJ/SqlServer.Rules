@@ -23,6 +23,10 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
+      - name: Package CLI Lib
+        if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
+        run: dotnet pack tools/ErikEJ.DacFX.TSQLAnalyzer/ErikEJ.DacFX.TSQLAnalyzer.csproj -p:PackageVersion=1.0.${{ env.VERSION }} -p:InformationalVersion=1.0.${{ env.VERSION }}
+
       - name: Package CLI
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
         run: dotnet pack tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj -p:PackageVersion=1.0.${{ env.VERSION }} -p:InformationalVersion=1.0.${{ env.VERSION }}
