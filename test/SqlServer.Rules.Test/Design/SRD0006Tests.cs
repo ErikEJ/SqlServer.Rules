@@ -17,11 +17,6 @@ public class SRD0006Tests : TestModel
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/TestSelectStarBeginEndBlock.sql");
 
         ExpectedProblems.Add(new TestProblem(6, 9, "SqlServer.Rules.SRD0006"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0067"));
 
         RunTest();
     }

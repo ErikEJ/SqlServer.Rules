@@ -4,7 +4,7 @@
     <LangVersion>9.0</LangVersion>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackageId>ErikEJ.DacFX.SqlServer.Rules</PackageId>
-    <Version>2.0.0-preview.4</Version>
+    <Version>2.0.0-preview.5</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>

@@ -30,12 +30,12 @@ namespace SqlServer.Rules.Design
     /// Capitalizing SQL keywords enhances readability and provides a clear separation between keywords and objects.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    [ExportCodeAnalysisRule(
-        RuleId,
-        RuleDisplayName,
-        Description = RuleDisplayName,
-        Category = Constants.Design,
-        RuleScope = SqlRuleScope.Element)]
+    ////[ExportCodeAnalysisRule(
+    ////    RuleId,
+    ////    RuleDisplayName,
+    ////    Description = RuleDisplayName,
+    ////    Category = Constants.Design,
+    ////    RuleScope = SqlRuleScope.Element)]
     public sealed class UseCapitalizedKeywordsRule : BaseSqlCodeAnalysisRule
     {
         private readonly HashSet<string> sqlWords;
