@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
@@ -65,7 +65,12 @@ namespace SqlServer.Rules.Performance
             }
 
             var sqlObjName = ruleExecutionContext.GetObjectName(sqlObj);
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingAndViewSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             var whereClauseVisitor = new WhereClauseVisitor();
             fragment.Accept(whereClauseVisitor);

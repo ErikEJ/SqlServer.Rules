@@ -63,8 +63,9 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
-            if (fragment.ScriptTokenStream == null)
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
+
+            if (fragment?.ScriptTokenStream == null)
             {
                 return problems;
             }

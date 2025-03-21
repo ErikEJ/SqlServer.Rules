@@ -63,7 +63,13 @@ namespace SqlServer.Rules.Performance
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingAndViewSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var selectStatementVisitor = new SelectStatementVisitor();
             fragment.Accept(selectStatementVisitor);
 

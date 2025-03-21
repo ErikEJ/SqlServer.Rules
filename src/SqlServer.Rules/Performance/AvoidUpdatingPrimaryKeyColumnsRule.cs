@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -81,7 +81,12 @@ namespace SqlServer.Rules.Performance
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             var updateVisitor = new UpdateVisitor();
             fragment.Accept(updateVisitor);

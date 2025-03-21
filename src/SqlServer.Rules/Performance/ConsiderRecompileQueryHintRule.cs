@@ -84,7 +84,7 @@ namespace SqlServer.Rules.Performance
                 return problems;
             }
 
-            var proc = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement)) as CreateProcedureStatement;
+            var proc = ruleExecutionContext.ScriptFragment?.GetFragment(typeof(CreateProcedureStatement)) as CreateProcedureStatement;
 
             if (proc == null)
             {

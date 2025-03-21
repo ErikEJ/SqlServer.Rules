@@ -64,10 +64,15 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(
                 typeof(CreateTableStatement),
                 typeof(CreateProcedureStatement),
                 typeof(CreateViewStatement));
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             if (sqlObj.ObjectType == ModelSchema.Procedure)
             {

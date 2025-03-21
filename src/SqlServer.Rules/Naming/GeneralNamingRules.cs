@@ -83,7 +83,12 @@ namespace SqlServer.Rules.Performance
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment();
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment();
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             var name = sqlObj.Name.Parts.LastOrDefault();
             var objectType = sqlObj.ObjectType.Name;

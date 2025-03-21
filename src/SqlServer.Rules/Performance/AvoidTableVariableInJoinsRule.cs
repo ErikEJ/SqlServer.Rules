@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
@@ -86,7 +86,13 @@ namespace SqlServer.Rules.Performance
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var joinVisitor = new JoinVisitor();
             fragment.Accept(joinVisitor);
 

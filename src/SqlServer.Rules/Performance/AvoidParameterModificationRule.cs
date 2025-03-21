@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -74,8 +74,9 @@ namespace SqlServer.Rules.Design
 
             var name = sqlObj.Name.GetName();
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement));
-            if (fragment.ScriptTokenStream == null)
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(typeof(CreateProcedureStatement));
+
+            if (fragment?.ScriptTokenStream == null)
             {
                 return problems;
             }

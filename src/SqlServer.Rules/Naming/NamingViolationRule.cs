@@ -72,6 +72,11 @@ namespace SqlServer.Rules.Naming
             var name = ruleExecutionContext.GetObjectName(sqlObj, ElementNameStyle.SimpleName).ToUpperInvariant();
             var fragment = ruleExecutionContext.GetFragment();
 
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             if (PartialPredicate(name)(BadCharacters)
                 && Ignorables.ShouldNotIgnoreRule(fragment.ScriptTokenStream, ruleId, fragment.StartLine))
             {

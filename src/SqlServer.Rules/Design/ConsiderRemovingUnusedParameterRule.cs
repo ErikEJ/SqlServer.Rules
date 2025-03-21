@@ -70,7 +70,7 @@ namespace SqlServer.Rules.Design
             }
 
             var fragment = sqlObj.GetFragment();
-            if (fragment.ScriptTokenStream == null)
+            if (fragment?.ScriptTokenStream == null)
             {
                 return problems;
             }

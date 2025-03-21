@@ -57,7 +57,13 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateTableStatement));
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(typeof(CreateTableStatement));
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var objName = sqlObj.Name.GetName();
 
             var columnVisitor = new ColumnDefinitionVisitor();
