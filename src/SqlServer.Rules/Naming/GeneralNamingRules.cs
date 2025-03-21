@@ -85,11 +85,6 @@ namespace SqlServer.Rules.Performance
 
             var fragment = ruleExecutionContext.ScriptFragment?.GetFragment();
 
-            if (fragment == null)
-            {
-                return problems;
-            }
-
             var name = sqlObj.Name.Parts.LastOrDefault();
             var objectType = sqlObj.ObjectType.Name;
             var parentObj = sqlObj.GetParent(DacQueryScopes.All);
@@ -121,6 +116,12 @@ namespace SqlServer.Rules.Performance
 
                     break;
                 case "INDEX":
+
+                    if (fragment == null)
+                    {
+                        return problems;
+                    }
+
                     var idx = fragment as CreateIndexStatement;
 
                     if (idx == null)
