@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -67,7 +67,13 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var visitor = new UpdateVisitor();
 
             fragment.Accept(visitor);

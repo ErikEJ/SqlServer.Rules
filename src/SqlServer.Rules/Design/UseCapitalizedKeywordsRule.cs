@@ -81,7 +81,7 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement), typeof(CreateFunctionStatement), typeof(CreateTriggerStatement), typeof(CreateTableStatement), typeof(CreateViewStatement));
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(typeof(CreateProcedureStatement), typeof(CreateFunctionStatement), typeof(CreateTriggerStatement), typeof(CreateTableStatement), typeof(CreateViewStatement));
 
             if (fragment == null)
             {

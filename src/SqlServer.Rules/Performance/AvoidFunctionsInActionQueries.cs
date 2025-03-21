@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
@@ -68,7 +68,12 @@ namespace SqlServer.Rules.Performance
             }
 
             var model = ruleExecutionContext.SchemaModel;
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             var visitor = new DataModificationStatementVisitor();
             fragment.Accept(visitor);
@@ -94,6 +99,12 @@ namespace SqlServer.Rules.Performance
 
                     // we need to parse the SQL into a fragment, so we can use the visitors on it
                     fnFragment = modelFunction.GetFragment(out var parseErrors);
+
+                    if (fnFragment == null)
+                    {
+                        continue;
+                    }
+
                     fnFragment.Accept(createFunctionVisitor);
 
                     if (!createFunctionVisitor.Statements.Any(crfn => crfn.Options != null && crfn.Options.Any(o => o.OptionKind == FunctionOptionKind.SchemaBinding)))

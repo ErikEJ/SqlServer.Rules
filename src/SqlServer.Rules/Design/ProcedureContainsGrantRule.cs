@@ -79,7 +79,13 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(typeof(CreateProcedureStatement));
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(typeof(CreateProcedureStatement));
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var objName = sqlObj.Name.GetName();
 
             var grantVisitor = new GrantVisitor();

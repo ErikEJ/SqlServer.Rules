@@ -64,8 +64,13 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(
                     typeof(CreateTableStatement));
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             var createTable = fragment as CreateTableStatement;
 

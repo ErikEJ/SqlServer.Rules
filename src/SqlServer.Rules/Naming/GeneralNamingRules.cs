@@ -83,7 +83,7 @@ namespace SqlServer.Rules.Performance
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment();
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment();
 
             var name = sqlObj.Name.Parts.LastOrDefault();
             var objectType = sqlObj.ObjectType.Name;
@@ -116,6 +116,12 @@ namespace SqlServer.Rules.Performance
 
                     break;
                 case "INDEX":
+
+                    if (fragment == null)
+                    {
+                        return problems;
+                    }
+
                     var idx = fragment as CreateIndexStatement;
 
                     if (idx == null)

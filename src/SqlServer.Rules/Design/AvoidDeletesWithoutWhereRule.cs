@@ -56,8 +56,13 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
             var visitor = new DeleteVisitor();
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             fragment.Accept(visitor);
 

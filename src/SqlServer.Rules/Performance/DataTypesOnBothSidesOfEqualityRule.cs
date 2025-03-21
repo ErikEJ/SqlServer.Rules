@@ -71,7 +71,12 @@ namespace SqlServer.Rules.Performance
 #pragma warning disable CA1031 // Do not catch general exception types
             try
             {
-                var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
+                var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingAndViewSchemaTypes);
+
+                if (fragment == null)
+                {
+                    return problems;
+                }
 
                 // get the combined parameters and declare variables into one search-able list
                 var variablesVisitor = new VariablesVisitor();

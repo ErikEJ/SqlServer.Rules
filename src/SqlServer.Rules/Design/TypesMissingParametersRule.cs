@@ -48,10 +48,16 @@ namespace SqlServer.Rules.Design
             }
 
             // ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.Table
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(
                 typeof(CreateProcedureStatement),
                 typeof(CreateFunctionStatement),
                 typeof(CreateTableStatement));
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var variableVisitor = new VariablesVisitor();
             var tableDefinitionVisitor = new TableDefinitionVisitor();
 

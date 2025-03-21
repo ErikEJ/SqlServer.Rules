@@ -70,9 +70,14 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(
                 typeof(CreateProcedureStatement),
                 typeof(CreateFunctionStatement));
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             var variablesVisitor = new VariablesVisitor();
             fragment.Accept(variablesVisitor);

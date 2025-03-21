@@ -55,7 +55,12 @@ namespace SqlServer.Rules.Design
             }
 
             var sqlObjName = ruleExecutionContext.GetObjectName(sqlObj);
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingAndViewSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
 
             var whereClauseVisitor = new WhereClauseVisitor();
             fragment.Accept(whereClauseVisitor);

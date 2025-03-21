@@ -1,4 +1,4 @@
-﻿/*
+/*
  * TIM C: 1/19/2018 Commented this out AS the dacpac ALWAYS reports two part names even when the file is missing the schema.
  */
 
@@ -81,6 +81,12 @@ namespace SqlServer.Rules.Naming
             }
 
             var fragment = ruleExecutionContext.GetFragment();
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var objectId = fragment.GetObjectName(null);
 
             if (objectId != null && objectId.Parts.Count < 2)

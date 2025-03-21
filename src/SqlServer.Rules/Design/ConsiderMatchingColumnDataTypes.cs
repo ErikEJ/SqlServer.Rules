@@ -75,6 +75,12 @@ namespace SqlServer.Rules.Design
             foreach (var table in tables)
             {
                 var fragment = table.GetFragment();
+
+                if (fragment == null)
+                {
+                    continue;
+                }
+
                 var columnVisitor = new ColumnDefinitionVisitor();
                 fragment.Accept(columnVisitor);
                 columnList.AddRange(columnVisitor.NotIgnoredStatements(RuleId)

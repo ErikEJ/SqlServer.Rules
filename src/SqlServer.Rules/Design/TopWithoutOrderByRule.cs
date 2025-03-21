@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
@@ -66,7 +66,13 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment.GetFragment(ProgrammingAndViewSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingAndViewSchemaTypes);
+
+            if (fragment == null)
+            {
+                return problems;
+            }
+
             var topVisitor = new TopRowFilterVisitor();
 
             fragment.Accept(topVisitor);
