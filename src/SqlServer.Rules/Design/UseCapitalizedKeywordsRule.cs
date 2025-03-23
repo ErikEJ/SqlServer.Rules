@@ -6,7 +6,6 @@ using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
-using SqlServer.Dac.Visitors;
 using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Design
@@ -30,12 +29,12 @@ namespace SqlServer.Rules.Design
     /// Capitalizing SQL keywords enhances readability and provides a clear separation between keywords and objects.
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
-    ////[ExportCodeAnalysisRule(
-    ////    RuleId,
-    ////    RuleDisplayName,
-    ////    Description = RuleDisplayName,
-    ////    Category = Constants.Design,
-    ////    RuleScope = SqlRuleScope.Element)]
+    [ExportCodeAnalysisRule(
+        RuleId,
+        RuleDisplayName,
+        Description = RuleDisplayName,
+        Category = Constants.Design,
+        RuleScope = SqlRuleScope.Element)]
     public sealed class UseCapitalizedKeywordsRule : BaseSqlCodeAnalysisRule
     {
         private readonly HashSet<string> sqlWords;
@@ -61,6 +60,7 @@ namespace SqlServer.Rules.Design
         public UseCapitalizedKeywordsRule()
             : base(ModelSchema.Procedure, ModelSchema.Table, ModelSchema.View, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction)
         {
+            //TODO Add data type aliases!
             sqlWords = new HashSet<string>(TSqlKeywords.Concat(TSqlDataTypes), StringComparer.OrdinalIgnoreCase);
         }
 
@@ -88,9 +88,6 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fromClauseVisitor = new FromClauseVisitor();
-            fragment.Accept(fromClauseVisitor);
-
             for (var index = 0; index < fragment.ScriptTokenStream?.Count; index++)
             {
                 var token = fragment.ScriptTokenStream[index];
@@ -103,21 +100,6 @@ namespace SqlServer.Rules.Design
                 var text = token.Text;
 
                 if (string.IsNullOrWhiteSpace(text))
-                {
-                    continue;
-                }
-
-                if (fromClauseVisitor.Statements.Any(s => s.FirstTokenIndex <= index && s.LastTokenIndex >= index))
-                {
-                    continue;
-                }
-
-                if (token.TokenType == TSqlTokenType.QuotedIdentifier && text.Length > 2)
-                {
-                    text = text.Substring(1, text.Length - 2);
-                }
-
-                if (text.All(char.IsWhiteSpace))
                 {
                     continue;
                 }

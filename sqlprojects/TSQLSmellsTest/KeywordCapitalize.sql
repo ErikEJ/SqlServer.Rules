@@ -19,24 +19,4 @@ SELECT foo FROM foo
 		foo != 'foo'
 GO
 
-CREATE TABLE [dbo].[Case]
-(
-	[Id] [uniqueidentifier] NOT NULL,
-    [CASEID] [varchar](44) NOT NULL,
-	[PROCES] [varchar](3) NULL,
-    CONSTRAINT [PK_Case] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_GroupId] FOREIGN KEY ([GroupId]) REFERENCES [dbo].[Group]([Id])
-)
-GO
-
-CREATE TABLE [HangFire].[Set](
-	[Key] NVARCHAR(100) NOT NULL,
-	[Score] FLOAT NOT NULL,
-	[Value] NVARCHAR(256) NOT NULL,
-    CONSTRAINT [PK_Set] PRIMARY KEY CLUSTERED ([Key] ASC, [Value] ASC)
-       WITH (IGNORE_DUP_KEY = ON)
-)
-GO
-
-
 -- SRD0067
