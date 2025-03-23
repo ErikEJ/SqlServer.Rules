@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -18,90 +17,6 @@ namespace SqlServer.Dac
             {
                 fragment.Accept(visitor);
             }
-        }
-
-        public static bool RemoveRecursive(this TSqlFragment fragment, TSqlFragment remove)
-        {
-            switch (fragment)
-            {
-                case TSqlScript script:
-                    foreach (var bch in script.Batches)
-                    {
-                        if (bch.RemoveRecursive(remove))
-                        {
-                            return true;
-                        }
-                    }
-
-                    break;
-                case TSqlBatch batch:
-                    if (RemoveStatementFromList(batch.Statements, remove))
-                    {
-                        return true;
-                    }
-
-                    break;
-                case WhileStatement whileBlock:
-                    if (whileBlock.Statement.RemoveRecursive(remove))
-                    {
-                        return true;
-                    }
-
-                    break;
-                case StatementList stmts:
-                    if (RemoveStatementFromList(stmts.Statements, remove))
-                    {
-                        return true;
-                    }
-
-                    break;
-                case BeginEndBlockStatement beBlock:
-                    if (RemoveStatementFromList(beBlock.StatementList.Statements, remove))
-                    {
-                        return true;
-                    }
-
-                    break;
-                case IfStatement ifBlock:
-                    if (ifBlock.ThenStatement.RemoveRecursive(remove)
-                        || ifBlock.ElseStatement.RemoveRecursive(remove))
-                    {
-                        return true;
-                    }
-
-                    break;
-                case TryCatchStatement tryBlock:
-                    if (RemoveStatementFromList(tryBlock.TryStatements.Statements, remove)
-                        || RemoveStatementFromList(tryBlock.CatchStatements.Statements, remove))
-                    {
-                        return true;
-                    }
-
-                    break;
-                default:
-                    Debug.WriteLine(fragment);
-                    break;
-            }
-
-            return false;
-        }
-
-        private static bool RemoveStatementFromList(IList<TSqlStatement> statements, TSqlFragment remove)
-        {
-            foreach (var stmt in statements)
-            {
-                if (stmt == remove)
-                {
-                    return statements.Remove(stmt);
-                }
-
-                if (stmt.RemoveRecursive(remove))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public static TSqlFragment GetFragment(this SqlRuleExecutionContext ruleExecutionContext, bool forceParse = false)

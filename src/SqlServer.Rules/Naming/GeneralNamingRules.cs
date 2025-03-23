@@ -105,6 +105,11 @@ namespace SqlServer.Rules.Performance
                 problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Name '{name}' contains invalid characters. Please only use alphanumerics and underscores.", RuleId), sqlObj, fragment));
             }
 
+            if (parentObj == null)
+            {
+                return problems;
+            }
+
             var tableName = parentObj.Name.Parts.LastOrDefault();
             switch (objectType.ToUpperInvariant())
             {
