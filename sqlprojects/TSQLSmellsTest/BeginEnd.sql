@@ -4,13 +4,13 @@ AS
 SET NOCOUNT ON;
 
 IF(@parm = 1)
-  SELECT 'foo'
+  SELECT 'foo';
 ELSE
-  SELECT 'fix'
+  SELECT 'fix';
 
 IF (@parm = 2)
 BEGIN
-  SELECT 'bar'
-END
+  SELECT 'bar';
+END;
 
 -- SRD0066

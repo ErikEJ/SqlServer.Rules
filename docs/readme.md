@@ -113,6 +113,7 @@
 | [SRD0065](Design/SRD0065.md) | Avoid NOT FOR REPLICATION |   | Avoid 'NOT FOR REPLICATION' unless this is the desired behavior and replication is in use. |   |
 | [SRD0066](Design/SRD0066.md) | BEGIN and END symbols inside conditional statements. | Yes | Use BEGIN and END symbols inside conditional statements. | Yes |
 | [SRD0067](Design/SRD0067.md) | Use capitalized keywords for enhanced readability. |   | Use capitalized keywords for enhanced readability. | Yes |
+| [SRD0068](Design/SRD0068.md) | Terminate statements with semicolon. | Yes | Query statements should finish with a semicolon - ';'. | Yes |
   
 ## Naming
   

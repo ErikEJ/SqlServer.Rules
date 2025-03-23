@@ -16,7 +16,8 @@ CREATE PROCEDURE hip
 AS
 SELECT foo FROM foo 
 		WHERE foo = 'foo' and
-		foo != 'foo'
+		foo != 'foo';
+;
 GO
 
 -- SRD0067
