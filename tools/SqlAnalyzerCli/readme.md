@@ -59,3 +59,23 @@ CREATE TABLE [dbo].[Table3]
 ```
 
 ![Sample](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/cli.png)
+
+## SQL Server Management Studio (SSMS) integration
+
+You can run the tool against a script in the SQL Server Management Studio editor, if configured as an external tool.
+
+From the main menu, select `Tools`, `External Tools` and configure as shown:
+
+![SSMS](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/ssms.png)
+
+Title: `tsqlanalyze`
+
+Command: `C:\Users\<YourUserName>\.dotnet\tools\tsqlanalyze.exe`
+
+Arguments: `-n -i $(ItemPath)`
+
+Use output window: `✓`
+
+To run the tool, select `Tools`, `tsqlanalyze` and the result will be displayed in the Output window. Double click a warning to navigate to the related script line.
+
+![SSMS](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/ssmsoutput.png)
