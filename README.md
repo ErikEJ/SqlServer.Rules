@@ -28,6 +28,10 @@ dotnet add package ErikEJ.DacFX.TSQLSmellSCA
 
 You can read more about using and customizing the rules in the [readme here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
 
+## Command line tool - T-SQL Analyzer CLI
+
+This repository also contains a .NET commmand line tool, that uses the rule sets. Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerCli/readme.md)
+
 ## Solution Organization
 
 `.github` - GitHub actions
