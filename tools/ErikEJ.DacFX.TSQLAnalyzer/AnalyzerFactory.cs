@@ -67,6 +67,8 @@ public class AnalyzerFactory
             throw new ArgumentException("Analysis failed");
         }
 
+        result.Result = analysisResult;
+
         if (analysisResult.AnalysisSucceeded)
         {
             var outputFile = GetOutputFile(request.OutputFile);

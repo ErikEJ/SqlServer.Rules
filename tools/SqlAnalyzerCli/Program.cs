@@ -128,19 +128,14 @@ internal static class Program
             return 1;
         }
 
-        foreach (var err in result.Result.InitializationErrors)
-        {
-            DisplayService.Error(err.Message);
-        }
+        var errors = result.Result.InitializationErrors
+            .Concat(result.Result.SuppressionErrors)
+            .Concat(result.Result.AnalysisErrors)
+            .ToList();
 
-        foreach (var err in result.Result.SuppressionErrors)
+        foreach (var err in errors)
         {
-            DisplayService.Error(err.Message);
-        }
-
-        foreach (var err in result.Result.AnalysisErrors)
-        {
-            DisplayService.Error(err.Message);
+            DisplayService.Error(err.GetOutputMessage());
         }
 
         if (result.ModelErrors.Count > 0)
