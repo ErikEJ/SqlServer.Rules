@@ -3,6 +3,7 @@
     "SqlAnalyzerCli": {
       "commandName": "Project",
       "commandLineArgs": "-c \"Data Source=(localdb)\\mssqllocaldb;Initial Catalog=IPWF2;Integrated Security=true;Encrypt=false\" ",
+      "workingDirectory": "C:\\temp",
       "remoteDebugEnabled": false
     }
   }
