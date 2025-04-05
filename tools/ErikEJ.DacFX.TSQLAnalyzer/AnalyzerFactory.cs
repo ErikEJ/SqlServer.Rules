@@ -87,8 +87,6 @@ public class AnalyzerFactory
                     result.OutputFile = outputFile.FullName;
                 }
             }
-
-            result.Result = analysisResult;
         }
 
         return result;

@@ -19,6 +19,12 @@ public static class ExtensibilityErrorExtensions
         stringBuilder.Append(". ");
         stringBuilder.Append(extensibilityError.Exception?.ToString() ?? string.Empty);
 
+        if (extensibilityError.ErrorCode == 72043)
+        {
+            stringBuilder.AppendLine();
+            stringBuilder.Append("The provided model cannot be analyzed, if it is a live database, extract the schema and create a buildable .dacpac.");
+        }
+
         return stringBuilder.ToString();
     }
 }
