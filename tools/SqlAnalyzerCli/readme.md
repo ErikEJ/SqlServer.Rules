@@ -60,9 +60,9 @@ CREATE TABLE [dbo].[Table3]
 
 ![Sample](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/cli.png)
 
-## SQL Server Management Studio (SSMS) integration
+## SQL Server Management Studio (SSMS) and Visual Studio integration
 
-You can run the tool against a script in the SQL Server Management Studio editor, if configured as an external tool.
+You can run the tool against any script in the SQL editor, if configured as an external tool.
 
 From the main menu, select `Tools`, `External Tools` and configure as shown:
 
