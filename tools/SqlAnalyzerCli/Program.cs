@@ -41,7 +41,7 @@ internal static class Program
         var result = parserResult
           .WithParsed(options =>
             {
-                res = Run(options);
+                res = Run(options, args);
             })
           .WithNotParsed(errs => DisplayHelp(parserResult, errs));
 
@@ -50,7 +50,7 @@ internal static class Program
         return res;
     }
 
-    private static int Run(CliAnalyzerOptions options)
+    private static int Run(CliAnalyzerOptions options, string[] args)
     {
         var sw = Stopwatch.StartNew();
 
@@ -90,7 +90,7 @@ internal static class Program
             ConnectionString = sqlConnectionStringBuilder,
         };
 
-        if (options.Scripts?.Count == 0 && options.ConnectionString == null)
+        if (options.Scripts?.Count == 0 && options.ConnectionString == null && args.Length == 0)
         {
             analyzerOptions.Scripts = [];
             analyzerOptions.Scripts.Add(Directory.GetCurrentDirectory());
