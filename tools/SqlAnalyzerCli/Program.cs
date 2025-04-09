@@ -91,7 +91,7 @@ internal static class Program
             Format = options.Format,
         };
 
-        bool hasBogusArgs = args.All(a => !a.StartsWith('-'));
+        bool hasBogusArgs = args.Any() && args.All(a => !a.StartsWith('-'));
 
         if (options.Scripts?.Count == 0 && options.ConnectionString == null && !hasBogusArgs)
         {
