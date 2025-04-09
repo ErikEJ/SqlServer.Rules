@@ -88,9 +88,12 @@ internal static class Program
             SqlVersion = options.SqlVersion,
             OutputFile = options.OutputFile != null ? new FileInfo(options.OutputFile) : null,
             ConnectionString = sqlConnectionStringBuilder,
+            Format = options.Format,
         };
 
-        if (options.Scripts?.Count == 0 && options.ConnectionString == null && args.Length == 0)
+        bool hasBogusArgs = args.All(a => !a.StartsWith('-'));
+
+        if (options.Scripts?.Count == 0 && options.ConnectionString == null && !hasBogusArgs)
         {
             analyzerOptions.Scripts = [];
             analyzerOptions.Scripts.Add(Directory.GetCurrentDirectory());
@@ -173,6 +176,19 @@ internal static class Program
                 DisplayService.MarkupLine();
                 DisplayService.MarkupLine(
                     () => DisplayService.Markup($"Writing report to '{analyzerOptions.OutputFile.FullName}'", Decoration.Bold));
+            }
+
+            if (analyzerOptions.Format)
+            {
+                DisplayService.MarkupLine();
+                DisplayService.MarkupLine(
+                    () => DisplayService.Markup($"PREVIEW: Formatting {result.FormattedFiles.Count} files", Decoration.Bold));
+
+                foreach (var file in result.FormattedFiles)
+                {
+                    DisplayService.MarkupLine(
+                        () => DisplayService.Markup($"PREVIEW: Formatted '{file}'", Decoration.Bold));
+                }
             }
 
             DisplayService.MarkupLine();

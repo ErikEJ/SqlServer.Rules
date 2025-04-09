@@ -39,4 +39,9 @@ public class AnalyzerOptions
     /// Supported format is 'xml'
     /// </summary>
     public FileInfo? OutputFile { get; set; }
+
+    /// <summary>
+    /// Used to specify if formatting of the .sql files selected for analysis is required.
+    /// </summary>
+    public bool Format { get; set; }
 }

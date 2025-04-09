@@ -36,11 +36,18 @@ internal sealed class CliAnalyzerOptions
     public SqlServerVersion SqlVersion { get; set; } = SqlServerVersion.Sql160;
 
     [Option(
-    'n',
-    longName: "nologo",
-    Required = false,
-    HelpText = "Compact output without logo and informational messages")]
+        'n',
+        longName: "nologo",
+        Required = false,
+        HelpText = "Compact output without logo and informational messages")]
     public bool NoLogo { get; set; }
+
+    [Option(
+        'f',
+        longName: "format",
+        Required = false,
+        HelpText = "PREVIEW: Attempt to format the .sql files selected for analysis.")]
+    public bool Format { get; set; }
 
     [Option(
         'o',
