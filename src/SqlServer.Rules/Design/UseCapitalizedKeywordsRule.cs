@@ -60,7 +60,6 @@ namespace SqlServer.Rules.Design
         public UseCapitalizedKeywordsRule()
             : base(ModelSchema.Procedure, ModelSchema.Table, ModelSchema.View, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction)
         {
-            //TODO Add data type aliases!
             sqlWords = new HashSet<string>(TSqlKeywords.Concat(TSqlDataTypes), StringComparer.OrdinalIgnoreCase);
         }
 

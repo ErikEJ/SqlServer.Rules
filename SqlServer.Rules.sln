@@ -94,6 +94,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Design", "Design", "{544D4A
 		docs\Design\SRD0064.md = docs\Design\SRD0064.md
 		docs\Design\SRD0065.md = docs\Design\SRD0065.md
 		docs\Design\SRD0066.md = docs\Design\SRD0066.md
+		docs\Design\SRD0067.md = docs\Design\SRD0067.md
+		docs\Design\SRD0068.md = docs\Design\SRD0068.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Naming", "Naming", "{B1B0D9D0-3F3A-476A-A71A-58FFEC5A47FB}"
