@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Text;
 using ErikEJ.DacFX.TSQLAnalyzer.Services;
 using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -12,6 +13,7 @@ public class AnalyzerFactory
     private readonly HashSet<string> ignoredRules = new();
     private readonly HashSet<string> ignoredRuleSets = new();
     private readonly AnalyzerOptions request;
+    private Dictionary<string, string> files = [];
 
     public AnalyzerFactory(AnalyzerOptions analyzerOptions)
     {
@@ -71,25 +73,56 @@ public class AnalyzerFactory
 
         if (analysisResult.AnalysisSucceeded)
         {
-            var outputFile = GetOutputFile(request.OutputFile);
-
-            if (outputFile != null)
+            if (request.OutputFile != null)
             {
-                if (outputFile.Exists)
-                {
-                    outputFile.Delete();
-                }
+                SaveOutputFile(result, analysisResult);
+            }
 
-                if (outputFile.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
-                {
-                    analysisResult.SerializeResultsToXml(outputFile.FullName);
-
-                    result.OutputFile = outputFile.FullName;
-                }
+            if (request.Format)
+            {
+                Format(files, result);
             }
         }
 
         return result;
+    }
+
+    private void SaveOutputFile(AnalyzerResult result, CodeAnalysisResult analysisResult)
+    {
+        var outputFile = GetOutputFile(request.OutputFile);
+
+        if (outputFile != null)
+        {
+            if (outputFile.Exists)
+            {
+                outputFile.Delete();
+            }
+
+            if (outputFile.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+            {
+                analysisResult.SerializeResultsToXml(outputFile.FullName);
+
+                result.OutputFile = outputFile.FullName;
+            }
+        }
+    }
+
+    private void Format(Dictionary<string, string> files, AnalyzerResult result)
+    {
+        var formatter = new Formatter();
+
+        var formattedFiles = new List<string>();
+
+        foreach (var file in files)
+        {
+            var formatted = Formatter.Format(file.Value, file.Key);
+
+            if (formatted.Completed)
+            {
+                File.WriteAllText(file.Key, formatted.FormattedText, Encoding.UTF8);
+                result.FormattedFiles.Add(file.Key);
+            }
+        }
     }
 
     private TSqlModel GenerateTSqlModel(AnalyzerResult result)
@@ -116,6 +149,7 @@ public class AnalyzerFactory
             }
             else
             {
+                this.files = files;
                 AddFilesToModel(result, model, files);
             }
         }

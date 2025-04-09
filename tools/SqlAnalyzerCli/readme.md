@@ -37,6 +37,12 @@ tsqlanalyze -i C:\scripts\Chinook.dacpac
 
 ## Analyze a live database
 tsqlanalyze -c "Data Source=.\SQLEXPRESS;Initial Catalog=Chinook;Integrated Security=True;Encrypt=false"
+
+## Analyze a single file, and include your own rules .dll file
+tsqlanalyze -i C:\scripts\sproc.sql -a C:\code\analyzers
+
+## Analyze a single file, and reformat (PREVIEW)
+tsqlanalyze -i C:\scripts\sproc.sql -f 
 ```
 
 Rule settings filters are demonstrated [here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
@@ -79,3 +85,17 @@ Use output window: `✓`
 To run the tool, select `Tools`, `tsqlanalyze` and the result will be displayed in the Output window. Double click a warning to navigate to the related script line.
 
 ![SSMS](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/ssmsoutput.png)
+
+## SQL Formatting (PREVIEW)
+
+Inspired by the [SQL Formatter](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.SqlFormatter) Visual Studio extension from [Mads Kristensen](https://github.com/madskristensen), the `-f` switch will enable formatting of the analyzed scripts using the [ScriptDom library](https://www.nuget.org/packages/Microsoft.SqlServer.TransactSql.ScriptDom).
+
+- Formats T-SQL code to a consistent and readable layout
+- Customizable formatting rules
+- `.editorconfig` support
+
+See [this](https://github.com/madskristensen/SqlFormatter?tab=readme-ov-file#editorconfig-support) for information about the `.editorconfig` format.
+
+See [this](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsql.scriptdom.sqlscriptgeneratoroptions?view=sql-transactsql-161#properties) for information about the available options.
+
+> Enabling this will cause your script files to be updated!
