@@ -29,8 +29,8 @@
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="170.28.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="editorconfig"  Version="0.15.0" />
-    <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="2.0.0-preview.8" />
-    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="2.0.0-preview.8" />
+    <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="2.0.0-preview.10" />
+    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="2.0.0-preview.10" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
   </ItemGroup>
 
