@@ -53,7 +53,7 @@ namespace TSQLSmellSCA
                     {
                         foreach (var param in executableEntity.Parameters)
                         {
-                            if (param.Variable.Name.Equals("@stmt", StringComparison.OrdinalIgnoreCase))
+                            if (param.Variable != null && param.Variable.Name.Equals("@stmt", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (FragmentTypeParser.GetFragmentType(param.ParameterValue) == "VariableReference")
                                 {
@@ -102,7 +102,7 @@ namespace TSQLSmellSCA
             {
                 if (varOn.VarName.Equals(varName, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (TestVariableAssigmentChain(varOn.SrcName))
+                    if (varOn.SrcName != varOn.VarName && TestVariableAssigmentChain(varOn.SrcName))
                     {
                         return true;
                     }
