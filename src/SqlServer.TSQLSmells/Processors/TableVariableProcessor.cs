@@ -26,7 +26,7 @@ namespace TSQLSmellSCA
 
         public void ProcessTableVariableBody(DeclareTableVariableBody fragment)
         {
-            if (fragment.VariableName.Value.Length <= 2)
+            if (fragment.VariableName?.Value.Length <= 2)
             {
                 smells.SendFeedBack(33, fragment);
             }

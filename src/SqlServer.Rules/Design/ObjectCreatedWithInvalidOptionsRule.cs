@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -113,8 +114,18 @@ namespace SqlServer.Rules.Design
                 quotedIdentifierOption = DmlTrigger.QuotedIdentifierOn;
             }
 
-            var ansiNullsOn = sqlObj.GetProperty<bool>(ansiNullsOption);
-            var quotedIdentifierOn = sqlObj.GetProperty<bool>(quotedIdentifierOption);
+            var ansiNullsOn = false;
+            var quotedIdentifierOn = false;
+
+            try
+            {
+                ansiNullsOn = sqlObj.GetProperty<bool>(ansiNullsOption);
+                quotedIdentifierOn = sqlObj.GetProperty<bool>(quotedIdentifierOption);
+            }
+            catch (NullReferenceException)
+            {
+                // Ignore
+            }
 
             if (!ansiNullsOn || !quotedIdentifierOn)
             {

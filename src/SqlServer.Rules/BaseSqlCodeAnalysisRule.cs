@@ -1102,6 +1102,12 @@ namespace SqlServer.Rules
             var tables = new List<NamedTableReference>();
 
             var namedTableVisitor = new NamedTableReferenceVisitor();
+
+            if (query.FromClause == null)
+            {
+                return null;
+            }
+
             query.FromClause.Accept(namedTableVisitor);
 
             if (column.MultiPartIdentifier.Identifiers.Count == 2)
