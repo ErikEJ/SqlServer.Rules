@@ -33,7 +33,6 @@ public class SRD0067Tests : TestModel
         ExpectedProblems.Add(new TestProblem(9, 1, "SqlServer.Rules.SRN0006"));
         ExpectedProblems.Add(new TestProblem(9, 1, "SqlServer.Rules.SRP0020"));
 
-
         RunTest();
     }
 }
