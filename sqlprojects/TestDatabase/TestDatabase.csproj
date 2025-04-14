@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.SqlProj/3.1.1">
+<Project Sdk="MSBuild.Sdk.SqlProj/3.1.1">
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
         <SqlServerVersion>Sql150</SqlServerVersion>
@@ -13,7 +13,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="1.3.0">
+        <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="2.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
