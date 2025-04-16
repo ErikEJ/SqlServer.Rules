@@ -65,7 +65,9 @@ namespace TSQLSmellSCA
 
             var smellprocess = new Smells();
 
+#pragma warning disable CA1846 // Prefer 'AsSpan' over 'Substring'
             var iRule = int.Parse(ruleID.Substring(ruleID.Length - 3), CultureInfo.InvariantCulture);
+#pragma warning restore CA1846 // Prefer 'AsSpan' over 'Substring'
             return smellprocess.ProcessObject(sqlObject, iRule);
         }
     }

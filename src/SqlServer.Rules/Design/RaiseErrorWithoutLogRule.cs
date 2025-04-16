@@ -87,7 +87,8 @@ namespace SqlServer.Rules.Design
                 from r in visitor.Statements
                 where
                     r.SecondParameter is IntegerLiteral literal &&
-                    int.Parse(literal?.Value, CultureInfo.InvariantCulture) > 18 &&
+                    literal.Value != null &&
+                    int.Parse(literal.Value, CultureInfo.InvariantCulture) > 18 &&
                     (r.RaiseErrorOptions & RaiseErrorOptions.Log) != RaiseErrorOptions.Log
                 select r;
 

@@ -15,12 +15,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="1.2.1">
+    <!--<PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="2.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    </PackageReference>-->
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.0.94" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\SqlServer.Rules\SqlServer.Rules.csproj" />

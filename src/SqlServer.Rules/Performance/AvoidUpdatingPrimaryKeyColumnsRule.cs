@@ -103,9 +103,17 @@ namespace SqlServer.Rules.Performance
                     var namedTableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
                     update.UpdateSpecification.FromClause.Accept(namedTableVisitor);
 
-                    target = namedTableVisitor.Statements
-                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, target.SchemaObject.Identifiers.LastOrDefault()?.Value));
-                    if (target == null)
+                    var identifier = target.SchemaObject.Identifiers.LastOrDefault();
+
+                    if (identifier == null)
+                    {
+                        continue;
+                    }
+
+                    var realTarget = namedTableVisitor.Statements
+                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, identifier.Value));
+
+                    if (realTarget == null)
                     {
                         continue;
                     }

@@ -186,12 +186,14 @@ namespace SqlServer.Rules.Performance
 
         private static string GetReferencedName(TSqlObject sqlObj, ModelRelationshipClass relation = null, string typeToLookFor = "Table")
         {
-            if (relation == null)
+            var referenced = sqlObj.GetReferenced().FirstOrDefault(o => Comparer.Equals(o.ObjectType.Name, typeToLookFor));
+
+            if (referenced == null)
             {
-                return sqlObj.GetReferenced().FirstOrDefault(o => Comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
+                return null;
             }
 
-            return sqlObj.GetReferenced(relation).FirstOrDefault(o => Comparer.Equals(o.ObjectType.Name, typeToLookFor)).Name.Parts.LastOrDefault();
+            return referenced.Name.Parts.LastOrDefault();
         }
     }
 }
