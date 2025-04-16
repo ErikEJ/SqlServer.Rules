@@ -25,10 +25,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.0.94" />
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="170.28.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="editorconfig"  Version="0.15.0" />
+    <PackageReference Include="editorconfig" Version="0.15.0" />
     <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="2.0.0" />
     <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="2.0.0" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />

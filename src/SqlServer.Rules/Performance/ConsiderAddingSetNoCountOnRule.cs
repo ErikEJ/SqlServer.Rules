@@ -89,6 +89,11 @@ namespace SqlServer.Rules.Performance
 
             var createToken = fragment.ScriptTokenStream.FirstOrDefault(t => t.TokenType == TSqlTokenType.Create);
 
+            if (createToken == null)
+            {
+                return problems;
+            }
+
             if (!predicates.Any() && Ignorables.ShouldNotIgnoreRule(fragment.ScriptTokenStream, RuleId, createToken.Line))
             {
                 problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj));

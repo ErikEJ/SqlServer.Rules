@@ -75,7 +75,7 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var keyColumn = columns.FirstOrDefault();
+            var keyColumn = columns.First();
             var dataType = keyColumn.GetReferenced(Column.DataType, DacQueryScopes.All).FirstOrDefault();
             if (dataType?.Name == null)
             {
