@@ -4,7 +4,7 @@
     <LangVersion>9.0</LangVersion>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackageId>ErikEJ.DacFX.SqlServer.Rules</PackageId>
-    <Version>3.0.0</Version>
+    <Version>3.0.0-preview.1</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
@@ -41,6 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\SqlServer.Rules\bin\$(Configuration)\netstandard2.1\SqlServer.Rules.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
+    <None Include="..\SqlServer.Rules\bin\$(Configuration)\net8.0\SqlServer.Rules.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
   </ItemGroup>
 </Project>
