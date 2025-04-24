@@ -210,6 +210,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErikEJ.DacFX.TSQLAnalyzer",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chinook", "sqlprojects\Chinook\Chinook.csproj", "{EA8DA413-F1FC-EC5A-9755-65C34D12680C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLAnalyzer.Tests", "test\TSQLAnalyzer.Tests\TSQLAnalyzer.Tests.csproj", "{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -260,6 +262,10 @@ Global
 		{F5B22019-FE37-3503-DDA4-E116C7BFB2F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA8DA413-F1FC-EC5A-9755-65C34D12680C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA8DA413-F1FC-EC5A-9755-65C34D12680C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -283,6 +289,7 @@ Global
 		{E9D0C71E-D3A0-4D87-8E82-7DDBB42F7F07} = {AB713AEF-EE54-487A-AE70-8DD69973A2F9}
 		{F5B22019-FE37-3503-DDA4-E116C7BFB2F7} = {AB713AEF-EE54-487A-AE70-8DD69973A2F9}
 		{EA8DA413-F1FC-EC5A-9755-65C34D12680C} = {4EB38410-F29F-4143-A19E-BE8AE8FEED26}
+		{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67B59E89-8C35-419D-A49B-9C2C19584900}

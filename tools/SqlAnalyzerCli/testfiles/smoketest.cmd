@@ -4,6 +4,9 @@ pause
 ..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -i sproc.sql
 pause
 
+..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -i simple.sql
+pause
+
 ..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -i sproc.sql -o output.xml
 pause
 
