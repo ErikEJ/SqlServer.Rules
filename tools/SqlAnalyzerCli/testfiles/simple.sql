@@ -1,0 +1,1 @@
+CREATE PROCEDURE dbo.TestProc AS SELECT * FROM sys.objects

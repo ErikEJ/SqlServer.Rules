@@ -24,9 +24,9 @@ public class AnalyzerFactory
     {
         var result = new AnalyzerResult();
 
-        if (request.Scripts == null && request.ConnectionString == null)
+        if ((request.Scripts == null || request.Scripts.Count == 0) && request.ConnectionString == null && string.IsNullOrEmpty(request.Script))
         {
-            throw new ArgumentException("No scripts or connection string specified");
+            throw new ArgumentException("No script paths, script body or connection string specified");
         }
 
         if (!string.IsNullOrWhiteSpace(request.Rules))
@@ -129,7 +129,7 @@ public class AnalyzerFactory
     {
         var model = new TSqlModel(request.SqlVersion, new TSqlModelOptions());
 
-        if (request.Scripts != null && request.ConnectionString == null)
+        if (request.Scripts != null && request.Scripts.Count > 0 && request.ConnectionString == null)
         {
             var files = sqlFileCollector.ProcessList(request.Scripts);
 
@@ -160,6 +160,10 @@ public class AnalyzerFactory
 
             model = CreateDacpacModel(dbDacpac.FullName);
         }
+        else if (!string.IsNullOrWhiteSpace(request.Script))
+        {
+            AddScriptToModel(result, model, request.Script);
+        }
 
         return model;
     }
@@ -184,6 +188,19 @@ public class AnalyzerFactory
             {
                 result.ModelErrors.Add(fileName, dex);
             }
+        }
+    }
+
+    private static void AddScriptToModel(AnalyzerResult result, TSqlModel model, string script)
+    {
+        var options = new TSqlObjectOptions();
+        try
+        {
+            model.AddObjects(script, new TSqlObjectOptions());
+        }
+        catch (DacModelException dex)
+        {
+            result.ModelErrors.Add(Guid.NewGuid().ToString(), dex);
         }
     }
 
