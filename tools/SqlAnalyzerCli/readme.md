@@ -66,6 +66,38 @@ CREATE TABLE [dbo].[Table3]
 
 ![Sample](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/cli.png)
 
+## GitHub Copilot integration (PREVIEW)
+
+You can use the tool to ask GitHub Copilot analyze your SQL Server CREATE scripts in VS Code, by adding a [MCP server](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) to your mcp.json file.
+
+```json
+{
+    "servers": {
+        "TSQLAnalyzerMCP": {
+            "type": "stdio",
+            "command": "tsqlanalyze",
+            "args": [
+                "-mcp"
+            ]
+        }
+    }
+}
+```
+
+## SQL Formatting (PREVIEW)
+
+Inspired by the [SQL Formatter](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.SqlFormatter) Visual Studio extension from [Mads Kristensen](https://github.com/madskristensen), the `-f` switch will enable formatting of the analyzed scripts using the [ScriptDom library](https://www.nuget.org/packages/Microsoft.SqlServer.TransactSql.ScriptDom).
+
+- Formats T-SQL code to a consistent and readable layout
+- Customizable formatting rules
+- `.editorconfig` support
+
+See [this](https://github.com/madskristensen/SqlFormatter?tab=readme-ov-file#editorconfig-support) for information about the `.editorconfig` format.
+
+See [this](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsql.scriptdom.sqlscriptgeneratoroptions?view=sql-transactsql-161#properties) for information about the available options.
+
+> Enabling this will cause your script files to be updated!
+
 ## SQL Server Management Studio (SSMS) and Visual Studio integration
 
 You can run the tool against any script in the SQL editor, if configured as an external tool.
@@ -85,17 +117,3 @@ Use output window: `✓`
 To run the tool, select `Tools`, `tsqlanalyze` and the result will be displayed in the Output window. Double click a warning to navigate to the related script line.
 
 ![SSMS](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/ssmsoutput.png)
-
-## SQL Formatting (PREVIEW)
-
-Inspired by the [SQL Formatter](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.SqlFormatter) Visual Studio extension from [Mads Kristensen](https://github.com/madskristensen), the `-f` switch will enable formatting of the analyzed scripts using the [ScriptDom library](https://www.nuget.org/packages/Microsoft.SqlServer.TransactSql.ScriptDom).
-
-- Formats T-SQL code to a consistent and readable layout
-- Customizable formatting rules
-- `.editorconfig` support
-
-See [this](https://github.com/madskristensen/SqlFormatter?tab=readme-ov-file#editorconfig-support) for information about the `.editorconfig` format.
-
-See [this](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsql.scriptdom.sqlscriptgeneratoroptions?view=sql-transactsql-161#properties) for information about the available options.
-
-> Enabling this will cause your script files to be updated!
