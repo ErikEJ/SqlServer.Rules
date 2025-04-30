@@ -4,6 +4,9 @@ using CommandLine.Text;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using SqlAnalyzerCli.Services;
 
@@ -15,7 +18,27 @@ internal static class Program
     {
         try
         {
-            return await MainAsync(args).ConfigureAwait(false);
+            if (args.Length == 1 && args[0] == "-mcp")
+            {
+                var builder = Host.CreateApplicationBuilder(args);
+
+                builder.Services.AddMcpServer()
+                .WithStdioServerTransport()
+                .WithTools<AnalyzerTools>();
+
+                builder.Logging.AddConsole(options =>
+                {
+                    options.LogToStandardErrorThreshold = LogLevel.Trace;
+                });
+
+                await builder.Build().RunAsync();
+
+                return 0;
+            }
+            else
+            {
+                return await MainAsync(args).ConfigureAwait(false);
+            }
         }
 #pragma warning disable CA1031
         catch (Exception ex)
