@@ -32,13 +32,16 @@ tsqlanalyze -i c:\database_scripts\sp_*.sql "c:\old scripts"
 ## Analyze a script with a rule settings filter and for a specific SQL Server version
 tsqlanalyze -i C:\scripts\sproc.sql -r Rules:-SqlServer.Rules.SRD0004 -s SqlAzure
 
-## Analyze a .dacpac
-tsqlanalyze -i C:\scripts\Chinook.dacpac
+## Analyze a .dacpac and save results to an xml file
+tsqlanalyze -i C:\scripts\Chinook.dacpac -o result.xml
+
+## Analyze a .zip file with .sql files
+tsqlanalyze -i C:\scripts\Fabric.zip
 
 ## Analyze a live database
 tsqlanalyze -c "Data Source=.\SQLEXPRESS;Initial Catalog=Chinook;Integrated Security=True;Encrypt=false"
 
-## Analyze a single file, and include a path to your own rules .dll file(s)
+## Analyze a single file, and include path(s) to your own rules .dll file(s)
 tsqlanalyze -i C:\scripts\sproc.sql -a C:\code\analyzers
 
 ## Analyze a single file, and reformat (PREVIEW)

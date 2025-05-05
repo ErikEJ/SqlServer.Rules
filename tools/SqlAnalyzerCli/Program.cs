@@ -266,8 +266,11 @@ internal static class Program
             h.AddPostOptionsLine("## Analyze a script for a specific SQL Server version");
             h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\sproc.sql -s SqlAzure");
             h.AddPostOptionsLine(string.Empty);
-            h.AddPostOptionsLine("## Analyze a .dacpac");
-            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\Chinook.dacpac");
+            h.AddPostOptionsLine("## Analyze a .dacpac and save results to an xml file");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\Chinook.dacpac -o result.xml");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a single file, and reformat (PREVIEW)");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\sproc.sql -f");
             h.AddPostOptionsLine(string.Empty);
             h.AddPostOptionsLine("## Analyze a .zip file with .sql files");
             h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\Fabric.zip");
