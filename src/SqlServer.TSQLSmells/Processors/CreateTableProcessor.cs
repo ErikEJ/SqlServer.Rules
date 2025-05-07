@@ -46,7 +46,7 @@ namespace TSQLSmellSCA
                     {
                         case "UniqueConstraintDefinition":
                             var unqConst = (UniqueConstraintDefinition)constDef;
-                            if (unqConst.IsPrimaryKey)
+                            if (unqConst.IsPrimaryKey && unqConst.ConstraintIdentifier != null)
                             {
                                 smells.SendFeedBack(38, constDef);
                             }
