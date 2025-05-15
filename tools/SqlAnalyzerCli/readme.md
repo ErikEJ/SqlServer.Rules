@@ -69,15 +69,15 @@ CREATE TABLE [dbo].[Table3]
 
 ![Sample](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/cli.png)
 
-## GitHub Copilot integration (PREVIEW)
+## GitHub Copilot MCP Server (PREVIEW)
 
-You can use the tool to ask GitHub Copilot analyze your SQL Server CREATE scripts in VS Code, just add the built-in [MCP server](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) to your VS Code configuration.
+You can use the tool to ask GitHub Copilot analyze your SQL Server CREATE scripts in Visual Studio or VS Code, just add the built-in MCP server to your [Visual Studio](https://learn.microsoft.com/visualstudio/ide/mcp-servers) or  [VS Code](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) configuration.
 
 Paste this link in you browser to prompt VS Code to install:
 
 vscode:mcp/install?%7B%22name%22%3A%22tsqlanalyzer%22%2C%22command%22%3A%22tsqlanalyze%22%2C%22args%22%3A%5B%22-mcp%22%5D%7D
 
-or install manually:
+or install manually in one of the [recommended locations](https://learn.microsoft.com/visualstudio/ide/mcp-servers#file-locations-for-automatic-discovery-of-mcp-configuration):
 
 ```json
 {
