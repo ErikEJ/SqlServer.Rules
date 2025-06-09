@@ -159,13 +159,17 @@ internal static class Program
             .Concat(result.Result.AnalysisErrors)
             .ToList();
 
+        var hadErrors = false;
+
         foreach (var err in errors)
         {
+            hadErrors = true;
             DisplayService.Error(err.GetOutputMessage());
         }
 
         if (result.ModelErrors.Count > 0)
         {
+            hadErrors = true;
             foreach (var dex in result.ModelErrors)
             {
                 DisplayService.Error(dex.Value.Format(dex.Key));
@@ -176,11 +180,8 @@ internal static class Program
         {
             foreach (var err in result.Result.Problems)
             {
+                hadErrors = true;
                 var warning = err.GetOutputMessage(analyzerOptions.Rules);
-
-                warning = warning
-                    .Replace("[", "[[", StringComparison.OrdinalIgnoreCase)
-                    .Replace("]", "]]", StringComparison.OrdinalIgnoreCase);
 
                 if (options.NoLogo)
                 {
@@ -226,7 +227,7 @@ internal static class Program
                     () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds.", Decoration.Bold));
             }
 
-            return 0;
+            return hadErrors ? 1 : 0;
         }
 
         return 1;
