@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 
@@ -62,9 +63,7 @@ public static class SqlRuleProblemExtensions
         stringBuilder.Append(sqlRuleProblem.StartColumn);
         stringBuilder.Append("):");
         stringBuilder.Append(' ');
-        stringBuilder.Append(sqlRuleProblemSeverity);
-        stringBuilder.Append(' ');
-        stringBuilder.Append(sqlRuleProblem.ErrorMessageString + link);
+        stringBuilder.Append(CultureInfo.InvariantCulture, $"{sqlRuleProblem.RuleId} : {sqlRuleProblem.Description}{link}");
 
         return stringBuilder.ToString();
     }

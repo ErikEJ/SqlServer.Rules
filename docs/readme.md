@@ -1,5 +1,5 @@
 ﻿  
-# Table of Contents
+# Rules listed by namespace
   
   
 ## CodeSmells
@@ -152,7 +152,7 @@
 | [SRP0023](Performance/SRP0023.md) | Enumerating for existence check | Yes | When checking for existence use EXISTS instead of COUNT | Yes |
 | [SRP0024](Performance/SRP0024.md) | Correlated subquery | Yes | Avoid the use of correlated subqueries except for very small tables. |   |
   
-## Microsoft Rules
+## Microsoft 
   
 | Rule Id | Friendly Name | Ignorable | Description | Example? |
 |----|----|----|----|----|

@@ -25,7 +25,7 @@ internal sealed class CliAnalyzerOptions
         'r',
         longName: "rules",
         Required = false,
-        HelpText = "Used to specify a rules expression similar to 'Rules:-SqlServer.Rules.SRD0010;+!SqlServer.Rules.SRN0005'")]
+        HelpText = "Rules to ignore: 'Rules:-SqlServer.Rules.SRD0010;-SqlServer.Rules.SRN006'")]
     public string Rules { get; set; } = string.Empty;
 
     [Option(

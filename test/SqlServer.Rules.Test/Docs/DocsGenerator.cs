@@ -304,7 +304,7 @@ public class DocsGenerator
 
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine(spaces);
-        stringBuilder.AppendLine("# Table of Contents");
+        stringBuilder.AppendLine("# Rules listed by namespace");
         stringBuilder.AppendLine(spaces);
 
         foreach (var category in categories)
@@ -372,7 +372,7 @@ public class DocsGenerator
         }
 
         stringBuilder.AppendLine(spaces);
-        stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"## Microsoft Rules");
+        stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"## Microsoft ");
         stringBuilder.AppendLine(spaces);
 
         stringBuilder.AppendLine("| Rule Id | Friendly Name | Ignorable | Description | Example? |");
