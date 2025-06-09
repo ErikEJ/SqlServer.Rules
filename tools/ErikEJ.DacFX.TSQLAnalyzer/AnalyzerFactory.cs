@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text;
+using System.Text.Json;
 using ErikEJ.DacFX.TSQLAnalyzer.Services;
 using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -103,6 +104,26 @@ public class AnalyzerFactory
                 analysisResult.SerializeResultsToXml(outputFile.FullName);
 
                 result.OutputFile = outputFile.FullName;
+            }
+
+            if (outputFile.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                var problems = new List<PlainProblem>();
+
+                foreach (var problem in analysisResult.Problems)
+                {
+                    problems.Add(new PlainProblem
+                    {
+                        Column = problem.StartColumn,
+                        Line = problem.StartLine,
+                        Description = problem.Description,
+                        Rule = problem.RuleId,
+                        Severity = problem.Severity.ToString(),
+                        SourceFile = problem.SourceName,
+                    });
+                }
+
+                File.WriteAllText(outputFile.FullName, JsonSerializer.Serialize(problems));
             }
         }
     }
@@ -246,9 +267,10 @@ public class AnalyzerFactory
             return null;
         }
 
-        if (!fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+        if (!fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase)
+            && !fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
         {
-            throw new ArgumentException("Output file must be of type 'xml'");
+            throw new ArgumentException("Output file must be of type 'xml' or type 'json'");
         }
 
         if (!Path.IsPathRooted(fileInfo.FullName))

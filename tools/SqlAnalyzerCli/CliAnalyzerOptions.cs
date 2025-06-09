@@ -53,7 +53,7 @@ internal sealed class CliAnalyzerOptions
         'o',
         longName: "output",
         Required = false,
-        HelpText = "Optional file name of output file in .xml format")]
+        HelpText = "Optional file name of output file in .xml or .json format")]
     public string? OutputFile { get; set; }
 
     [Option(
