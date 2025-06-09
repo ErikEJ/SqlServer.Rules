@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-f",
+      "commandLineArgs": "-o C:\\temp\\result.json",
       "workingDirectory": "C:\\temp",
       "remoteDebugEnabled": false
     }

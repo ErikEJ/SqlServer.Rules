@@ -41,7 +41,7 @@ public class AnalyzerOptions
 
     /// <summary>
     /// Used to specify the full filename for an optional output file.
-    /// Supported format is 'xml'
+    /// Supported formats are 'xml' and 'json'
     /// </summary>
     public FileInfo? OutputFile { get; set; }
 
