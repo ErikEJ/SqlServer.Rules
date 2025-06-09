@@ -32,7 +32,7 @@ internal sealed class CliAnalyzerOptions
         's',
         longName: "sqlversion",
         Required = false,
-        HelpText = "Used to specify the server release version, like 'Sql160' or 'SqlAzure' - defaults to 'Sql160'")]
+        HelpText = "SQL Server release version, like 'Sql160' or 'SqlAzure' - defaults to 'Sql160'")]
     public SqlServerVersion SqlVersion { get; set; } = SqlServerVersion.Sql160;
 
     [Option(

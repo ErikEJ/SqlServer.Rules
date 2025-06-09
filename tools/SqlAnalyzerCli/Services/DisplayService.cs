@@ -42,6 +42,10 @@ internal static class DisplayService
     public static string Markup<TEnum>(string message, TEnum decoration)
     where TEnum : struct
     {
+        message = message
+            .Replace("[", "[[", StringComparison.OrdinalIgnoreCase)
+            .Replace("]", "]]", StringComparison.OrdinalIgnoreCase);
+
         return $"[{decoration}]{message}[/]";
     }
 
