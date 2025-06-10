@@ -108,11 +108,11 @@ public class AnalyzerFactory
 
             if (outputFile.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
             {
-                var problems = new List<PlainProblem>();
+                var problemList = new ProblemList { Problems = new List<PlainProblem>() };
 
                 foreach (var problem in analysisResult.Problems)
                 {
-                    problems.Add(new PlainProblem
+                    problemList.Problems.Add(new PlainProblem
                     {
                         Column = problem.StartColumn,
                         Line = problem.StartLine,
@@ -123,7 +123,7 @@ public class AnalyzerFactory
                     });
                 }
 
-                File.WriteAllText(outputFile.FullName, JsonSerializer.Serialize(problems));
+                File.WriteAllText(outputFile.FullName, JsonSerializer.Serialize(problemList));
             }
         }
     }
