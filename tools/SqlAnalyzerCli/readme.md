@@ -35,6 +35,9 @@ tsqlanalyze -i C:\scripts\sproc.sql -r Rules:-SqlServer.Rules.SRD0004 -s SqlAzur
 ## Analyze a .dacpac and save results to an xml file
 tsqlanalyze -i C:\scripts\Chinook.dacpac -o result.xml
 
+## Analyze a .dacpac and save results to a JSON file
+tsqlanalyze -i C:\scripts\Chinook.dacpac -o result.json
+
 ## Analyze a .zip file with .sql files
 tsqlanalyze -i C:\scripts\Fabric.zip
 
