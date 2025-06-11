@@ -30,7 +30,13 @@ You can read more about using and customizing the rules in the [readme here](htt
 
 ## Command line tool - T-SQL Analyzer CLI
 
-This repository also contains a .NET commmand line tool, that uses the rule sets. Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerCli/readme.md)
+This repository also contains a .NET commmand line tool, that uses the rule sets.
+
+You can use it to analyze SQL scripts, or SQL Database projects, and output the results in a variety of formats, including XML, and JSON.
+
+You can also use the tool as a MCP Server with GitHub Copilot with VS Code and Visual Studio, allowing you to get feedback on your SQL code using GitHub Copilot Chat.
+
+Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerCli/readme.md)
 
 ## Solution Organization
 

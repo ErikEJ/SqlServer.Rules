@@ -55,6 +55,8 @@ Rule settings filters are demonstrated [here](https://github.com/rr-wfm/MSBuild.
 
 The SQL Server version values are documented [here](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.dac.model.sqlserverversion)
 
+> Note: UTF-8 with BOM encoding is required for the input files.
+
 ## Sample output
 
 The tool will output a summary of the rules that were violated, and the line numbers where the violations occurred.
