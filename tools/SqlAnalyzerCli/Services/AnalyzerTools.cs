@@ -14,13 +14,22 @@ public sealed class AnalyzerTools
         [Description("The SQL Server CREATE script to find design problems and bad practices in.")] string sqlScript)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
+        if (string.IsNullOrWhiteSpace(sqlScript))
+        {
+            return "No script specified, make sure to select one.";
+        }
+
+        if (!sqlScript.Trim().StartsWith("CREATE ", StringComparison.OrdinalIgnoreCase))
+        {
+            return "The script must be an object creation script starting with 'CREATE'";
+        }
+
         var factory = new ErikEJ.DacFX.TSQLAnalyzer.AnalyzerFactory(new() { Script = sqlScript });
 
         var result = factory.Analyze();
 
         var output = new StringBuilder();
 
-        // TODO Precheck that the script is valid CREATE script
         if (result.Result == null || result.Result.Problems.Count == 0)
         {
             return "No problems found.";

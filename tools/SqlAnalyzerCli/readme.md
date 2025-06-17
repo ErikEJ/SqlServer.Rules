@@ -74,15 +74,18 @@ CREATE TABLE [dbo].[Table3]
 
 ![Sample](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/cli.png)
 
-## GitHub Copilot MCP Server (PREVIEW)
+## MCP Server (preview)
 
-You can use the tool to ask GitHub Copilot analyze your SQL Server CREATE scripts in Visual Studio or VS Code, just add the built-in MCP server to your [Visual Studio](https://learn.microsoft.com/visualstudio/ide/mcp-servers) or  [VS Code](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) configuration.
+You can use the tool to ask GitHub Copilot analyze your SQL Server CREATE scripts in Visual Studio or VS Code.
 
-Paste this link in you browser to prompt VS Code to install:
+The TSQL Analyzer MCP Server supports quick installation across multiple development environments. Choose your preferred client below for streamlined setup:
 
-vscode:mcp/install?%7B%22name%22%3A%22tsqlanalyzer%22%2C%22command%22%3A%22tsqlanalyze%22%2C%22args%22%3A%5B%22-mcp%22%5D%7D
+| Client | One-click Installation | MCP Guide |
+|--------|----------------------|-------------------|
+| **VS Code** | [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_TSQLAnalyzer-0098FF?style=flat-square&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=microsoft.docs.mcp&config=%7B%22name%22%3A%22tsqlanalyzer%22%2C%22command%22%3A%22tsqlanalyze%22%2C%22args%22%3A%5B%22-mcp%22%5D%7D) | [VS Code MCP Official Guide](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) |
+| **Visual Studio** | Manual configuration required | [Visual Studio MCP Official Guide](https://learn.microsoft.com/visualstudio/ide/mcp-servers) |
 
-or install manually in one of the [recommended locations](https://learn.microsoft.com/visualstudio/ide/mcp-servers#file-locations-for-automatic-discovery-of-mcp-configuration):
+**Example JSON configuration:**
 
 ```json
 {
@@ -98,7 +101,7 @@ or install manually in one of the [recommended locations](https://learn.microsof
 }
 ```
 
-## SQL Formatting (PREVIEW)
+## SQL Formatting (preview)
 
 Inspired by the [SQL Formatter](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.SqlFormatter) Visual Studio extension from [Mads Kristensen](https://github.com/madskristensen), the `-f` switch will enable formatting of the analyzed scripts using the [ScriptDom library](https://www.nuget.org/packages/Microsoft.SqlServer.TransactSql.ScriptDom).
 
