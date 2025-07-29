@@ -1,0 +1,23 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/draft/2025-07-09/server.json",
+  "description": "Find design problems and bad practices in a SQL Server CREATE script",
+  "name": "io.github.ErikEJ/SqlServer.Rules",
+  "packages": [
+    {
+      "registry_name": "nuget",
+      "name": "ErikEJ.DacFX.TSQLAnalyzer.Cli",
+      "version": "1.0",
+      "package_arguments": [
+        "-mcp"
+      ],
+      "environment_variables": []
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/ErikEJ/SqlServer.Rules",
+    "source": "github"
+  },
+  "version_detail": {
+    "version": "1.0"
+  }
+}

@@ -43,11 +43,7 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Services
                 NewLineBeforeOutputClause = GetValue(rules, "new_line_before_output_clause", defaultOptions.NewLineBeforeOutputClause),
                 NewLineBeforeWhereClause = GetValue(rules, "new_line_before_where_clause", defaultOptions.NewLineBeforeWhereClause),
                 NewLineBeforeWindowClause = GetValue(rules, "new_line_before_window_clause", defaultOptions.NewLineBeforeWindowClause),
-                NewlineFormattedCheckConstraint = GetValue(rules, "newline_formatted_check_constraint", defaultOptions.NewlineFormattedCheckConstraint),
-                NewLineFormattedIndexDefinition = GetValue(rules, "newline_formatted_index_definition", defaultOptions.NewLineFormattedIndexDefinition),
                 NumNewlinesAfterStatement = GetValue(rules, "num_newlines_after_statement", defaultOptions.NumNewlinesAfterStatement),
-                SpaceBetweenDataTypeAndParameters = GetValue(rules, "space_between_data_type_and_parameters", defaultOptions.SpaceBetweenDataTypeAndParameters),
-                SpaceBetweenParametersInDataType = GetValue(rules, "space_between_parameters_in_data_type", defaultOptions.SpaceBetweenParametersInDataType),
                 SqlEngineType = GetValue(rules, "sql_engine_type", defaultOptions.SqlEngineType),
                 SqlVersion = GetValue(rules, "sql_version", SqlVersion.Sql160),
             };
