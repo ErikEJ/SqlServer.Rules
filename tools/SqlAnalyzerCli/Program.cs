@@ -35,6 +35,11 @@ internal static class Program
 
                 return 0;
             }
+            else if (args.Length == 1 && args[0] == "-mcp-test")
+            {
+                await AnalyzerTools.FindSqlScriptProblems("CREATE PROCEDURE [dbo].[TestProc] AS SELECT * FROM dbo.TestTable;");
+                return 1;
+            }
             else
             {
                 return await MainAsync(args).ConfigureAwait(false);

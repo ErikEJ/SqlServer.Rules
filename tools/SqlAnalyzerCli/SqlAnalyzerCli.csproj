@@ -11,6 +11,7 @@
     <AssemblyName>ErikEJ.TSQLAnalyzerCli</AssemblyName>
     <Copyright>Copyright © ErikEJ 2025 - https://github.com/ErikEJ/SqlServer.Rules</Copyright>
     <PackAsTool>true</PackAsTool>
+    <PackageType>McpServer</PackageType>
     <ToolCommandName>tsqlanalyze</ToolCommandName>
     <PackageId>ErikEJ.DacFX.TSQLAnalyzer.Cli</PackageId>
     <Description>T-SQL script analyzer command line tool</Description>
@@ -29,14 +30,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="readme.md" Pack="true" PackagePath="\" />
+    <None Include="readme.md" Pack="true" PackagePath="/" />
+    <None Include=".mcp/server.json" Pack="true" PackagePath="/.mcp/" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
-    <PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.14" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
+    <PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.3" />
     <PackageReference Include="NuGet.Protocol" Version="6.14.0" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
   </ItemGroup>
