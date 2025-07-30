@@ -8,7 +8,11 @@
       "name": "ErikEJ.DacFX.TSQLAnalyzer.Cli",
       "version": "1.0",
       "package_arguments": [
-        "-mcp"
+        {
+          "type": "positional",
+          "value": "-mcp",
+          "value_hint": "-mcp"
+        }
       ],
       "environment_variables": []
     }
