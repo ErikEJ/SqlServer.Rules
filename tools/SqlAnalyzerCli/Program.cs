@@ -224,12 +224,12 @@ internal static class Program
             if (result.FileCount > 0)
             {
                 DisplayService.MarkupLine(
-                    () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds using '{result.Analyzers}'.", Decoration.Bold));
+                    () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds using '{result.Analyzers}'. {result.Result.Problems.Count} problems found.", Decoration.Bold));
             }
             else
             {
                 DisplayService.MarkupLine(
-                    () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds.", Decoration.Bold));
+                    () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds. {result.Result.Problems.Count} problems found.", Decoration.Bold));
             }
 
             return hadErrors ? 1 : 0;
