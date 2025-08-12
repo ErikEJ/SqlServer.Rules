@@ -30,7 +30,7 @@
     <PackageReference Include="editorconfig" Version="0.15.0" />
     <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="2.0.0" />
     <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="2.0.0" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>
