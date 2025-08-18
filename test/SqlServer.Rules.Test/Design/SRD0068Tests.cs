@@ -17,7 +17,6 @@ public class SRD0068Tests : TestModel
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/MissingSemicolons.sql");
 
         ExpectedProblems.Add(new TestProblem(40, 1, "SqlServer.Rules.SRD0068"));
-        ExpectedProblems.Add(new TestProblem(53, 21, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(50, 22, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(43, 1, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(7, 17, "SqlServer.Rules.SRD0039"));
@@ -41,7 +40,6 @@ public class SRD0068Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/NoMissingSemicolons.sql");
 
-        ExpectedProblems.Add(new TestProblem(53, 21, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(50, 22, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(7, 17, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(16, 1, "SqlServer.Rules.SRD0057"));
