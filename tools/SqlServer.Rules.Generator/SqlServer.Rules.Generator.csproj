@@ -15,6 +15,6 @@
   </ItemGroup>
     <ItemGroup>
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.0.94" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.1.61" PrivateAssets="All" />
   </ItemGroup>
 </Project>
