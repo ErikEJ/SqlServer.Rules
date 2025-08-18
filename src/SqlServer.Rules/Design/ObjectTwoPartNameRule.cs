@@ -78,7 +78,15 @@ namespace SqlServer.Rules.Design
 
             var fromClauseVisitor = new FromClauseVisitor();
             var execVisitor = new ExecuteVisitor();
-            fragment.Accept(fromClauseVisitor, execVisitor);
+            var selectStatementVisitor = new SelectStatementVisitor();
+            fragment.Accept(fromClauseVisitor, execVisitor, selectStatementVisitor);
+
+            WithCtesAndXmlNamespaces cte = null;
+            if (selectStatementVisitor.Count > 0)
+            {
+                var sel = selectStatementVisitor.Statements.First();
+                cte = sel.WithCtesAndXmlNamespaces;
+            }
 
             var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
             foreach (var from in fromClauseVisitor.Statements)
@@ -89,8 +97,14 @@ namespace SqlServer.Rules.Design
             var offenders = tableVisitor.Statements.Where(tbl =>
             {
                 var id = tbl.GetObjectIdentifier(null);
+
+                if (IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
+                {
+                    return false;
+                }
+
                 return id.Parts.Count < 2 || string.IsNullOrWhiteSpace(id.Parts.First());
-            });
+            }).ToList();
 
             var execOffenders = execVisitor.Statements.Where(proc => CheckProc(proc));
 
@@ -109,6 +123,24 @@ namespace SqlServer.Rules.Design
 
             var id = execProc.ProcedureReference.ProcedureReference.GetObjectIdentifier(null);
             return id.Parts.Count < 2 || string.IsNullOrWhiteSpace(id.Parts.First());
+        }
+
+        private static bool IsCteName(SchemaObjectName objectName, WithCtesAndXmlNamespaces cte)
+        {
+            if (cte == null)
+            {
+                return false;
+            }
+
+            foreach (var expression in cte.CommonTableExpressions)
+            {
+                if (expression.ExpressionName.Value == objectName.BaseIdentifier.Value)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
