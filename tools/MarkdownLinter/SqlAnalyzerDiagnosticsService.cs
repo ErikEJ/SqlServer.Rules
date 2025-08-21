@@ -1,0 +1,175 @@
+namespace MarkdownLinter;
+
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft;
+using Microsoft.VisualStudio.Extensibility;
+using Microsoft.VisualStudio.Extensibility.Documents;
+using Microsoft.VisualStudio.Extensibility.Editor;
+using Microsoft.VisualStudio.Extensibility.Helpers;
+using Microsoft.VisualStudio.Threading;
+
+/// <summary>
+/// An internal service shared across extension components via dependency injection. The service provides
+/// a central mechanism to manage SQL diagnostics for documents and can be called from various parts such as
+/// commands or editor listeners.
+/// </summary>
+/// <remarks>For a sample ingestion of this service, see <see cref="TextViewEventListener"/> constructor.</remarks>
+#pragma warning disable VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
+internal class SqlAnalyzerDiagnosticsService : DisposableObject
+{
+#pragma warning disable CA2213 // Disposable fields should be disposed, object now owned by this instance.
+    private readonly VisualStudioExtensibility extensibility;
+#pragma warning restore CA2213 // Disposable fields should be disposed
+    private readonly Dictionary<Uri, CancellationTokenSource> documentCancellationTokens;
+    private readonly Task initializationTask;
+    private readonly AnalyzerUtilities analyzerUtilities;
+    private OutputChannel? outputChannel;
+    private DiagnosticsReporter? diagnosticsReporter;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SqlAnalyzerDiagnosticsService"/> class.
+    /// </summary>
+    /// <param name="extensibility">Extensibility object.</param>
+    /// <param name="analyzerUtilities">Service for running the analyzer on SQL files.</param>
+    public SqlAnalyzerDiagnosticsService(VisualStudioExtensibility extensibility, AnalyzerUtilities analyzerUtilities)
+    {
+        this.extensibility = Requires.NotNull(extensibility, nameof(extensibility));
+        this.documentCancellationTokens = new Dictionary<Uri, CancellationTokenSource>();
+        this.analyzerUtilities = Requires.NotNull(analyzerUtilities, nameof(analyzerUtilities));
+        this.initializationTask = Task.Run(this.InitializeAsync);
+    }
+
+    /// <summary>
+    /// Processes the specified file for SQL errors and reports to the error list.
+    /// </summary>
+    /// <param name="documentUri">Document uri to read the contents from.</param>
+    /// <param name="cancellationToken">Cancellation token to monitor.</param>
+    /// <returns>Task indicating completion of reporting markdown errors to error list.</returns>
+    public async Task ProcessFileAsync(Uri documentUri, CancellationToken cancellationToken)
+    {
+        CancellationTokenSource newCts = new CancellationTokenSource();
+        lock (this.documentCancellationTokens)
+        {
+            if (this.documentCancellationTokens.TryGetValue(documentUri, out var cts))
+            {
+                _ = cts.CancelAsync();
+            }
+
+            this.documentCancellationTokens[documentUri] = newCts;
+        }
+
+        // Wait for 1 second to see if any other changes are being sent.
+        await Task.Delay(1000, cancellationToken);
+
+        if (newCts.IsCancellationRequested)
+        {
+            return;
+        }
+
+        try
+        {
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, cancellationToken);
+
+            await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentUri, cancellationToken);
+            await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
+        }
+        catch (InvalidOperationException)
+        {
+            if (this.outputChannel is not null)
+            {
+                await this.outputChannel.WriteLineAsync("Unable to run analyzer");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Processes the current version <see cref="ITextViewSnapshot"/> instance for markdown errors and reports to the error list.
+    /// </summary>
+    /// <param name="textViewSnapshot">Text View instance to read the contents from.</param>
+    /// <param name="cancellationToken">Cancellation token to monitor.</param>
+    /// <returns>Task indicating completion of reporting markdown errors to error list.</returns>
+    public async Task ProcessTextViewAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
+    {
+        CancellationTokenSource newCts = new CancellationTokenSource();
+        lock (this.documentCancellationTokens)
+        {
+            if (this.documentCancellationTokens.TryGetValue(textViewSnapshot.Document.Uri, out var cts))
+            {
+                _ = cts.CancelAsync();
+            }
+
+            this.documentCancellationTokens[textViewSnapshot.Document.Uri] = newCts;
+        }
+
+        await this.ProcessDocumentAsync(textViewSnapshot.Document, cancellationToken.CombineWith(newCts.Token).Token);
+    }
+
+    /// <summary>
+    /// Clears any of the existing entries for the specified document uri.
+    /// </summary>
+    /// <param name="documentUri">Document uri to clear markdown error entries for.</param>
+    /// <param name="cancellationToken">Cancellation token to monitor.</param>
+    /// <returns>Task indicating completion.</returns>
+    public async Task ClearEntriesForDocumentAsync(Uri documentUri, CancellationToken cancellationToken)
+    {
+        lock (this.documentCancellationTokens)
+        {
+            if (this.documentCancellationTokens.TryGetValue(documentUri, out var cts))
+            {
+                _ = cts.CancelAsync();
+                this.documentCancellationTokens.Remove(documentUri);
+            }
+        }
+
+        await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentUri, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool isDisposing)
+    {
+        base.Dispose(isDisposing);
+
+        if (isDisposing)
+        {
+            this.outputChannel?.Dispose();
+            this.diagnosticsReporter?.Dispose();
+        }
+    }
+
+    private async Task ProcessDocumentAsync(ITextDocumentSnapshot documentSnapshot, CancellationToken cancellationToken)
+    {
+        // Wait for 1 second to see if any other changes are being sent.
+        await Task.Delay(1000, cancellationToken);
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        try
+        {
+            //var diagnostics = await this.analyzerUtilities.RunLinterOnDocumentAsync(documentSnapshot, cancellationToken);
+
+            //await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentSnapshot, cancellationToken);
+            //await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
+        }
+        catch (InvalidOperationException)
+        {
+            if (this.outputChannel is not null)
+            {
+                await this.outputChannel.WriteLineAsync("Unable to run analyzer");
+            }
+        }
+    }
+
+    private async Task InitializeAsync()
+    {
+        this.outputChannel = await this.extensibility.Views().Output.CreateOutputChannelAsync(Strings.MarkdownLinterWindowName, default);
+        this.diagnosticsReporter = this.extensibility.Languages().GetDiagnosticsReporter(nameof(SqlAnalyzerExtension));
+        Assumes.NotNull(this.diagnosticsReporter);
+    }
+}
+#pragma warning restore VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
