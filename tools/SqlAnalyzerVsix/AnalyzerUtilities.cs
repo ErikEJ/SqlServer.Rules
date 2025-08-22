@@ -219,20 +219,6 @@ internal class AnalyzerUtilities
             return null;
         }
 
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(5,9): Smells.SML005 : Avoid use of 'Select *'. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/CodeSmells/SML005.md)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(1,18): Smells.SML030 : Include SET NOCOUNT ON inside stored procedures. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/CodeSmells/SML030.md)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(5,9): Microsoft.Rules.Data.SR0001 : The shape of the result set produced by a SELECT * statement will change if the underlying table or view structure changes. (https://learn.microsoft.com/sql/tools/sql-database-projects/concepts/sql-code-analysis/t-sql-design-issues#sr0001-avoid-select--in-stored-procedures-views-and-table-valued-functions)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(1,24): Microsoft.Rules.Data.SR0016 : Stored procedure(sp_Procedure1) includes sp_ prefix in its name. (https://learn.microsoft.com/sql/tools/sql-database-projects/concepts/sql-code-analysis/t-sql-naming-issues#sr0016-avoid-using-sp_-as-a-prefix-for-stored-procedures)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(5,9): SqlServer.Rules.SRD0006 : Avoid using SELECT *. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0006.md)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(2,2): SqlServer.Rules.SRD0016 : Input parameter '@param1' is never used. Consider removing the parameter or using it. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0016.md)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(3,2): SqlServer.Rules.SRD0016 : Input parameter '@param2' is never used. Consider removing the parameter or using it. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0016.md)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(1,1): SqlServer.Rules.SRD0067 : Capitalize the keyword 'int' for enhanced readability. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0067.md)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(1,1): SqlServer.Rules.SRD0067 : Capitalize the keyword 'int' for enhanced readability. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0067.md)
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(1,1): SqlServer.Rules.SRD0068 : Query statements should finish with a semicolon - ';'.
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(5,2): SqlServer.Rules.SRD0068 : Query statements should finish with a semicolon - ';'.
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(6,1): SqlServer.Rules.SRD0068 : Query statements should finish with a semicolon - ';'.
-        //C:\dev\GitHub\EFCorePowerTools\test\ScaffoldingTester\Database\dbo\Procedures\Procedure1.sql(1,1): SqlServer.Rules.SRP0005 : SET NOCOUNT ON is recommended to be enabled in stored procedures and triggers. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Performance/SRP0005.md)
-
         // TODO - Massage the description and ruleid to match the expected format.
         return new SqlAnalyzerDiagnosticInfo(
             range: new Microsoft.VisualStudio.RpcContracts.Utilities.Range(startLine: parsed.Value.Line - 1, startColumn: parsed.Value.Column - 1),
