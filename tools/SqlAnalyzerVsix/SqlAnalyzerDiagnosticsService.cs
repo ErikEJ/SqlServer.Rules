@@ -167,7 +167,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
 
     private async Task InitializeAsync()
     {
-        this.outputChannel = await this.extensibility.Views().Output.CreateOutputChannelAsync(Strings.MarkdownLinterWindowName, default);
+        this.outputChannel = await this.extensibility.Views().Output.CreateOutputChannelAsync("T-SQL Analyzer", default);
         this.diagnosticsReporter = this.extensibility.Languages().GetDiagnosticsReporter(nameof(SqlAnalyzerExtension));
         Assumes.NotNull(this.diagnosticsReporter);
     }
