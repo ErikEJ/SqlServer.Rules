@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-i c:\\dev\\github\\efcorepowertools\\test\\scaffoldingtester\\database\\dbo\\functions\\databasescalarfunction1.sql",
+      "commandLineArgs": "-i c:\\dev\\github\\efcorepowertools\\test\\scaffoldingtester\\database\\dbo\\functions\\databasescalarfunction1.sql -n",
       "workingDirectory": "C:\\temp",
       "remoteDebugEnabled": false
     }
