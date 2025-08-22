@@ -124,7 +124,10 @@ internal static class Program
 
         bool hasBogusArgs = args.Any() && args.All(a => !a.StartsWith('-'));
 
-        if (options.Scripts?.Count == 0 && options.ConnectionString == null && !hasBogusArgs)
+        if (string.IsNullOrWhiteSpace(options.Text)
+            && options.Scripts?.Count == 0
+            && options.ConnectionString == null
+            && !hasBogusArgs)
         {
             analyzerOptions.Scripts = [];
             analyzerOptions.Scripts.Add(Directory.GetCurrentDirectory());
@@ -133,6 +136,11 @@ internal static class Program
         if (options.Scripts?.Count > 0)
         {
             analyzerOptions.Scripts = [.. options.Scripts];
+        }
+
+        if (!string.IsNullOrWhiteSpace(options.Text))
+        {
+            analyzerOptions.Script = options.Text;
         }
 
         if (options.AdditionalAnalyzers?.Count > 0)

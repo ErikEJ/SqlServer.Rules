@@ -1,4 +1,4 @@
-namespace MarkdownLinter;
+namespace SqlAnalyzer;
 
 using System.Linq;
 using System.Threading;

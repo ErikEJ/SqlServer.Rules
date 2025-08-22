@@ -1,4 +1,4 @@
-namespace MarkdownLinter;
+namespace SqlAnalyzer;
 
 using Microsoft.VisualStudio.Extensibility.Languages;
 

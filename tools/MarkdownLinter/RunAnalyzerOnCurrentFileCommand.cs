@@ -1,4 +1,4 @@
-namespace MarkdownLinter;
+namespace SqlAnalyzer;
 
 using System;
 using System.Diagnostics;
@@ -11,13 +11,13 @@ using Microsoft.VisualStudio.Extensibility.Commands;
 using Microsoft.VisualStudio.ProjectSystem.Query;
 
 /// <summary>
-/// A command to execute linter on the current file selected in Solution Explorer.
+/// A command to execute analyzer on the current file selected in Solution Explorer.
 /// </summary>
 /// <remarks>
 /// This command utilizes <see cref="CommandConfiguration.EnabledWhen"/> to describe when command state is enabled.
 /// </remarks>
 [VisualStudioContribution]
-internal class RunLinterOnCurrentFileCommand : Command
+internal class RunAnalyzerOnCurrentFileCommand : Command
 {
     private readonly TraceSource logger;
 
@@ -26,23 +26,23 @@ internal class RunLinterOnCurrentFileCommand : Command
 #pragma warning restore CA2213
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RunLinterOnCurrentFileCommand"/> class.
+    /// Initializes a new instance of the <see cref="RunAnalyzerOnCurrentFileCommand"/> class.
     /// </summary>
     /// <param name="traceSource">Logger instance that can be used to log extension actions.</param>
     /// <param name="diagnosticsProvider">Local diagnostics provider service instance.</param>
-    public RunLinterOnCurrentFileCommand(TraceSource traceSource, SqlAnalyzerDiagnosticsService diagnosticsProvider)
+    public RunAnalyzerOnCurrentFileCommand(TraceSource traceSource, SqlAnalyzerDiagnosticsService diagnosticsProvider)
     {
         this.logger = Requires.NotNull(traceSource, nameof(traceSource));
         this.diagnosticsProvider = Requires.NotNull(diagnosticsProvider, nameof(diagnosticsProvider));
 
-        this.logger.TraceEvent(TraceEventType.Information, 0, $"Initializing {nameof(RunLinterOnCurrentFileCommand)} instance.");
+        this.logger.TraceEvent(TraceEventType.Information, 0, $"Initializing {nameof(RunAnalyzerOnCurrentFileCommand)} instance.");
     }
 
     /// <inheritdoc />
-    public override CommandConfiguration CommandConfiguration => new("%MarkdownLinter.RunLinterOnCurrentFileCommand.DisplayName%")
+    public override CommandConfiguration CommandConfiguration => new("%SqlAnalyzer.RunAnalyzerOnCurrentFileCommand.DisplayName%")
     {
         Placements = [CommandPlacement.KnownPlacements.ToolsMenu],
-        Icon = new(ImageMoniker.Custom("MarkdownIcon"), IconSettings.IconAndText),
+        Icon = new(ImageMoniker.KnownValues.CodeInformationRule, IconSettings.IconAndText),
         EnabledWhen = ActivationConstraint.ClientContext(ClientContextKey.Shell.ActiveSelectionFileName, ".+"),
     };
 
@@ -55,7 +55,7 @@ internal class RunLinterOnCurrentFileCommand : Command
             // Get the selected item URIs from IDE context that represents the state when command was executed.
             Uri[] selectedItemPaths = [await context.GetSelectedPathAsync(cancellationToken)];
 
-            // Enumerate through each selection and run linter on each selected item.
+            // Enumerate through each selection and run analyzer on each selected item.
             foreach (var selectedItem in selectedItemPaths.Where(p => p.IsFile))
             {
                 await this.diagnosticsProvider.ProcessFileAsync(selectedItem, cancellationToken);
