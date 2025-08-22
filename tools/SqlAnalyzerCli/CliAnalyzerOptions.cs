@@ -62,4 +62,11 @@ internal sealed class CliAnalyzerOptions
         HelpText = "Directory path of additional analyzer .dll files, can be specified multiple times.",
         Required = false)]
     public IList<string>? AdditionalAnalyzers { get; set; } = [];
+
+    [Option(
+        't',
+        "text",
+        HelpText = "String to analyze",
+        Required = false)]
+    public string? Text { get; set; }
 }

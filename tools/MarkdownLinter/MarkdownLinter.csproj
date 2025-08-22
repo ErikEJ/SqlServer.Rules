@@ -10,7 +10,7 @@
     <Compile Remove="MarkdownDiagnosticsService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Images\sql-analysis.png" />
+    <None Remove="Images\sql-analysis.png" />
   </ItemGroup>
 
   <ItemGroup>
