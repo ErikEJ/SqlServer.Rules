@@ -73,7 +73,10 @@ internal static class Program
             })
           .WithNotParsed(errs => DisplayHelp(parserResult, errs));
 
-        await PackageService.CheckForPackageUpdateAsync().ConfigureAwait(false);
+        if (!parserResult.Value.NoLogo)
+        {
+            await PackageService.CheckForPackageUpdateAsync().ConfigureAwait(false);
+        }
 
         return res;
     }
@@ -143,9 +146,16 @@ internal static class Program
 
         try
         {
-            result = DisplayService.Wait(
-                "Running T-SQL Analysis...",
-                () => analyzerFactory.Analyze());
+            if (options.NoLogo)
+            {
+                result = analyzerFactory.Analyze();
+            }
+            else
+            {
+                result = DisplayService.Wait(
+                    "Running T-SQL Analysis...",
+                    () => analyzerFactory.Analyze());
+            }
         }
         catch (ArgumentException aex)
         {
@@ -220,16 +230,19 @@ internal static class Program
                 }
             }
 
-            DisplayService.MarkupLine();
-            if (result.FileCount > 0)
+            if (!options.NoLogo)
             {
-                DisplayService.MarkupLine(
-                    () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds using '{result.Analyzers}'. {result.Result.Problems.Count} problems found.", Decoration.Bold));
-            }
-            else
-            {
-                DisplayService.MarkupLine(
-                    () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds. {result.Result.Problems.Count} problems found.", Decoration.Bold));
+                DisplayService.MarkupLine();
+                if (result.FileCount > 0)
+                {
+                    DisplayService.MarkupLine(
+                        () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds using '{result.Analyzers}'. {result.Result.Problems.Count} problems found.", Decoration.Bold));
+                }
+                else
+                {
+                    DisplayService.MarkupLine(
+                        () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds. {result.Result.Problems.Count} problems found.", Decoration.Bold));
+                }
             }
 
             return hadErrors ? 1 : 0;
