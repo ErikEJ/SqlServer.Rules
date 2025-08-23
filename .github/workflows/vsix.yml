@@ -1,0 +1,42 @@
+name: VSIX build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  VERSION: ${{ github.run_number }}
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v5
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v2
+    - name: Restore dependencies
+      run: msbuild /t:restore tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
+    - name: Build
+      run: msbuild /t:build tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
+
+    - name: Publish artifacts
+      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      uses: actions/upload-artifact@v4
+      with:
+        name: Artifacts
+        path: |
+          *.vsix
+
+    - name: Publish to Open VSIX Gallery
+      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      run: |
+        $ErrorActionPreference='Stop'
+        (new-object Net.WebClient).DownloadString("https://raw.github.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1") | iex
+        Vsix-PublishToGallery 
+      shell: pwsh
+      continue-on-error: false

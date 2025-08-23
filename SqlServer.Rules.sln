@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\cli.yml = .github\workflows\cli.yml
 		.github\workflows\pipeline.yml = .github\workflows\pipeline.yml
+		.github\workflows\vsix.yml = .github\workflows\vsix.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{596B2FD7-2684-4DC5-BD46-31EE223C49E4}"
