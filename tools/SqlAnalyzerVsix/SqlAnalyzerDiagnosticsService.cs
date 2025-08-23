@@ -80,17 +80,17 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
         {
             if (this.outputChannel is not null)
             {
-                await this.outputChannel.WriteLineAsync("Unable to run analyzer");
+                await this.outputChannel.WriteLineAsync(Strings.MissingLinterError);
             }
         }
     }
 
     /// <summary>
-    /// Processes the current version <see cref="ITextViewSnapshot"/> instance for markdown errors and reports to the error list.
+    /// Processes the current version <see cref="ITextViewSnapshot"/> instance for SQL errors and reports to the error list.
     /// </summary>
     /// <param name="textViewSnapshot">Text View instance to read the contents from.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
-    /// <returns>Task indicating completion of reporting markdown errors to error list.</returns>
+    /// <returns>Task indicating completion of reporting SQL errors to error list.</returns>
     public async Task ProcessTextViewAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
     {
         CancellationTokenSource newCts = new CancellationTokenSource();
@@ -110,7 +110,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
     /// <summary>
     /// Clears any of the existing entries for the specified document uri.
     /// </summary>
-    /// <param name="documentUri">Document uri to clear markdown error entries for.</param>
+    /// <param name="documentUri">Document uri to clear SQL error entries for.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>Task indicating completion.</returns>
     public async Task ClearEntriesForDocumentAsync(Uri documentUri, CancellationToken cancellationToken)
@@ -151,23 +151,23 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
 
         try
         {
-            //var diagnostics = await this.analyzerUtilities.RunLinterOnDocumentAsync(documentSnapshot, cancellationToken);
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, cancellationToken);
 
-            //await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentSnapshot, cancellationToken);
-            //await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
+            await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentSnapshot, cancellationToken);
+            await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
         }
         catch (InvalidOperationException)
         {
             if (this.outputChannel is not null)
             {
-                await this.outputChannel.WriteLineAsync("Unable to run analyzer");
+                await this.outputChannel.WriteLineAsync(Strings.MissingLinterError);
             }
         }
     }
 
     private async Task InitializeAsync()
     {
-        this.outputChannel = await this.extensibility.Views().Output.CreateOutputChannelAsync("T-SQL Analyzer", default);
+        this.outputChannel = await this.extensibility.Views().Output.CreateOutputChannelAsync(Strings.MarkdownLinterWindowName, default);
         this.diagnosticsReporter = this.extensibility.Languages().GetDiagnosticsReporter(nameof(SqlAnalyzerExtension));
         Assumes.NotNull(this.diagnosticsReporter);
     }

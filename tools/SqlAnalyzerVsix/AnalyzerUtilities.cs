@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +29,8 @@ internal class AnalyzerUtilities
         @"^(?<filename>.+?)\((?<line>\d+),(?<column>\d+)\):\s*(?<ruleid>[^:]+)\s*:\s*(?<description>.*)$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private string tempPath = Path.Combine(Path.GetTempPath(), "tsqlanalyzerscratch.sql");
+
     /// <summary>
     /// Runs SQL analyzer on a file uri and returns diagnostic entries.
     /// </summary>
@@ -40,6 +45,44 @@ internal class AnalyzerUtilities
         string args = "/c \"tsqlanalyze -n -i" +
             $" \"{fileUri.LocalPath}\"\"";
 
+        StartLinterProcess(linter, lineQueue, args);
+
+        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
+        return CreateDocumentDiagnosticsForClosedDocument(fileUri, markdownDiagnostics);
+    }
+
+    /// <summary>
+    /// Runs SQL analyzer on a given text document and returns diagnostic entries.
+    /// </summary>
+    /// <param name="textDocument">Document to run SQL analyzer on.</param>
+    /// <param name="cancellationToken">Cancellation token to monitor.</param>
+    /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, CancellationToken cancellationToken)
+    {
+        using var linter = new Process();
+        var lineQueue = new AsyncQueue<string>();
+
+        if (textDocument.Length > 8192)
+        {
+            // SQL analyzer has issues processing very large files.
+            return Array.Empty<DocumentDiagnostic>();
+        }
+
+        var content = textDocument.Text.CopyToString();
+
+        await File.WriteAllTextAsync(tempPath, content, Encoding.UTF8, cancellationToken);
+
+        string args = "/c \"tsqlanalyze -n -i" +
+            $" \"{tempPath}\"\"";
+
+        StartLinterProcess(linter, lineQueue, args);
+
+        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
+        return CreateDocumentDiagnosticsForOpenDocument(textDocument, markdownDiagnostics);
+    }
+
+    private static void StartLinterProcess(Process linter, AsyncQueue<string> lineQueue, string args)
+    {
         linter.StartInfo = new ProcessStartInfo()
         {
             FileName = "cmd.exe",
@@ -71,69 +114,6 @@ internal class AnalyzerUtilities
         {
             throw new InvalidOperationException(message: ex.Message, innerException: ex);
         }
-
-        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
-        return CreateDocumentDiagnosticsForClosedDocument(fileUri, markdownDiagnostics);
-    }
-
-    /// <summary>
-    /// Runs markdown linter on a given text document and returns diagnostic entries.
-    /// </summary>
-    /// <param name="textDocument">Document to run markdown linter on.</param>
-    /// <param name="cancellationToken">Cancellation token to monitor.</param>
-    /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the markdown file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunLinterOnDocumentAsync(ITextDocumentSnapshot textDocument, CancellationToken cancellationToken)
-    {
-        using var linter = new Process();
-        var lineQueue = new AsyncQueue<string>();
-
-        var content = textDocument.Text.CopyToString();
-
-        ////var snapshot = await this.settingsObserver.GetSnapshotAsync(cancellationToken);
-        ////string disabledRules = snapshot.DisabledRules.ValueOrDefault(string.Empty);
-
-        ////string args = "/k \"npx markdownlint-cli --stdin" +
-        ////    (disabledRules.Length > 0 ? $" --disable {disabledRules}" : string.Empty) + "\"";
-
-        ////linter.StartInfo = new ProcessStartInfo()
-        ////{
-        ////    FileName = "cmd.exe",
-        ////    Arguments = args,
-        ////    RedirectStandardError = true,
-        ////    RedirectStandardInput = true,
-        ////    UseShellExecute = false,
-        ////    CreateNoWindow = true,
-        ////};
-
-        ////linter.EnableRaisingEvents = true;
-        ////linter.ErrorDataReceived += new DataReceivedEventHandler((sender, e) =>
-        ////{
-        ////    if (e.Data is not null)
-        ////    {
-        ////        lineQueue.Enqueue(e.Data);
-        ////    }
-        ////    else
-        ////    {
-        ////        lineQueue.Complete();
-        ////    }
-        ////});
-
-        ////try
-        ////{
-        ////    linter.Start();
-        ////    linter.BeginErrorReadLine();
-        ////    linter.StandardInput.AutoFlush = true;
-        ////    await linter.StandardInput.WriteAsync(content);
-
-        ////    linter.StandardInput.Close();
-        ////}
-        ////catch (Win32Exception ex)
-        ////{
-        ////    throw new InvalidOperationException(message: ex.Message, innerException: ex);
-        ////}
-
-        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
-        return CreateDocumentDiagnosticsForOpenDocument(textDocument, markdownDiagnostics);
     }
 
     private static IEnumerable<DocumentDiagnostic> CreateDocumentDiagnosticsForOpenDocument(ITextDocumentSnapshot document, IEnumerable<SqlAnalyzerDiagnosticInfo> diagnostics)
@@ -156,7 +136,7 @@ internal class AnalyzerUtilities
             {
                 ErrorCode = diagnostic.ErrorCode,
                 Severity = DiagnosticSeverity.Warning,
-                ProviderName = "T-SQL Analyzer",
+                ProviderName = Strings.MarkdownLinterWindowName,
             };
         }
     }
@@ -169,7 +149,7 @@ internal class AnalyzerUtilities
             {
                 ErrorCode = diagnostic.ErrorCode,
                 Severity = DiagnosticSeverity.Warning,
-                ProviderName = "T-SQL Analyzer",
+                ProviderName = Strings.MarkdownLinterWindowName,
             };
         }
     }
@@ -219,11 +199,14 @@ internal class AnalyzerUtilities
             return null;
         }
 
-        // TODO - Massage the description and ruleid to match the expected format.
+        var ruleId = parsed.Value.RuleId.Split('.').Last();
+        var rulePrefix = parsed.Value.RuleId.Replace("." + ruleId, string.Empty, StringComparison.OrdinalIgnoreCase);
+        var description = rulePrefix + ": " + parsed.Value.Description;
+
         return new SqlAnalyzerDiagnosticInfo(
             range: new Microsoft.VisualStudio.RpcContracts.Utilities.Range(startLine: parsed.Value.Line - 1, startColumn: parsed.Value.Column - 1),
-            message: parsed.Value.Description,
-            errorCode: parsed.Value.RuleId);
+            message: description,
+            errorCode: ruleId);
     }
 
         /// <summary>
