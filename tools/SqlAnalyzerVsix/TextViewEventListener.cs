@@ -1,5 +1,6 @@
 namespace SqlAnalyzer;
 
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,9 +50,10 @@ internal class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListene
             return;
         }
 
-        if (await this.IsInSqlProjAsync(path, cancellationToken))
+        var runProperties = await this.IsInSqlProjAsync(path, cancellationToken);
+        if (runProperties.Run)
         {
-            await this.diagnosticsProvider.ProcessTextViewAsync(args.AfterTextView, cancellationToken);
+            await this.diagnosticsProvider.ProcessTextViewAsync(args.AfterTextView, runProperties.Rules, runProperties.SqlVersion, cancellationToken);
         }
     }
 
@@ -64,21 +66,43 @@ internal class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListene
     /// <inheritdoc />
     public async Task TextViewOpenedAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
     {
-        if (await this.IsInSqlProjAsync(textViewSnapshot.Uri.LocalPath, cancellationToken))
+        var runProperties = await this.IsInSqlProjAsync(textViewSnapshot.Uri.LocalPath, cancellationToken);
+        if (runProperties.Run)
         {
-            await this.diagnosticsProvider.ProcessTextViewAsync(textViewSnapshot, cancellationToken);
+            await this.diagnosticsProvider.ProcessTextViewAsync(textViewSnapshot, runProperties.Rules, runProperties.SqlVersion, cancellationToken);
         }
     }
 
-    private async Task<bool> IsInSqlProjAsync(string path, CancellationToken cancellationToken)
+    private async Task<(bool Run, string? Rules, string? SqlVersion)> IsInSqlProjAsync(string path, CancellationToken cancellationToken)
     {
         var workspace = this.Extensibility.Workspaces();
 
+#pragma warning disable VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         IQueryResults<IProjectSnapshot> projects = await workspace.QueryProjectsAsync(
             project => project.Where(p => p.Capabilities.Contains(SqlAnalyzerExtension.SqlProjCapability))
-            .WithRequired(project => project.FilesByPath(path)),
+            .WithRequired(project => project.FilesByPath(path))
+            .With(p => p.ActiveConfigurations
+                .With(c => c.PropertiesByName(PropertySourceType.ProjectFile, "RunSqlCodeAnalysis", "CodeAnalysisRules", "SqlServerVersion"))),
             cancellationToken);
 
-        return projects.Count() == 1;
+        var runAnalyzer = projects.Any(p => p.ActiveConfigurations.Any(c =>
+            c.Properties.Any(prop =>
+                prop.Name.Equals("RunSqlCodeAnalysis", StringComparison.OrdinalIgnoreCase)
+                && prop.Value != null
+                && prop.Value.Equals("true", StringComparison.OrdinalIgnoreCase))));
+
+        var rules = projects.SelectMany(p => p.ActiveConfigurations)
+            .SelectMany(c => c.Properties)
+            .FirstOrDefault(prop => prop.Name.Equals("CodeAnalysisRules", StringComparison.OrdinalIgnoreCase))?.Value;
+
+        var sqlVersion = projects.SelectMany(p => p.ActiveConfigurations)
+            .SelectMany(c => c.Properties)
+            .FirstOrDefault(prop => prop.Name.Equals("SqlServerVersion", StringComparison.OrdinalIgnoreCase))?.Value;
+
+#pragma warning restore VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+        runAnalyzer = runAnalyzer && projects.Count() == 1;
+
+        return (runAnalyzer, rules, sqlVersion);
     }
 }
