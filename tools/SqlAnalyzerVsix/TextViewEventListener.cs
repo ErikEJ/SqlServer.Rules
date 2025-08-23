@@ -62,9 +62,12 @@ internal class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListene
     }
 
     /// <inheritdoc />
-    public Task TextViewOpenedAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
+    public async Task TextViewOpenedAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
     {
-        return this.diagnosticsProvider.ProcessTextViewAsync(textViewSnapshot, cancellationToken);
+        if (await this.IsInSqlProjAsync(textViewSnapshot.Uri.LocalPath, cancellationToken))
+        {
+            await this.diagnosticsProvider.ProcessTextViewAsync(textViewSnapshot, cancellationToken);
+        }
     }
 
     private async Task<bool> IsInSqlProjAsync(string path, CancellationToken cancellationToken)

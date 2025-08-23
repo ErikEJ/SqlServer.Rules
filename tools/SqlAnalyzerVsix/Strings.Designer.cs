@@ -61,15 +61,6 @@ namespace SqlAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Running linter on markdown files in the solution..
-        /// </summary>
-        internal static string MarkdownAnalysisMessage {
-            get {
-                return ResourceManager.GetString("MarkdownAnalysisMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to T-SQL Analyzer.
         /// </summary>
         internal static string MarkdownLinterWindowName {
@@ -79,16 +70,7 @@ namespace SqlAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to run linter on {0} files in the solution?.
-        /// </summary>
-        internal static string MarkdownSolutionAnalysisPrompt {
-            get {
-                return ResourceManager.GetString("MarkdownSolutionAnalysisPrompt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MarkdownLint-Cli tool could not be found, please ensure markdownlint-cli is installed by executing &quot;npm install -g markdownlint-cli&quot;..
+        ///   Looks up a localized string similar to tsqlanalyze tool could not be found, please ensure is is installed by executing &quot;dotnet tool install -g ErikEJ.DacFx.Tsqlanalyzer.CLI&quot;..
         /// </summary>
         internal static string MissingLinterError {
             get {
