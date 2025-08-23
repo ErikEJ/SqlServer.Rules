@@ -26,6 +26,7 @@ public class SqlAnalyzerExtension : Extension
             MoreInfo = "https://github.com/ErikEJ/SqlServer.Rules",
             Tags = ["SQL", "T-SQL", "Analyzer", "SQL Server"],
             Icon = "Images/sql-analysis.png",
+            License = "license.txt",
             PreviewImage = "Images/sql-analysis.png",
         },
         LoadedWhen = ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),

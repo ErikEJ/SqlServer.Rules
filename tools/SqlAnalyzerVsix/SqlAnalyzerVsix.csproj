@@ -3,12 +3,17 @@
     <TargetFramework>net8.0-windows8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>12</LangVersion>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Images\sql-analysis.png" />
+    <None Remove="license.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="license.txt" />
   </ItemGroup>
 
   <ItemGroup>
