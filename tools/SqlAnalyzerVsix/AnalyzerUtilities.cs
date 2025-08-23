@@ -55,9 +55,11 @@ internal class AnalyzerUtilities
     /// Runs SQL analyzer on a given text document and returns diagnostic entries.
     /// </summary>
     /// <param name="textDocument">Document to run SQL analyzer on.</param>
+    /// <param name="rules">Rules to apply for the analyzer.</param>
+    /// <param name="sqlVersion">SQL version to use for analysis.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, CancellationToken cancellationToken)
     {
         using var linter = new Process();
         var lineQueue = new AsyncQueue<string>();
@@ -74,6 +76,16 @@ internal class AnalyzerUtilities
 
         string args = "/c \"tsqlanalyze -n -i" +
             $" \"{tempPath}\"\"";
+
+        if (!string.IsNullOrWhiteSpace(rules))
+        {
+            args = args + $" -r Rules:{rules}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(sqlVersion))
+        {
+            args = args + $" -s {sqlVersion}";
+        }
 
         StartLinterProcess(linter, lineQueue, args);
 
@@ -209,7 +221,7 @@ internal class AnalyzerUtilities
             errorCode: ruleId);
     }
 
-        /// <summary>
+    /// <summary>
     /// Parses a SQL analyzer output line and extracts its components.
     /// </summary>
     /// <param name="outputLine">The output line to parse</param>

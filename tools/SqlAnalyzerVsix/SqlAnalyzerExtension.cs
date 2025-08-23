@@ -21,7 +21,7 @@ public class SqlAnalyzerExtension : Extension
                 version: this.ExtensionAssemblyVersion,
                 publisherName: "ErikEJ",
                 displayName: "T-SQL Analyzer",
-                description: "T-SQL Analyzer, that analyzes T-SQL code for design, naming and performance issues.")
+                description: "T-SQL Analyzer, that analyzes T-SQL code for design, naming and performance issues using more than 140 rules.")
         {
             MoreInfo = "https://github.com/ErikEJ/SqlServer.Rules",
             Tags = ["SQL", "T-SQL", "Analyzer", "SQL Server"],
@@ -29,9 +29,9 @@ public class SqlAnalyzerExtension : Extension
             PreviewImage = "Images/sql-analysis.png",
         },
         LoadedWhen = ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
-        //LoadedWhen = ActivationConstraint.Or(
-        //    ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
-        //    ActivationConstraint.ActiveProjectFlavor(new System.Guid("A9ACE9BB-CECE-4E62-9AA4-C7E7C5BD2124"))),
+        ////LoadedWhen = ActivationConstraint.Or(
+        ////    ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
+        ////    ActivationConstraint.ActiveProjectFlavor(new System.Guid("00d1a9c2-b5f0-4af3-8072-f6c62b433612"))),
     };
 
     /// <inheritdoc />

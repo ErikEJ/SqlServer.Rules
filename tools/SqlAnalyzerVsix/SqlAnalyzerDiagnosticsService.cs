@@ -89,9 +89,11 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
     /// Processes the current version <see cref="ITextViewSnapshot"/> instance for SQL errors and reports to the error list.
     /// </summary>
     /// <param name="textViewSnapshot">Text View instance to read the contents from.</param>
+    /// <param name="rules">Rules to apply for the analyzer.</param>
+    /// <param name="sqlVersion">SQL version to use for analysis.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>Task indicating completion of reporting SQL errors to error list.</returns>
-    public async Task ProcessTextViewAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
+    public async Task ProcessTextViewAsync(ITextViewSnapshot textViewSnapshot, string? rules, string? sqlVersion, CancellationToken cancellationToken)
     {
         CancellationTokenSource newCts = new CancellationTokenSource();
         lock (this.documentCancellationTokens)
@@ -104,7 +106,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
             this.documentCancellationTokens[textViewSnapshot.Document.Uri] = newCts;
         }
 
-        await this.ProcessDocumentAsync(textViewSnapshot.Document, cancellationToken.CombineWith(newCts.Token).Token);
+        await this.ProcessDocumentAsync(textViewSnapshot.Document, rules, sqlVersion, cancellationToken.CombineWith(newCts.Token).Token);
     }
 
     /// <summary>
@@ -139,7 +141,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
         }
     }
 
-    private async Task ProcessDocumentAsync(ITextDocumentSnapshot documentSnapshot, CancellationToken cancellationToken)
+    private async Task ProcessDocumentAsync(ITextDocumentSnapshot documentSnapshot, string? rules, string? sqlVersion, CancellationToken cancellationToken)
     {
         // Wait for 1 second to see if any other changes are being sent.
         await Task.Delay(1000, cancellationToken);
@@ -151,7 +153,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
 
         try
         {
-            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, cancellationToken);
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, rules, sqlVersion, cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentSnapshot, cancellationToken);
             await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
