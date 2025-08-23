@@ -29,8 +29,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Artifacts
-        path: |
-          *.vsix
+        path: **/*.vsix
 
     - name: Publish to Open VSIX Gallery
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')

@@ -1,0 +1,2 @@
+
+For license, see https://github.com/ErikEJ/SqlServer.Rules/blob/master/LICENSE
