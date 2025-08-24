@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  id-token: write # This is required for the federated credential to work
+
 env:
   VERSION: ${{ github.run_number }}
 
@@ -24,12 +27,39 @@ jobs:
     - name: Build
       run: msbuild /t:build tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
 
+    - name: Move build output
+      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      run: |
+        mv tools/SqlAnalyzerVsix/bin/Release/net8.0-windows8.0/SqlAnalyzerVsix.vsix SqlAnalyzerVsix.vsix
+
+    - name: Azure CLI login with federated credential
+      if: github.event_name != 'pull_request'
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Install dotnet sign
+      if: github.event_name != 'pull_request'
+      run: dotnet tool install --global sign --prerelease
+
+    - name: Sign VSIX packages
+      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      run: sign code trusted-signing *.vsix `
+        --trusted-signing-account ErikEJ `
+        --trusted-signing-certificate-profile ErikEJCert `
+        --trusted-signing-endpoint https://weu.codesigning.azure.net `
+        -fl fileslist.txt `
+        --verbosity information
+
     - name: Publish artifacts
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       uses: actions/upload-artifact@v4
       with:
         name: Artifacts
-        path: tools/**/*.vsix
+        path: |
+          *.vsix
 
     - name: Publish to Open VSIX Gallery
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
