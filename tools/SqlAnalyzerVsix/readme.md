@@ -14,7 +14,7 @@ or get the [CI build][vsixgallery]
 
 Analyze your SQL code as you type, and get suggestions for improvements based on best practices. The analyzer has over 140 rules covering performance, security, maintainability, and more.
 
-![editor](art/editor.png)
+![editor](Images/editor.png)
 
 The extension will respect any rule configuration you have in your SQL project, including whether analysis is enabled, SQL version and rule suppression.
 
@@ -31,7 +31,7 @@ The extension will respect any rule configuration you have in your SQL project, 
 
 The extension also adds a menu item under `Tools` to run the T-SQL Analyzer tool against the currently open SQL script in the editor.
 
-![toolsmenu](art/toolsmenu.png)
+![toolsmenu](Images/toolsmenu.png)
 
 The extension works with both SQL Server and Azure SQL Database projects based on [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj).
 
