@@ -25,7 +25,7 @@ jobs:
     - name: Restore dependencies
       run: msbuild /t:restore tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
     - name: Build
-      run: msbuild /t:build tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
+      run: msbuild tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj /property:Configuration=Release
 
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
