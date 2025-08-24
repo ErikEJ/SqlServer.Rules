@@ -21,7 +21,7 @@ public class SqlAnalyzerExtension : Extension
                 version: this.ExtensionAssemblyVersion,
                 publisherName: "ErikEJ",
                 displayName: "T-SQL Analyzer",
-                description: "T-SQL Analyzer, that analyzes T-SQL code for design, naming and performance issues using more than 140 rules.")
+                description: "T-SQL Analyzer, that analyzes your T-SQL object creation code for design, naming and performance issues using more than 140 rules.")
         {
             MoreInfo = "https://github.com/ErikEJ/SqlServer.Rules",
             Tags = ["SQL", "T-SQL", "Analyzer", "SQL Server"],

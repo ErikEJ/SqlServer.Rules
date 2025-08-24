@@ -50,11 +50,7 @@ internal class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListene
             return;
         }
 
-        var runProperties = await this.IsInSqlProjAsync(path, cancellationToken);
-        if (runProperties.Run)
-        {
-            await this.diagnosticsProvider.ProcessTextViewAsync(args.AfterTextView, runProperties.Rules, runProperties.SqlVersion, cancellationToken);
-        }
+        await this.diagnosticsProvider.ProcessTextViewAsync(args.AfterTextView, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -66,11 +62,7 @@ internal class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListene
     /// <inheritdoc />
     public async Task TextViewOpenedAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
     {
-        var runProperties = await this.IsInSqlProjAsync(textViewSnapshot.Uri.LocalPath, cancellationToken);
-        if (runProperties.Run)
-        {
-            await this.diagnosticsProvider.ProcessTextViewAsync(textViewSnapshot, runProperties.Rules, runProperties.SqlVersion, cancellationToken);
-        }
+        await this.diagnosticsProvider.ProcessTextViewAsync(textViewSnapshot, cancellationToken);
     }
 
     private async Task<(bool Run, string? Rules, string? SqlVersion)> IsInSqlProjAsync(string path, CancellationToken cancellationToken)

@@ -39,12 +39,14 @@ internal class RunAnalyzerOnCurrentFileCommand : Command
     }
 
     /// <inheritdoc />
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
     public override CommandConfiguration CommandConfiguration => new("%SqlAnalyzer.RunAnalyzerOnCurrentFileCommand.DisplayName%")
     {
         Placements = [CommandPlacement.KnownPlacements.ToolsMenu],
         Icon = new(ImageMoniker.KnownValues.CodeInformationRule, IconSettings.IconAndText),
         EnabledWhen = ActivationConstraint.ClientContext(ClientContextKey.Shell.ActiveSelectionFileName, ".+"),
     };
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 
     /// <inheritdoc />
     public override async Task ExecuteCommandAsync(IClientContext context, CancellationToken cancellationToken)

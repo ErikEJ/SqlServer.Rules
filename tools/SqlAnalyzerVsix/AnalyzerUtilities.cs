@@ -35,17 +35,16 @@ internal class AnalyzerUtilities
     /// Runs SQL analyzer on a file uri and returns diagnostic entries.
     /// </summary>
     /// <param name="fileUri">File uri to run SQL analyzer on.</param>
+    /// <param name="rules">Rules to apply for the analyzer.</param>
+    /// <param name="sqlVersion">SQL version to use for analysis.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, CancellationToken cancellationToken)
     {
         using var linter = new Process();
         var lineQueue = new AsyncQueue<string>();
 
-        string args = "/c \"tsqlanalyze -n -i" +
-            $" \"{fileUri.LocalPath}\"\"";
-
-        StartLinterProcess(linter, lineQueue, args);
+        StartLinterProcess(linter, lineQueue, fileUri.LocalPath, rules, sqlVersion);
 
         var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
         return CreateDocumentDiagnosticsForClosedDocument(fileUri, markdownDiagnostics);
@@ -74,8 +73,16 @@ internal class AnalyzerUtilities
 
         await File.WriteAllTextAsync(tempPath, content, Encoding.UTF8, cancellationToken);
 
+        StartLinterProcess(linter, lineQueue, tempPath, rules, sqlVersion);
+
+        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
+        return CreateDocumentDiagnosticsForOpenDocument(textDocument, markdownDiagnostics);
+    }
+
+    private static void StartLinterProcess(Process linter, AsyncQueue<string> lineQueue, string path, string? rules, string? sqlVersion)
+    {
         string args = "/c \"tsqlanalyze -n -i" +
-            $" \"{tempPath}\"\"";
+            $" \"{path}\"\"";
 
         if (!string.IsNullOrWhiteSpace(rules))
         {
@@ -87,14 +94,6 @@ internal class AnalyzerUtilities
             args = args + $" -s {sqlVersion}";
         }
 
-        StartLinterProcess(linter, lineQueue, args);
-
-        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
-        return CreateDocumentDiagnosticsForOpenDocument(textDocument, markdownDiagnostics);
-    }
-
-    private static void StartLinterProcess(Process linter, AsyncQueue<string> lineQueue, string args)
-    {
         linter.StartInfo = new ProcessStartInfo()
         {
             FileName = "cmd.exe",
