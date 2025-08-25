@@ -11,7 +11,7 @@ permissions:
   id-token: write # This is required for the federated credential to work
 
 env:
-  VERSION: ${{ github.run_number }}
+  VERSION: 0.0.${{ github.run_number }}
 
 jobs:
   build:
@@ -24,13 +24,20 @@ jobs:
       uses: microsoft/setup-msbuild@v2
     - name: Restore dependencies
       run: msbuild /t:restore tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
+
+    - name: Update Version
+      run: |
+        ((Get-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj -Raw) -Replace "0.0.0.0", "${{ env.VERSION }}") | Set-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
+      working-directory: src
+      shell: pwsh
+
     - name: Build
       run: msbuild tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj /property:Configuration=Release
 
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
-        mv tools/SqlAnalyzerVsix/bin/Release/net8.0-windows8.0/SqlAnalyzerVsix.vsix SqlAnalyzerVsix.vsix
+        mv tools/SqlAnalyzerVsix/bin/Release/net8.0-windows8.0/SqlAnalyzerVsix.vsix SqlAnalyzerVsix-${{ env.VERSION }}.vsix
 
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'

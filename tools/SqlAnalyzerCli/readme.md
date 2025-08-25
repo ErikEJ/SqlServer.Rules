@@ -115,7 +115,7 @@ See [this](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsq
 
 > Enabling this will cause your script files to be updated!
 
-## SQL Server Management Studio (SSMS) and Visual Studio integration
+## SQL Server Management Studio (SSMS) integration
 
 You can run the tool against any script in the SQL editor, if configured as an external tool.
 
