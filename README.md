@@ -38,6 +38,15 @@ You can also use the tool as a MCP Server with GitHub Copilot with VS Code and V
 
 Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerCli/readme.md)
 
+## Visual Studio extension - T-SQL Analyzer
+
+This repository also contains a Visual Studio extension, that uses the rule sets.
+
+You can run live analysis of your SQL Database projects in Visual Studio, and get the results in the Error List window.
+
+Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerVsix/readme.md)
+
+
 ## Solution Organization
 
 `.github` - GitHub actions
@@ -60,6 +69,7 @@ Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rul
 `tools`
 
 - `SqlAnalyzerCli` - a command line tool to run rules against a SQL Project
+- `SqlAnalyzerVsix` - a Visual Studio extension to run rules against a SQL Project
 - `ErikEJ.DacFX.TSQLAnalyzer` - library and NuGet package for running rules against SQL scripts and reporting results. Used by `SqlAnalyzerCli`
 - `SqlServer.Rules.Generator` - a quick console app to report on all rules in a SQL Project.
 - `SqlServer.Rules.Report` - Library for evaluating a rule and serializing the result.
