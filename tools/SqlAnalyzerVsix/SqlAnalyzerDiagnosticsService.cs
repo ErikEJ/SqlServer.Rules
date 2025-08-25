@@ -186,10 +186,11 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
 
 #pragma warning disable VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         IQueryResults<IProjectSnapshot> projects = await workspace.QueryProjectsAsync(
-            project => project.Where(p => p.Capabilities.Contains(SqlAnalyzerExtension.SqlProjCapability))
+            project => project.Where(p => p.Capabilities.Contains(SqlAnalyzerExtension.SqlProjCapability)
+                || p.Capabilities.Contains(SqlAnalyzerExtension.MicrosoftBuildSqlCapability))
             .WithRequired(project => project.FilesByPath(path))
             .With(p => p.ActiveConfigurations
-                .With(c => c.PropertiesByName(PropertySourceType.ProjectFile, "RunSqlCodeAnalysis", "CodeAnalysisRules", "SqlServerVersion"))),
+                .With(c => c.PropertiesByName(PropertySourceType.ProjectFile, "RunSqlCodeAnalysis", "CodeAnalysisRules", "SqlServerVersion", "DSP"))),
             cancellationToken);
 
         var runAnalyzer = projects.Any(p => p.ActiveConfigurations.Any(c =>
@@ -206,11 +207,28 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
             .SelectMany(c => c.Properties)
             .FirstOrDefault(prop => prop.Name.Equals("SqlServerVersion", StringComparison.OrdinalIgnoreCase))?.Value;
 
+        var dsp = projects.SelectMany(p => p.ActiveConfigurations)
+            .SelectMany(c => c.Properties)
+            .FirstOrDefault(prop => prop.Name.Equals("DSP", StringComparison.OrdinalIgnoreCase))?.Value;
+
+        string? dspVersion = null;
+
+        // https://learn.microsoft.com/en-us/sql/tools/sql-database-projects/concepts/target-platform?view=sql-server-ver17&pivots=sq1-visual-studio#sql-project-file-sample-and-syntax
+        if (!string.IsNullOrEmpty(dsp))
+        {
+            // Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider (SQL Server 2022)
+            // Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider (Azure SQL Database)
+            dspVersion = dsp.Replace("Microsoft.Data.Tools.Schema.Sql.", string.Empty, StringComparison.OrdinalIgnoreCase)
+                .Replace("DatabaseSchemaProvider", string.Empty, StringComparison.OrdinalIgnoreCase)
+                .Replace("V12", string.Empty, StringComparison.OrdinalIgnoreCase)
+                .Trim();
+        }
+
 #pragma warning restore VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
         runAnalyzer = runAnalyzer && projects.Count() == 1;
 
-        return (runAnalyzer, rules, sqlVersion);
+        return (runAnalyzer, rules, dspVersion ?? sqlVersion);
     }
 }
 #pragma warning restore VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
