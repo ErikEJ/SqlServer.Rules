@@ -2,7 +2,9 @@
 [vsixgallery]: http://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/
 [repo]:https://github.com/ErikEJ/SqlServer.Rules
 
-# T-SQL Analyzer - Live Code Analysis for MSBuild.Sdk.SqlProj SQL Projects
+# T-SQL Analyzer
+
+### Live Code Analysis for MSBuild.Sdk.SqlProj and Microsoft.Build.Sql SQL Database projects
 
 [![Build](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml/badge.svg)](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/visx.yml)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
@@ -12,7 +14,7 @@ or get the [CI build][vsixgallery]
 
 ----------------------------------------
 
-Analyze your SQL object creation scripts as you type, and get suggestions for improvements based on best practices. The analyzer has over 140 rules covering performance, security, maintainability, and more.
+Analyze your SQL object creation scripts as you type, and get suggestions for improvements based on best practices. The analyzer has over [140 rules](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md) covering performance, security, maintainability, and more.
 
 ![editor](Images/editor.png)
 
@@ -33,7 +35,7 @@ The extension also adds a menu item under `Tools` to run the T-SQL Analyzer tool
 
 ![toolsmenu](Images/toolsmenu.png)
 
-The extension works with both SQL Server and Azure SQL Database projects based on [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj).
+The extension works with both SQL Server and Azure SQL Database projects based on [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx/tree/main/src/Microsoft.Build.Sql).
 
 > The extension depends on the T-SQL Analyzer CLI tool, which is installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
 

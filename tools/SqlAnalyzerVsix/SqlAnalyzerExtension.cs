@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Extensibility;
 public class SqlAnalyzerExtension : Extension
 {
     public const string SqlProjCapability = "MSBuild.Sdk.SqlProj.BuildTSqlScript";
+    public const string MicrosoftBuildSqlCapability = "SQLProject";
 
     /// <inheritdoc/>
     public override ExtensionConfiguration ExtensionConfiguration => new()
@@ -29,10 +30,9 @@ public class SqlAnalyzerExtension : Extension
             License = "license.txt",
             PreviewImage = "Images/sql-analysis.png",
         },
-        LoadedWhen = ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
-        ////LoadedWhen = ActivationConstraint.Or(
-        ////    ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
-        ////    ActivationConstraint.ActiveProjectFlavor(new System.Guid("00d1a9c2-b5f0-4af3-8072-f6c62b433612"))),
+        LoadedWhen = ActivationConstraint.Or(
+            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
+            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(MicrosoftBuildSqlCapability))),
     };
 
     /// <inheritdoc />
