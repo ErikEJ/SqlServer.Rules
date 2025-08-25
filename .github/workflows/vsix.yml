@@ -28,7 +28,6 @@ jobs:
     - name: Update Version
       run: |
         ((Get-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj -Raw) -Replace "0.0.0.0", "${{ env.VERSION }}") | Set-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
-      working-directory: src
       shell: pwsh
 
     - name: Build
