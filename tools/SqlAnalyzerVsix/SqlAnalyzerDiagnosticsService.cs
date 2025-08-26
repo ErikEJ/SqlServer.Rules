@@ -186,11 +186,10 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
 
 #pragma warning disable VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         IQueryResults<IProjectSnapshot> projects = await workspace.QueryProjectsAsync(
-            project => project.Where(p => p.Capabilities.Contains(SqlAnalyzerExtension.SqlProjCapability)
-                || p.Capabilities.Contains(SqlAnalyzerExtension.MicrosoftBuildSqlCapability))
-            .WithRequired(project => project.FilesByPath(path))
-            .With(p => p.ActiveConfigurations
-                .With(c => c.PropertiesByName(PropertySourceType.ProjectFile, "RunSqlCodeAnalysis", "CodeAnalysisRules", "SqlServerVersion", "DSP"))),
+            project => project
+                .WithRequired(project => project.FilesByPath(path))
+                .With(p => p.ActiveConfigurations
+                    .With(c => c.PropertiesByName(PropertySourceType.ProjectFile, "RunSqlCodeAnalysis", "CodeAnalysisRules", "SqlServerVersion", "DSP"))),
             cancellationToken);
 
         var runAnalyzer = projects.Any(p => p.ActiveConfigurations.Any(c =>
