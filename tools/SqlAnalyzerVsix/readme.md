@@ -4,7 +4,7 @@
 
 # T-SQL Analyzer
 
-### Live Code Analysis for MSBuild.Sdk.SqlProj and Microsoft.Build.Sql SQL Database projects
+### Live Code Analysis for SQL Database projects
 
 [![Build](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml/badge.svg)](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/visx.yml)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
@@ -35,7 +35,7 @@ The extension also adds a menu item under `Tools` to run the T-SQL Analyzer tool
 
 ![toolsmenu](Images/toolsmenu.png)
 
-The extension works with both SQL Server and Azure SQL Database projects based on [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx/tree/main/src/Microsoft.Build.Sql).
+The extension works with both SQL Server and Azure SQL Database projects based on [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx/tree/main/src/Microsoft.Build.Sql) as well as classic [SQL database projects](https://learn.microsoft.com/sql/tools/sql-database-projects/get-started?view=sql-server-ver17&pivots=sq1-visual-studio).
 
 > The extension depends on the T-SQL Analyzer CLI tool, which is installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
 

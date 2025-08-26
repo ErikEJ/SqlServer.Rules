@@ -32,7 +32,8 @@ public class SqlAnalyzerExtension : Extension
         },
         LoadedWhen = ActivationConstraint.Or(
             ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
-            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(MicrosoftBuildSqlCapability))),
+            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(MicrosoftBuildSqlCapability)),
+            ActivationConstraint.ActiveProjectBuildProperty("DSP", ".*")),
     };
 
     /// <inheritdoc />
