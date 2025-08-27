@@ -189,7 +189,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
             project => project
                 .WithRequired(project => project.FilesByPath(path))
                 .With(p => p.ActiveConfigurations
-                    .With(c => c.PropertiesByName(PropertySourceType.ProjectFile, "RunSqlCodeAnalysis", "CodeAnalysisRules", "SqlServerVersion", "DSP"))),
+                    .With(c => c.PropertiesByName(PropertySourceType.ProjectFile, "RunSqlCodeAnalysis", "CodeAnalysisRules", "AnalyzerCodeAnalysisRules", "SqlServerVersion", "DSP"))),
             cancellationToken);
 
         var runAnalyzer = projects.Any(p => p.ActiveConfigurations.Any(c =>
@@ -201,6 +201,10 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
         var rules = projects.SelectMany(p => p.ActiveConfigurations)
             .SelectMany(c => c.Properties)
             .FirstOrDefault(prop => prop.Name.Equals("CodeAnalysisRules", StringComparison.OrdinalIgnoreCase))?.Value;
+
+        var legacyRules = projects.SelectMany(p => p.ActiveConfigurations)
+            .SelectMany(c => c.Properties)
+            .FirstOrDefault(prop => prop.Name.Equals("AnalyzerCodeAnalysisRules", StringComparison.OrdinalIgnoreCase))?.Value;
 
         var sqlVersion = projects.SelectMany(p => p.ActiveConfigurations)
             .SelectMany(c => c.Properties)
@@ -227,7 +231,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
 
         runAnalyzer = runAnalyzer && projects.Count() == 1;
 
-        return (runAnalyzer, rules, dspVersion ?? sqlVersion);
+        return (runAnalyzer, legacyRules ?? rules, dspVersion ?? sqlVersion);
     }
 }
 #pragma warning restore VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
