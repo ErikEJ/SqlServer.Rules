@@ -27,6 +27,9 @@ The extension will respect any rule configuration you have in your SQL project, 
     <SqlServerVersion>Sql170</SqlServerVersion>
     <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
     <CodeAnalysisRules>-SqlServer.Rules.SRD0006;-Smells.*</CodeAnalysisRules>
+    <!-- This property can be added to your .sqlproj file to support wildcard rule filters, -->
+    <!-- will override'CodeAnalysisRules' above if present -->
+    <AnalyzerCodeAnalysisRules>-SqlServer.Rules.SRD0006;-Smells.*</AnalyzerCodeAnalysisRules>
   </PropertyGroup>
 </Project>
 ```
