@@ -29,6 +29,7 @@ public class SqlAnalyzerExtension : Extension
             Icon = "Images/sql-analysis.png",
             License = "license.txt",
             PreviewImage = "Images/sql-analysis.png",
+            Preview = false,
         },
         LoadedWhen = ActivationConstraint.Or(
             ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
