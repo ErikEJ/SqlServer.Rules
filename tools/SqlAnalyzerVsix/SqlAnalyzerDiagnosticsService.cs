@@ -49,7 +49,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
     /// </summary>
     /// <param name="documentUri">Document uri to read the contents from.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
-    /// <returns>Task indicating completion of reporting markdown errors to error list.</returns>
+    /// <returns>Task indicating completion of reporting SQL errors to error list.</returns>
     public async Task ProcessFileAsync(Uri documentUri, CancellationToken cancellationToken)
     {
         CancellationTokenSource newCts = new CancellationTokenSource();
@@ -84,7 +84,7 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
         {
             if (this.outputChannel is not null)
             {
-                await this.outputChannel.WriteLineAsync(Strings.MissingLinterError);
+                await this.outputChannel.WriteLineAsync(Strings.MissingAnalyzerError);
             }
         }
     }
@@ -168,14 +168,14 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
         {
             if (this.outputChannel is not null)
             {
-                await this.outputChannel.WriteLineAsync(Strings.MissingLinterError);
+                await this.outputChannel.WriteLineAsync(Strings.MissingAnalyzerError);
             }
         }
     }
 
     private async Task InitializeAsync()
     {
-        this.outputChannel = await this.extensibility.Views().Output.CreateOutputChannelAsync(Strings.MarkdownLinterWindowName, default);
+        this.outputChannel = await this.extensibility.Views().Output.CreateOutputChannelAsync(Strings.AnalyzerWindowName, default);
         this.diagnosticsReporter = this.extensibility.Languages().GetDiagnosticsReporter(nameof(SqlAnalyzerExtension));
         Assumes.NotNull(this.diagnosticsReporter);
     }
