@@ -27,7 +27,8 @@ internal class AnalyzerUtilities
     // filename(line,column): ruleid : description
     private static readonly Regex SqlAnalyzerOutputRegex = new(
         @"^(?<filename>.+?)\((?<line>\d+),(?<column>\d+)\):\s*(?<ruleid>[^:]+)\s*:\s*(?<description>.*)$",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        RegexOptions.Compiled | RegexOptions.IgnoreCase,
+        TimeSpan.FromSeconds(3));
 
     private string tempPath = Path.Combine(Path.GetTempPath(), "tsqlanalyzerscratch.sql");
 
