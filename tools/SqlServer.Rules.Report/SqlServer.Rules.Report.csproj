@@ -11,7 +11,7 @@
     <Content Include="Resources\RulesTransform.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="2.0.0">
+    <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="3.0.0-preview.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
