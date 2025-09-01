@@ -63,18 +63,18 @@ namespace SqlAnalyzer {
         /// <summary>
         ///   Looks up a localized string similar to T-SQL Analyzer.
         /// </summary>
-        internal static string MarkdownLinterWindowName {
+        internal static string AnalyzerWindowName {
             get {
-                return ResourceManager.GetString("MarkdownLinterWindowName", resourceCulture);
+                return ResourceManager.GetString("AnalyzerWindowName", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to tsqlanalyze tool could not be found, please ensure is is installed by executing &quot;dotnet tool install -g ErikEJ.DacFx.Tsqlanalyzer.CLI&quot;..
         /// </summary>
-        internal static string MissingLinterError {
+        internal static string MissingAnalyzerError {
             get {
-                return ResourceManager.GetString("MissingLinterError", resourceCulture);
+                return ResourceManager.GetString("MissingAnalyzerError", resourceCulture);
             }
         }
     }

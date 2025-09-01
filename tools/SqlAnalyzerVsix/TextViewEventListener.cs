@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Extensibility;
 using Microsoft.VisualStudio.Extensibility.Editor;
 
 /// <summary>
-/// Listener for text view lifetime events to start linter on new documents or changed documents.
+/// Listener for text view lifetime events to start analyzer on new documents or changed documents.
 /// </summary>
 [VisualStudioContribution]
 internal class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListener, ITextViewChangedListener

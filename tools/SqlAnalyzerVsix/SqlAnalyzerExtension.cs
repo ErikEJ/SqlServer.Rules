@@ -4,10 +4,6 @@ using System.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.Extensibility;
 
-/// <summary>
-/// Extension entry point for Markdown Linter sample extension showcasing new
-/// out of proc Visual Studio Extensibilty APIs.
-/// </summary>
 [VisualStudioContribution]
 public class SqlAnalyzerExtension : Extension
 {
@@ -32,9 +28,9 @@ public class SqlAnalyzerExtension : Extension
             Preview = false,
         },
         LoadedWhen = ActivationConstraint.Or(
-            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)),
-            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(MicrosoftBuildSqlCapability)),
-            ActivationConstraint.ActiveProjectBuildProperty("DSP", ".*")),
+            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)), // MSBuild.Sdk.SqlProj
+            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(MicrosoftBuildSqlCapability)), // Microsoft.Build.Sql
+            ActivationConstraint.ActiveProjectBuildProperty("DSP", ".*")), // Classic ".sqlproj"
     };
 
     /// <inheritdoc />

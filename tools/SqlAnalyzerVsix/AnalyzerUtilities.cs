@@ -19,7 +19,7 @@ using Microsoft.VisualStudio.Threading;
 #pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 /// <summary>
-/// Helper class for running linter on a string or file.
+/// Helper class for running analyzer on a string or file.
 /// </summary>
 internal class AnalyzerUtilities
 {
@@ -41,13 +41,13 @@ internal class AnalyzerUtilities
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
     public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, CancellationToken cancellationToken)
     {
-        using var linter = new Process();
+        using var analyzer = new Process();
         var lineQueue = new AsyncQueue<string>();
 
-        StartLinterProcess(linter, lineQueue, fileUri.LocalPath, rules, sqlVersion);
+        StartAnalyzerProcess(analyzer, lineQueue, fileUri.LocalPath, rules, sqlVersion);
 
-        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
-        return CreateDocumentDiagnosticsForClosedDocument(fileUri, markdownDiagnostics);
+        var sqlDiagnostics = await ProcessAnalyzerQueueAsync(lineQueue);
+        return CreateDocumentDiagnosticsForClosedDocument(fileUri, sqlDiagnostics);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ internal class AnalyzerUtilities
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
     public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, CancellationToken cancellationToken)
     {
-        using var linter = new Process();
+        using var analyzer = new Process();
         var lineQueue = new AsyncQueue<string>();
 
         if (textDocument.Length > 8192)
@@ -73,13 +73,13 @@ internal class AnalyzerUtilities
 
         await File.WriteAllTextAsync(tempPath, content, Encoding.UTF8, cancellationToken);
 
-        StartLinterProcess(linter, lineQueue, tempPath, rules, sqlVersion);
+        StartAnalyzerProcess(analyzer, lineQueue, tempPath, rules, sqlVersion);
 
-        var markdownDiagnostics = await ProcessLinterQueueAsync(lineQueue);
-        return CreateDocumentDiagnosticsForOpenDocument(textDocument, markdownDiagnostics);
+        var sqlDiagnostics = await ProcessAnalyzerQueueAsync(lineQueue);
+        return CreateDocumentDiagnosticsForOpenDocument(textDocument, sqlDiagnostics);
     }
 
-    private static void StartLinterProcess(Process linter, AsyncQueue<string> lineQueue, string path, string? rules, string? sqlVersion)
+    private static void StartAnalyzerProcess(Process analyzer, AsyncQueue<string> lineQueue, string path, string? rules, string? sqlVersion)
     {
         string args = "/c \"tsqlanalyze -n -i" +
             $" \"{path}\"\"";
@@ -94,7 +94,7 @@ internal class AnalyzerUtilities
             args = args + $" -s {sqlVersion}";
         }
 
-        linter.StartInfo = new ProcessStartInfo()
+        analyzer.StartInfo = new ProcessStartInfo()
         {
             FileName = "cmd.exe",
             Arguments = args,
@@ -103,8 +103,8 @@ internal class AnalyzerUtilities
             CreateNoWindow = true,
         };
 
-        linter.EnableRaisingEvents = true;
-        linter.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
+        analyzer.EnableRaisingEvents = true;
+        analyzer.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
         {
             if (e.Data is not null)
             {
@@ -118,8 +118,8 @@ internal class AnalyzerUtilities
 
         try
         {
-            linter.Start();
-            linter.BeginOutputReadLine();
+            analyzer.Start();
+            analyzer.BeginOutputReadLine();
         }
         catch (Win32Exception ex)
         {
@@ -147,7 +147,7 @@ internal class AnalyzerUtilities
             {
                 ErrorCode = diagnostic.ErrorCode,
                 Severity = DiagnosticSeverity.Warning,
-                ProviderName = Strings.MarkdownLinterWindowName,
+                ProviderName = Strings.AnalyzerWindowName,
             };
         }
     }
@@ -160,12 +160,12 @@ internal class AnalyzerUtilities
             {
                 ErrorCode = diagnostic.ErrorCode,
                 Severity = DiagnosticSeverity.Warning,
-                ProviderName = Strings.MarkdownLinterWindowName,
+                ProviderName = Strings.AnalyzerWindowName,
             };
         }
     }
 
-    private static async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> ProcessLinterQueueAsync(AsyncQueue<string> lineQueue)
+    private static async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> ProcessAnalyzerQueueAsync(AsyncQueue<string> lineQueue)
     {
         Requires.NotNull(lineQueue, nameof(lineQueue));
 
@@ -183,7 +183,7 @@ internal class AnalyzerUtilities
                 break;
             }
 
-            var diagnostic = line is not null ? GetDiagnosticFromLinterOutput(line) : null;
+            var diagnostic = line is not null ? GetDiagnosticFromAnalyzerOutput(line) : null;
             if (diagnostic is not null)
             {
                 diagnostics.Add(diagnostic);
@@ -198,7 +198,7 @@ internal class AnalyzerUtilities
         return diagnostics;
     }
 
-    private static SqlAnalyzerDiagnosticInfo? GetDiagnosticFromLinterOutput(string outputLine)
+    private static SqlAnalyzerDiagnosticInfo? GetDiagnosticFromAnalyzerOutput(string outputLine)
     {
         Requires.NotNull(outputLine, nameof(outputLine));
 
