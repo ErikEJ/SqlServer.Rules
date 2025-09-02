@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="SqlAnalyzer.ffaa6ab0-b090-478a-8447-2c8bc454d0cc" Version="0.0.0" Language="en-US" Publisher="ErikEJ" />
+        <DisplayName>T-SQL Analyzer for SSMS</DisplayName>
+        <Description xml:space="preserve">T-SQL Analyzer, that analyzes your T-SQL object creation code for design, naming and performance issues using more than 140 rules.</Description>
+        <Tags>SQL,T-SQL,Analyzer,SQL Server</Tags>
+    </Metadata>
+    <Installation AllUsers="true">
+      <InstallationTarget Id="Microsoft.VisualStudio.Ssms" Version="[21.0,22.0)">
+        <ProductArchitecture>amd64</ProductArchitecture>
+      </InstallationTarget>
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Prerequisites>
+      <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
+    <Assets>
+      <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    </Assets>
+</PackageManifest>

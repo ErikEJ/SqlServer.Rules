@@ -215,6 +215,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSQLAnalyzer.Tests", "test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlAnalyzerVsix", "tools\SqlAnalyzerVsix\SqlAnalyzerVsix.csproj", "{A5AFD2E3-A8EC-D67B-15EA-EDAFC7227206}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlAnalyzerSsms", "tools\SqlAnalyzerSsms\SqlAnalyzerSsms.csproj", "{530625B3-88FD-41A0-9E4B-ED48D4E3C92B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -271,6 +273,10 @@ Global
 		{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A5AFD2E3-A8EC-D67B-15EA-EDAFC7227206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A5AFD2E3-A8EC-D67B-15EA-EDAFC7227206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530625B3-88FD-41A0-9E4B-ED48D4E3C92B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530625B3-88FD-41A0-9E4B-ED48D4E3C92B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530625B3-88FD-41A0-9E4B-ED48D4E3C92B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530625B3-88FD-41A0-9E4B-ED48D4E3C92B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -296,6 +302,7 @@ Global
 		{EA8DA413-F1FC-EC5A-9755-65C34D12680C} = {4EB38410-F29F-4143-A19E-BE8AE8FEED26}
 		{FBDB31C2-D200-E4F6-4DF1-F3DB1211118F} = {7FF3EC52-EC83-44FC-9BDA-463CDC01CB14}
 		{A5AFD2E3-A8EC-D67B-15EA-EDAFC7227206} = {AB713AEF-EE54-487A-AE70-8DD69973A2F9}
+		{530625B3-88FD-41A0-9E4B-ED48D4E3C92B} = {AB713AEF-EE54-487A-AE70-8DD69973A2F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {67B59E89-8C35-419D-A49B-9C2C19584900}
