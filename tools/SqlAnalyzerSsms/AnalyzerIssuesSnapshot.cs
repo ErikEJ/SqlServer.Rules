@@ -2,7 +2,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
@@ -19,9 +18,6 @@ namespace SqlAnalyzerExtension
         public readonly List<Issue> Errors = new List<Issue>();
 #pragma warning restore IDE1006 // Naming Styles
 
-#pragma warning disable IDE1006 // Naming Styles
-        public AnalyzerIssuesSnapshot NextSnapshot;
-#pragma warning restore IDE1006 // Naming Styles
 
         internal AnalyzerIssuesSnapshot(string filePath, int versionNumber)
         {
@@ -45,28 +41,8 @@ namespace SqlAnalyzerExtension
             }
         }
 
-        // TODO: This needs to be updated to set up the NextIndex values in the Issues in the list.
         public override int IndexOf(int currentIndex, ITableEntriesSnapshot newerSnapshot)
         {
-            // This and TranslateTo() are used to map errors from one snapshot to a different one (that way the error list can do things like maintain the selection on an error
-            // even when the snapshot containing the error is replaced by a new one).
-            //
-            // You only need to implement Identity() or TranslateTo() and, of the two, TranslateTo() is more efficient for the error list to use.
-
-            // Map currentIndex to the corresponding index in newerSnapshot (and keep doing it until either
-            // we run out of snapshots, we reach newerSnapshot, or the index can no longer be mapped forward).
-            var currentSnapshot = this;
-            do
-            {
-                Debug.Assert(currentIndex >= 0);
-                Debug.Assert(currentIndex < currentSnapshot.Count);
-
-                currentIndex = currentSnapshot.Errors[currentIndex].NextIndex;
-
-                currentSnapshot = currentSnapshot.NextSnapshot;
-            }
-            while ((currentSnapshot != null) && (currentSnapshot != newerSnapshot) && (currentIndex >= 0));
-
             return currentIndex;
         }
 
