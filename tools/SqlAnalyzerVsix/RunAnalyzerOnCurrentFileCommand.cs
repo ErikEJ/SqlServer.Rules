@@ -1,5 +1,3 @@
-namespace SqlAnalyzer;
-
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +7,8 @@ using Microsoft;
 using Microsoft.VisualStudio.Extensibility;
 using Microsoft.VisualStudio.Extensibility.Commands;
 using Microsoft.VisualStudio.ProjectSystem.Query;
+
+namespace SqlAnalyzer;
 
 /// <summary>
 /// A command to execute analyzer on the current file selected in Solution Explorer.
