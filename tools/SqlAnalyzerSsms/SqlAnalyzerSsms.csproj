@@ -54,6 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Analyzer.cs" />
     <Compile Include="IssueTagger.cs" />
+    <Compile Include="SinkManager.cs" />
     <Compile Include="Span.cs" />
     <Compile Include="TaggerProvider.cs" />
   </ItemGroup>

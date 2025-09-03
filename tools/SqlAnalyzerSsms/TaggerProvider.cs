@@ -1,9 +1,14 @@
-using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Windows.Controls;
 
 namespace SqlAnalyzerExtension
 {
@@ -12,10 +17,13 @@ namespace SqlAnalyzerExtension
     [ContentType("text")]
     [TextViewRole(PredefinedTextViewRoles.Document)]
     [TextViewRole(PredefinedTextViewRoles.Analyzable)]
-    public sealed class TaggerProvider : IViewTaggerProvider
+    public sealed class TaggerProvider : IViewTaggerProvider, ITableDataSource
     {
-        [Import]
-        public ITextDocumentFactoryService TextDocumentFactoryService { get; set; }
+        private readonly List<SinkManager> managers = new List<SinkManager>();      // Also used for locks
+        private readonly List<Analyzer> analyzers = new List<Analyzer>();
+        private readonly ITableManager errorTableManager;
+        private readonly ITextDocumentFactoryService textDocumentFactoryService;
+
 
         public string SourceTypeIdentifier => StandardTableDataSources.ErrorTableDataSource;
 
@@ -24,8 +32,16 @@ namespace SqlAnalyzerExtension
         public string DisplayName => "T-SQL Analyzer";
 
         [ImportingConstructor]
-        internal TaggerProvider()
+        internal TaggerProvider([Import]ITableManagerProvider provider, [Import] ITextDocumentFactoryService textDocumentFactoryService)
         {
+            this.errorTableManager = provider.GetTableManager(StandardTables.ErrorsTable);
+            this.textDocumentFactoryService = textDocumentFactoryService;
+
+            this.errorTableManager.AddSource(this, StandardTableColumnDefinitions.DetailsExpander, 
+                                                   StandardTableColumnDefinitions.ErrorSeverity, StandardTableColumnDefinitions.ErrorCode,
+                                                   StandardTableColumnDefinitions.ErrorSource, StandardTableColumnDefinitions.BuildTool,
+                                                   StandardTableColumnDefinitions.ErrorSource, StandardTableColumnDefinitions.ErrorCategory,
+                                                   StandardTableColumnDefinitions.Text, StandardTableColumnDefinitions.DocumentName, StandardTableColumnDefinitions.Line, StandardTableColumnDefinitions.Column);
         }
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer)
@@ -48,5 +64,68 @@ namespace SqlAnalyzerExtension
 
             return tagger;
         }
+
+        public IDisposable Subscribe(ITableDataSink sink)
+        {
+            // This method is called to each consumer interested in errors. In general, there will be only a single consumer (the error list tool window)
+            // but it is always possible for 3rd parties to write code that will want to subscribe.
+            return new SinkManager(this, sink);
+        }
+
+        public void AddSinkManager(SinkManager manager)
+        {
+            // This call can, in theory, happen from any thread so be appropriately thread safe.
+            // In practice, it will probably be called only once from the UI thread (by the error list tool window).
+            lock (managers)
+            {
+                managers.Add(manager);
+
+                // Add the pre-existing spell checkers to the manager.
+                foreach (var analyzer in analyzers)
+                {
+                    manager.AddAnalyzer(analyzer);
+                }
+            }
+        }
+
+        public void RemoveSinkManager(SinkManager manager)
+        {
+            // This call can, in theory, happen from any thread so be appropriately thread safe.
+            // In practice, it will probably be called only once from the UI thread (by the error list tool window).
+            lock (managers)
+            {
+                managers.Remove(manager);
+            }
+        }
+
+        public void AddSpellChecker(SpellChecker spellChecker)
+        {
+            // This call will always happen on the UI thread (it is a side-effect of adding or removing the 1st/last tagger).
+            lock (managers)
+            {
+                _spellCheckers.Add(spellChecker);
+
+                // Tell the preexisting managers about the new spell checker
+                foreach (var manager in managers)
+                {
+                    manager.AddSpellChecker(spellChecker);
+                }
+            }
+        }
+
+        public void RemoveSpellChecker(SpellChecker spellChecker)
+        {
+            // This call will always happen on the UI thread (it is a side-effect of adding or removing the 1st/last tagger).
+            lock (managers)
+            {
+                _spellCheckers.Remove(spellChecker);
+
+                foreach (var manager in managers)
+                {
+                    manager.RemoveSpellChecker(spellChecker);
+                }
+            }
+        }
+
     }
 }
