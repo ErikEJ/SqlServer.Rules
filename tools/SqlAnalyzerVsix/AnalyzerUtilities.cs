@@ -1,5 +1,3 @@
-namespace SqlAnalyzer;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft;
@@ -16,6 +13,8 @@ using Microsoft.VisualStudio.Extensibility.Languages;
 using Microsoft.VisualStudio.RpcContracts.DiagnosticManagement;
 using Microsoft.VisualStudio.Threading;
 
+namespace SqlAnalyzer;
+
 #pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 /// <summary>
@@ -23,12 +22,6 @@ using Microsoft.VisualStudio.Threading;
 /// </summary>
 internal class AnalyzerUtilities
 {
-    // Regex to parse T-SQL analyzer CLI output format:
-    // filename(line,column): ruleid : description
-    private static readonly Regex SqlAnalyzerOutputRegex = new(
-        @"^(?<filename>.+?)\((?<line>\d+),(?<column>\d+)\):\s*(?<ruleid>[^:]+)\s*:\s*(?<description>.*)$",
-        RegexOptions.Compiled | RegexOptions.IgnoreCase,
-        TimeSpan.FromSeconds(3));
 
     private string tempPath = Path.Combine(Path.GetTempPath(), "tsqlanalyzerscratch.sql");
 
@@ -149,6 +142,7 @@ internal class AnalyzerUtilities
                 ErrorCode = diagnostic.ErrorCode,
                 Severity = DiagnosticSeverity.Warning,
                 ProviderName = Strings.AnalyzerWindowName,
+                HelpLink = diagnostic.HelpLink?.ToString(),
             };
         }
     }
@@ -162,6 +156,7 @@ internal class AnalyzerUtilities
                 ErrorCode = diagnostic.ErrorCode,
                 Severity = DiagnosticSeverity.Warning,
                 ProviderName = Strings.AnalyzerWindowName,
+                HelpLink = diagnostic.HelpLink?.ToString(),
             };
         }
     }
@@ -211,14 +206,11 @@ internal class AnalyzerUtilities
             return null;
         }
 
-        var ruleId = parsed.Value.RuleId.Split('.').Last();
-        var rulePrefix = parsed.Value.RuleId.Replace("." + ruleId, string.Empty, StringComparison.OrdinalIgnoreCase);
-        var description = rulePrefix + ": " + parsed.Value.Description;
-
         return new SqlAnalyzerDiagnosticInfo(
             range: new Microsoft.VisualStudio.RpcContracts.Utilities.Range(startLine: parsed.Value.Line - 1, startColumn: parsed.Value.Column - 1),
-            message: description,
-            errorCode: ruleId);
+            message: parsed.Value.Description,
+            errorCode: parsed.Value.RuleId,
+            helpLink: !string.IsNullOrEmpty(parsed.Value.Url) ? new Uri(parsed.Value.Url) : null);
     }
 
     /// <summary>
@@ -226,31 +218,57 @@ internal class AnalyzerUtilities
     /// </summary>
     /// <param name="outputLine">The output line to parse</param>
     /// <returns>A tuple containing the parsed components, or null if parsing fails</returns>
-    public static (string Filename, int Line, int Column, string RuleId, string Description)? ParseSqlAnalyzerOutput(string outputLine)
+    public static (string Filename, int Line, int Column, string RuleId, string Description, string Url)? ParseSqlAnalyzerOutput(string outputLine)
     {
         if (string.IsNullOrWhiteSpace(outputLine))
         {
             return null;
         }
 
-        var match = SqlAnalyzerOutputRegex.Match(outputLine);
-        if (!match.Success)
+        var parts = outputLine.Split(": ", 3);
+
+        if (parts.Length < 3)
         {
             return null;
         }
 
-        if (!int.TryParse(match.Groups["line"].Value, out int line) ||
-            !int.TryParse(match.Groups["column"].Value, out int column))
+        // C:\Users\ErikEjlskovJensen(De\AppData\Local\Temp\tsqlanalyzerscratch.sql(6,9): Smells.SML005 : Avoid use of 'Select *'. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/CodeSmells/SML005.md)
+        var fileAndPosition = parts[0].Trim();
+        var lineColumnStart = fileAndPosition.LastIndexOf('(');
+        var lineColumnEnd = fileAndPosition.LastIndexOf(')');
+        if (lineColumnStart < 0 || lineColumnEnd < 0 || lineColumnEnd <= lineColumnStart)
         {
             return null;
         }
+
+        var lineColumn = fileAndPosition.Substring(lineColumnStart + 1, lineColumnEnd - lineColumnStart - 1);
+        var lineColumnParts = lineColumn.Split(',');
+        if (lineColumnParts.Length != 2 ||
+            !int.TryParse(lineColumnParts[0], out int line) ||
+            !int.TryParse(lineColumnParts[1], out int column))
+        {
+            return null;
+        }
+
+        fileAndPosition = fileAndPosition.Substring(0, lineColumnStart);
+        var ruleId = parts[1].Trim();
+        var description = parts[2].Trim();
+        var urlStartIndex = description.IndexOf(" (https", StringComparison.OrdinalIgnoreCase);
+        var url = urlStartIndex >= 0 ? description.Substring(urlStartIndex + 2, description.Length - urlStartIndex - 3) : string.Empty;
+
+        var ruleNumber = ruleId.Split('.').Last();
+        var rulePrefix = ruleId.Replace("." + ruleNumber, string.Empty, StringComparison.OrdinalIgnoreCase);
+
+        var descriptionWithoutUrl = urlStartIndex >= 0 ? description.Substring(0, urlStartIndex) : description;
+        description = rulePrefix + ": " + descriptionWithoutUrl;
 
         return (
-            Filename: match.Groups["filename"].Value,
+            Filename: fileAndPosition,
             Line: line,
             Column: column,
-            RuleId: match.Groups["ruleid"].Value.Trim(),
-            Description: match.Groups["description"].Value.Trim()
+            RuleId: ruleNumber,
+            Description: description,
+            Url: url
         );
     }
 }

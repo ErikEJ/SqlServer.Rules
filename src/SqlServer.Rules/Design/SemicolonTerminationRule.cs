@@ -98,7 +98,7 @@ namespace SqlServer.Rules.Design
                     continue;
                 }
 
-                problems.Add(new SqlRuleProblem(Message, sqlObj, statement));
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, statement));
             }
 
             return problems;

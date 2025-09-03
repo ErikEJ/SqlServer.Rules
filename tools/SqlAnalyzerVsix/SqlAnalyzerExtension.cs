@@ -1,8 +1,8 @@
-namespace SqlAnalyzer;
-
 using System.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.Extensibility;
+
+namespace SqlAnalyzer;
 
 [VisualStudioContribution]
 public class SqlAnalyzerExtension : Extension

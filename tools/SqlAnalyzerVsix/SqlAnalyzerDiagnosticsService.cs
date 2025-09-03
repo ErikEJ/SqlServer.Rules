@@ -1,5 +1,3 @@
-namespace SqlAnalyzer;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +10,8 @@ using Microsoft.VisualStudio.Extensibility.Editor;
 using Microsoft.VisualStudio.Extensibility.Helpers;
 using Microsoft.VisualStudio.ProjectSystem.Query;
 using Microsoft.VisualStudio.Threading;
+
+namespace SqlAnalyzer;
 
 /// <summary>
 /// An internal service shared across extension components via dependency injection. The service provides
