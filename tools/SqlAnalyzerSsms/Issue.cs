@@ -6,6 +6,10 @@ namespace SqlAnalyzerExtension
     public class Issue
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
+#pragma warning disable IDE1006 // Naming Styles
+        public int NextIndex = -1;
+#pragma warning restore IDE1006 // Naming Styles
+
         public SnapshotSpan SnapshotSpan { get; }
 
         public DiagnosticMessage Message { get; }

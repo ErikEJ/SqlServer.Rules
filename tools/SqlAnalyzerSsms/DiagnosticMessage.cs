@@ -9,6 +9,7 @@ namespace SqlAnalyzerExtension
 
     public class DiagnosticMessage
     {
+        //TODO : add help link!
         internal DiagnosticMessage(Span span, string message, Severity severity)
         {
             Span = span;

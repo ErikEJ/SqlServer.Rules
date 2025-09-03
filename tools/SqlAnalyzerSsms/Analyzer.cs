@@ -20,8 +20,13 @@ namespace SqlAnalyzerExtension
         private readonly ITextView textView;
         private readonly ITextBuffer buffer;
         private readonly bool canBeAnalyzed = true;
+        private readonly string filePath;
         private bool isAnalyzed = false;
         private string tempPath = Path.Combine(Path.GetTempPath(), "tsqlanalyzerscratch.sql");
+
+#pragma warning disable IDE1006 // Naming Styles
+        internal readonly AnalyzerIssuesFactory Factory;
+#pragma warning restore IDE1006 // Naming Styles
 
         private static readonly Regex SqlAnalyzerOutputRegex = new Regex(
             @"^(?<filename>.+?)\((?<line>\d+),(?<column>\d+)\):\s*(?<ruleid>[^:]+)\s*:\s*(?<description>.*)$",
@@ -36,9 +41,12 @@ namespace SqlAnalyzerExtension
             this.buffer = buffer;
             if (textDocumentFactoryService.TryGetTextDocument(buffer, out var document))
             {
+                this.filePath = document.FilePath;
                 System.IO.FileInfo fi = new System.IO.FileInfo(document.FilePath);
                 canBeAnalyzed = fi.Extension.Equals(".sql", StringComparison.OrdinalIgnoreCase);
             }
+
+            this.Factory = new AnalyzerIssuesFactory(this, new AnalyzerIssuesSnapshot(this.filePath, 0));
         }
 
         internal async Task AddTaggerAsync(IssueTagger tagger)
@@ -46,7 +54,7 @@ namespace SqlAnalyzerExtension
             if (this.Tagger == null)
             {
                 Tagger = tagger;
-                buffer.Changed += Buffer_Changed;
+                buffer.ChangedLowPriority += Buffer_Changed;
                 await AnalyzeAsync();
             }
         }

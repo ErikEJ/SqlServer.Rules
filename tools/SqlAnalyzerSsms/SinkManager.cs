@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.Shell.TableManager;
+    using Microsoft.VisualStudio.Shell.TableManager;
 using System;
 
 namespace SqlAnalyzerExtension
@@ -9,13 +9,13 @@ namespace SqlAnalyzerExtension
     /// </summary>
     public class SinkManager : IDisposable
     {
-        private readonly TaggerProvider _taggerProvider;
-        private readonly ITableDataSink _sink;
+        private readonly TaggerProvider taggerProvider;
+        private readonly ITableDataSink sink;
 
         internal SinkManager(TaggerProvider taggerProvider, ITableDataSink sink)
         {
-            _taggerProvider = taggerProvider;
-            _sink = sink;
+            this.taggerProvider = taggerProvider;
+            this.sink = sink;
 
             taggerProvider.AddSinkManager(this);
         }
@@ -23,22 +23,22 @@ namespace SqlAnalyzerExtension
         public void Dispose()
         {
             // Called when the person who subscribed to the data source disposes of the cookie (== this object) they were given.
-            _taggerProvider.RemoveSinkManager(this);
+            taggerProvider.RemoveSinkManager(this);
         }
 
         internal void AddAnalyzer(Analyzer analyzer)
         {
-            _sink.AddFactory(analyzer.Factory);
+            sink.AddFactory(analyzer.Factory);
         }
 
         internal void RemoveAnalyzer(Analyzer analyzer)
         {
-            _sink.RemoveFactory(analyzer.Factory);
+            sink.RemoveFactory(analyzer.Factory);
         }
 
         internal void UpdateSink()
         {
-            _sink.FactorySnapshotChanged(null);
+            sink.FactorySnapshotChanged(null);
         }
     }
 }

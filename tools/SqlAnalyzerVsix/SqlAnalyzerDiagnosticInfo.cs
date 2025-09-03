@@ -18,6 +18,7 @@ public class SqlAnalyzerDiagnosticInfo
     /// <param name="errorCode">Unique error code of this type of diagnostic.</param>
     public SqlAnalyzerDiagnosticInfo(Range range, string message, string errorCode)
     {
+        // TODO: add help link parameter?
         this.Range = range;
         this.Message = message;
         this.ErrorCode = errorCode;

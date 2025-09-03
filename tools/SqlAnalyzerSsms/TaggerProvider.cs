@@ -1,14 +1,12 @@
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Windows.Controls;
 
 namespace SqlAnalyzerExtension
 {
@@ -51,7 +49,7 @@ namespace SqlAnalyzerExtension
 
             if ((buffer == textView.TextBuffer) && (typeof(T) == typeof(IErrorTag)))
             {
-                var analyzer = buffer.Properties.GetOrCreateSingletonProperty(typeof(Analyzer), () => new Analyzer(textView, buffer, TextDocumentFactoryService));
+                var analyzer = buffer.Properties.GetOrCreateSingletonProperty(typeof(Analyzer), () => new Analyzer(textView, buffer, textDocumentFactoryService));
                 if (analyzer.Tagger == null)
                 {
                     tagger = new IssueTagger(analyzer) as ITagger<T>;
@@ -98,31 +96,31 @@ namespace SqlAnalyzerExtension
             }
         }
 
-        public void AddSpellChecker(SpellChecker spellChecker)
+        public void AddAnalyzer(Analyzer analyzer)
         {
             // This call will always happen on the UI thread (it is a side-effect of adding or removing the 1st/last tagger).
             lock (managers)
             {
-                _spellCheckers.Add(spellChecker);
+                analyzers.Add(analyzer);
 
-                // Tell the preexisting managers about the new spell checker
+                // Tell the preexisting managers about the new analyzer
                 foreach (var manager in managers)
                 {
-                    manager.AddSpellChecker(spellChecker);
+                    manager.AddAnalyzer(analyzer);
                 }
             }
         }
 
-        public void RemoveSpellChecker(SpellChecker spellChecker)
+        public void RemoveSpellChecker(Analyzer analyzer)
         {
             // This call will always happen on the UI thread (it is a side-effect of adding or removing the 1st/last tagger).
             lock (managers)
             {
-                _spellCheckers.Remove(spellChecker);
+                analyzers.Remove(analyzer);
 
                 foreach (var manager in managers)
                 {
-                    manager.RemoveSpellChecker(spellChecker);
+                    manager.RemoveAnalyzer(analyzer);
                 }
             }
         }

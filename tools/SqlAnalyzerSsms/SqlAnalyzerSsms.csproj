@@ -36,9 +36,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CopyVsixExtensionFiles>True</CopyVsixExtensionFiles>
+    <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
     <CopyVsixExtensionLocation>C:\Program Files\Microsoft SQL Server Management Studio 21\Release\Common7\IDE\Extensions\SqlAnalyzer</CopyVsixExtensionLocation>
-    <DeployExtension>False</DeployExtension>
+    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +56,8 @@
     <Compile Include="IssueTagger.cs" />
     <Compile Include="SinkManager.cs" />
     <Compile Include="Span.cs" />
+    <Compile Include="AnalyzerIssuesFactory.cs" />
+    <Compile Include="AnalyzerIssuesSnapshot.cs" />
     <Compile Include="TaggerProvider.cs" />
   </ItemGroup>
   <ItemGroup>
