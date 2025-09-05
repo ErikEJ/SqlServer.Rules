@@ -19,6 +19,7 @@ public class SqlAnalyzerDiagnosticInfo
     /// <param name="helpLink">Help URL</param>
     public SqlAnalyzerDiagnosticInfo(Range range, string message, string errorCode, Uri? helpLink)
     {
+        // TODO: add help link parameter?
         this.Range = range;
         this.Message = message;
         this.ErrorCode = errorCode;
