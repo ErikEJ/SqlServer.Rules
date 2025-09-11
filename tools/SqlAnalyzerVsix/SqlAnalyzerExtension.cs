@@ -26,6 +26,7 @@ public class SqlAnalyzerExtension : Extension
             License = "license.txt",
             PreviewImage = "Images/sql-analysis.png",
             Preview = false,
+            InstallationTargetVersion = "[17.14,19.0)",
         },
         LoadedWhen = ActivationConstraint.Or(
             ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)), // MSBuild.Sdk.SqlProj
