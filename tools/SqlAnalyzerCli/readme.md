@@ -83,7 +83,7 @@ The TSQL Analyzer MCP Server supports quick installation across multiple develop
 | Client | One-click Installation | MCP Guide |
 |--------|----------------------|-------------------|
 | **VS Code** | [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_TSQLAnalyzer-0098FF?style=flat-square&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=tsqlanalyzer&config=%7B%22name%22%3A%22tsqlanalyzer%22%2C%22command%22%3A%22tsqlanalyze%22%2C%22args%22%3A%5B%22-mcp%22%5D%7D) | [VS Code MCP Official Guide](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) |
-| **Visual Studio** | Manual configuration required | [Visual Studio MCP Official Guide](https://learn.microsoft.com/visualstudio/ide/mcp-servers) |
+| **Visual Studio** | [![Install in Visual Studio](https://img.shields.io/badge/Visual_Studio-Install_TSQLAnalyzer-5C2D91?style=flat-square&logoColor=white)](https://visualstudio.dev/redirect/mcp/install?name=tsqlanalyzer&config=%7B%22name%22%3A%22tsqlanalyzer%22%2C%22command%22%3A%22tsqlanalyze%22%2C%22args%22%3A%5B%22-mcp%22%5D%7D) | [Visual Studio MCP Official Guide](https://learn.microsoft.com/visualstudio/ide/mcp-servers) |
 
 **Example JSON configuration:**
 
