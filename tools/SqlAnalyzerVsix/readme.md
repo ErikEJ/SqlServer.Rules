@@ -6,7 +6,7 @@
 
 ### Live Code Analysis for SQL Database projects
 
-[![Build](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml/badge.svg)](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/visx.yml)
+[![Build](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml/badge.svg)](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
 
 Download this extension from the [Visual Studio Marketplace][marketplace]
