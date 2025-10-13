@@ -8,8 +8,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.1.61" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.10.4" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.10.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.0" />
   </ItemGroup>
 
 </Project>
