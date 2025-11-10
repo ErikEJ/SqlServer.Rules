@@ -177,10 +177,7 @@ internal static class Program
             return 1;
         }
 
-        var errors = result.Result.InitializationErrors
-            .Concat(result.Result.SuppressionErrors)
-            .Concat(result.Result.AnalysisErrors)
-            .ToList();
+        var errors = result.Result.GetAllErrors();
 
         var hadErrors = false;
 

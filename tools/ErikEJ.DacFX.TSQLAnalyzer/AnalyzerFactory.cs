@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
+using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 using ErikEJ.DacFX.TSQLAnalyzer.Services;
 using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -99,6 +100,15 @@ public class AnalyzerFactory
                 outputFile.Delete();
             }
 
+            var modelErrors = result.ModelErrors;
+
+            if (modelErrors.Count > 0)
+            {
+                var errorsFilePath = Path.GetFileNameWithoutExtension(outputFile.FullName) + ".errors.txt";
+
+                File.WriteAllText(errorsFilePath, string.Join(Environment.NewLine, modelErrors.Select(e => e.Value.Format(e.Key))), Encoding.UTF8);
+            }
+
             if (outputFile.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase))
             {
                 analysisResult.SerializeResultsToXml(outputFile.FullName);
@@ -123,7 +133,7 @@ public class AnalyzerFactory
                     });
                 }
 
-                File.WriteAllText(outputFile.FullName, JsonSerializer.Serialize(problemList));
+                File.WriteAllText(outputFile.FullName, JsonSerializer.Serialize(problemList), Encoding.UTF8);
             }
         }
     }
