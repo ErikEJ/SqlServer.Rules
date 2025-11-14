@@ -11,8 +11,7 @@ internal static class PackageService
 {
     public static NuGetVersion CurrentPackageVersion()
     {
-        return new NuGetVersion(Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!
-            .InformationalVersion);
+        return new NuGetVersion(typeof(NuGetVersion).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion);
     }
 
     public static async Task CheckForPackageUpdateAsync()
