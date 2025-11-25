@@ -192,7 +192,7 @@ public class ReportFactory
                };
     }
 
-    private static void SerializeReport(ReportEntity report, string outputPath, bool ommitXMLDeclaration=false)
+    private static void SerializeReport(ReportEntity report, string outputPath)
     {
         var serializer = new XmlSerializer(typeof(ReportEntity));
         var ns = new XmlSerializerNamespaces([new XmlQualifiedName(string.Empty, string.Empty)]);
@@ -200,7 +200,7 @@ public class ReportFactory
         {            
             Indent = true,
             IndentChars = "\t",
-            OmmitXMLDeclaration=ommitXMLDeclaration,
+            OmitXMLDeclaration = true,
         };
         using (var writer = XmlWriter.Create(outputPath, xmlSettings))
         {
