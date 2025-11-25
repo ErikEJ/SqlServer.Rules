@@ -22,7 +22,6 @@ namespace SqlAnalyzer;
 /// </summary>
 internal class AnalyzerUtilities
 {
-
     private string tempPath = Path.Combine(Path.GetTempPath(), "tsqlanalyzerscratch.sql");
 
     /// <summary>

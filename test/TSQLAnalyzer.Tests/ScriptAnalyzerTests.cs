@@ -28,6 +28,6 @@ public class ScriptAnalyzerTests
         // Assert
         Assert.IsNotNull(analysis);
         Assert.IsNotNull(analysis.Result);
-        Assert.IsTrue(analysis.Result.Problems.Count > 0, "Expected problems but found none.");
+        Assert.IsNotEmpty(analysis.Result.Problems, "Expected problems but found none.");
     }
 }

@@ -38,8 +38,8 @@
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
-    <PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.4" />
-    <PackageReference Include="NuGet.Protocol" Version="7.0.0" />
+    <PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.3" />
+    <PackageReference Include="NuGet.Protocol" Version="7.0.1" />
     <PackageReference Include="Spectre.Console" Version="0.54.0" />
   </ItemGroup>
 
