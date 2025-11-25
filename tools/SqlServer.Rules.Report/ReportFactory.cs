@@ -200,7 +200,7 @@ public class ReportFactory
         {            
             Indent = true,
             IndentChars = "\t",
-            OmitXMLDeclaration = true,
+            OmitXmlDeclaration = true,
         };
         using (var writer = XmlWriter.Create(outputPath, xmlSettings))
         {
