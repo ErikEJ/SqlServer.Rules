@@ -197,9 +197,10 @@ public class ReportFactory
         var serializer = new XmlSerializer(typeof(ReportEntity));
         var ns = new XmlSerializerNamespaces([new XmlQualifiedName(string.Empty, string.Empty)]);
         var xmlSettings = new XmlWriterSettings
-        {
+        {            
             Indent = true,
             IndentChars = "\t",
+            OmitXmlDeclaration = true,
         };
         using (var writer = XmlWriter.Create(outputPath, xmlSettings))
         {
