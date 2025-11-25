@@ -14,7 +14,7 @@ public sealed class PerformanceTestCases : TestCasesBase
     {
         var problems = GetTestCaseProblems(nameof(AvoidEndsWithOrContainsRule), AvoidEndsWithOrContainsRule.RuleId);
 
-        Assert.AreEqual(2, problems.Count, "Expected 2 problem to be found");
+        Assert.HasCount(2, problems, "Expected 2 problem to be found");
 
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "nonsargable.sql")));
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "nonsargable2.sql")));
@@ -28,7 +28,7 @@ public sealed class PerformanceTestCases : TestCasesBase
     {
         var problems = GetTestCaseProblems(nameof(AvoidNotEqualToRule), AvoidNotEqualToRule.RuleId);
 
-        Assert.AreEqual(2, problems.Count, "Expected 2 problem to be found");
+        Assert.HasCount(2, problems, "Expected 2 problem to be found");
 
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "ansi_not_equal.sql")));
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "alternate_not_equal.sql")));
@@ -42,7 +42,7 @@ public sealed class PerformanceTestCases : TestCasesBase
     {
         var problems = GetTestCaseProblems(nameof(AvoidColumnCalcsRule), AvoidColumnCalcsRule.RuleId);
 
-        Assert.AreEqual(1, problems.Count, "Expected 1 problem to be found");
+        Assert.HasCount(1, problems, "Expected 1 problem to be found");
 
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "calc_on_column.sql")));
 
@@ -55,7 +55,7 @@ public sealed class PerformanceTestCases : TestCasesBase
     {
         var problems = GetTestCaseProblems(nameof(AvoidColumnFunctionsRule), AvoidColumnFunctionsRule.RuleId);
 
-        Assert.AreEqual(1, problems.Count, "Expected 1 problem to be found");
+        Assert.HasCount(1, problems, "Expected 1 problem to be found");
 
         Assert.IsTrue(problems.Any(problem => Comparer.Equals(problem.SourceName, "func_on_column.sql")));
 
