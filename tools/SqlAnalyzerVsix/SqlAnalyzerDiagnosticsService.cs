@@ -227,11 +227,15 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
                 .Trim();
         }
 
+        var usedRules = !string.IsNullOrEmpty(legacyRules) ? legacyRules : rules;
+
+        var sqlVersionFinal = !string.IsNullOrEmpty(sqlVersion) ? sqlVersion : dspVersion;
+
 #pragma warning restore VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
         runAnalyzer = runAnalyzer && projects.Count() == 1;
 
-        return (runAnalyzer, legacyRules ?? rules, dspVersion ?? sqlVersion);
+        return (runAnalyzer, usedRules, sqlVersionFinal);
     }
 }
 #pragma warning restore VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
