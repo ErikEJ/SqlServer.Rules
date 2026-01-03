@@ -78,7 +78,7 @@ namespace SqlServer.Rules.Performance
         {
             var problems = new List<SqlRuleProblem>();
             var sqlObj = ruleExecutionContext.ModelElement;
-            if (sqlObj == null || sqlObj.IsWhiteListed())
+            if (sqlObj == null || sqlObj.IsWhiteListed(ruleExecutionContext))
             {
                 return problems;
             }
