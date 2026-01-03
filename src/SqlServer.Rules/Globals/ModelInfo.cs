@@ -55,12 +55,18 @@ namespace SqlServer.Rules.Globals
                 {
                     return true;
                 }
+
+                if (sqlObj.GetParent() != null && sqlObj.GetParent().ObjectType == ModelSchema.Table)
+                {
+                    if (temporalRefs.Any(x => x.Equals(sqlObj.GetParent())))
+                    {
+                        return true;
+                    }
+                }
             }
 
             return "[dbo].[RfcVersionHistory]".StringEquals(sqlObj.Name.ToString());
         }
-
-
 
         public static DataTypeView GetDataTypeView(this IDictionary<NamedTableView, IDictionary<string, DataTypeView>> list, ColumnReferenceExpression column)
         {
