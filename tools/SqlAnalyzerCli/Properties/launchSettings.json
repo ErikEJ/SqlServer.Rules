@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-t \"CREATE PROCEDURE dbo.TestProc AS SELECT * FROM sys.objects\"",
+      "commandLineArgs": "-c \"Data Source=.\\SQLEXPRESS2025;Database=Repro;Integrated Security=true;Encrypt=false\"",
       "remoteDebugEnabled": false
     }
   }

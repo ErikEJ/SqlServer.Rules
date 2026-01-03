@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
@@ -15,11 +16,12 @@ namespace SqlServer.Rules.Globals
         /// checks to see if the name of a TSqlObject is white-listed so we do not want to check rules against it
         /// </summary>
         /// <param name="sqlObj">The SQL object.</param>
+        /// <param name="executionContext">The execution context.</param>
         /// <returns>
         ///   <c>true</c> if [is white listed] [the specified SQL object]; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="ArgumentNullException">sqlObj</exception>
-        public static bool IsWhiteListed(this TSqlObject sqlObj)
+        public static bool IsWhiteListed(this TSqlObject sqlObj, SqlRuleExecutionContext executionContext = null)
         {
             if (sqlObj == null)
             {
@@ -38,8 +40,27 @@ namespace SqlServer.Rules.Globals
                 return true;
             }
 
+            if (executionContext != null)
+            {
+                var tables = executionContext.SchemaModel.GetObjects(DacQueryScopes.UserDefined, Table.TypeClass);
+
+                List<TSqlObject> temporalRefs = new List<TSqlObject>();
+
+                foreach (var table in tables)
+                {
+                    temporalRefs.AddRange(table.GetReferenced(Table.TemporalSystemVersioningHistoryTable).ToList());
+                }
+
+                if (temporalRefs.Any(x => x.Equals(sqlObj)))
+                {
+                    return true;
+                }
+            }
+
             return "[dbo].[RfcVersionHistory]".StringEquals(sqlObj.Name.ToString());
         }
+
+
 
         public static DataTypeView GetDataTypeView(this IDictionary<NamedTableView, IDictionary<string, DataTypeView>> list, ColumnReferenceExpression column)
         {
