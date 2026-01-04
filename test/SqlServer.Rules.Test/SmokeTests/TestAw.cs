@@ -127,6 +127,7 @@ public class TestAW : TestModel
         ExpectedProblems.Add(new TestProblem(43, 19, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(50, 19, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(51, 19, "SqlServer.Rules.SRD0068"));
+        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0069"));
         ExpectedProblems.Add(new TestProblem(92, 1, "SqlServer.Rules.SRD0065"));
         ExpectedProblems.Add(new TestProblem(110, 1, "SqlServer.Rules.SRD0065"));
         ExpectedProblems.Add(new TestProblem(98, 1, "SqlServer.Rules.SRD0065"));
