@@ -1,0 +1,7 @@
+CREATE PROCEDURE dbo.CreateProcedureExplicitTransaction
+AS
+SET NOCOUNT ON;
+BEGIN TRANSACTION;
+    INSERT INTO [dbo].TestTableSSDT (Col1) VALUES ('TestValue');
+COMMIT TRANSACTION;
+-- SRD0069

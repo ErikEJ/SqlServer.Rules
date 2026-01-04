@@ -1,0 +1,9 @@
+CREATE PROCEDURE dbo.CreateProcedureExplicitTransaction2
+AS
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+    INSERT INTO [dbo].TestTableSSDT (Col1) VALUES ('TestValue');
+COMMIT TRANSACTION;
+
+-- SRD0069
