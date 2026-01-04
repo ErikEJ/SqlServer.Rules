@@ -16,7 +16,7 @@ public class SRD0069Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CreateProcedureExplicitTransaction.sql");
 
-        ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRD0069"));
+        ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0069"));
 
         RunTest();
     }
