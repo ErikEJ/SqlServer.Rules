@@ -154,7 +154,7 @@ internal class AnalyzerUtilities
     {
         try
         {
-            using var process = Process.GetCurrentProcess();
+            var process = Process.GetCurrentProcess();
             if (process.MainModule?.FileName != null)
             {
                 var versionInfo = FileVersionInfo.GetVersionInfo(process.MainModule.FileName);
