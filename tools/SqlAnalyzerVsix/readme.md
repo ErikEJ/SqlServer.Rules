@@ -40,7 +40,11 @@ The extension also adds a menu item under `Tools` to run the T-SQL Analyzer tool
 
 The extension works with both SQL Server and Azure SQL Database projects based on [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx/tree/main/src/Microsoft.Build.Sql) as well as classic [SQL database projects](https://learn.microsoft.com/sql/tools/sql-database-projects/get-started?view=sql-server-ver17&pivots=sq1-visual-studio).
 
-> The extension depends on the T-SQL Analyzer CLI tool, which is installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
+### Installation Requirements
+
+- **Visual Studio 2026 and later**: The extension automatically uses the `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
+
+- **Visual Studio 2025 and earlier**: The extension depends on the T-SQL Analyzer CLI tool being installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
 
 ```bash
 dotnet tool install -g ErikEJ.DacFX.TSQLAnalyzer.CLI
