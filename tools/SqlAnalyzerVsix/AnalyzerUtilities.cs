@@ -154,16 +154,18 @@ internal class AnalyzerUtilities
     {
         try
         {
-            var process = Process.GetCurrentProcess();
+            using var process = Process.GetCurrentProcess();
             if (process.MainModule?.FileName != null)
             {
                 var versionInfo = FileVersionInfo.GetVersionInfo(process.MainModule.FileName);
                 return versionInfo.FileMajorPart >= 18;
             }
         }
-        catch
+        catch (Exception)
         {
-            // If we can't determine the version, fall back to the old behavior
+            // If we can't determine the version (due to security restrictions, process access issues, etc.),
+            // fall back to the old behavior (using tsqlanalyze command).
+            // This ensures the extension continues to work even if version detection fails.
         }
 
         return false;
