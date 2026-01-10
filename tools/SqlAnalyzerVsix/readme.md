@@ -44,7 +44,7 @@ The extension works with both SQL Server and Azure SQL Database projects based o
 
 - **Visual Studio 2026 and later**: The extension automatically uses the `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
 
-- **Visual Studio 2025 and earlier**: The extension depends on the T-SQL Analyzer CLI tool being installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
+- **Visual Studio 2022**: The extension depends on the T-SQL Analyzer CLI tool being installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
 
 ```bash
 dotnet tool install -g ErikEJ.DacFX.TSQLAnalyzer.CLI
