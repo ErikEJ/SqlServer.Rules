@@ -74,22 +74,48 @@ internal class AnalyzerUtilities
 
     private static void StartAnalyzerProcess(Process analyzer, AsyncQueue<string> lineQueue, string path, string? rules, string? sqlVersion)
     {
-        string args = "/c \"tsqlanalyze -n -i" +
-            $" \"{path}\"\"";
+        bool useDnx = IsVisualStudioVersion18OrLater();
+        string fileName;
+        string args;
 
-        if (!string.IsNullOrWhiteSpace(rules))
+        if (useDnx)
         {
-            args = args + $" -r Rules:{rules}";
+            // Use dnx syntax for VS 2026 (version 18) or later
+            fileName = "dnx";
+            args = "ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- -n -i" +
+                $" \"{path}\"";
+
+            if (!string.IsNullOrWhiteSpace(rules))
+            {
+                args = args + $" -r Rules:{rules}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(sqlVersion))
+            {
+                args = args + $" -s {sqlVersion}";
+            }
         }
-
-        if (!string.IsNullOrWhiteSpace(sqlVersion))
+        else
         {
-            args = args + $" -s {sqlVersion}";
+            // Use tsqlanalyze command for older VS versions
+            fileName = "cmd.exe";
+            args = "/c \"tsqlanalyze -n -i" +
+                $" \"{path}\"\"";
+
+            if (!string.IsNullOrWhiteSpace(rules))
+            {
+                args = args + $" -r Rules:{rules}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(sqlVersion))
+            {
+                args = args + $" -s {sqlVersion}";
+            }
         }
 
         analyzer.StartInfo = new ProcessStartInfo()
         {
-            FileName = "cmd.exe",
+            FileName = fileName,
             Arguments = args,
             RedirectStandardOutput = true,
             UseShellExecute = false,
@@ -118,6 +144,31 @@ internal class AnalyzerUtilities
         {
             throw new InvalidOperationException(message: ex.Message, innerException: ex);
         }
+    }
+
+    /// <summary>
+    /// Determines if the current Visual Studio host is version 18 or later.
+    /// </summary>
+    /// <returns>True if running in VS 2026 (version 18) or later, false otherwise.</returns>
+    private static bool IsVisualStudioVersion18OrLater()
+    {
+        try
+        {
+            var process = Process.GetCurrentProcess();
+            if (process.MainModule?.FileName != null)
+            {
+                var versionInfo = FileVersionInfo.GetVersionInfo(process.MainModule.FileName);
+                return versionInfo.FileMajorPart >= 18;
+            }
+        }
+        catch (Exception)
+        {
+            // If we can't determine the version (due to security restrictions, process access issues, etc.),
+            // fall back to the old behavior (using tsqlanalyze command).
+            // This ensures the extension continues to work even if version detection fails.
+        }
+
+        return false;
     }
 
     private static IEnumerable<DocumentDiagnostic> CreateDocumentDiagnosticsForOpenDocument(ITextDocumentSnapshot document, IEnumerable<SqlAnalyzerDiagnosticInfo> diagnostics)
