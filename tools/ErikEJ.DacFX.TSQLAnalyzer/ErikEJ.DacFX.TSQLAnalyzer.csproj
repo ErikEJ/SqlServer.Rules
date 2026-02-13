@@ -29,7 +29,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.103" PrivateAssets="All" />
     <PackageReference Include="editorconfig" Version="0.15.0" />
     <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="3.0.0" />
-    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="3.1.0" />
+    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="3.1.1" />
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
   </ItemGroup>
 
