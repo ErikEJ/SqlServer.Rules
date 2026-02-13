@@ -265,6 +265,11 @@ namespace SqlServer.Rules.ReferentialIntegrity
             var colNameParts = col.MultiPartIdentifier.Identifiers;
             var colTableName = new ObjectIdentifier(colNameParts.Take(colNameParts.Count - 1).Select(x => x.Value));
 
+            if (colTableName.Parts.Count == 0)
+            {
+                return false;
+            }
+
             var alias = tbl.Alias?.Value;
             var tblName = GetTableOrAliasName(tbl.SchemaObject.Identifiers);
 
