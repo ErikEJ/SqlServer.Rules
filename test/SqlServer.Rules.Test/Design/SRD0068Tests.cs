@@ -31,6 +31,8 @@ public class SRD0068Tests : TestModel
         ExpectedProblems.Add(new TestProblem(20, 1, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(24, 5, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(34, 5, "SqlServer.Rules.SRD0068"));
+        ExpectedProblems.Add(new TestProblem(22, 14, "SqlServer.Rules.SRP0025"));
+        ExpectedProblems.Add(new TestProblem(28, 14, "SqlServer.Rules.SRP0025"));
 
         RunTest();
     }
@@ -44,6 +46,8 @@ public class SRD0068Tests : TestModel
         ExpectedProblems.Add(new TestProblem(7, 17, "SqlServer.Rules.SRD0039"));
         ExpectedProblems.Add(new TestProblem(16, 1, "SqlServer.Rules.SRD0057"));
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0067"));
+        ExpectedProblems.Add(new TestProblem(22, 14, "SqlServer.Rules.SRP0025"));
+        ExpectedProblems.Add(new TestProblem(28, 14, "SqlServer.Rules.SRP0025"));
 
         RunTest();
     }

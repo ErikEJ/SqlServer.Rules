@@ -356,6 +356,10 @@ public class TestAW : TestModel
         ExpectedProblems.Add(new TestProblem(11, 5, "SqlServer.Rules.SRD0004"));
         ExpectedProblems.Add(new TestProblem(12, 5, "SqlServer.Rules.SRD0004"));
         ExpectedProblems.Add(new TestProblem(20, 5, "SqlServer.Rules.SRD0004"));
+        ExpectedProblems.Add(new TestProblem(18, 12, "SqlServer.Rules.SRP0025"));
+        ExpectedProblems.Add(new TestProblem(27, 12, "SqlServer.Rules.SRP0025"));
+        ExpectedProblems.Add(new TestProblem(42, 12, "SqlServer.Rules.SRP0025"));
+        ExpectedProblems.Add(new TestProblem(57, 12, "SqlServer.Rules.SRP0025"));
 
         RunTest();
     }
