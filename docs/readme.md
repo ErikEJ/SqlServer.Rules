@@ -115,7 +115,6 @@
 | [SRD0067](Design/SRD0067.md) | Use capitalized keywords for enhanced readability. |   | Use capitalized keywords for enhanced readability. | Yes |
 | [SRD0068](Design/SRD0068.md) | Terminate statements with semicolon. | Yes | Query statements should finish with a semicolon - ';'. | Yes |
 | [SRD0069](Design/SRD0069.md) | Xact_Abort On | Yes | Use SET XACT_ABORT ON in stored procedures with explicit transactions. | Yes |
-| [SRD0070](Design/SRD0070.md) | Avoid GOTO | Yes | Avoid using GOTO statements. Use structured control flow instead. |   |
 | [SRD0071](Design/SRD0071.md) | CASE without ELSE | Yes | CASE expression should include an ELSE clause. |   |
 | [SRD0072](Design/SRD0072.md) | Variable self-assignment | Yes | Variable should not be assigned to itself. |   |
 | [SRD0073](Design/SRD0073.md) | Repeated NOT operator | Yes | Repeated NOT operators found. Simplify the expression. |   |
