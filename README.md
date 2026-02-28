@@ -8,7 +8,7 @@
 
 ## Overview
 
-A library of SQL best practices implemented as more than 120 [database code analysis rules](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html) checked at build.
+A library of SQL best practices implemented as more than 130 [database code analysis rules](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html) checked at build.
 
 The rules can be added as NuGet packages to modern SQL Database projects based on either [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx).
 
