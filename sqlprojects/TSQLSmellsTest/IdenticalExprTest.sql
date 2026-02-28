@@ -8,3 +8,5 @@ BEGIN
         PRINT 'Always true';
     END;
 END;
+
+-- SRD0076

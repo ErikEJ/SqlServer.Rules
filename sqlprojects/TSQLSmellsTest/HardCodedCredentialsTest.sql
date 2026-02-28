@@ -6,3 +6,5 @@ BEGIN
     DECLARE @ApiKey NVARCHAR(100);
     SET @ApiKey = 'sk-1234567890';
 END;
+
+-- SRD0075

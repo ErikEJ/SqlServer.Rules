@@ -16,3 +16,5 @@ BEGIN
         WHEN @status = 2 THEN 'Bad'
     END;
 END;
+
+-- SRD0071
