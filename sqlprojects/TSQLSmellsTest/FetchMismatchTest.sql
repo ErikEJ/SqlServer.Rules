@@ -10,3 +10,5 @@ BEGIN
     CLOSE cur;
     DEALLOCATE cur;
 END;
+
+-- SRD0077

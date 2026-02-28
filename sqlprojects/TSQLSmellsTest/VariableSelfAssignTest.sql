@@ -5,3 +5,5 @@ BEGIN
     DECLARE @x INT = 5;
     SET @x = @x;
 END;
+
+-- SRD0072

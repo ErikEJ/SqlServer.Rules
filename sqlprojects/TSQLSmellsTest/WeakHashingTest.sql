@@ -8,3 +8,5 @@ BEGIN
     DECLARE @hash2 VARBINARY(8000);
     SET @hash2 = HASHBYTES('SHA1', 'test data');
 END;
+
+-- SRD0074
