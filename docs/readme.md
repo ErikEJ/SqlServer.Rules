@@ -115,6 +115,13 @@
 | [SRD0067](Design/SRD0067.md) | Use capitalized keywords for enhanced readability. |   | Use capitalized keywords for enhanced readability. | Yes |
 | [SRD0068](Design/SRD0068.md) | Terminate statements with semicolon. | Yes | Query statements should finish with a semicolon - ';'. | Yes |
 | [SRD0069](Design/SRD0069.md) | Xact_Abort On | Yes | Use SET XACT_ABORT ON in stored procedures with explicit transactions. | Yes |
+| [SRD0071](Design/SRD0071.md) | CASE without ELSE | Yes | CASE expression should include an ELSE clause. |   |
+| [SRD0072](Design/SRD0072.md) | Variable self-assignment | Yes | Variable should not be assigned to itself. |   |
+| [SRD0073](Design/SRD0073.md) | Repeated NOT operator | Yes | Repeated NOT operators found. Simplify the expression. |   |
+| [SRD0074](Design/SRD0074.md) | Weak hashing algorithm | Yes | Avoid weak hashing algorithms (MD2, MD4, MD5, SHA, SHA1). Use SHA2_256 or SHA2_512. |   |
+| [SRD0075](Design/SRD0075.md) | Hard-coded credentials | Yes | Avoid hard-coded credentials. Use secure configuration instead. |   |
+| [SRD0076](Design/SRD0076.md) | Identical expressions on both sides | Yes | Identical expressions on both sides of a comparison operator. |   |
+| [SRD0077](Design/SRD0077.md) | FETCH variable count mismatch | Yes | FETCH variable count does not match cursor column count. |   |
   
 ## Naming
   
@@ -152,6 +159,7 @@
 | [SRP0022](Performance/SRP0022.md) | Procedure level recompile option | Yes | Consider using RECOMPILE query hint instead of the WITH RECOMPILE option. | Yes |
 | [SRP0023](Performance/SRP0023.md) | Enumerating for existence check | Yes | When checking for existence use EXISTS instead of COUNT | Yes |
 | [SRP0024](Performance/SRP0024.md) | Correlated subquery | Yes | Avoid the use of correlated subqueries except for very small tables. |   |
+| [SRP0025](Performance/SRP0025.md) | SELECT * in EXISTS | Yes | Use SELECT 1 instead of SELECT * in EXISTS subqueries. |   |
   
 ## Microsoft 
   
