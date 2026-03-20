@@ -68,7 +68,8 @@ namespace SqlServer.Rules.Design
                         MessageFormatter.FormatMessage(
                             string.Format(CultureInfo.InvariantCulture, Message, stmt.Variable.Name),
                             RuleId),
-                        sqlObj, stmt));
+                        sqlObj,
+                        stmt));
                 }
             }
 
@@ -86,7 +87,8 @@ namespace SqlServer.Rules.Design
                         MessageFormatter.FormatMessage(
                             string.Format(CultureInfo.InvariantCulture, Message, decl.VariableName.Value),
                             RuleId),
-                        sqlObj, decl));
+                        sqlObj,
+                        decl));
                 }
             }
 

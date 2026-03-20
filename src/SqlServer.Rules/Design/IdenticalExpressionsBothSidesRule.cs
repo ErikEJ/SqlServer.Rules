@@ -74,7 +74,8 @@ namespace SqlServer.Rules.Design
         {
             if (expression is ColumnReferenceExpression colRef)
             {
-                return string.Join(".",
+                return string.Join(
+                    ".",
                     colRef.MultiPartIdentifier.Identifiers.Select(i => i.Value));
             }
 
