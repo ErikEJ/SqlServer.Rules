@@ -104,10 +104,15 @@ namespace SqlServer.Rules.Design
                 {
                     problems.Add(new SqlRuleProblem(
                         MessageFormatter.FormatMessage(
-                            string.Format(CultureInfo.InvariantCulture, Message,
-                                fetch.IntoVariables.Count, cursorName, expectedColumns),
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                Message,
+                                fetch.IntoVariables.Count,
+                                cursorName,
+                                expectedColumns),
                             RuleId),
-                        sqlObj, fetch));
+                        sqlObj,
+                        fetch));
                 }
             }
 
