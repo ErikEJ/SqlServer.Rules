@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v2
+      uses: microsoft/setup-msbuild@v3
     - name: Restore dependencies
       run: msbuild /t:restore tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
 
