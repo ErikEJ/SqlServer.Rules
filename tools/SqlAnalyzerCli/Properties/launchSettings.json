@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-c \"Data Source=.\\SQLEXPRESS2025;Database=Repro;Integrated Security=true;Encrypt=false\"",
+      "commandLineArgs": "-i C:\\Users\\ErikEjlskovJensen(De\\AppData\\Local\\Temp\\tsqlanalyzerscratch-cc3e6974-06b6-4cba-8ccb-2bfb722c167e.sql -n",
       "remoteDebugEnabled": false
     }
   }
