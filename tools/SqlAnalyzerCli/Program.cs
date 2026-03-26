@@ -184,7 +184,11 @@ internal static class Program
         foreach (var err in errors)
         {
             hadErrors = true;
-            DisplayService.Error(err.GetOutputMessage());
+
+            if (!options.NoLogo)
+            {
+                DisplayService.Error(err.GetOutputMessage());
+            }
         }
 
         if (result.ModelErrors.Count > 0)
