@@ -48,9 +48,9 @@ jobs:
           ./src/SqlServer.TSQLSmells/bin/Release/netstandard2.1/TSQLSmellSCA.dll `
           ./src/SqlServer.Rules/bin/Release/net472/SqlServer.Rules.dll `
           ./src/SqlServer.Rules/bin/Release/netstandard2.1/SqlServer.Rules.dll `
-          --trusted-signing-account ErikEJ `
-          --trusted-signing-certificate-profile ErikEJCert `
-          --trusted-signing-endpoint https://weu.codesigning.azure.net `
+          --artifact-signing-account ErikEJ `
+          --artifact-signing-certificate-profile ErikEJCert `
+          --artifact-signing-endpoint https://weu.codesigning.azure.net `
           --verbosity warning
 
       - name: Pack
