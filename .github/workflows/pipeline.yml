@@ -29,7 +29,3 @@ jobs:
 
       - name: Run Unit Tests
         run: dotnet test --no-build --configuration Release --verbosity normal
-
-      - name: Publish NuGet
-        if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
-        run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET }} --skip-duplicate

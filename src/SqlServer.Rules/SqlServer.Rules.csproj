@@ -13,7 +13,6 @@
     <RepositoryUrl>https://github.com/ErikEJ/SqlServer.Rules</RepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <DebugType>embedded</DebugType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <DevelopmentDependency>true</DevelopmentDependency>
     <SignAssembly>true</SignAssembly>
