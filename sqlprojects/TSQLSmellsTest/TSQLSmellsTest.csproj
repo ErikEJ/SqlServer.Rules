@@ -14,7 +14,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="3.0.0">
+        <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="4.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
