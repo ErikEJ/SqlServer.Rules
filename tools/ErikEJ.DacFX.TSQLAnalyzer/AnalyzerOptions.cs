@@ -30,7 +30,7 @@ public class AnalyzerOptions
     public string? Script { get; set; }
 
     /// <summary>
-    /// Used to specify a rules expression similar to 'Rules:-SqlServer.Rules.SRD0010;+!SqlServer.Rules.SRN0005'. Optional.
+    /// Used to specify a rules expression similar to 'Rules:-SqlServer.Rules.SRN0007;+!SqlServer.Rules.SRN0005'. Optional.
     /// </summary>
     public string? Rules { get; set; }
 
