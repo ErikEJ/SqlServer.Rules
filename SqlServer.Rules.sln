@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11605.296 insiders
+VisualStudioVersion = 18.5.11605.296
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer.Rules", "src\SqlServer.Rules\SqlServer.Rules.csproj", "{352B071F-CE87-434D-9432-C118C6A9F523}"
 EndProject
@@ -50,7 +50,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Design", "Design", "{544D4A
 		docs\Design\SRD0005.md = docs\Design\SRD0005.md
 		docs\Design\SRD0006.md = docs\Design\SRD0006.md
 		docs\Design\SRD0009.md = docs\Design\SRD0009.md
-		docs\Design\SRD0010.md = docs\Design\SRD0010.md
 		docs\Design\SRD0011.md = docs\Design\SRD0011.md
 		docs\Design\SRD0012.md = docs\Design\SRD0012.md
 		docs\Design\SRD0013.md = docs\Design\SRD0013.md
