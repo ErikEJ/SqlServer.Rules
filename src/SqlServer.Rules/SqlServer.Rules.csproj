@@ -39,10 +39,10 @@
     <None Include="key.snk" />
   </ItemGroup>
 
-  <ItemGroup>    
+  <ItemGroup>
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\netstandard2.1\SqlServer.Rules.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
     <None Include="$(NuGetPackageRoot)editorconfig/0.15.0/lib/netstandard2.0/EditorConfig.Core.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
-    <None Include="$(NuGetPackageRoot)editorconfig/0.15.0/lib/netstandard2.0/EditorConfig.Core.dll" Pack="true" PackagePath="lib\netstandard2.1"></None>
-    <None Include="$(NuGetPackageRoot)editorconfig/0.15.0/lib/netstandard2.0/EditorConfig.Core.dll" Pack="true" PackagePath="lib\net472"></None>
+    <None Include="$(NuGetPackageRoot)editorconfig/0.15.0/lib/netstandard2.0/EditorConfig.Core.dll" Pack="true" PackagePath="lib\netstandard2.1" />
+    <None Include="$(NuGetPackageRoot)editorconfig/0.15.0/lib/netstandard2.0/EditorConfig.Core.dll" Pack="true" PackagePath="lib\net472" />
   </ItemGroup>
 </Project>
