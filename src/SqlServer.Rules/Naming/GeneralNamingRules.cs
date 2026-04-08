@@ -19,13 +19,18 @@ namespace SqlServer.Rules.Performance
     /// <ExampleMd></ExampleMd>
     /// <remarks>
     /// Multiple possible rule violations:
-    ///   <list type="bullet">
-    ///     <item> Name '{name}' starts with a number. </item>
-    ///     <item> Name '{name}' contains invalid characters. Please only use alphanumerics and underscores. </item>
-    ///     <item> Primary Key, Index, Foreign Key, Check Constraint, and Default Constraint names must match their configured SRN0007 regex. </item>
-    ///     <item> Regex overrides can be configured in .editorconfig using sqlserver_rules.srn0007.[pk|fk|ix|ux|ck|df]_regex. </item>
-    ///     <item> Supported regex tokens are {{tableName}}, {{schemaName}}, {{foreignTableName}}, {{foreignSchemaName}}, and {{columnName}}. </item>
-    ///   </list>
+    /// - Name '{name}' starts with a number.
+    /// - Name '{name}' contains invalid characters. Please only use alphanumerics and underscores.
+    /// - Primary Key, Index, Foreign Key, Check Constraint, and Default Constraint names must match their configured SRN0007 regex.
+    /// - Regex overrides can be configured in .editorconfig using `sqlserver_rules.srn0007.[pk|fk|ix|ux|ck|df]_regex`.
+    /// - Supported regex tokens are `{{tableName}}`, `{{schemaName}}`, `{{foreignTableName}}`, `{{foreignSchemaName}}`, and `{{columnName}}`.
+    /// - Default regex patterns:
+    ///   - `pk_regex`: `^PK_{{tableName}}$`
+    ///   - `ix_regex`: `^IX_{{tableName}}_.*`
+    ///   - `ux_regex`: `^UX_{{tableName}}_.*`
+    ///   - `fk_regex`: `^FK_{{tableName}}_{{foreignTableName}}.*`
+    ///   - `ck_regex`: `^CK_{{tableName}}_.*`
+    ///   - `df_regex`: `^DF_{{tableName}}_{{columnName}}$`
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />
     /// <seealso cref="SqlServer.Rules.Naming.NamingViolationRule" />
