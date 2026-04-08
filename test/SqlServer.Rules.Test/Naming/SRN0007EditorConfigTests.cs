@@ -104,6 +104,13 @@ sqlserver_rules.srn0007.fk_regex = ^FK_{{schemaName}}_{{tableName}}_{{foreignSch
                 RuleSettings = ruleSettings,
             });
 
+            var ruleLoadErrors = service.GetRuleLoadErrors();
+            Assert.AreEqual(0, ruleLoadErrors.Count, string.Join(Environment.NewLine, ruleLoadErrors.Select(e => e.Message)));
+            Assert.IsTrue(
+                service.GetRules().Any(rule => rule.RuleId.Equals(RuleId, StringComparison.OrdinalIgnoreCase)),
+                "Expected rule '{0}' not found by the service",
+                RuleId);
+
             var result = service.Analyze(model);
             return result.Problems
                 .Where(p => p.RuleId.Equals(RuleId, StringComparison.OrdinalIgnoreCase))
