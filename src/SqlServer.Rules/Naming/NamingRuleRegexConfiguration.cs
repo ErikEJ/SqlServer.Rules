@@ -10,7 +10,10 @@ namespace SqlServer.Rules.Naming
     internal static class NamingRuleRegexConfiguration
     {
         private const string RulePrefix = "sqlserver_rules.srn0007.";
-        private static readonly ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> SourcePropertiesCache = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly StringComparer SourcePathComparer = OperatingSystem.IsWindows()
+            ? StringComparer.OrdinalIgnoreCase
+            : StringComparer.Ordinal;
+        private static readonly ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> SourcePropertiesCache = new(SourcePathComparer);
         private static readonly IReadOnlyDictionary<string, string> EmptyProperties = new Dictionary<string, string>();
 
         public static string GetConfiguredRegex(TSqlObject sqlObject, string ruleKey, string defaultRegex)
