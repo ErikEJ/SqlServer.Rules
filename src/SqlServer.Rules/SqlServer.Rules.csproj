@@ -25,6 +25,7 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="editorconfig" Version="0.15.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" Condition=" '$(TargetFramework)' == 'net472' " />
@@ -40,5 +41,6 @@
 
   <ItemGroup>
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\netstandard2.1\SqlServer.Rules.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
+    <None Include="$(NuGetPackageRoot)editorconfig/0.15.0/lib/netstandard2.0/EditorConfig.Core.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
   </ItemGroup>
 </Project>
