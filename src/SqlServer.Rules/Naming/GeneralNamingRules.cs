@@ -243,12 +243,9 @@ namespace SqlServer.Rules.Performance
 
         private static string ReplaceToken(string pattern, string tokenName, string value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                return pattern;
-            }
-
-            var replacement = Regex.Escape(value);
+            var replacement = string.IsNullOrEmpty(value)
+                ? string.Empty
+                : Regex.Escape(value);
             var doubleBracesPattern = @"\{\{\s*" + Regex.Escape(tokenName) + @"\s*\}\}";
             return Regex.Replace(pattern, doubleBracesPattern, replacement, RegexOptions.IgnoreCase);
         }
