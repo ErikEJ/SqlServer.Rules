@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using EditorConfig.Core;
 using Microsoft.SqlServer.Dac.Model;
 
@@ -10,9 +11,10 @@ namespace SqlServer.Rules.Naming
     internal static class NamingRuleRegexConfiguration
     {
         private const string RulePrefix = "sqlserver_rules.srn0007.";
-        private static readonly StringComparer SourcePathComparer = OperatingSystem.IsWindows()
+        private static readonly StringComparer SourcePathComparer = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
             ? StringComparer.OrdinalIgnoreCase
             : StringComparer.Ordinal;
+
         private static readonly ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> SourcePropertiesCache = new(SourcePathComparer);
         private static readonly IReadOnlyDictionary<string, string> EmptyProperties = new Dictionary<string, string>();
 
@@ -46,6 +48,14 @@ namespace SqlServer.Rules.Naming
                 return EmptyProperties;
             }
             catch (IOException)
+            {
+                return EmptyProperties;
+            }
+            catch (NotSupportedException)
+            {
+                return EmptyProperties;
+            }
+            catch (System.Security.SecurityException)
             {
                 return EmptyProperties;
             }
