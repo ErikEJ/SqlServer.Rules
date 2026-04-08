@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -6,6 +7,7 @@ using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Rules.Globals;
+using SqlServer.Rules.Naming;
 
 namespace SqlServer.Rules.Performance
 {
@@ -111,12 +113,14 @@ namespace SqlServer.Rules.Performance
             }
 
             var tableName = parentObj.Name.Parts.LastOrDefault();
+            var schemaName = GetSchemaName(parentObj.Name);
             switch (objectType.ToUpperInvariant())
             {
                 case "PRIMARYKEYCONSTRAINT":
-                    if (!Regex.IsMatch(name, $"^PK_{tableName}$", RegexOptions.IgnoreCase))
+                    var pkRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "pk_regex", "^PK_{{tableName}}$");
+                    if (!IsNameMatch(name, pkRegex, tableName, schemaName, null, null, null, out var resolvedPkRegex))
                     {
-                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Primary Key '{name}' does not follow the company naming standard. Please use the name PK_{tableName}.", RuleId), sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Primary Key '{name}' does not follow the company naming standard. Please match regex {resolvedPkRegex}.", RuleId), sqlObj, fragment));
                     }
 
                     break;
@@ -134,47 +138,49 @@ namespace SqlServer.Rules.Performance
                         return problems;
                     }
 
-                    var re = $"^IX_{tableName}_.*";
-                    var naming = $"IX_{tableName}*";
+                    var re = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ix_regex", "^IX_{{tableName}}_.*");
                     if (idx.Unique)
                     {
-                        re = $@"^UX_{tableName}_.*";
-                        naming = $"UX_{tableName}*";
+                        re = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ux_regex", "^UX_{{tableName}}_.*");
                     }
 
-                    if (!Regex.IsMatch(name, re, RegexOptions.IgnoreCase))
+                    if (!IsNameMatch(name, re, tableName, schemaName, null, null, null, out var resolvedIndexRegex))
                     {
-                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Index '{name}' does not follow the company naming standard. Please use a format that starts with {naming}.", RuleId), sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Index '{name}' does not follow the company naming standard. Please match regex {resolvedIndexRegex}.", RuleId), sqlObj, fragment));
                     }
 
                     break;
                 case "FOREIGNKEYCONSTRAINT":
                     // var fk = fragment as createke;
                     var tableFk = ruleExecutionContext.SchemaModel.GetObject(ForeignKeyConstraint.TypeClass, sqlObj.Name, DacQueryScopes.All);
-                    var foreignTableName = tableFk.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignTable, DacQueryScopes.All)
+                    var foreignTable = tableFk.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignTable, DacQueryScopes.All)
                         .Select(x => x.ObjectName).ToList()
-                        .First().Parts.LastOrDefault();
+                        .FirstOrDefault();
+                    var foreignTableName = foreignTable?.Parts.LastOrDefault();
+                    var foreignSchemaName = GetSchemaName(foreignTable);
+                    var fkRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "fk_regex", "^FK_{{tableName}}_{{foreignTableName}}.*");
 
-                    if (!Regex.IsMatch(name, $@"^FK_{tableName}_{foreignTableName}.*", RegexOptions.IgnoreCase))
+                    if (!IsNameMatch(name, fkRegex, tableName, schemaName, foreignTableName, foreignSchemaName, null, out var resolvedFkRegex))
                     {
-                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Foreign Key '{name}' does not follow the company naming standard. Please use a format that starts with FK_{tableName}_{foreignTableName}", RuleId), sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Foreign Key '{name}' does not follow the company naming standard. Please match regex {resolvedFkRegex}.", RuleId), sqlObj, fragment));
                     }
 
                     break;
                 case "CHECKCONSTRAINT":
-                    if (!Regex.IsMatch(name, $@"^CK_{tableName}_.*", RegexOptions.IgnoreCase))
+                    var ckRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ck_regex", "^CK_{{tableName}}_.*");
+                    if (!IsNameMatch(name, ckRegex, tableName, schemaName, null, null, null, out var resolvedCkRegex))
                     {
-                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Check Constraint '{name}' does not follow the company naming standard. Please use a format that starts with CK_{tableName}*.", RuleId), sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Check Constraint '{name}' does not follow the company naming standard. Please match regex {resolvedCkRegex}.", RuleId), sqlObj, fragment));
                     }
 
                     break;
                 case "DEFAULTCONSTRAINT":
                     var columnName = GetReferencedName(sqlObj, DefaultConstraint.TargetColumn, "Column");
+                    var dfRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "df_regex", "^DF_{{tableName}}_{{columnName}}$");
 
-                    // allow two formats for this one
-                    if (!Regex.IsMatch(name, $@"^DF_{tableName}_{columnName}$", RegexOptions.IgnoreCase))
+                    if (!IsNameMatch(name, dfRegex, tableName, schemaName, null, null, columnName, out var resolvedDfRegex))
                     {
-                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Constraint '{name}' does not follow the company naming standard. Please use the name DF_{tableName}_{columnName}.", RuleId), sqlObj, fragment));
+                        problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Constraint '{name}' does not follow the company naming standard. Please match regex {resolvedDfRegex}.", RuleId), sqlObj, fragment));
                     }
 
                     // ADD OTHER TYPES IF DESIRED IF YOU WANT THEM TO MATCH A SPECIFIC FORMAT
@@ -194,6 +200,69 @@ namespace SqlServer.Rules.Performance
             }
 
             return referenced.Name.Parts.LastOrDefault();
+        }
+
+        private static bool IsNameMatch(
+            string objectName,
+            string pattern,
+            string tableName,
+            string schemaName,
+            string foreignTableName,
+            string foreignSchemaName,
+            string columnName,
+            out string resolvedPattern)
+        {
+            resolvedPattern = ResolveRegexPattern(pattern, tableName, schemaName, foreignTableName, foreignSchemaName, columnName);
+
+            try
+            {
+                return Regex.IsMatch(objectName, resolvedPattern, RegexOptions.IgnoreCase);
+            }
+            catch (ArgumentException)
+            {
+                resolvedPattern = $"'{resolvedPattern}' (invalid regex)";
+                return false;
+            }
+        }
+
+        private static string ResolveRegexPattern(
+            string pattern,
+            string tableName,
+            string schemaName,
+            string foreignTableName,
+            string foreignSchemaName,
+            string columnName)
+        {
+            var resolvedPattern = pattern;
+            resolvedPattern = ReplaceToken(resolvedPattern, "tableName", tableName);
+            resolvedPattern = ReplaceToken(resolvedPattern, "schemaName", schemaName);
+            resolvedPattern = ReplaceToken(resolvedPattern, "foreignTableName", foreignTableName);
+            resolvedPattern = ReplaceToken(resolvedPattern, "foreignSchemaName", foreignSchemaName);
+            resolvedPattern = ReplaceToken(resolvedPattern, "columnName", columnName);
+
+            return resolvedPattern;
+        }
+
+        private static string ReplaceToken(string pattern, string tokenName, string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return pattern;
+            }
+
+            var replacement = Regex.Escape(value);
+            var doubleBracesPattern = @"\{\{\s*" + Regex.Escape(tokenName) + @"\s*\}\}";
+            return Regex.Replace(pattern, doubleBracesPattern, replacement, RegexOptions.IgnoreCase);
+        }
+
+        private static string GetSchemaName(ObjectIdentifier objectName)
+        {
+            if (objectName == null || objectName.Parts.Count < 2)
+            {
+                return string.Empty;
+            }
+
+            return objectName.Parts[objectName.Parts.Count - 2];
         }
     }
 }
