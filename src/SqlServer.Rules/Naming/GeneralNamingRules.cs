@@ -22,11 +22,9 @@ namespace SqlServer.Rules.Performance
     ///   <list type="bullet">
     ///     <item> Name '{name}' starts with a number. </item>
     ///     <item> Name '{name}' contains invalid characters. Please only use alphanumerics and underscores. </item>
-    ///     <item> Primary Key '{name}' does not follow the company naming standard. Please use the name PK_{tableName}. </item>
-    ///     <item> Index '{name}' does not follow the company naming standard. Please use the name IX##_{tableName}. </item>
-    ///     <item> Foreign Key '{name}' does not follow the company naming standard. Please use the format FK##_{tableName}. </item>
-    ///     <item> Check Constraint '{name}' does not follow the company naming standard. Please use the format CK_*. </item>
-    ///     <item> Constraint '{name}' does not follow the company naming standard. Please use the name DF_{tableName}_{columnName}. </item>
+    ///     <item> Primary Key, Index, Foreign Key, Check Constraint, and Default Constraint names must match their configured SRN0007 regex. </item>
+    ///     <item> Regex overrides can be configured in .editorconfig using sqlserver_rules.srn0007.[pk|fk|ix|ux|ck|df]_regex. </item>
+    ///     <item> Supported regex tokens are {{tableName}}, {{schemaName}}, {{foreignTableName}}, {{foreignSchemaName}}, and {{columnName}}. </item>
     ///   </list>
     /// </remarks>
     /// <seealso cref="SqlServer.Rules.BaseSqlCodeAnalysisRule" />

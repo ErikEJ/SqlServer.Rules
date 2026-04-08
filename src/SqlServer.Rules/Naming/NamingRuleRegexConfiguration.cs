@@ -47,6 +47,10 @@ namespace SqlServer.Rules.Naming
             {
                 return EmptyProperties;
             }
+            catch (PathTooLongException)
+            {
+                return EmptyProperties;
+            }
             catch (IOException)
             {
                 return EmptyProperties;
