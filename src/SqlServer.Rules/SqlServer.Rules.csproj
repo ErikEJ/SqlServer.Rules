@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="C:\dev\GitHub\SqlServer.Rules\src\SqlServer.Rules\EditorConfig.Core\.editorconfig" />
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
@@ -54,9 +53,5 @@
       cp SqlServer.Rules.dll SqlServer.Rules.NetFx.dll
     </PostBuildEvent>
   </PropertyGroup>
-
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\dev\GitHub\SqlServer.Rules\src\SqlServer.Rules\EditorConfig.Core\.editorconfig" />
-  </ItemGroup>
   
 </Project>
