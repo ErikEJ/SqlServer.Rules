@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net472</TargetFrameworks>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <PackageId>ErikEJ.DacFX.SqlServer.Rules</PackageId>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <Version>4.2.0-preview.3</Version>
+    <Version>4.2.0-preview.4</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
@@ -27,7 +27,6 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="editorconfig" Version="0.15.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" Condition=" '$(TargetFramework)' == 'net472' " />
@@ -44,7 +43,6 @@
   <ItemGroup>
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\netstandard2.1\SqlServer.Rules.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\net472\SqlServer.Rules.NetFx.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
-    <None Include="$(NuGetPackageRoot)editorconfig/0.15.0/lib/netstandard2.0/EditorConfig.Core.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
   </ItemGroup>
 
   <PropertyGroup>
