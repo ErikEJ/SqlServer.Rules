@@ -4,7 +4,8 @@
     <LangVersion>9.0</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>ErikEJ.DacFX.TSQLSmellSCA</PackageId>
-    <Version>4.0.0</Version>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <Version>4.2.0-preview.3</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
@@ -17,6 +18,7 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    <NoWarn>NU5128</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,22 +36,37 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Update="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-   </ItemGroup>
+  </ItemGroup>
+
   <ItemGroup>
     <None Include="bin\$(Configuration)\netstandard2.1\TSQLSmellSCA.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
+    <None Include="bin\$(Configuration)\net472\TSQLSmellSCA.NetFx.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />    
   </ItemGroup>
+
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" Condition=" '$(TargetFramework)' == 'net472' " />
   </ItemGroup>
+
+  <PropertyGroup>
+    <PostBuildEvent Condition=" '$(TargetFramework)' == 'net472' And '$(OS)' == 'Windows_NT' ">
+      copy TSQLSmellSCA.dll TSQLSmellSCA.NetFx.dll
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(TargetFramework)' == 'net472' And '$(OS)' != 'Windows_NT' ">
+      cp TSQLSmellSCA.dll TSQLSmellSCA.NetFx.dll
+    </PostBuildEvent>
+  </PropertyGroup>
+  
 </Project>
