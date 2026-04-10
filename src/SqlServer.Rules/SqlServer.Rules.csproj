@@ -48,8 +48,11 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(TargetFramework)' == 'net472' ">
-      if exist SqlServer.Rules.dll copy SqlServer.Rules.dll SqlServer.Rules.NetFX.dll
+    <PostBuildEvent Condition=" '$(TargetFramework)' == 'net472' And '$(OS)' == 'Windows_NT' ">
+      copy SqlServer.Rules.dll SqlServer.Rules.NetFx.dll
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(TargetFramework)' == 'net472' And '$(OS)' != 'Windows_NT' ">
+      cp SqlServer.Rules.dll SqlServer.Rules.NetFx.dll
     </PostBuildEvent>
   </PropertyGroup>
   
