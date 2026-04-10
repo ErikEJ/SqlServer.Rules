@@ -44,9 +44,9 @@ jobs:
       - name: Sign .dll files
         if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && github.event_name == 'workflow_dispatch'
         run: sign code artifact-signing `
-          ./src/SqlServer.TSQLSmells/bin/Release/net472/TSQLSmellSCA.dll `
+          ./src/SqlServer.TSQLSmells/bin/Release/net472/TSQLSmellSCA.NetFx.dll `
           ./src/SqlServer.TSQLSmells/bin/Release/netstandard2.1/TSQLSmellSCA.dll `
-          ./src/SqlServer.Rules/bin/Release/net472/SqlServer.Rules.dll `
+          ./src/SqlServer.Rules/bin/Release/net472/SqlServer.Rules.NetFx.dll `
           ./src/SqlServer.Rules/bin/Release/netstandard2.1/SqlServer.Rules.dll `
           --artifact-signing-account ErikEJ `
           --artifact-signing-certificate-profile ErikEJCert `
