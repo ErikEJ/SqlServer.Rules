@@ -1,0 +1,13 @@
+
+# All files
+[*]
+indent_style = space
+
+# Xml files
+[*.xml]
+indent_size = 2
+
+[*.cs]
+# Disable all .NET analyzers
+dotnet_analyzer_diagnostic.severity = none
+dotnet_diagnostic.severity = none
