@@ -21,7 +21,20 @@ For a complete list of the current rules we have implemented see [here](docs/rea
 
 Based on the SQLCop checklist in the issue, these are the current findings:
 
-- **Already covered**: `sp_` procedure names, unspecified `VARCHAR` length, unspecified `DECIMAL/NUMERIC` precision/scale, missing `SET NOCOUNT ON`, `SET ROWCOUNT`, `@@IDENTITY`, dynamic SQL without `sp_executesql`, float usage, deprecated `TEXT/NTEXT/IMAGE`, collation mismatch, table naming conventions, missing primary keys, and unnamed foreign key constraints.
+- **Already covered**:
+  - `sp_` procedure names
+  - Unspecified `VARCHAR` length
+  - Unspecified `DECIMAL/NUMERIC` precision/scale
+  - Missing `SET NOCOUNT ON`
+  - `SET ROWCOUNT`
+  - `@@IDENTITY`
+  - Dynamic SQL without `sp_executesql`
+  - Float usage
+  - Deprecated `TEXT/NTEXT/IMAGE`
+  - Collation mismatch
+  - Table naming conventions
+  - Missing primary keys
+  - Unnamed foreign key constraints
 - **Likely candidates for new static rules**:
   - Undocumented procedures
   - `UNIQUEIDENTIFIER` columns/default constraints using `NEWID()` (especially clustered key scenarios outside existing wide-PK guidance)
