@@ -17,6 +17,21 @@ For a complete list of the current rules we have implemented see [here](docs/rea
 
 > This fork also contains an additional set of rules `TSQL Smells` forked from [TSQL-Smells](https://github.com/davebally/TSQL-Smells)
 
+## SQLCop parity investigation (candidate new rules)
+
+Based on the SQLCop checklist in the issue, these are the current findings:
+
+- **Already covered**: `sp_` procedure names, unspecified `VARCHAR` length, unspecified `DECIMAL/NUMERIC` precision/scale, missing `SET NOCOUNT ON`, `SET ROWCOUNT`, `@@IDENTITY`, dynamic SQL without `sp_executesql`, float usage, deprecated `TEXT/NTEXT/IMAGE`, collation mismatch, table naming conventions, missing primary keys, and unnamed foreign key constraints.
+- **Likely candidates for new static rules**:
+  - Undocumented procedures
+  - `UNIQUEIDENTIFIER` columns/default constraints using `NEWID()` (especially clustered key scenarios outside existing wide-PK guidance)
+  - Views with `ORDER BY`
+  - Wide tables (column count threshold)
+  - Optional table-prefix convention rule (if not handled through existing naming regex configuration)
+- **Likely out of scope for static code analysis (or hard to infer reliably)**:
+  - Empty tables (data/runtime state)
+  - “Missing foreign keys” as an absolute requirement (often domain-specific; current rules focus on FK/index quality and join integrity)
+
 ## Usage
 
 The latest version is available on NuGet
