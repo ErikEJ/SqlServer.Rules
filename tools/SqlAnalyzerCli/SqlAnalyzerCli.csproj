@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -39,7 +39,7 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
     <PackageReference Include="ModelContextProtocol" Version="1.2.0" />
-    <PackageReference Include="NuGet.Protocol" Version="7.3.0" />
+    <PackageReference Include="NuGet.Protocol" Version="7.3.1" />
     <PackageReference Include="Spectre.Console" Version="0.55.0" />
   </ItemGroup>
 
