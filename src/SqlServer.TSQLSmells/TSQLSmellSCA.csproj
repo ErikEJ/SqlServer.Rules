@@ -5,7 +5,7 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageId>ErikEJ.DacFX.TSQLSmellSCA</PackageId>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <Version>4.2.0-preview.3</Version>
+    <Version>4.2.0</Version>
     <Authors>ErikEJ</Authors>
     <Description>A package with some DacFX T-SQL analyzers - see https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md</Description>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlServer.Rules</PackageProjectUrl>
