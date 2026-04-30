@@ -6,3 +6,5 @@ BEGIN
     FROM (SELECT Col1 FROM [dbo].[TestTableSSDT]) AS a;
 END;
 RETURN 0;
+
+-- SRD0078
