@@ -121,6 +121,7 @@
 | [SRD0075](Design/SRD0075.md) | Hard-coded credentials | Yes | Avoid hard-coded credentials. Use secure configuration instead. | Yes |
 | [SRD0076](Design/SRD0076.md) | Identical expressions on both sides | Yes | Identical expressions on both sides of a comparison operator. | Yes |
 | [SRD0077](Design/SRD0077.md) | FETCH variable count mismatch | Yes | FETCH variable count does not match cursor column count. | Yes |
+| [SRD0078](Design/SRD0078.md) | Single-character alias | Yes | Single-character aliases are poor practice. |   |
   
 ## Naming
   
