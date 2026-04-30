@@ -4,5 +4,5 @@ WITH cte AS
 (
 	SELECT c1, c2 FROM dbo.t1
 )
-SELECT c.c1, c.c2
+SELECT c3.c1, c3.c2
 FROM cte c3
