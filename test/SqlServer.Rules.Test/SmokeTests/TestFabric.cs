@@ -23,15 +23,18 @@ public class TestFabric : TestModel
         ExpectedProblems.Add(new TestProblem(3, 15, "SqlServer.Rules.SRD0006"));
         ExpectedProblems.Add(new TestProblem(3, 8, "SqlServer.Rules.SRD0014"));
         ExpectedProblems.Add(new TestProblem(3, 1, "SqlServer.Rules.SRD0068"));
+        ExpectedProblems.Add(new TestProblem(4, 6, "SqlServer.Rules.SRD0078"));
         ExpectedProblems.Add(new TestProblem(2, 1, "SqlServer.Rules.SRN0006"));
         ExpectedProblems.Add(new TestProblem(2, 15, "SqlServer.Rules.SRD0006"));
         ExpectedProblems.Add(new TestProblem(2, 8, "SqlServer.Rules.SRD0014"));
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0068"));
+        ExpectedProblems.Add(new TestProblem(3, 6, "SqlServer.Rules.SRD0078"));
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRN0006"));
         ExpectedProblems.Add(new TestProblem(3, 15, "SqlServer.Rules.SRD0006"));
         ExpectedProblems.Add(new TestProblem(3, 8, "SqlServer.Rules.SRD0014"));
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(3, 1, "SqlServer.Rules.SRD0068"));
+        ExpectedProblems.Add(new TestProblem(4, 6, "SqlServer.Rules.SRD0078"));
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRN0006"));
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRP0005"));
 
