@@ -1,0 +1,8 @@
+
+CREATE PROCEDURE dbo.ExplicitColumnConversion
+AS
+SET NOCOUNT ON;
+SELECT Col1
+FROM [dbo].[TestTableSSDT]
+WHERE CAST(Col1 AS VARCHAR(10)) = '22'
+
