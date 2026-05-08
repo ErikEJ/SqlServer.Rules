@@ -24,6 +24,8 @@ namespace SqlServer.Rules.Design
         RuleScope = SqlRuleScope.Element)]
     public sealed class PotentialSqlInjectionRule : BaseSqlCodeAnalysisRule
     {
+        private const string SpExecuteSqlStmtParameter = "@stmt";
+
         public const string RuleId = Constants.RuleNameSpace + "SRD0096";
         public const string RuleDisplayName = "Potential SQL injection issue.";
         public const string Message = RuleDisplayName;
@@ -148,7 +150,7 @@ namespace SqlServer.Rules.Design
 
             foreach (var parameter in procReference.Parameters)
             {
-                if (parameter.Variable?.Name.Equals("@stmt", StringComparison.OrdinalIgnoreCase) == true
+                if (parameter.Variable?.Name.Equals(SpExecuteSqlStmtParameter, StringComparison.OrdinalIgnoreCase) == true
                     && parameter.ParameterValue != null
                     && ExpressionReferencesTaintedVariable(parameter.ParameterValue, taintedVariables))
                 {
