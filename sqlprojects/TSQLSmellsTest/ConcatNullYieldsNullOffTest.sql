@@ -1,0 +1,8 @@
+CREATE PROCEDURE [dbo].[ConcatNullYieldsNullOffTest]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET CONCAT_NULL_YIELDS_NULL OFF;
+END;
+
+-- SRD0084
