@@ -12,7 +12,7 @@ public class SRP0030Tests : TestModel
     }
 
     [TestMethod]
-    public void CursorWithoutFastForwardDetected()
+    public void TestCursorWithoutFastForward()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CursorSpecifyFastForward.sql");
 
