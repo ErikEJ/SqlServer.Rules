@@ -1,0 +1,20 @@
+CREATE PROCEDURE [dbo].[TempTableWithNamedFKConstraint]
+AS
+SET NOCOUNT ON;
+
+CREATE TABLE #Parent
+(
+    ID INT PRIMARY KEY
+);
+
+CREATE TABLE #TempWithoutNamedFK
+(
+    ParentID INT FOREIGN KEY REFERENCES #Parent(ID)
+);
+
+CREATE TABLE #TempWithNamedFK
+(
+    ParentID INT CONSTRAINT [FK_TempWithNamedFK_Parent] FOREIGN KEY REFERENCES #Parent(ID)
+);
+
+RETURN 0;
