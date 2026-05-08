@@ -1,0 +1,9 @@
+CREATE PROCEDURE [dbo].[TopHundredPercentTest]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP (100) PERCENT Col1 FROM dbo.TestTableSSDT ORDER BY Col1;
+END;
+RETURN 0;
+
+-- SRD0081
