@@ -1,0 +1,195 @@
+<Solution>
+  <Folder Name="/.github/">
+    <File Path=".github/dependabot.yml" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/cli.yml" />
+    <File Path=".github/workflows/pipeline.yml" />
+    <File Path=".github/workflows/publish.yml" />
+    <File Path=".github/workflows/vsix.yml" />
+  </Folder>
+  <Folder Name="/docs/">
+    <File Path="docs/ignoring_rules.md" />
+    <File Path="docs/table_of_contents.md" />
+  </Folder>
+  <Folder Name="/docs/CodeSmells/">
+    <File Path="docs/CodeSmells/SML001.md" />
+    <File Path="docs/CodeSmells/SML002.md" />
+    <File Path="docs/CodeSmells/SML003.md" />
+    <File Path="docs/CodeSmells/SML004.md" />
+    <File Path="docs/CodeSmells/SML005.md" />
+    <File Path="docs/CodeSmells/SML006.md" />
+    <File Path="docs/CodeSmells/SML007.md" />
+    <File Path="docs/CodeSmells/SML008.md" />
+    <File Path="docs/CodeSmells/SML009.md" />
+    <File Path="docs/CodeSmells/SML010.md" />
+    <File Path="docs/CodeSmells/SML011.md" />
+    <File Path="docs/CodeSmells/SML012.md" />
+    <File Path="docs/CodeSmells/SML013.md" />
+    <File Path="docs/CodeSmells/SML014.md" />
+    <File Path="docs/CodeSmells/SML015.md" />
+    <File Path="docs/CodeSmells/SML016.md" />
+    <File Path="docs/CodeSmells/SML017.md" />
+    <File Path="docs/CodeSmells/SML018.md" />
+    <File Path="docs/CodeSmells/SML019.md" />
+    <File Path="docs/CodeSmells/SML020.md" />
+    <File Path="docs/CodeSmells/SML021.md" />
+    <File Path="docs/CodeSmells/SML022.md" />
+    <File Path="docs/CodeSmells/SML023.md" />
+    <File Path="docs/CodeSmells/SML024.md" />
+    <File Path="docs/CodeSmells/SML025.md" />
+    <File Path="docs/CodeSmells/SML026.md" />
+    <File Path="docs/CodeSmells/SML027.md" />
+    <File Path="docs/CodeSmells/SML028.md" />
+    <File Path="docs/CodeSmells/SML029.md" />
+    <File Path="docs/CodeSmells/SML030.md" />
+    <File Path="docs/CodeSmells/SML031.md" />
+    <File Path="docs/CodeSmells/SML032.md" />
+    <File Path="docs/CodeSmells/SML033.md" />
+    <File Path="docs/CodeSmells/SML034.md" />
+    <File Path="docs/CodeSmells/SML035.md" />
+    <File Path="docs/CodeSmells/SML036.md" />
+    <File Path="docs/CodeSmells/SML037.md" />
+    <File Path="docs/CodeSmells/SML038.md" />
+    <File Path="docs/CodeSmells/SML039.md" />
+    <File Path="docs/CodeSmells/SML040.md" />
+    <File Path="docs/CodeSmells/SML041.md" />
+    <File Path="docs/CodeSmells/SML042.md" />
+    <File Path="docs/CodeSmells/SML043.md" />
+    <File Path="docs/CodeSmells/SML044.md" />
+    <File Path="docs/CodeSmells/SML045.md" />
+    <File Path="docs/CodeSmells/SML046.md" />
+    <File Path="docs/CodeSmells/SML047.md" />
+  </Folder>
+  <Folder Name="/docs/Design/">
+    <File Path="docs/Design/SRD0001.md" />
+    <File Path="docs/Design/SRD0002.md" />
+    <File Path="docs/Design/SRD0003.md" />
+    <File Path="docs/Design/SRD0004.md" />
+    <File Path="docs/Design/SRD0005.md" />
+    <File Path="docs/Design/SRD0006.md" />
+    <File Path="docs/Design/SRD0009.md" />
+    <File Path="docs/Design/SRD0011.md" />
+    <File Path="docs/Design/SRD0012.md" />
+    <File Path="docs/Design/SRD0013.md" />
+    <File Path="docs/Design/SRD0014.md" />
+    <File Path="docs/Design/SRD0015.md" />
+    <File Path="docs/Design/SRD0016.md" />
+    <File Path="docs/Design/SRD0017.md" />
+    <File Path="docs/Design/SRD0018.md" />
+    <File Path="docs/Design/SRD0019.md" />
+    <File Path="docs/Design/SRD0020.md" />
+    <File Path="docs/Design/SRD0021.md" />
+    <File Path="docs/Design/SRD0024.md" />
+    <File Path="docs/Design/SRD0025.md" />
+    <File Path="docs/Design/SRD0026.md" />
+    <File Path="docs/Design/SRD0027.md" />
+    <File Path="docs/Design/SRD0028.md" />
+    <File Path="docs/Design/SRD0030.md" />
+    <File Path="docs/Design/SRD0031.md" />
+    <File Path="docs/Design/SRD0032.md" />
+    <File Path="docs/Design/SRD0033.md" />
+    <File Path="docs/Design/SRD0034.md" />
+    <File Path="docs/Design/SRD0035.md" />
+    <File Path="docs/Design/SRD0036.md" />
+    <File Path="docs/Design/SRD0038.md" />
+    <File Path="docs/Design/SRD0039.md" />
+    <File Path="docs/Design/SRD0041.md" />
+    <File Path="docs/Design/SRD0043.md" />
+    <File Path="docs/Design/SRD0044.md" />
+    <File Path="docs/Design/SRD0045.md" />
+    <File Path="docs/Design/SRD0046.md" />
+    <File Path="docs/Design/SRD0047.md" />
+    <File Path="docs/Design/SRD0050.md" />
+    <File Path="docs/Design/SRD0051.md" />
+    <File Path="docs/Design/SRD0052.md" />
+    <File Path="docs/Design/SRD0053.md" />
+    <File Path="docs/Design/SRD0055.md" />
+    <File Path="docs/Design/SRD0056.md" />
+    <File Path="docs/Design/SRD0057.md" />
+    <File Path="docs/Design/SRD0058.md" />
+    <File Path="docs/Design/SRD0060.md" />
+    <File Path="docs/Design/SRD0061.md" />
+    <File Path="docs/Design/SRD0062.md" />
+    <File Path="docs/Design/SRD0063.md" />
+    <File Path="docs/Design/SRD0064.md" />
+    <File Path="docs/Design/SRD0065.md" />
+    <File Path="docs/Design/SRD0066.md" />
+    <File Path="docs/Design/SRD0067.md" />
+    <File Path="docs/Design/SRD0068.md" />
+  </Folder>
+  <Folder Name="/docs/Naming/">
+    <File Path="docs/Naming/SRN0001.md" />
+    <File Path="docs/Naming/SRN0002.md" />
+    <File Path="docs/Naming/SRN0006.md" />
+    <File Path="docs/Naming/SRN0007.md" />
+  </Folder>
+  <Folder Name="/docs/Performance/">
+    <File Path="docs/Performance/SRP0001.md" />
+    <File Path="docs/Performance/SRP0002.md" />
+    <File Path="docs/Performance/SRP0003.md" />
+    <File Path="docs/Performance/SRP0004.md" />
+    <File Path="docs/Performance/SRP0005.md" />
+    <File Path="docs/Performance/SRP0006.md" />
+    <File Path="docs/Performance/SRP0007.md" />
+    <File Path="docs/Performance/SRP0008.md" />
+    <File Path="docs/Performance/SRP0009.md" />
+    <File Path="docs/Performance/SRP0010.md" />
+    <File Path="docs/Performance/SRP0011.md" />
+    <File Path="docs/Performance/SRP0012.md" />
+    <File Path="docs/Performance/SRP0013.md" />
+    <File Path="docs/Performance/SRP0014.md" />
+    <File Path="docs/Performance/SRP0015.md" />
+    <File Path="docs/Performance/SRP0016.md" />
+    <File Path="docs/Performance/SRP0017.md" />
+    <File Path="docs/Performance/SRP0018.md" />
+    <File Path="docs/Performance/SRP0020.md" />
+    <File Path="docs/Performance/SRP0021.md" />
+    <File Path="docs/Performance/SRP0022.md" />
+    <File Path="docs/Performance/SRP0023.md" />
+    <File Path="docs/Performance/SRP0024.md" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/sqlprojects/">
+    <Project Path="sqlprojects/AW/AW.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="sqlprojects/Chinook/Chinook.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="sqlprojects/TestDatabase/TestDatabase.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="sqlprojects/TSQLSmellsTest/TSQLSmellsTest.csproj">
+      <Build Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/SqlServer.Rules/SqlServer.Rules.csproj" />
+    <Project Path="src/SqlServer.TSQLSmells/TSQLSmellSCA.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/SqlServer.Rules.Test/SqlServer.Rules.Tests.csproj" />
+    <Project Path="test/TestHelpers/TestHelpers.csproj" />
+    <Project Path="test/TSQLAnalyzer.Tests/TSQLAnalyzer.Tests.csproj" />
+    <Project Path="test/TSQLSmellsSSDTTest/TSQLSmellsSSDTTest.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/ErikEJ.DacFX.TSQLAnalyzer/ErikEJ.DacFX.TSQLAnalyzer.csproj" />
+    <Project Path="tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj" />
+    <Project Path="tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj">
+      <Build Project="false" />
+    </Project>
+    <Project Path="tools/SqlServer.Rules.DocsGenerator/SqlServer.Rules.DocsGenerator.csproj" />
+    <Project Path="tools/SqlServer.Rules.Generator/SqlServer.Rules.Generator.csproj" />
+    <Project Path="tools/SqlServer.Rules.Report/SqlServer.Rules.Report.csproj" />
+  </Folder>
+</Solution>
