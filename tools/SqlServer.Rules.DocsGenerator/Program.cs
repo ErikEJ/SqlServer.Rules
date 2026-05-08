@@ -8,15 +8,12 @@ using System.Text;
 using System.Xml;
 using LoxSmoke.DocXml;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlServer.Rules.Design;
 using TSQLSmellSCA;
 
-namespace SqlServer.Rules.Tests.Docs;
+namespace SqlServer.Rules.DocsGenerator;
 
-[TestClass]
-[TestCategory("Docs")]
-public class DocsGenerator
+public static class Program
 {
     private static readonly Dictionary<string, (string, string, string)> MicrosoftRules = new()
     {
@@ -78,13 +75,33 @@ public class DocsGenerator
         },
     };
 
-    [TestMethod]
-    public void GenerateDocs()
+    private static int Main(string[] args)
     {
+#pragma warning disable CA1031 // Do not catch general exception types
+        try
+        {
+            GenerateDocs();
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
+            Console.WriteLine("Documentation generation completed.");
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            return 1;
+        }
+#pragma warning restore CA1031 // Do not catch general exception types
+    }
+
+    private static void GenerateDocs()
+    {
+        var repositoryRoot = GetRepositoryRoot();
+        var docsFolder = Path.Combine(repositoryRoot, "docs");
+        var rulesScriptFolder = Path.Combine(repositoryRoot, "sqlprojects", "TSQLSmellsTest");
+
         var assembly = typeof(ObjectCreatedWithInvalidOptionsRule).Assembly;
         var assemblyPath = assembly.Location;
-        const string docsFolder = "../../../../../docs";
-        const string rulesScriptFolder = "../../../../../sqlprojects/TSQLSmellsTest";
 
         var rules = assembly.GetTypes()
             .Where(t => t.IsClass
@@ -114,7 +131,11 @@ public class DocsGenerator
         CreateFolders(docsFolder, categories);
 
         var xmlPath = assemblyPath.Replace(".dll", ".xml", StringComparison.OrdinalIgnoreCase);
-        Assert.IsTrue(File.Exists(xmlPath));
+        if (!File.Exists(xmlPath))
+        {
+            throw new InvalidOperationException($"Could not find XML documentation file: {xmlPath}");
+        }
+
         var reader = new DocXmlReader(xmlPath);
 
         rules.ForEach(t =>
@@ -122,12 +143,43 @@ public class DocsGenerator
             var comments = reader.GetTypeComments(t);
             var ruleAttribute = t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault() as ExportCodeAnalysisRuleAttribute;
 
-            var elements = GetRuleElements(t, ruleAttribute);
+            var elements = GetRuleElements(t, ruleAttribute!);
 
-            GenerateRuleMarkdown(comments, elements, ruleScripts, ruleAttribute, Path.Combine(docsFolder, ruleAttribute!.Category), t.Assembly.GetName().Name, t.Namespace, t.Name);
+            GenerateRuleMarkdown(comments, elements, ruleScripts, ruleAttribute!, Path.Combine(docsFolder, ruleAttribute!.Category), t.Assembly.GetName().Name!, t.Namespace!, t.Name);
         });
 
         GenerateTocMarkdown(rules, categories, ruleScripts, reader, docsFolder);
+    }
+
+    private static string GetRepositoryRoot()
+    {
+        var currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        var baseDirectory = new DirectoryInfo(AppContext.BaseDirectory);
+
+        var root = TryFindRepositoryRoot(currentDirectory) ?? TryFindRepositoryRoot(baseDirectory);
+        if (root == null)
+        {
+            throw new InvalidOperationException("Could not locate repository root.");
+        }
+
+        return root;
+    }
+
+    private static string? TryFindRepositoryRoot(DirectoryInfo? start)
+    {
+        var directory = start;
+        while (directory != null)
+        {
+            var solutionPath = Path.Combine(directory.FullName, "SqlServer.Rules.sln");
+            if (File.Exists(solutionPath))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return null;
     }
 
     private static void CreateFolders(string docsFolder, List<string> categories)
@@ -158,12 +210,9 @@ public class DocsGenerator
             if (constructor != null)
             {
                 var instance = (BaseSqlCodeAnalysisRule)constructor.Invoke(null);
-                if (instance != null)
+                foreach (var item in instance.SupportedElementTypes)
                 {
-                    foreach (var item in instance.SupportedElementTypes)
-                    {
-                        elements.Add(item.Name.ToSentence());
-                    }
+                    elements.Add(item.Name.ToSentence());
                 }
             }
         }
@@ -315,10 +364,12 @@ public class DocsGenerator
 
             stringBuilder.AppendLine("| Rule Id | Friendly Name | Ignorable | Description | Example? |");
             stringBuilder.AppendLine("|----|----|----|----|----|");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var categoryRules = sqlServerRules
                 .Where(t => ((ExportCodeAnalysisRuleAttribute)t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault())!.Category == category)
                 .OrderBy(t => ((ExportCodeAnalysisRuleAttribute)t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault())!.Id)
                 .ToList();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             foreach (var rule in categoryRules)
             {
                 var comments = reader.GetTypeComments(rule);
@@ -362,11 +413,9 @@ public class DocsGenerator
                         exampleMd = ruleScripts.Any(x => x.Key.Contains(ruleAttribute.Id.ToId(), StringComparison.OrdinalIgnoreCase)) ? "Yes" : " ";
                     }
 
-                    var ruleLink = string.Empty;
+                    var ruleLink = $"[{ruleAttribute.Id.ToId()}]({category}/{ruleAttribute.Id.ToId()}.md)";
 
-                    ruleLink = $"[{ruleAttribute.Id.ToId()}]({category}/{ruleAttribute.Id.ToId()}.md)";
-
-                    stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| {ruleLink} | {friendlyName} | {isIgnorable} | {ruleAttribute!.Description?.Replace("|", "&#124;", StringComparison.OrdinalIgnoreCase)} | {exampleMd} |");
+                    stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| {ruleLink} | {friendlyName} | {isIgnorable} | {ruleAttribute.Description?.Replace("|", "&#124;", StringComparison.OrdinalIgnoreCase)} | {exampleMd} |");
                 }
             }
         }

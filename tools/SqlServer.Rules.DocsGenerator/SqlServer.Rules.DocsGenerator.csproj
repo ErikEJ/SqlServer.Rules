@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SqlServer.Rules\SqlServer.Rules.csproj" />
+    <ProjectReference Include="..\..\src\SqlServer.TSQLSmells\TSQLSmellSCA.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LoxSmoke.DocXml" Version="3.9.0" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
