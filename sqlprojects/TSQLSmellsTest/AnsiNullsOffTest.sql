@@ -1,0 +1,7 @@
+CREATE PROCEDURE [dbo].[AnsiNullsOffTest]
+AS
+BEGIN
+    SET ANSI_NULLS OFF;
+END;
+
+-- SRD0085
