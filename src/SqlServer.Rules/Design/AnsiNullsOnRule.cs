@@ -54,10 +54,10 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var visitor = new PredicateVisitor();
-            fragment.Accept(visitor);
+            var predicateVisitor = new PredicateVisitor();
+            fragment.Accept(predicateVisitor);
 
-            var offenders = from predicate in visitor.NotIgnoredStatements(RuleId)
+            var offenders = from predicate in predicateVisitor.NotIgnoredStatements(RuleId)
                             where predicate.Options == SetOptions.AnsiNulls && !predicate.IsOn
                             select predicate;
 

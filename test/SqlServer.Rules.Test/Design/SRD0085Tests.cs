@@ -20,4 +20,12 @@ public class SRD0085Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void AnsiNullsOnIgnored()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/AnsiNullsOnCleanTest.sql");
+
+        RunTest();
+    }
 }

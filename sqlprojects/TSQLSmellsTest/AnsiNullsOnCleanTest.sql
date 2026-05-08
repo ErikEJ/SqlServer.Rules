@@ -1,0 +1,5 @@
+CREATE PROCEDURE [dbo].[AnsiNullsOnCleanTest]
+AS
+BEGIN
+    SET ANSI_NULLS ON;
+END;
