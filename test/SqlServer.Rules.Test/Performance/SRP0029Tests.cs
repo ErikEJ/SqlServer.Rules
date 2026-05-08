@@ -20,4 +20,12 @@ public class SRP0029Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void RankingFunctionWithoutFrameIsIgnored()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/ImplicitRangeWindowSrp0029IgnoredFunctionsTest.sql");
+
+        RunTest();
+    }
 }

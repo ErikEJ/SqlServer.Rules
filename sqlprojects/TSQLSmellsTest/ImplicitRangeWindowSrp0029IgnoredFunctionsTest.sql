@@ -1,0 +1,6 @@
+CREATE PROCEDURE dbo.ImplicitRangeWindowSrp0029IgnoredFunctions
+AS
+SET NOCOUNT ON;
+
+SELECT ROW_NUMBER() OVER (PARTITION BY t.IdCol ORDER BY t.Col2) AS RowNum
+FROM dbo.TestTableSSDT AS t;

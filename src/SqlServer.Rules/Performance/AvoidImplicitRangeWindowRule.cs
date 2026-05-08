@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Dac;
@@ -6,7 +7,7 @@ using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Performance
 {
-    /// <summary>Specify ROWS in window functions with ORDER BY to avoid implicit RANGE framing.</summary>
+    /// <summary>Specify a window frame in window functions with ORDER BY to avoid implicit RANGE framing.</summary>
     /// <FriendlyName>Implicit RANGE window frame</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
@@ -19,10 +20,10 @@ namespace SqlServer.Rules.Performance
     public sealed class AvoidImplicitRangeWindowRule : BaseSqlCodeAnalysisRule
     {
         public const string RuleId = Constants.RuleNameSpace + "SRP0029";
-        public const string RuleDisplayName = "Specify ROWS framing explicitly for window functions with ORDER BY to avoid implicit RANGE semantics.";
+        public const string RuleDisplayName = "Specify a window frame explicitly for window functions with ORDER BY to avoid implicit RANGE semantics.";
         public const string Message = RuleDisplayName;
 
-        private static readonly HashSet<string> ExcludedFunctions = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> ExcludedFunctions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "ROW_NUMBER",
             "RANK",
@@ -53,10 +54,10 @@ namespace SqlServer.Rules.Performance
                 return problems;
             }
 
-            var visitor = new FunctionCallVisitor();
-            fragment.Accept(visitor);
+            var functionCallVisitor = new FunctionCallVisitor();
+            fragment.Accept(functionCallVisitor);
 
-            foreach (var functionCall in visitor.NotIgnoredStatements(RuleId))
+            foreach (var functionCall in functionCallVisitor.NotIgnoredStatements(RuleId))
             {
                 var functionName = functionCall.FunctionName?.Value;
                 if (functionCall.OverClause == null
