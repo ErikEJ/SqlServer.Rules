@@ -14,7 +14,7 @@ public class SRP0030Tests : TestModel
     [TestMethod]
     public void TestCursorWithoutFastForward()
     {
-        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CursorSpecifyFastForward.sql");
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/DeclareCursor.sql");
 
         ExpectedProblems.Add(new TestProblem(5, 1, "SqlServer.Rules.SRP0030"));
 
@@ -24,7 +24,7 @@ public class SRP0030Tests : TestModel
     [TestMethod]
     public void TestCursorWithFastForward()
     {
-        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CursorSpecifyFastForwardClean.sql");
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/DeclareCursorFastForward.sql");
 
         RunTest();
     }
