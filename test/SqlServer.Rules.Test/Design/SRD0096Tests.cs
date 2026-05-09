@@ -30,4 +30,34 @@ public class SRD0096Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void PotentialSqlInjectionDetectedForExecConcatenation()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionExecConcatTest.sql");
+
+        ExpectedProblems.Add(new TestProblem(6, 5, "SqlServer.Rules.SRD0096"));
+
+        RunTest();
+    }
+
+    [TestMethod]
+    public void PotentialSqlInjectionDetectedForPositionalSpExecuteSql()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionPositionalSpExecuteSqlTest.sql");
+
+        ExpectedProblems.Add(new TestProblem(7, 5, "SqlServer.Rules.SRD0096"));
+
+        RunTest();
+    }
+
+    [TestMethod]
+    public void PotentialSqlInjectionDetectedWhenDeclareAssignmentIgnored()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionIgnoreDeclarePropagationTest.sql");
+
+        ExpectedProblems.Add(new TestProblem(8, 5, "SqlServer.Rules.SRD0096"));
+
+        RunTest();
+    }
 }

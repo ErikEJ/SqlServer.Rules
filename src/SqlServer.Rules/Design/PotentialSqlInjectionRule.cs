@@ -113,7 +113,7 @@ namespace SqlServer.Rules.Design
                     }
                 }
 
-                foreach (var declaration in declareVariableVisitor.NotIgnoredStatements(RuleId))
+                foreach (var declaration in declareVariableVisitor.Statements)
                 {
                     if (declaration.VariableName != null
                         && declaration.Value != null
