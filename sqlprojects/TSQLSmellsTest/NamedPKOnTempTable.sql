@@ -8,6 +8,12 @@ BEGIN
         ID INT PRIMARY KEY
     );
 
+    CREATE TABLE #GoodTableLevel
+    (
+        ID INT,
+        PRIMARY KEY (ID)
+    );
+
     CREATE TABLE #Bad
     (
         ID INT,

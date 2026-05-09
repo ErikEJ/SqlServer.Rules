@@ -16,7 +16,7 @@ public class SRD0092Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/NamedPKOnTempTable.sql");
 
-        ExpectedProblems.Add(new TestProblem(14, 9, "SqlServer.Rules.SRD0092"));
+        ExpectedProblems.Add(new TestProblem(20, 9, "SqlServer.Rules.SRD0092"));
 
         RunTest();
     }
