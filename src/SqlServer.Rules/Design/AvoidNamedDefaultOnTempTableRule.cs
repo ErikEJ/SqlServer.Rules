@@ -72,6 +72,10 @@ namespace SqlServer.Rules.Design
             fragment.Accept(createTableVisitor);
 
             var offenders = createTableVisitor.NotIgnoredStatements(RuleId)
+                .Where(statement =>
+                    statement?.SchemaObjectName?.Identifiers != null &&
+                    statement.SchemaObjectName.Identifiers.Any() &&
+                    statement.SchemaObjectName.Identifiers.Last().Value.StartsWith("#"))
                 .SelectMany(statement => statement.Definition.ColumnDefinitions)
                 .Where(column => column.DefaultConstraint?.ConstraintIdentifier != null);
 
