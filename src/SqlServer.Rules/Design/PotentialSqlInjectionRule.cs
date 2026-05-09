@@ -148,17 +148,17 @@ namespace SqlServer.Rules.Design
                 return false;
             }
 
-            foreach (var parameter in procReference.Parameters)
+            var stmtParameter = procReference.Parameters.FirstOrDefault(parameter =>
+                parameter.Variable?.Name.Equals(SpExecuteSqlStmtParameter, StringComparison.OrdinalIgnoreCase) == true);
+
+            if (stmtParameter?.ParameterValue != null)
             {
-                if (parameter.Variable?.Name.Equals(SpExecuteSqlStmtParameter, StringComparison.OrdinalIgnoreCase) == true
-                    && parameter.ParameterValue != null
-                    && ExpressionReferencesTaintedVariable(parameter.ParameterValue, taintedVariables))
-                {
-                    return true;
-                }
+                return ExpressionReferencesTaintedVariable(stmtParameter.ParameterValue, taintedVariables);
             }
 
-            return false;
+            var positionalStmtParameter = procReference.Parameters.FirstOrDefault(parameter => parameter.Variable == null);
+            return positionalStmtParameter?.ParameterValue != null
+                && ExpressionReferencesTaintedVariable(positionalStmtParameter.ParameterValue, taintedVariables);
         }
 
         private static bool ExpressionReferencesTaintedVariable(ScalarExpression expression, HashSet<string> taintedVariables)
