@@ -10,13 +10,13 @@ Always reference these instructions first and fallback to search or bash command
 - Prerequisites: .NET 8.0 or later SDK
 - Clone repository and build:
   - `dotnet restore` -- NEVER CANCEL. Takes approximately 25 seconds. Set timeout to 60+ seconds.
-  - `dotnet build --no-restore --configuration Release` -- NEVER CANCEL. Takes approximately 26 seconds. Set timeout to 90+ seconds.
+  - `dotnet build --no-restore` -- NEVER CANCEL. Takes approximately 26 seconds. Set timeout to 90+ seconds.
 
 ### Testing
 - Run unit tests:
-  - `dotnet test --no-build --configuration Release --verbosity normal` -- NEVER CANCEL. Takes approximately 27 seconds. Set timeout to 90+ seconds.
+  - `dotnet test --verbosity normal` -- NEVER CANCEL. Takes approximately 27 seconds. Set timeout to 90+ seconds.
 - Always run `SqlServer.Rules.Tests` for pull requests:
-  - `dotnet test test/SqlServer.Rules.Test/SqlServer.Rules.Tests.csproj --no-build --configuration Release --verbosity normal`
+  - `dotnet test test/SqlServer.Rules.Test/SqlServer.Rules.Tests.csproj --verbosity normal`
 - Tests run across multiple projects: SqlServer.Rules.Tests, TSQLAnalyzer.Tests
 
 ### CLI Tool Development and Testing
