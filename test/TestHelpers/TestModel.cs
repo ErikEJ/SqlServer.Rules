@@ -14,7 +14,7 @@ public class TestModel
 
     private string Prefix { get; set; }
 
-    public TestModel(string prefix = "Smells.")
+    public TestModel(string prefix = TestConstants.SqlServerRules)
     {
         Model = new TSqlModel(SqlServerVersion.Sql150, null);
         Prefix = prefix;

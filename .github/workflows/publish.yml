@@ -44,8 +44,6 @@ jobs:
       - name: Sign .dll files
         if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && github.event_name == 'workflow_dispatch'
         run: sign code artifact-signing `
-          ./src/SqlServer.TSQLSmells/bin/Release/net472/TSQLSmellSCA.NetFx.dll `
-          ./src/SqlServer.TSQLSmells/bin/Release/netstandard2.1/TSQLSmellSCA.dll `
           ./src/SqlServer.Rules/bin/Release/net472/SqlServer.Rules.NetFx.dll `
           ./src/SqlServer.Rules/bin/Release/netstandard2.1/SqlServer.Rules.dll `
           --artifact-signing-account ErikEJ `
@@ -55,9 +53,6 @@ jobs:
 
       - name: Pack
         run: dotnet pack ./src/SqlServer.Rules/SqlServer.Rules.csproj --no-build --configuration Release
-
-      - name: Pack
-        run: dotnet pack ./src/SqlServer.TSQLSmells/TSQLSmellSCA.csproj --no-build --configuration Release
 
       - name: Publish artifacts
         if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
