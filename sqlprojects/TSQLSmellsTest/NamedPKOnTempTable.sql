@@ -14,6 +14,12 @@ BEGIN
         PRIMARY KEY (ID)
     );
 
+    CREATE TABLE [dbo].[Foo#Bar]
+    (
+        ID INT,
+        CONSTRAINT [PK_Foo#Bar] PRIMARY KEY (ID)
+    );
+
     CREATE TABLE #Bad
     (
         ID INT,

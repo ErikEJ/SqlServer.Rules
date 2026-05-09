@@ -56,6 +56,7 @@ namespace SqlServer.Rules.Design
 
             var offenders = visitor.NotIgnoredStatements(RuleId)
                 .Where(t => t.Definition != null)
+                .Where(IsTempTable)
                 .SelectMany(t => t.Definition.TableConstraints.OfType<UniqueConstraintDefinition>())
                 .Where(c => c.IsPrimaryKey && c.ConstraintIdentifier != null);
 
@@ -63,6 +64,13 @@ namespace SqlServer.Rules.Design
                 new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, c)));
 
             return problems;
+        }
+
+        private static bool IsTempTable(CreateTableStatement statement)
+        {
+            var tableName = statement?.SchemaObjectName?.BaseIdentifier?.Value;
+            return !string.IsNullOrEmpty(tableName) &&
+                (tableName.StartsWith("##", System.StringComparison.Ordinal) || tableName.StartsWith("#", System.StringComparison.Ordinal));
         }
     }
 }
