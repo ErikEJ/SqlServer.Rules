@@ -70,7 +70,7 @@ namespace SqlServer.Rules.Design
         {
             var tableName = statement?.SchemaObjectName?.BaseIdentifier?.Value;
             return !string.IsNullOrEmpty(tableName) &&
-                (tableName.StartsWith("##", System.StringComparison.Ordinal) || tableName.StartsWith("#", System.StringComparison.Ordinal));
+                tableName.StartsWith("#", System.StringComparison.Ordinal);
         }
     }
 }
