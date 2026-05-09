@@ -28,4 +28,14 @@ public class SRD0088Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void NumericRoundAbortOnInTriggerDetected()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/NumericRoundAbortOnTrigger.sql");
+
+        ExpectedProblems.Add(new TestProblem(5, 1, "SqlServer.Rules.SRD0088"));
+
+        RunTest();
+    }
 }

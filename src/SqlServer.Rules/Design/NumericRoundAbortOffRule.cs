@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
+using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using SqlServer.Dac;
 using SqlServer.Dac.Visitors;
@@ -41,7 +42,7 @@ namespace SqlServer.Rules.Design
         /// Initializes a new instance of the <see cref="NumericRoundAbortOffRule"/> class.
         /// </summary>
         public NumericRoundAbortOffRule()
-            : base(ProgrammingSchemas)
+            : base(ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction, ModelSchema.DmlTrigger)
         {
         }
 
@@ -61,7 +62,10 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(
+                typeof(CreateProcedureStatement),
+                typeof(CreateFunctionStatement),
+                typeof(CreateTriggerStatement));
             if (fragment == null)
             {
                 return problems;
