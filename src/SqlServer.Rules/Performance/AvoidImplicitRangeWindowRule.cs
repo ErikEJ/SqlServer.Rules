@@ -28,6 +28,8 @@ namespace SqlServer.Rules.Performance
             "ROW_NUMBER",
             "RANK",
             "DENSE_RANK",
+            "CUME_DIST",
+            "PERCENT_RANK",
             "NTILE",
             "LAG",
             "LEAD",
