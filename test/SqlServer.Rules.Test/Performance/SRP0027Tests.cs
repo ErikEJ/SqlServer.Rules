@@ -12,12 +12,96 @@ public class SRP0027Tests : TestModel
     }
 
     [TestMethod]
-    public void ExplicitColumnConversionDetected()
+    public void ExplicitColumnConversionCastOnLeftHandSideDetected()
     {
-        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/ExplicitColumnConversion.sql");
+        AssertExplicitColumnConversionProblem(
+            """
+            CREATE TABLE dbo.T1 (Id INT);
+            GO
+            SELECT *
+            FROM dbo.T1
+            WHERE CAST(Id AS NVARCHAR(10)) = '22';
+            """,
+            5,
+            7);
+    }
 
-        ExpectedProblems.Add(new TestProblem(7, 7, "SqlServer.Rules.SRP0027"));
+    [TestMethod]
+    public void ExplicitColumnConversionConvertOnLeftHandSideDetected()
+    {
+        AssertExplicitColumnConversionProblem(
+            """
+            CREATE TABLE dbo.T1 (Id INT);
+            GO
+            SELECT *
+            FROM dbo.T1
+            WHERE CONVERT(NVARCHAR(10), Id) = '22';
+            """,
+            5,
+            7);
+    }
 
-        RunTest();
+    [TestMethod]
+    public void ExplicitColumnConversionCastOnRightHandSideDetected()
+    {
+        AssertExplicitColumnConversionProblem(
+            """
+            CREATE TABLE dbo.T1 (Id INT);
+            GO
+            SELECT *
+            FROM dbo.T1
+            WHERE '22' = CAST(Id AS NVARCHAR(10));
+            """,
+            5,
+            14);
+    }
+
+    [TestMethod]
+    public void ExplicitColumnConversionConvertOnRightHandSideDetected()
+    {
+        AssertExplicitColumnConversionProblem(
+            """
+            CREATE TABLE dbo.T1 (Id INT);
+            GO
+            SELECT *
+            FROM dbo.T1
+            WHERE '22' = CONVERT(NVARCHAR(10), Id);
+            """,
+            5,
+            14);
+    }
+
+    private void AssertExplicitColumnConversionProblem(string sql, int line, int column)
+    {
+        var testFile = CreateTempSqlFile(sql);
+
+        try
+        {
+            TestFiles.Add(testFile);
+            ExpectedProblems.Add(new TestProblem(line, column, "SqlServer.Rules.SRP0027"));
+
+            RunTest();
+        }
+        finally
+        {
+            if (System.IO.File.Exists(testFile))
+            {
+                System.IO.File.Delete(testFile);
+            }
+        }
+    }
+
+    private static string CreateTempSqlFile(string sql)
+    {
+        var filePath = System.IO.Path.Combine(
+            System.IO.Path.GetTempPath(),
+            $"{System.Guid.NewGuid():N}.sql");
+
+        System.IO.File.WriteAllText(
+            filePath,
+            sql,
+            new System.Text.UTF8Encoding(true));
+
+        return filePath;
     }
 }
