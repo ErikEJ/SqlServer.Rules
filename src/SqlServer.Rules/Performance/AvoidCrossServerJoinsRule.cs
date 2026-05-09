@@ -17,13 +17,13 @@ namespace SqlServer.Rules.Performance
         Description = RuleDisplayName,
         Category = Constants.Performance,
         RuleScope = SqlRuleScope.Element)]
-    public sealed class AcoidCrossServerJoinsRule : BaseSqlCodeAnalysisRule
+    public sealed class AvoidCrossServerJoinsRule : BaseSqlCodeAnalysisRule
     {
         public const string RuleId = Constants.RuleNameSpace + "SRP0026";
         public const string RuleDisplayName = "Avoid cross-server joins.";
         public const string Message = RuleDisplayName;
 
-        public AcoidCrossServerJoinsRule()
+        public AvoidCrossServerJoinsRule()
             : base(ProgrammingAndViewSchemas)
         {
         }
