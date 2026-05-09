@@ -30,7 +30,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name.
         /// </summary>
-        public const string RuleDisplayName = "FK constraints on temp tables should not be named.";
+        public const string RuleDisplayName = "Foreign key constraints on temp tables should not be named.";
 
         /// <summary>
         /// The message.
