@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -59,12 +60,16 @@ public class TestModel
         var result = service.Analyze(Model);
         SerializeResultOutput(result);
 
-        foreach (var problem in FoundProblems)
+        var problemsBuilder = new StringBuilder();
+
+        problemsBuilder.AppendLine();
+
+        foreach (var problem in result.Problems)
         {
-            Debug.WriteLine($"ExpectedProblems.Add(new TestProblem({problem.StartLine}, {problem.StartColumn}, \"{problem.RuleId}\"));");
+            problemsBuilder.AppendLine(CultureInfo.InvariantCulture, $"{problem.StartLine}, {problem.StartColumn}, {problem.RuleId}: {problem.ShortErrorMessage}, ");
         }
 
-        CollectionAssert.AreEquivalent(ExpectedProblems, FoundProblems);
+        CollectionAssert.AreEquivalent(ExpectedProblems, FoundProblems, problemsBuilder.ToString());
     }
 
     public void RunTest()

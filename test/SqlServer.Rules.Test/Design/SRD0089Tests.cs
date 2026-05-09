@@ -16,7 +16,9 @@ public class SRD0089Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0089_QuotedIdentifierOff.sql");
 
+        ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(4, 1, "SqlServer.Rules.SRD0089"));
+        ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRP0005"));
 
         RunTest();
     }

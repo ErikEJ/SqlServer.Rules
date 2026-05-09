@@ -10,7 +10,7 @@ namespace SqlServer.Rules.Design
     /// <summary>
     /// Single character variable names are poor practice as they reduce code readability.
     /// </summary>
-    /// <FriendlyName>Single-character variable</FriendlyName>
+    /// <FriendlyName>Single character variable</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <remarks>

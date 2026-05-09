@@ -11,56 +11,7 @@
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs/ignoring_rules.md" />
-    <File Path="docs/table_of_contents.md" />
-  </Folder>
-  <Folder Name="/docs/CodeSmells/">
-    <File Path="docs/CodeSmells/SML001.md" />
-    <File Path="docs/CodeSmells/SML002.md" />
-    <File Path="docs/CodeSmells/SML003.md" />
-    <File Path="docs/CodeSmells/SML004.md" />
-    <File Path="docs/CodeSmells/SML005.md" />
-    <File Path="docs/CodeSmells/SML006.md" />
-    <File Path="docs/CodeSmells/SML007.md" />
-    <File Path="docs/CodeSmells/SML008.md" />
-    <File Path="docs/CodeSmells/SML009.md" />
-    <File Path="docs/CodeSmells/SML010.md" />
-    <File Path="docs/CodeSmells/SML011.md" />
-    <File Path="docs/CodeSmells/SML012.md" />
-    <File Path="docs/CodeSmells/SML013.md" />
-    <File Path="docs/CodeSmells/SML014.md" />
-    <File Path="docs/CodeSmells/SML015.md" />
-    <File Path="docs/CodeSmells/SML016.md" />
-    <File Path="docs/CodeSmells/SML017.md" />
-    <File Path="docs/CodeSmells/SML018.md" />
-    <File Path="docs/CodeSmells/SML019.md" />
-    <File Path="docs/CodeSmells/SML020.md" />
-    <File Path="docs/CodeSmells/SML021.md" />
-    <File Path="docs/CodeSmells/SML022.md" />
-    <File Path="docs/CodeSmells/SML023.md" />
-    <File Path="docs/CodeSmells/SML024.md" />
-    <File Path="docs/CodeSmells/SML025.md" />
-    <File Path="docs/CodeSmells/SML026.md" />
-    <File Path="docs/CodeSmells/SML027.md" />
-    <File Path="docs/CodeSmells/SML028.md" />
-    <File Path="docs/CodeSmells/SML029.md" />
-    <File Path="docs/CodeSmells/SML030.md" />
-    <File Path="docs/CodeSmells/SML031.md" />
-    <File Path="docs/CodeSmells/SML032.md" />
-    <File Path="docs/CodeSmells/SML033.md" />
-    <File Path="docs/CodeSmells/SML034.md" />
-    <File Path="docs/CodeSmells/SML035.md" />
-    <File Path="docs/CodeSmells/SML036.md" />
-    <File Path="docs/CodeSmells/SML037.md" />
-    <File Path="docs/CodeSmells/SML038.md" />
-    <File Path="docs/CodeSmells/SML039.md" />
-    <File Path="docs/CodeSmells/SML040.md" />
-    <File Path="docs/CodeSmells/SML041.md" />
-    <File Path="docs/CodeSmells/SML042.md" />
-    <File Path="docs/CodeSmells/SML043.md" />
-    <File Path="docs/CodeSmells/SML044.md" />
-    <File Path="docs/CodeSmells/SML045.md" />
-    <File Path="docs/CodeSmells/SML046.md" />
-    <File Path="docs/CodeSmells/SML047.md" />
+    <File Path="docs/readme.md" />
   </Folder>
   <Folder Name="/docs/Design/">
     <File Path="docs/Design/SRD0001.md" />
@@ -174,13 +125,11 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/SqlServer.Rules/SqlServer.Rules.csproj" />
-    <Project Path="src/SqlServer.TSQLSmells/TSQLSmellSCA.csproj" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/SqlServer.Rules.Test/SqlServer.Rules.Tests.csproj" />
     <Project Path="test/TestHelpers/TestHelpers.csproj" />
     <Project Path="test/TSQLAnalyzer.Tests/TSQLAnalyzer.Tests.csproj" />
-    <Project Path="test/TSQLSmellsSSDTTest/TSQLSmellsSSDTTest.csproj" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/ErikEJ.DacFX.TSQLAnalyzer/ErikEJ.DacFX.TSQLAnalyzer.csproj" />

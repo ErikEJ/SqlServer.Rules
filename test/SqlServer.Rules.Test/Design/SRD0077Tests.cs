@@ -16,6 +16,7 @@ public class SRD0077Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/FetchMismatchTest.sql");
 
+        ExpectedProblems.Add(new TestProblem(6, 5, "SqlServer.Rules.SRP0030"));
         ExpectedProblems.Add(new TestProblem(8, 10, "SqlServer.Rules.SRD0033"));
         ExpectedProblems.Add(new TestProblem(9, 5, "SqlServer.Rules.SRD0077"));
 
@@ -27,6 +28,7 @@ public class SRD0077Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/FetchMatchTest.sql");
 
+        ExpectedProblems.Add(new TestProblem(6, 5, "SqlServer.Rules.SRP0030"));
         ExpectedProblems.Add(new TestProblem(8, 10, "SqlServer.Rules.SRD0033"));
 
         RunTest();

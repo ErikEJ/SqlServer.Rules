@@ -11,10 +11,6 @@
     <Content Include="Resources\RulesTransform.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ErikEJ.DacFX.TSQLSmellSCA" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" PrivateAssets="All" />
   </ItemGroup>

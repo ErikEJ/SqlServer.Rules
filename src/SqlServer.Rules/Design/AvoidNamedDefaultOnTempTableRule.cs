@@ -75,7 +75,7 @@ namespace SqlServer.Rules.Design
                 .Where(statement =>
                     statement?.SchemaObjectName?.Identifiers != null &&
                     statement.SchemaObjectName.Identifiers.Any() &&
-                    statement.SchemaObjectName.Identifiers.Last().Value.StartsWith("#"))
+                    statement.SchemaObjectName.Identifiers.Last().Value.StartsWith("#", System.StringComparison.Ordinal))
                 .SelectMany(statement => statement.Definition.ColumnDefinitions)
                 .Where(column => column.DefaultConstraint?.ConstraintIdentifier != null);
 

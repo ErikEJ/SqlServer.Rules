@@ -16,6 +16,8 @@ public class SRD0087Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0087_AnsiWarningsOn.sql");
 
+        ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRP0005"));
+        ExpectedProblems.Add(new TestProblem(3, 1, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(3, 1, "SqlServer.Rules.SRD0087"));
 
         RunTest();

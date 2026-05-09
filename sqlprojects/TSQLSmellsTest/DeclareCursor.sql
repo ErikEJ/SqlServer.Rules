@@ -1,6 +1,6 @@
-Create Procedure dbo.CursorTest
-as
-Set nocount on;
+CREATE PROCEDURE dbo.CursorTest
+AS
+SET NOCOUNT ON;
 
 DECLARE vendor_cursor CURSOR FOR 
 SELECT Col1, Col2
