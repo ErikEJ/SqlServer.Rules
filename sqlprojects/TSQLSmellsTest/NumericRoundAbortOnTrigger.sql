@@ -1,0 +1,7 @@
+CREATE TRIGGER dbo.NumericRoundAbortOnTrigger
+ON dbo.TestTable
+AFTER INSERT
+AS
+SET NUMERIC_ROUNDABORT ON
+
+-- SRD0088
