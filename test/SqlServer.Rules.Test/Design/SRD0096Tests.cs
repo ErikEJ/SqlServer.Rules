@@ -20,4 +20,14 @@ public class SRD0096Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void PotentialSqlInjectionDetectedWhenAssignmentIgnored()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionIgnorePropagationTest.sql");
+
+        ExpectedProblems.Add(new TestProblem(9, 5, "SqlServer.Rules.SRD0096"));
+
+        RunTest();
+    }
 }

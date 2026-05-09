@@ -91,7 +91,7 @@ namespace SqlServer.Rules.Design
             {
                 changed = false;
 
-                foreach (var assignment in setVariableVisitor.NotIgnoredStatements(RuleId))
+                foreach (var assignment in setVariableVisitor.Statements)
                 {
                     if (assignment.Variable != null
                         && assignment.Expression != null
