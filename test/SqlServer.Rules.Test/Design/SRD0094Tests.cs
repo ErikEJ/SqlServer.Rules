@@ -28,4 +28,14 @@ public class SRD0094Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void TableLevelNamedFKOnTempTableDetected()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/TempTableWithTableLevelNamedFKConstraint.sql");
+
+        ExpectedProblems.Add(new TestProblem(12, 16, "SqlServer.Rules.SRD0094"));
+
+        RunTest();
+    }
 }
