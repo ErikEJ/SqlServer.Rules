@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -69,7 +70,10 @@ namespace SqlServer.Rules.Design
             var createTableVisitor = new CreateTableVisitor { TypeFilter = ObjectTypeFilter.TempOnly };
             fragment.Accept(createTableVisitor);
 
-            foreach (var statement in createTableVisitor.Statements)
+            var tempTableStatements = createTableVisitor.Statements
+                .Where(statement => statement.SchemaObjectName?.BaseIdentifier?.Value.StartsWith("#", StringComparison.Ordinal) == true);
+
+            foreach (var statement in tempTableStatements)
             {
                 var tableConstraints = statement.Definition.TableConstraints
                     .OfType<ForeignKeyConstraintDefinition>();

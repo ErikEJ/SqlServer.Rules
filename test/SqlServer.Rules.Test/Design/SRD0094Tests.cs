@@ -20,4 +20,12 @@ public class SRD0094Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void PermanentTableWithHashInNameIsIgnored()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PermanentTableWithHashInNameAndNamedFK.sql");
+
+        RunTest();
+    }
 }
