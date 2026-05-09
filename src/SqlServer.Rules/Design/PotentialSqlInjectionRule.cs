@@ -133,8 +133,8 @@ namespace SqlServer.Rules.Design
             if (execute.ExecuteSpecification?.ExecutableEntity is ExecutableStringList stringList)
             {
                 return stringList.Strings
-                    .OfType<VariableReference>()
-                    .Any(variable => taintedVariables.Contains(variable.Name));
+                    .Where(expression => expression != null)
+                    .Any(expression => ExpressionReferencesTaintedVariable(expression, taintedVariables));
             }
 
             if (execute.ExecuteSpecification?.ExecutableEntity is not ExecutableProcedureReference procReference)
