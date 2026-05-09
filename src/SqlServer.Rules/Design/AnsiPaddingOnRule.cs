@@ -46,7 +46,7 @@ namespace SqlServer.Rules.Design
         /// Initializes a new instance of the <see cref="AnsiPaddingOnRule"/> class.
         /// </summary>
         public AnsiPaddingOnRule()
-            : base(ProgrammingAndViewSchemas)
+            : base(ProgrammingSchemas)
         {
         }
 
@@ -67,7 +67,7 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingAndViewSchemaTypes);
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(ProgrammingSchemaTypes);
             if (fragment == null)
             {
                 return problems;
