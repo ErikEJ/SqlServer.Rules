@@ -16,6 +16,7 @@ public class SRD0072Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/VariableSelfAssignTest.sql");
 
+        ExpectedProblems.Add(new TestProblem(5, 13, "SqlServer.Rules.SRD0079"));
         ExpectedProblems.Add(new TestProblem(6, 5, "SqlServer.Rules.SRD0072"));
 
         RunTest();

@@ -1,8 +1,8 @@
-Create Procedure dbo.ExplicitRangeWindowSrp0028Test
-as
+CREATE PROCEDURE dbo.ExplicitRangeWindowSrp0028Test
+AS
 SET NOCOUNT ON;
 
-select sum(t.IdCol) over(partition by t.Col1
-                          order by t.Col2
-                          RANGE UNBOUNDED PRECEDING) as RollingBalance
-from dbo.TestTableSSDT t;
+SELECT SUM(tt.IdCol) OVER (PARTITION BY tt.Col1
+                          ORDER BY tt.Col2
+                          RANGE UNBOUNDED PRECEDING) AS RollingBalance
+FROM dbo.TestTableSSDT tt;

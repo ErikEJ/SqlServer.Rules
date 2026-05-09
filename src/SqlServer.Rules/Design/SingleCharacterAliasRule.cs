@@ -8,13 +8,13 @@ using SqlServer.Rules.Globals;
 namespace SqlServer.Rules.Design
 {
     /// <summary>
-    /// Single-character aliases are poor practice as they reduce code readability.
+    /// Single character aliases are poor practice as they reduce code readability.
     /// </summary>
-    /// <FriendlyName>Single-character alias</FriendlyName>
+    /// <FriendlyName>Single character alias</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
     /// <remarks>
-    /// Using single-character aliases makes SQL code harder to read and maintain.
+    /// Using single character aliases makes SQL code harder to read and maintain.
     /// Use meaningful aliases that convey the purpose of the table or subquery.
     /// </remarks>
     [ExportCodeAnalysisRule(
@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Single-character aliases are poor practice.";
+        public const string RuleDisplayName = "Single character aliases are poor practice.";
 
         /// <summary>
         /// The message

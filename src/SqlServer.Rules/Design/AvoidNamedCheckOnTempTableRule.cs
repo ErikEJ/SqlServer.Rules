@@ -75,19 +75,25 @@ namespace SqlServer.Rules.Design
             };
             fragment.Accept(createTableVisitor);
 
-            foreach (var statement in createTableVisitor.NotIgnoredStatements(RuleId))
+            var tempTableStatements = createTableVisitor.Statements
+                .Where(statement => statement.SchemaObjectName?.BaseIdentifier?.Value.StartsWith("#", System.StringComparison.Ordinal) == true);
+
+            foreach (var statement in tempTableStatements)
             {
-                var columnChecks = statement.Definition.ColumnDefinitions
-                    .SelectMany(cd => cd.Constraints.OfType<CheckConstraintDefinition>())
-                    .Where(cc => cc.ConstraintIdentifier != null);
+                var tableConstraints = statement.Definition.TableConstraints
+                    .OfType<CheckConstraintDefinition>();
 
-                var tableChecks = statement.Definition.TableConstraints
-                    .OfType<CheckConstraintDefinition>()
-                    .Where(cc => cc.ConstraintIdentifier != null);
+                var columnConstraints = statement.Definition.ColumnDefinitions
+                    .SelectMany(c => c.Constraints)
+                    .OfType<CheckConstraintDefinition>();
 
-                problems.AddRange(columnChecks
-                    .Concat(tableChecks)
-                    .Select(cc => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, cc)));
+                var offenders = tableConstraints
+                    .Concat(columnConstraints)
+                    .Where(c => c.ConstraintIdentifier != null)
+                    .ToList();
+
+                problems.AddRange(offenders.Select(o =>
+                    new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
             }
 
             return problems;

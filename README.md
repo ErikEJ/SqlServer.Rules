@@ -15,18 +15,12 @@ You can also download and manually use the rules with Visual Studio and "classic
 
 For a complete list of the current rules we have implemented see [here](docs/readme.md).
 
-> This fork also contains an additional set of rules `TSQL Smells` forked from [TSQL-Smells](https://github.com/davebally/TSQL-Smells)
-
 ## Usage
 
 The latest version is available on NuGet
 
 ```sh
 dotnet add package ErikEJ.DacFX.SqlServer.Rules
-```
-
-```sh
-dotnet add package ErikEJ.DacFX.TSQLSmellSCA
 ```
 
 You can read more about using and customizing the rules in the [readme here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
@@ -70,12 +64,10 @@ Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rul
 `src`
 
 - `SqlServer.Rules` - This holds the rules derived from `SqlCodeAnalysisRule`
-- `TSQLSmellSCA` - an additional set of rules `TSQL Smells` forked from [TSQL-Smells](https://github.com/davebally/TSQL-Smells)
 
 `test`
 
 - `SqlServer.Rules.Tests` - a few test to demonstrate unit testing of rules
-- `TSQLSmellsSSDTTest` - unit tests of some of the `TSQL Smells` rules
 - `TestHelpers` - shared test base classes
 
 `tools`

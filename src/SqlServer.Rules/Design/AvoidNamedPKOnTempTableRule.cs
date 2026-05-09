@@ -69,8 +69,13 @@ namespace SqlServer.Rules.Design
         private static bool IsTempTable(CreateTableStatement statement)
         {
             var tableName = statement?.SchemaObjectName?.BaseIdentifier?.Value;
-            return !string.IsNullOrEmpty(tableName) &&
-                tableName.StartsWith("#", System.StringComparison.Ordinal);
+
+            if (string.IsNullOrEmpty(tableName))
+            {
+                return false;
+            }
+
+            return tableName!.StartsWith("#", System.StringComparison.Ordinal);
         }
     }
 }

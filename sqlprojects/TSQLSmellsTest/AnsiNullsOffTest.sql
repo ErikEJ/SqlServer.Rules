@@ -1,6 +1,7 @@
 CREATE PROCEDURE [dbo].[AnsiNullsOffTest]
 AS
 BEGIN
+    SET NOCOUNT ON;
     SET ANSI_NULLS OFF;
 END;
 

@@ -37,6 +37,7 @@ public class SRD0096Tests : TestModel
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionExecConcatTest.sql");
 
         ExpectedProblems.Add(new TestProblem(6, 5, "SqlServer.Rules.SRD0096"));
+        ExpectedProblems.Add(new TestProblem(6, 11, "SqlServer.Rules.SRD0024"));
 
         RunTest();
     }
@@ -47,6 +48,7 @@ public class SRD0096Tests : TestModel
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionPositionalSpExecuteSqlTest.sql");
 
         ExpectedProblems.Add(new TestProblem(7, 5, "SqlServer.Rules.SRD0096"));
+        ExpectedProblems.Add(new TestProblem(7, 5, "SqlServer.Rules.SRD0058"));
 
         RunTest();
     }

@@ -1,6 +1,6 @@
-Create Procedure dbo.CursorFastForwardTest
-as
-Set nocount on;
+CREATE PROCEDURE dbo.CursorFastForwardTest
+AS
+SET NOCOUNT ON;
 
 DECLARE vendor_cursor CURSOR FAST_FORWARD FOR 
 SELECT Col1, Col2

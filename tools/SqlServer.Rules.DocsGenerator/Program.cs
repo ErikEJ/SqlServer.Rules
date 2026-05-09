@@ -9,7 +9,6 @@ using System.Xml;
 using LoxSmoke.DocXml;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using SqlServer.Rules.Design;
-using TSQLSmellSCA;
 
 namespace SqlServer.Rules.DocsGenerator;
 
@@ -112,16 +111,6 @@ public static class Program
 
         var ruleScripts = CollectRuleScripts(rulesScriptFolder);
 
-        var smellsAssembly = typeof(Smells).Assembly;
-
-        var tSqlSmellRules = smellsAssembly.GetTypes()
-            .Where(t => t.IsClass
-                        && !t.IsAbstract
-                        && t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).Any())
-            .ToList();
-
-        rules.AddRange(tSqlSmellRules);
-
         var categories = rules.Select(t =>
         {
             var ruleAttribute = t.GetCustomAttributes(typeof(ExportCodeAnalysisRuleAttribute), false).FirstOrDefault() as ExportCodeAnalysisRuleAttribute;
@@ -170,7 +159,7 @@ public static class Program
         var directory = start;
         while (directory != null)
         {
-            var solutionPath = Path.Combine(directory.FullName, "SqlServer.Rules.sln");
+            var solutionPath = Path.Combine(directory.FullName, "SqlServer.Rules.slnx");
             if (File.Exists(solutionPath))
             {
                 return directory.FullName;
@@ -242,12 +231,6 @@ public static class Program
         if (string.IsNullOrWhiteSpace(friendlyName))
         {
             friendlyName = className.ToSentence();
-        }
-
-        if (attribute.Id.StartsWith("Smells.", StringComparison.OrdinalIgnoreCase))
-        {
-            friendlyName = attribute.Description;
-            isIgnorable = "false";
         }
 
         var stringBuilder = new StringBuilder();
@@ -402,12 +385,6 @@ public static class Program
 
                 if (ruleAttribute != null)
                 {
-                    if (ruleAttribute.Id.StartsWith("Smells.", StringComparison.OrdinalIgnoreCase))
-                    {
-                        friendlyName = ruleAttribute.Description;
-                        isIgnorable = " ";
-                    }
-
                     if (exampleMd == " ")
                     {
                         exampleMd = ruleScripts.Any(x => x.Key.Contains(ruleAttribute.Id.ToId(), StringComparison.OrdinalIgnoreCase)) ? "Yes" : " ";

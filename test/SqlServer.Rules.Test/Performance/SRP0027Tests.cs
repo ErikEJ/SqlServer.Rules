@@ -16,14 +16,19 @@ public class SRP0027Tests : TestModel
     {
         AssertExplicitColumnConversionProblem(
             """
-            CREATE TABLE dbo.T1 (Id INT);
+            CREATE TABLE dbo.T1 (Id INT CONSTRAINT PK_T1 PRIMARY KEY);
             GO
-            SELECT *
-            FROM dbo.T1
-            WHERE CAST(Id AS NVARCHAR(10)) = '22';
+            CREATE PROCEDURE dbo.TestProc
+            AS
+            BEGIN
+                SET NOCOUNT ON;
+                SELECT Id
+                FROM dbo.T1
+                WHERE CAST(Id AS NVARCHAR(10)) = '22';
+            END;
             """,
-            5,
-            7);
+            9,
+            11);
     }
 
     [TestMethod]
@@ -31,14 +36,19 @@ public class SRP0027Tests : TestModel
     {
         AssertExplicitColumnConversionProblem(
             """
-            CREATE TABLE dbo.T1 (Id INT);
+            CREATE TABLE dbo.T1 (Id INT CONSTRAINT PK_T1 PRIMARY KEY);
             GO
-            SELECT *
-            FROM dbo.T1
-            WHERE CONVERT(NVARCHAR(10), Id) = '22';
+            CREATE PROCEDURE dbo.TestProc
+            AS
+            BEGIN
+                SET NOCOUNT ON;
+                SELECT Id
+                FROM dbo.T1
+                WHERE CONVERT(NVARCHAR(10), Id) = '22';
+            END;
             """,
-            5,
-            7);
+            9,
+            11);
     }
 
     [TestMethod]
@@ -46,14 +56,19 @@ public class SRP0027Tests : TestModel
     {
         AssertExplicitColumnConversionProblem(
             """
-            CREATE TABLE dbo.T1 (Id INT);
+            CREATE TABLE dbo.T1 (Id INT CONSTRAINT PK_T1 PRIMARY KEY);
             GO
-            SELECT *
-            FROM dbo.T1
-            WHERE '22' = CAST(Id AS NVARCHAR(10));
+            CREATE PROCEDURE dbo.TestProc
+            AS
+            BEGIN
+                SET NOCOUNT ON;
+                SELECT Id
+                FROM dbo.T1
+                WHERE '22' = CAST(Id AS NVARCHAR(10));
+            END;
             """,
-            5,
-            14);
+            9,
+            11);
     }
 
     [TestMethod]
@@ -61,14 +76,19 @@ public class SRP0027Tests : TestModel
     {
         AssertExplicitColumnConversionProblem(
             """
-            CREATE TABLE dbo.T1 (Id INT);
+            CREATE TABLE dbo.T1 (Id INT CONSTRAINT PK_T1 PRIMARY KEY);
             GO
-            SELECT *
-            FROM dbo.T1
-            WHERE '22' = CONVERT(NVARCHAR(10), Id);
+            CREATE PROCEDURE dbo.TestProc
+            AS
+            BEGIN
+                SET NOCOUNT ON;
+                SELECT Id
+                FROM dbo.T1
+                WHERE '22' = CONVERT(NVARCHAR(10), Id);
+            END;
             """,
-            5,
-            14);
+            9,
+            11);
     }
 
     private void AssertExplicitColumnConversionProblem(string sql, int line, int column)

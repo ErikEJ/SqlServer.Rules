@@ -16,7 +16,7 @@ public class SRD0085Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/AnsiNullsOffTest.sql");
 
-        ExpectedProblems.Add(new TestProblem(4, 5, "SqlServer.Rules.SRD0085"));
+        ExpectedProblems.Add(new TestProblem(5, 5, "SqlServer.Rules.SRD0085"));
 
         RunTest();
     }

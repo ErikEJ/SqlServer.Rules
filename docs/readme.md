@@ -65,6 +65,7 @@
 | [SRD0005](Design/SRD0005.md) | Avoid long CHAR types | Yes | Avoid the (n)char column type except for short static length data. |   |
 | [SRD0006](Design/SRD0006.md) | Avoid SELECT * | Yes | Avoid using SELECT *. | Yes |
 | [SRD0009](Design/SRD0009.md) | Non-transactional body |   | Wrap multiple action statements within a transaction. | Yes |
+| [SRD0010](Design/SRD0010.md) | Low identity seed value |   | Start identity column used in a primary key with a seed of 1000 or higher. |   |
 | [SRD0011](Design/SRD0011.md) | Equality Compare With NULL Rule |   | Equality and inequality comparisons involving a NULL constant found. Use IS NULL or IS NOT NULL. | Yes |
 | [SRD0012](Design/SRD0012.md) | Unused variable |   | Variable declared but never referenced or assigned. | Yes |
 | [SRD0013](Design/SRD0013.md) | Expected error handeling |   | Wrap multiple action statements within a try catch. | Yes |
@@ -121,7 +122,6 @@
 | [SRD0075](Design/SRD0075.md) | Hard-coded credentials | Yes | Avoid hard-coded credentials. Use secure configuration instead. | Yes |
 | [SRD0076](Design/SRD0076.md) | Identical expressions on both sides | Yes | Identical expressions on both sides of a comparison operator. | Yes |
 | [SRD0077](Design/SRD0077.md) | FETCH variable count mismatch | Yes | FETCH variable count does not match cursor column count. | Yes |
-| [SRD0078](Design/SRD0078.md) | Single-character alias | Yes | Single-character aliases are poor practice. | Yes |
   
 ## Naming
   

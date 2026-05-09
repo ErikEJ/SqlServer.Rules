@@ -16,8 +16,8 @@ public class SRD0095Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0095TempTableWithNamedCheckConstraint.sql");
 
+        ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0068"));
         ExpectedProblems.Add(new TestProblem(13, 18, "SqlServer.Rules.SRD0095"));
-        ExpectedProblems.Add(new TestProblem(15, 5, "SqlServer.Rules.SRD0095"));
 
         RunTest();
     }

@@ -5,7 +5,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SqlServer.Rules\SqlServer.Rules.csproj" />
-    <ProjectReference Include="..\..\src\SqlServer.TSQLSmells\TSQLSmellSCA.csproj" />
     <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
   </ItemGroup>
 
@@ -16,7 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.2.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.2" />
   </ItemGroup>
 
 </Project>

@@ -161,13 +161,14 @@ internal class AnalyzerUtilities
                 return versionInfo.FileMajorPart >= 18;
             }
         }
+#pragma warning disable CA1031 // Do not catch general exception types
         catch (Exception)
         {
             // If we can't determine the version (due to security restrictions, process access issues, etc.),
             // fall back to the old behavior (using tsqlanalyze command).
             // This ensures the extension continues to work even if version detection fails.
         }
-
+#pragma warning restore CA1031
         return false;
     }
 

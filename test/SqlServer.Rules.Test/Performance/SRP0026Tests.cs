@@ -16,7 +16,7 @@ public class SRP0026Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CrossServerJoinSRP0026Test.sql");
 
-        ExpectedProblems.Add(new TestProblem(5, 18, "SqlServer.Rules.SRP0026"));
+        ExpectedProblems.Add(new TestProblem(4, 18, "SqlServer.Rules.SRP0026"));
 
         RunTest();
     }
