@@ -60,7 +60,7 @@ namespace SqlServer.Rules.Design
                 {
                     var orderByVisitor = new OrderByVisitor();
                     derivedTable.QueryExpression?.Accept(orderByVisitor);
-                    return orderByVisitor.Statements;
+                    return orderByVisitor.NotIgnoredStatements(RuleId);
                 });
 
             problems.AddRange(offenders.Select(offender =>
