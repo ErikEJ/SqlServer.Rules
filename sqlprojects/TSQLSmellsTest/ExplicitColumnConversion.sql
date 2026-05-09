@@ -6,3 +6,4 @@ SELECT Col1
 FROM [dbo].[TestTableSSDT]
 WHERE CAST(Col1 AS VARCHAR(10)) = '22'
 
+-- SRP0027
