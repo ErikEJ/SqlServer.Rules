@@ -20,4 +20,12 @@ public class SRP0030Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void TestCursorWithFastForward()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CursorSpecifyFastForwardClean.sql");
+
+        RunTest();
+    }
 }
