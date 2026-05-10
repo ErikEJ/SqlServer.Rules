@@ -4,5 +4,3 @@ AS
 SET NOCOUNT ON
 EXEC CreateProcedureNoSchema
 RETURN 1
-
--- SML021

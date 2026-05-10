@@ -4,4 +4,4 @@ AS
 Set nocount on
 SELECT NAME FROM [$(TestServer)].DataBaseName.SchemaName.MyTable
 
--- SML001
+-- SRP0026

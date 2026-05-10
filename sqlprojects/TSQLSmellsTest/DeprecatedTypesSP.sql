@@ -4,4 +4,4 @@ Set nocount on
 Declare @DP1 text
 Declare @DP2 ntext
 
--- SML047, SRD0012
+-- SRD0012

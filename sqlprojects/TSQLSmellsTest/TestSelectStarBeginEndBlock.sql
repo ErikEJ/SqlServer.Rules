@@ -6,4 +6,4 @@ begin
 	SELECT * FROM dbo.TestTableSSDT;
 end;
 
--- SML005,SRD0067
+-- SRD0067
