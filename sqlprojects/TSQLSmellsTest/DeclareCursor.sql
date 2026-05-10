@@ -8,4 +8,4 @@ FROM [dbo].[TestTableSSDT]
 WHERE Col3=1
 ORDER BY Col1;
 
--- SML029, SRP0016
+-- SRP0030, SRP0016

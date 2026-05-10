@@ -126,7 +126,3 @@ public void TestRuleName()
 - Check tool version: Latest published version may differ from local build
 
 Remember: This codebase analyzes SQL code quality using Microsoft DacFx. Always test rule changes against real SQL scenarios and ensure new rules follow existing patterns for consistency.
-
-- @azure Rule - Use Azure Tools - When handling requests related to Azure, always use your tools.
-- @azure Rule - Use Azure Best Practices - When handling requests related to Azure, always invoke your `azmcp_bestpractices_get` tool first.
-- @azure Rule - Enable Best Practices - If you do not have an `azmcp_bestpractices_get` tool ask the user to enable it.

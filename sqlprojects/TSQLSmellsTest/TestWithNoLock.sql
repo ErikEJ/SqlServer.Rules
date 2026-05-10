@@ -4,4 +4,4 @@ SET nocount on
 SELECT idcol FROM dbo.TestTableSSDT WITH(NOLOCK)
 GO
 
--- SML003, SRD0034
+-- SRD0034

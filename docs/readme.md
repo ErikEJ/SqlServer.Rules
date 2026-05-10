@@ -2,58 +2,6 @@
 # Rules listed by namespace
   
   
-## CodeSmells
-  
-| Rule Id | Friendly Name | Ignorable | Description | Example? |
-|----|----|----|----|----|
-| [SML001](CodeSmells/SML001.md) | Avoid cross server joins |   | Avoid cross server joins | Yes |
-| [SML002](CodeSmells/SML002.md) | Best practice is to use two part naming |   | Best practice is to use two part naming | Yes |
-| [SML003](CodeSmells/SML003.md) | Dirty Reads cause consistency errors |   | Dirty Reads cause consistency errors | Yes |
-| [SML004](CodeSmells/SML004.md) | Dont Override the optimizer |   | Dont Override the optimizer | Yes |
-| [SML005](CodeSmells/SML005.md) | Avoid use of 'Select *' |   | Avoid use of 'Select *' | Yes |
-| [SML006](CodeSmells/SML006.md) | Avoid Explicit Conversion of Columnar data |   | Avoid Explicit Conversion of Columnar data | Yes |
-| [SML007](CodeSmells/SML007.md) | Avoid use of ordinal positions in ORDER BY Clauses |   | Avoid use of ordinal positions in ORDER BY Clauses |   |
-| [SML008](CodeSmells/SML008.md) | Dont Change DateFormat |   | Dont Change DateFormat | Yes |
-| [SML009](CodeSmells/SML009.md) | Dont Change DateFirst |   | Dont Change DateFirst | Yes |
-| [SML010](CodeSmells/SML010.md) | ReadUnCommitted: Dirty reads can cause consistency errors |   | ReadUnCommitted: Dirty reads can cause consistency errors | Yes |
-| [SML011](CodeSmells/SML011.md) | Single character aliases are poor practice |   | Single character aliases are poor practice | Yes |
-| [SML012](CodeSmells/SML012.md) | Missing Column specifications on insert |   | Missing Column specifications on insert | Yes |
-| [SML013](CodeSmells/SML013.md) | CONCAT_NULL_YIELDS_NULL should be on |   | CONCAT_NULL_YIELDS_NULL should be on | Yes |
-| [SML014](CodeSmells/SML014.md) | ANSI_NULLS should be On |   | ANSI_NULLS should be On | Yes |
-| [SML015](CodeSmells/SML015.md) | ANSI_PADDING should be On |   | ANSI_PADDING should be On | Yes |
-| [SML016](CodeSmells/SML016.md) | ANSI_WARNINGS should be On |   | ANSI_WARNINGS should be On | Yes |
-| [SML017](CodeSmells/SML017.md) | ARITHABORT should be On |   | ARITHABORT should be On | Yes |
-| [SML018](CodeSmells/SML018.md) | NUMERIC_ROUNDABORT should be Off |   | NUMERIC_ROUNDABORT should be Off | Yes |
-| [SML019](CodeSmells/SML019.md) | QUOTED_IDENTIFIER should be ON |   | QUOTED_IDENTIFIER should be ON | Yes |
-| [SML020](CodeSmells/SML020.md) | FORCEPLAN should be OFF |   | FORCEPLAN should be OFF | Yes |
-| [SML021](CodeSmells/SML021.md) | Use 2 part naming in EXECUTE statements |   | Use 2 part naming in EXECUTE statements | Yes |
-| [SML022](CodeSmells/SML022.md) | Identity value should be agnostic |   | Identity value should be agnostic | Yes |
-| [SML023](CodeSmells/SML023.md) | Avoid single line comments |   | Avoid single line comments |   |
-| [SML024](CodeSmells/SML024.md) | Use two part naming |   | Use two part naming | Yes |
-| [SML025](CodeSmells/SML025.md) | RANGE windows are much slower then ROWS (Explicit use) |   | RANGE windows are much slower then ROWS (Explicit use) | Yes |
-| [SML026](CodeSmells/SML026.md) | RANGE windows are much slower then ROWS (Implicit use) |   | RANGE windows are much slower then ROWS (Implicit use) | Yes |
-| [SML027](CodeSmells/SML027.md) | Create table statements should specify schema |   | Create table statements should specify schema | Yes |
-| [SML028](CodeSmells/SML028.md) | Ordering in a view does not guarantee result set ordering |   | Ordering in a view does not guarantee result set ordering | Yes |
-| [SML029](CodeSmells/SML029.md) | Cursors default to writable.  Specify FAST_FORWARD |   | Cursors default to writable.  Specify FAST_FORWARD | Yes |
-| [SML030](CodeSmells/SML030.md) | Include SET NOCOUNT ON inside stored procedures |   | Include SET NOCOUNT ON inside stored procedures | Yes |
-| [SML031](CodeSmells/SML031.md) | EXISTS/NOT EXISTS can be more performant than COUNT(*) |   | EXISTS/NOT EXISTS can be more performant than COUNT(*) |   |
-| [SML032](CodeSmells/SML032.md) | Ordering in a derived table does not guarantee result set ordering |   | Ordering in a derived table does not guarantee result set ordering |   |
-| [SML033](CodeSmells/SML033.md) | Single character variable names are poor practice |   | Single character variable names are poor practice | Yes |
-| [SML034](CodeSmells/SML034.md) | Expression used with TOP should be wrapped in parenthises |   | Expression used with TOP should be wrapped in parenthises | Yes |
-| [SML035](CodeSmells/SML035.md) | TOP(100) percent is ignored by the optimizer |   | TOP(100) percent is ignored by the optimizer |   |
-| [SML036](CodeSmells/SML036.md) | Foreign Key Constraints should be named |   | Foreign Key Constraints should be named |   |
-| [SML037](CodeSmells/SML037.md) | Check Constraints should be named |   | Check Constraints should be named |   |
-| [SML038](CodeSmells/SML038.md) | Primary Key Constraints on temporary tables should not be named |   | Primary Key Constraints on temporary tables should not be named | Yes |
-| [SML039](CodeSmells/SML039.md) | Default Constraints on temporary tables should not be named |   | Default Constraints on temporary tables should not be named | Yes |
-| [SML040](CodeSmells/SML040.md) | Foreign Key Constraints on temporary tables should not be named |   | Foreign Key Constraints on temporary tables should not be named | Yes |
-| [SML041](CodeSmells/SML041.md) | Check Constraints on temporary tables should not be named |   | Check Constraints on temporary tables should not be named |   |
-| [SML042](CodeSmells/SML042.md) | Use of SET ROWCOUNT is deprecated : use TOP |   | Use of SET ROWCOUNT is deprecated : use TOP |   |
-| [SML043](CodeSmells/SML043.md) | Potential SQL Injection Issue |   | Potential SQL Injection Issue | Yes |
-| [SML044](CodeSmells/SML044.md) | Dont override the optimizer ( FORCESCAN ) |   | Dont override the optimizer ( FORCESCAN ) | Yes |
-| [SML045](CodeSmells/SML045.md) | Dont override the optimizer ( Index Hint) |   | Dont override the optimizer ( Index Hint) | Yes |
-| [SML046](CodeSmells/SML046.md) | "= Null" Comparison |   | "= Null" Comparison | Yes |
-| [SML047](CodeSmells/SML047.md) | Use of deprecated data type |   | Use of deprecated data type | Yes |
-  
 ## Design
   
 | Rule Id | Friendly Name | Ignorable | Description | Example? |
@@ -65,7 +13,6 @@
 | [SRD0005](Design/SRD0005.md) | Avoid long CHAR types | Yes | Avoid the (n)char column type except for short static length data. |   |
 | [SRD0006](Design/SRD0006.md) | Avoid SELECT * | Yes | Avoid using SELECT *. | Yes |
 | [SRD0009](Design/SRD0009.md) | Non-transactional body |   | Wrap multiple action statements within a transaction. | Yes |
-| [SRD0010](Design/SRD0010.md) | Low identity seed value |   | Start identity column used in a primary key with a seed of 1000 or higher. |   |
 | [SRD0011](Design/SRD0011.md) | Equality Compare With NULL Rule |   | Equality and inequality comparisons involving a NULL constant found. Use IS NULL or IS NOT NULL. | Yes |
 | [SRD0012](Design/SRD0012.md) | Unused variable |   | Variable declared but never referenced or assigned. | Yes |
 | [SRD0013](Design/SRD0013.md) | Expected error handeling |   | Wrap multiple action statements within a try catch. | Yes |
@@ -78,7 +25,7 @@
 | [SRD0020](Design/SRD0020.md) | Incomplete or missing JOIN predicate |   | The query has issues with the join clause. It is either missing a backing foreign key or the join is missing one or more columns. |   |
 | [SRD0021](Design/SRD0021.md) | Consider EXISTS Instead Of In Rule | Yes | Consider using EXISTS instead of IN when used with a subquery. |   |
 | [SRD0024](Design/SRD0024.md) | Avoid EXEC or EXECUTE | Yes | Avoid EXEC and EXECUTE with string literals. Use parameterized sp_executesql instead. | Yes |
-| [SRD0025](Design/SRD0025.md) | Avoid ORDER BY with numbers | Yes | Avoid using column numbers in ORDER BY clause. |   |
+| [SRD0025](Design/SRD0025.md) | Avoid ORDER BY with numbers | Yes | Avoid using column numbers in ORDER BY clause. | Yes |
 | [SRD0026](Design/SRD0026.md) | Unspecified type length |   | Do not use these data types (VARCHAR, NVARCHAR, CHAR, NCHAR) without specifying length. |   |
 | [SRD0027](Design/SRD0027.md) | Unspecified precision or scale  |   | Do not use DECIMAL or NUMERIC data types without specifying precision and scale. |   |
 | [SRD0028](Design/SRD0028.md) | Consider Column Prefix Rule | Yes | Consider prefixing column names with table name or table alias. |   |
@@ -89,7 +36,7 @@
 | [SRD0034](Design/SRD0034.md) | Use of NOLOCK |   | Do not use the NOLOCK clause. | Yes |
 | [SRD0035](Design/SRD0035.md) | Forced delay |   | Do not use WAITFOR DELAY/TIME statement in stored procedures, functions, and triggers. |   |
 | [SRD0036](Design/SRD0036.md) | Do not use SET ROWCOUNT | Yes | Do not use SET ROWCOUNT to restrict the number of rows. |   |
-| [SRD0038](Design/SRD0038.md) | Alias Tables Rule | Yes | Consider aliasing all table sources in the query. |   |
+| [SRD0038](Design/SRD0038.md) | Alias Tables Rule | Yes | Consider aliasing all table sources in the query. | Yes |
 | [SRD0039](Design/SRD0039.md) | Object not schema qualified |   | Use fully qualified object names in SELECT, UPDATE, DELETE, MERGE and EXECUTE statements. [schema].[name]. | Yes |
 | [SRD0041](Design/SRD0041.md) | Avoid SELECT INTO temp or table variables | Yes | Avoid use of the SELECT INTO syntax. |   |
 | [SRD0043](Design/SRD0043.md) | Possible side-effects implicit cast  |   | The arguments of the function '{0}' are not of the same datatype. |   |
@@ -122,6 +69,25 @@
 | [SRD0075](Design/SRD0075.md) | Hard-coded credentials | Yes | Avoid hard-coded credentials. Use secure configuration instead. | Yes |
 | [SRD0076](Design/SRD0076.md) | Identical expressions on both sides | Yes | Identical expressions on both sides of a comparison operator. | Yes |
 | [SRD0077](Design/SRD0077.md) | FETCH variable count mismatch | Yes | FETCH variable count does not match cursor column count. | Yes |
+| [SRD0078](Design/SRD0078.md) | Single character alias | Yes | Single character aliases are poor practice. | Yes |
+| [SRD0079](Design/SRD0079.md) | Single character variable | Yes | Single character variable names are poor practice. | Yes |
+| [SRD0080](Design/SRD0080.md) | TOP expression should use parentheses | Yes | Expression used with TOP should be wrapped in parentheses. | Yes |
+| [SRD0081](Design/SRD0081.md) | TOP(100) PERCENT ignored by optimizer |   | TOP(100) PERCENT is ignored by the optimizer. | Yes |
+| [SRD0082](Design/SRD0082.md) | Do not change DATEFORMAT | Yes | Changing DATEFORMAT can cause date parsing issues. | Yes |
+| [SRD0083](Design/SRD0083.md) | Avoid changing DATEFIRST | Yes | Do not change DATEFIRST. | Yes |
+| [SRD0084](Design/SRD0084.md) | Concat Null Yields Null ON | Yes | SET CONCAT_NULL_YIELDS_NULL should be ON. | Yes |
+| [SRD0085](Design/SRD0085.md) | ANSI_NULLS should be ON | Yes | ANSI_NULLS should be ON. | Yes |
+| [SRD0086](Design/SRD0086.md) | ANSI_PADDING should be ON | Yes | ANSI_PADDING should be ON. | Yes |
+| [SRD0087](Design/SRD0087.md) | ANSI_WARNINGS should be ON | Yes | ANSI_WARNINGS should be ON. | Yes |
+| [SRD0088](Design/SRD0088.md) | NUMERIC_ROUNDABORT should be OFF | Yes | NUMERIC_ROUNDABORT should be OFF - Required for indexed views. | Yes |
+| [SRD0089](Design/SRD0089.md) | Quoted identifier on | Yes | QUOTED_IDENTIFIER should be ON - Required for indexed views and filtered indexes. | Yes |
+| [SRD0090](Design/SRD0090.md) | SET FORCEPLAN should be OFF | Yes | SET FORCEPLAN should be OFF. | Yes |
+| [SRD0091](Design/SRD0091.md) | Avoid ORDER BY in derived tables for final ordering |   | Ordering in a derived table does not guarantee result set ordering. | Yes |
+| [SRD0092](Design/SRD0092.md) | Avoid named primary key constraints on temp tables | Yes | Primary Key Constraints on temporary tables should not be named. | Yes |
+| [SRD0093](Design/SRD0093.md) | Do not name default constraints on temporary tables |   | Default constraints on temporary tables should not be named. | Yes |
+| [SRD0094](Design/SRD0094.md) | Avoid named foreign keys on temporary tables | Yes | Foreign key constraints on temp tables should not be named. |   |
+| [SRD0095](Design/SRD0095.md) | Named check constraints on temp tables | Yes | Check constraints on temp tables should not be named. | Yes |
+| [SRD0096](Design/SRD0096.md) | Potential SQL injection issue |   | Potential SQL injection issue. | Yes |
   
 ## Naming
   
@@ -160,6 +126,11 @@
 | [SRP0023](Performance/SRP0023.md) | Enumerating for existence check | Yes | When checking for existence use EXISTS instead of COUNT | Yes |
 | [SRP0024](Performance/SRP0024.md) | Correlated subquery | Yes | Avoid the use of correlated subqueries except for very small tables. |   |
 | [SRP0025](Performance/SRP0025.md) | SELECT * in EXISTS | Yes | Use SELECT 1 instead of SELECT * in EXISTS subqueries. | Yes |
+| [SRP0026](Performance/SRP0026.md) | Avoid cross-server joins | Yes | Avoid cross-server joins. | Yes |
+| [SRP0027](Performance/SRP0027.md) | Avoid explicit conversion of columnar data | Yes | Avoid explicit conversion of columnar data in the WHERE clause. (Sargable) | Yes |
+| [SRP0028](Performance/SRP0028.md) | Explicit RANGE window frame | Yes | Avoid explicit RANGE window frames; prefer explicit ROWS. | Yes |
+| [SRP0029](Performance/SRP0029.md) | Implicit RANGE window frame | Yes | Specify a window frame explicitly for window functions with ORDER BY to avoid implicit RANGE semantics. | Yes |
+| [SRP0030](Performance/SRP0030.md) | Specify FAST_FORWARD for cursors | Yes | Cursors default to writable. Specify FAST_FORWARD. | Yes |
   
 ## Microsoft 
   

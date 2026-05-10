@@ -16,7 +16,7 @@ public class SRP0029Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/ImplicitRangeWindowSrp0029Test.sql");
 
-        ExpectedProblems.Add(new TestProblem(6, 20, "SqlServer.Rules.SRP0029"));
+        ExpectedProblems.Add(new TestProblem(6, 21, "SqlServer.Rules.SRP0029"));
 
         RunTest();
     }

@@ -9,5 +9,3 @@ SELECT * FROM dbo.TestTableSSDT
 SELECT idcol,Col1 FROM ctex
 
 go
-
--- SML005
