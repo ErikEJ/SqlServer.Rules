@@ -14,4 +14,4 @@ SomeData  char(1)
 go
 alter table dbo.Child nocheck constraint fkParentChild
 
--- SRP0027, SRD0004
+-- SRD0004
