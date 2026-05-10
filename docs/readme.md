@@ -25,7 +25,7 @@
 | [SRD0020](Design/SRD0020.md) | Incomplete or missing JOIN predicate |   | The query has issues with the join clause. It is either missing a backing foreign key or the join is missing one or more columns. |   |
 | [SRD0021](Design/SRD0021.md) | Consider EXISTS Instead Of In Rule | Yes | Consider using EXISTS instead of IN when used with a subquery. |   |
 | [SRD0024](Design/SRD0024.md) | Avoid EXEC or EXECUTE | Yes | Avoid EXEC and EXECUTE with string literals. Use parameterized sp_executesql instead. | Yes |
-| [SRD0025](Design/SRD0025.md) | Avoid ORDER BY with numbers | Yes | Avoid using column numbers in ORDER BY clause. |   |
+| [SRD0025](Design/SRD0025.md) | Avoid ORDER BY with numbers | Yes | Avoid using column numbers in ORDER BY clause. | Yes |
 | [SRD0026](Design/SRD0026.md) | Unspecified type length |   | Do not use these data types (VARCHAR, NVARCHAR, CHAR, NCHAR) without specifying length. |   |
 | [SRD0027](Design/SRD0027.md) | Unspecified precision or scale  |   | Do not use DECIMAL or NUMERIC data types without specifying precision and scale. |   |
 | [SRD0028](Design/SRD0028.md) | Consider Column Prefix Rule | Yes | Consider prefixing column names with table name or table alias. |   |
@@ -36,7 +36,7 @@
 | [SRD0034](Design/SRD0034.md) | Use of NOLOCK |   | Do not use the NOLOCK clause. | Yes |
 | [SRD0035](Design/SRD0035.md) | Forced delay |   | Do not use WAITFOR DELAY/TIME statement in stored procedures, functions, and triggers. |   |
 | [SRD0036](Design/SRD0036.md) | Do not use SET ROWCOUNT | Yes | Do not use SET ROWCOUNT to restrict the number of rows. |   |
-| [SRD0038](Design/SRD0038.md) | Alias Tables Rule | Yes | Consider aliasing all table sources in the query. |   |
+| [SRD0038](Design/SRD0038.md) | Alias Tables Rule | Yes | Consider aliasing all table sources in the query. | Yes |
 | [SRD0039](Design/SRD0039.md) | Object not schema qualified |   | Use fully qualified object names in SELECT, UPDATE, DELETE, MERGE and EXECUTE statements. [schema].[name]. | Yes |
 | [SRD0041](Design/SRD0041.md) | Avoid SELECT INTO temp or table variables | Yes | Avoid use of the SELECT INTO syntax. |   |
 | [SRD0043](Design/SRD0043.md) | Possible side-effects implicit cast  |   | The arguments of the function '{0}' are not of the same datatype. |   |

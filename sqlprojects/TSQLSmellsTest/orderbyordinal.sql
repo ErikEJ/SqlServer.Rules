@@ -5,4 +5,4 @@ SET nocount on;
 SELECT Col1,col2,col3
  FROM dbo.TestTableSSDT ORDER BY 1,2,3
 
- -- SRD0025
+-- SRD0025

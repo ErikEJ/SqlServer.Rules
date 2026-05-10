@@ -21,4 +21,4 @@ Select 1
 			Derived
  on Derived.Col1 = TestTableSSDT.Col1;
 
- -- SRD0081, SRD0038
+-- SRD0081, SRD0038
