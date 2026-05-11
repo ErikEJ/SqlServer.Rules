@@ -75,11 +75,12 @@ namespace SqlServer.Rules.Design
 
         private static bool SupportsQueryStoreCaptureMode(SqlServerVersion version)
         {
-            return version is SqlServerVersion.Sql130
-                or SqlServerVersion.Sql140
-                or SqlServerVersion.Sql150
-                or SqlServerVersion.Sql160
-                or SqlServerVersion.Sql170;
+            return version switch
+            {
+                SqlServerVersion.SqlAzure => false,
+                SqlServerVersion.SqlAzureV12 => false,
+                _ => version >= SqlServerVersion.Sql130,
+            };
         }
     }
 }
