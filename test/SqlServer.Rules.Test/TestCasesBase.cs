@@ -24,6 +24,8 @@ public class TestCasesBase
         {
             PageVerifyMode = PageVerifyMode.Checksum,
             QueryStoreCaptureMode = QueryStoreCaptureMode.Auto,
+            QueryStoreDesiredState = QueryStoreDesiredState.ReadWrite,
+            TargetRecoveryTimePeriod = 60,
         };
 
         using (var test = new BaselineSetup(TestContext, testCases, modelOptions, SqlVersion))

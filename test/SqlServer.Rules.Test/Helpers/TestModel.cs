@@ -16,11 +16,15 @@ public class TestModel
 
     public TestModel(string prefix = TestConstants.SqlServerRules)
     {
-        Model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions
-        {
-            PageVerifyMode = PageVerifyMode.Checksum,
-            QueryStoreCaptureMode = QueryStoreCaptureMode.Auto,
-        });
+        Model = new TSqlModel(
+            SqlServerVersion.Sql150,
+            new TSqlModelOptions
+            {
+                PageVerifyMode = PageVerifyMode.Checksum,
+                QueryStoreCaptureMode = QueryStoreCaptureMode.Auto,
+                QueryStoreDesiredState = QueryStoreDesiredState.ReadWrite,
+                TargetRecoveryTimePeriod = 60,
+            });
         Prefix = prefix;
     }
 
