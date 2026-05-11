@@ -88,6 +88,12 @@
 | [SRD0094](Design/SRD0094.md) | Avoid named foreign keys on temporary tables | Yes | Foreign key constraints on temp tables should not be named. |   |
 | [SRD0095](Design/SRD0095.md) | Named check constraints on temp tables | Yes | Check constraints on temp tables should not be named. | Yes |
 | [SRD0096](Design/SRD0096.md) | Potential SQL injection issue |   | Potential SQL injection issue. | Yes |
+| [SRD0700](Design/SRD0700.md) | Database PAGE_VERIFY option is not CHECKSUM |   | Set `<PageVerify>CHECKSUM</PageVerify>` in the project file to enable PAGE_VERIFY = CHECKSUM. |   |
+| [SRD0701](Design/SRD0701.md) | Database QUERY_STORE option is not READ_WRITE |   | Set `<QueryStoreDesiredState>READ_WRITE</QueryStoreDesiredState>` in the project file to enable Query Store. |   |
+| [SRD0703](Design/SRD0703.md) | Database QUERY_STORE_CAPTURE_MODE option is not AUTO |   | Set `<QueryStoreCaptureMode>AUTO</QueryStoreCaptureMode>` in the project file to enable QUERY_STORE_CAPTURE_MODE = AUTO. |   |
+| [SRD0704](Design/SRD0704.md) | Database TARGET_RECOVERY_TIME option is not set |   | Set `<TargetRecoveryTimePeriod>60</TargetRecoveryTimePeriod>` in the project file to enable TARGET_RECOVERY_TIME. |   |
+| [SRD0705](Design/SRD0705.md) | Database AUTO_CLOSE option is not OFF |   | Set `<AutoClose>False</AutoClose>` in the project file to disable AUTO_CLOSE. |   |
+| [SRD0706](Design/SRD0706.md) | Database AUTO_SHRINK option is ON |   | Set `<AutoShrink>False</AutoShrink>` in the project file to disable AUTO_SHRINK. |   |
   
 ## Naming
   

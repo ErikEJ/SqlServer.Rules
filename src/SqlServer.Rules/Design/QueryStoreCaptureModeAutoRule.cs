@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Set <QueryStoreCaptureMode>AUTO</QueryStoreCaptureMode> in the project file to enable QUERY_STORE_CAPTURE_MODE = AUTO.";
+        public const string RuleDisplayName = "Set `<QueryStoreCaptureMode>AUTO</QueryStoreCaptureMode>` in the project file to enable QUERY_STORE_CAPTURE_MODE = AUTO.";
 
         /// <summary>
         /// The message

@@ -32,7 +32,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Set <AutoShrink>False</AutoShrink> in the project file to disable AUTO_SHRINK.";
+        public const string RuleDisplayName = "Set `<AutoShrink>False</AutoShrink>` in the project file to disable AUTO_SHRINK.";
 
         /// <summary>
         /// The message

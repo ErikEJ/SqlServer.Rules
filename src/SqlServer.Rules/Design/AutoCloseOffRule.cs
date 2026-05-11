@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Set <AutoClose>False</AutoClose> in the project file to disable AUTO_CLOSE.";
+        public const string RuleDisplayName = "Set `<AutoClose>False</AutoClose>` in the project file to disable AUTO_CLOSE.";
 
         /// <summary>
         /// The message
