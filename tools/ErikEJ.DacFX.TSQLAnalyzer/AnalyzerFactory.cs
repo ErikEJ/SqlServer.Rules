@@ -158,7 +158,15 @@ public class AnalyzerFactory
 
     private TSqlModel GenerateTSqlModel(AnalyzerResult result)
     {
-        var model = new TSqlModel(request.SqlVersion, new TSqlModelOptions());
+        var options = new TSqlModelOptions
+        {
+            PageVerifyMode = PageVerifyMode.Checksum,
+            QueryStoreCaptureMode = QueryStoreCaptureMode.Auto,
+            QueryStoreDesiredState = QueryStoreDesiredState.ReadWrite,
+            TargetRecoveryTimePeriod = 60,
+        };
+
+        var model = new TSqlModel(request.SqlVersion, options);
 
         if (request.Scripts != null && request.Scripts.Count > 0 && request.ConnectionString == null)
         {
