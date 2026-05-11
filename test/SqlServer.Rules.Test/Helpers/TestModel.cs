@@ -16,7 +16,13 @@ public class TestModel
 
     public TestModel(string prefix = TestConstants.SqlServerRules)
     {
-        Model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions { PageVerifyMode = PageVerifyMode.Checksum });
+        Model = new TSqlModel(
+            SqlServerVersion.Sql150,
+            new TSqlModelOptions
+            {
+                PageVerifyMode = PageVerifyMode.Checksum,
+                QueryStoreDesiredState = QueryStoreDesiredState.ReadWrite,
+            });
         Prefix = prefix;
     }
 
