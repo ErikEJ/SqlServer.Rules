@@ -18,7 +18,7 @@ public class TestProblem
         RuleId = ruleId;
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj == null)
         {
