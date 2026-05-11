@@ -73,8 +73,11 @@ namespace SqlServer.Rules.Design
 
             if (dbOptions.QueryStoreCaptureMode != QueryStoreCaptureMode.Auto)
             {
-                var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).First();
-                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), options));
+                var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).FirstOrDefault();
+                if (options != null)
+                {
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), options));
+                }
             }
 
             return problems;
