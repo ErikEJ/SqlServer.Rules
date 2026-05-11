@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestHelpers;
+using SqlServer.Rules.Tests.Helpers;
 
 namespace SqlServer.Rules.Tests.Performance;
 

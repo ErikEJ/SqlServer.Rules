@@ -33,7 +33,6 @@ internal class RuleTest : IDisposable
     {
         PublicModel,
         DacpacModel,
-        Database,
     }
 
     public RuleTest(IList<Tuple<string, string>> testScripts, TSqlModelOptions databaseOptions, SqlServerVersion sqlVersion)
@@ -81,9 +80,6 @@ internal class RuleTest : IDisposable
     {
         switch (Target)
         {
-            case AnalysisTarget.Database:
-                ModelForAnalysis = CreateDatabaseModel();
-                break;
             case AnalysisTarget.DacpacModel:
                 var scriptedModel = CreateScriptedModel();
                 ModelForAnalysis = CreateDacpacModel(scriptedModel);
@@ -132,25 +128,6 @@ internal class RuleTest : IDisposable
         }
 
         Assert.IsFalse(breakingIssuesFound, "Cannot run analysis if there are model errors");
-    }
-
-    /// <summary>
-    /// Deploys test scripts to a database and creates a model directly against this DB.
-    /// Since this is a RuleTest we load the model as script backed to ensure that we have file names,
-    /// source code positions, and that programmability objects (stored procedures, views) have a full SQLDOM
-    /// syntax tree instead of just a snippet.
-    /// </summary>
-    private TSqlModel CreateDatabaseModel()
-    {
-        ArgumentValidation.CheckForEmptyString(DatabaseName, "DatabaseName");
-        var db = TestUtils.CreateTestDatabase(TestUtils.DefaultInstanceInfo, DatabaseName);
-        trash.Add(db);
-
-        TestUtils.ExecuteNonQuery(db, TestScripts.Select(t => t.Item1).SelectMany(TestUtils.GetBatches).ToList());
-
-        var model = TSqlModel.LoadFromDatabase(db.BuildConnectionString(), new ModelExtractOptions { LoadAsScriptBackedModel = true });
-        AssertModelValid(model);
-        return model;
     }
 
     /// <summary>

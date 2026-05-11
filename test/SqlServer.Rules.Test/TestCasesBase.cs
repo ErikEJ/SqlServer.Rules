@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SqlServer.Rules.Test;
 
 namespace SqlServer.Rules.Tests;
 
@@ -21,7 +20,12 @@ public class TestCasesBase
     {
         var problems = new ReadOnlyCollection<SqlRuleProblem>(new List<SqlRuleProblem>());
 
-        using (var test = new BaselineSetup(TestContext, testCases, new TSqlModelOptions(), SqlVersion))
+        var modelOptions = new TSqlModelOptions
+        {
+            PageVerifyMode = PageVerifyMode.Checksum,
+        };
+
+        using (var test = new BaselineSetup(TestContext, testCases, modelOptions, SqlVersion))
         {
             try
             {

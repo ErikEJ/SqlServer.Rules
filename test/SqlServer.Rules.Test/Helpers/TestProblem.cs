@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace TestHelpers;
+namespace SqlServer.Rules.Tests.Helpers;
 
 public class TestProblem
 {

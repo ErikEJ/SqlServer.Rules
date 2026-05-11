@@ -8,7 +8,7 @@ using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlServer.Rules.Tests.Utils;
 
-namespace SqlServer.Rules.Test;
+namespace SqlServer.Rules.Tests;
 
 internal sealed class BaselineSetup : RuleTest
 {

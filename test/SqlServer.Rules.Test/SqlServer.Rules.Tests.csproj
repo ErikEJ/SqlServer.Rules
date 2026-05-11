@@ -5,7 +5,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SqlServer.Rules\SqlServer.Rules.csproj" />
-    <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

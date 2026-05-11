@@ -6,7 +6,7 @@ using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestHelpers;
+namespace SqlServer.Rules.Tests.Helpers;
 
 public class TestModel
 {
@@ -16,7 +16,7 @@ public class TestModel
 
     public TestModel(string prefix = TestConstants.SqlServerRules)
     {
-        Model = new TSqlModel(SqlServerVersion.Sql150, null);
+        Model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions { PageVerifyMode = PageVerifyMode.Checksum });
         Prefix = prefix;
     }
 
