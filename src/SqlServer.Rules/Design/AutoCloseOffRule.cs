@@ -64,7 +64,7 @@ namespace SqlServer.Rules.Design
 
             var dbOptions = sqlModel.CopyModelOptions();
 
-            if (dbOptions.AutoClose != false)
+            if (dbOptions.AutoClose == true)
             {
                 var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).First();
                 problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), options));
