@@ -69,15 +69,17 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
+            var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).FirstOrDefault();
+            if (options == null)
+            {
+                return problems;
+            }
+
             var dbOptions = sqlModel.CopyModelOptions();
 
             if (dbOptions.QueryStoreCaptureMode != QueryStoreCaptureMode.Auto)
             {
-                var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).FirstOrDefault();
-                if (options != null)
-                {
-                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), options));
-                }
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), options));
             }
 
             return problems;
