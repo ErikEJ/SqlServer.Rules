@@ -64,6 +64,11 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
+            if (sqlModel.Version == SqlServerVersion.SqlAzure)
+            {
+                return problems;
+            }
+
             var dbOptions = sqlModel.CopyModelOptions();
 
             if (dbOptions.PageVerifyMode != PageVerifyMode.Checksum)

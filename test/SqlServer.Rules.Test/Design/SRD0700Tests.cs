@@ -34,4 +34,16 @@ public class SRD0700Tests : TestCasesBase
             Assert.AreEqual(0, result.Problems.Count, "Expected 0 problems when PAGE_VERIFY is CHECKSUM");
         });
     }
+
+    [TestMethod]
+    public void PageVerifyAzureSqlIgnored()
+    {
+        // Azure SQL Database manages PAGE_VERIFY internally; the rule should not fire for Azure targets
+        var options = new TSqlModelOptions();
+        using var test = new RuleTest(new List<Tuple<string, string>>(), options, SqlServerVersion.SqlAzure);
+        test.RunTest(PageVerifyChecksumRule.RuleId, (result, _) =>
+        {
+            Assert.AreEqual(0, result.Problems.Count, "Expected 0 problems for Azure SQL Database target");
+        });
+    }
 }
