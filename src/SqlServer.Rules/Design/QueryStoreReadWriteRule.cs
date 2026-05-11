@@ -58,7 +58,7 @@ namespace SqlServer.Rules.Design
             var problems = new List<SqlRuleProblem>();
             var sqlModel = ruleExecutionContext.SchemaModel;
 
-            if (sqlModel == null || sqlModel.Version == SqlServerVersion.SqlAzure || sqlModel.Version is SqlServerVersion.Sql90 or SqlServerVersion.Sql100 or SqlServerVersion.Sql110 or SqlServerVersion.Sql120)
+            if (sqlModel == null || !IsQueryStoreSupported(sqlModel.Version))
             {
                 return problems;
             }
@@ -67,11 +67,21 @@ namespace SqlServer.Rules.Design
 
             if (dbOptions.QueryStoreDesiredState != QueryStoreDesiredState.ReadWrite)
             {
-                var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).First();
-                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), options));
+                var options = sqlModel.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).FirstOrDefault();
+                if (options != null)
+                {
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), options));
+                }
             }
 
             return problems;
         }
+
+        private static bool IsQueryStoreSupported(SqlServerVersion version)
+            => version != SqlServerVersion.SqlAzure
+            && version is not SqlServerVersion.Sql90
+            and not SqlServerVersion.Sql100
+            and not SqlServerVersion.Sql110
+            and not SqlServerVersion.Sql120;
     }
 }
