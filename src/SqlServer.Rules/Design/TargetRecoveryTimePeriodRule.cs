@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Set <TargetRecoveryTimePeriod>60</TargetRecoveryTimePeriod> in the project file to enable TARGET_RECOVERY_TIME.";
+        public const string RuleDisplayName = "Set `<TargetRecoveryTimePeriod>60</TargetRecoveryTimePeriod>` in the project file to enable TARGET_RECOVERY_TIME.";
 
         /// <summary>
         /// The message
