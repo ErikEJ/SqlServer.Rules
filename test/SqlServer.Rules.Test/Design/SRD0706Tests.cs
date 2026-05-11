@@ -35,6 +35,17 @@ public class SRD0706Tests : TestCasesBase
     }
 
     [TestMethod]
+    public void AutoShrinkDefaultNotDetected()
+    {
+        var options = new TSqlModelOptions();
+        using var test = new RuleTest(new List<Tuple<string, string>>(), options, SqlVersion);
+        test.RunTest(AutoShrinkOffRule.RuleId, (result, _) =>
+        {
+            Assert.AreEqual(0, result.Problems.Count, "Expected 0 problems when AUTO_SHRINK is not explicitly configured");
+        });
+    }
+
+    [TestMethod]
     public void AutoShrinkAzureSqlIgnored()
     {
         var options = new TSqlModelOptions { AutoShrink = true };
