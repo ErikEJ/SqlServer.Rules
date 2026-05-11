@@ -128,7 +128,6 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/SqlServer.Rules.Test/SqlServer.Rules.Tests.csproj" />
-    <Project Path="test/TestHelpers/TestHelpers.csproj" />
     <Project Path="test/TSQLAnalyzer.Tests/TSQLAnalyzer.Tests.csproj" />
   </Folder>
   <Folder Name="/tools/">

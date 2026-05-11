@@ -1,4 +1,4 @@
-namespace TestHelpers;
+namespace SqlServer.Rules.Tests.Helpers;
 
 public static class TestConstants
 {

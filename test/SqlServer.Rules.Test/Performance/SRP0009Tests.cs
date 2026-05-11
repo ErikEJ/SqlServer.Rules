@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestHelpers;
+using SqlServer.Rules.Tests.Helpers;
 
-namespace SqlServer.Rules.Tests.Design;
+namespace SqlServer.Rules.Tests.Performance;
 
 [TestClass]
 public class SRP0009Tests : TestModel

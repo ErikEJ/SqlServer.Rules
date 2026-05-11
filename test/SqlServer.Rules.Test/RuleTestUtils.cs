@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace SqlServer.Rules.Test;
+namespace SqlServer.Rules.Tests;
 
 internal sealed class RuleTestUtils
 {

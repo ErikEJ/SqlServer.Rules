@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace TestHelpers;
+namespace SqlServer.Rules.Tests.Helpers;
 
 public class TestProblem
 {
@@ -18,7 +18,7 @@ public class TestProblem
         RuleId = ruleId;
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj == null)
         {
