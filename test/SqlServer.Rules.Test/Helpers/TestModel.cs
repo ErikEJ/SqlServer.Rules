@@ -21,7 +21,9 @@ public class TestModel
             new TSqlModelOptions
             {
                 PageVerifyMode = PageVerifyMode.Checksum,
+                QueryStoreCaptureMode = QueryStoreCaptureMode.Auto,
                 QueryStoreDesiredState = QueryStoreDesiredState.ReadWrite,
+                TargetRecoveryTimePeriod = 60,
             });
         Prefix = prefix;
     }
