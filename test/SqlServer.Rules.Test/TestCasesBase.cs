@@ -23,6 +23,7 @@ public class TestCasesBase
         var modelOptions = new TSqlModelOptions
         {
             PageVerifyMode = PageVerifyMode.Checksum,
+            QueryStoreCaptureMode = QueryStoreCaptureMode.Auto,
         };
 
         using (var test = new BaselineSetup(TestContext, testCases, modelOptions, SqlVersion))
