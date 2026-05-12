@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -12,6 +13,28 @@ namespace SqlServer.Rules.Globals
 {
     public static class ModelInfo
     {
+        // Keyed by TSqlModel instance so the set is built once per analysis run and released
+        // automatically when the model is GC-collected. Thread-safe for reads after construction.
+        private static readonly ConditionalWeakTable<TSqlModel, HashSet<TSqlObject>> TemporalRefsCache =
+            new ConditionalWeakTable<TSqlModel, HashSet<TSqlObject>>();
+
+        private static HashSet<TSqlObject> GetTemporalRefs(TSqlModel model)
+        {
+            return TemporalRefsCache.GetValue(model, static m =>
+            {
+                var set = new HashSet<TSqlObject>();
+                foreach (var table in m.GetObjects(DacQueryScopes.UserDefined, Table.TypeClass))
+                {
+                    foreach (var histTable in table.GetReferenced(Table.TemporalSystemVersioningHistoryTable))
+                    {
+                        set.Add(histTable);
+                    }
+                }
+
+                return set;
+            });
+        }
+
         /// <summary>
         /// checks to see if the name of a TSqlObject is white-listed so we do not want to check rules against it
         /// </summary>
@@ -42,23 +65,17 @@ namespace SqlServer.Rules.Globals
 
             if (executionContext != null)
             {
-                var tables = executionContext.SchemaModel.GetObjects(DacQueryScopes.UserDefined, Table.TypeClass);
+                var temporalRefs = GetTemporalRefs(executionContext.SchemaModel);
 
-                List<TSqlObject> temporalRefs = new List<TSqlObject>();
-
-                foreach (var table in tables)
-                {
-                    temporalRefs.AddRange(table.GetReferenced(Table.TemporalSystemVersioningHistoryTable).ToList());
-                }
-
-                if (temporalRefs.Any(x => x.Equals(sqlObj)))
+                if (temporalRefs.Contains(sqlObj))
                 {
                     return true;
                 }
 
-                if (sqlObj.GetParent() != null && sqlObj.GetParent().ObjectType == ModelSchema.Table)
+                var objParent = sqlObj.GetParent();
+                if (objParent != null && objParent.ObjectType == ModelSchema.Table)
                 {
-                    if (temporalRefs.Any(x => x.Equals(sqlObj.GetParent())))
+                    if (temporalRefs.Contains(objParent))
                     {
                         return true;
                     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -526,6 +527,16 @@ namespace SqlServer.Rules
             "ZONE",
         };
 
+        // Cache of all Column-typed referenced objects per sqlObj - avoids re-enumerating
+        // GetReferenced(All) for each column name lookup within a single analysis pass.
+        private static readonly ConditionalWeakTable<TSqlObject, IReadOnlyList<TSqlObject>> SqlObjColumnsCache =
+            new ConditionalWeakTable<TSqlObject, IReadOnlyList<TSqlObject>>();
+
+        // Cache of referenced objects per candidate column - avoids re-enumerating inside
+        // the while-loop that walks up the column type chain.
+        private static readonly ConditionalWeakTable<TSqlObject, IReadOnlyList<TSqlObject>> ColumnReferencedCache =
+            new ConditionalWeakTable<TSqlObject, IReadOnlyList<TSqlObject>>();
+
         /// <summary>
         /// The comparer
         /// </summary>
@@ -704,45 +715,6 @@ namespace SqlServer.Rules
             { "COLLATIONPROPERTY", "sql_variant" },
         };
 
-        public static StatementList GetStatementList(TSqlFragment fragment)
-        {
-            var fragmentTypeName = fragment.GetType().Name;
-            var statementList = new StatementList();
-
-            switch (fragmentTypeName.ToUpperInvariant())
-            {
-                case "CREATEPROCEDURESTATEMENT":
-                    return (fragment as CreateProcedureStatement)?.StatementList;
-
-                case "CREATEVIEWSTATEMENT":
-                    statementList.Statements.Add((fragment as CreateViewStatement)?.SelectStatement);
-                    return statementList;
-
-                case "CREATEFUNCTIONSTATEMENT":
-                    var func = fragment as CreateFunctionStatement;
-                    if (func == null)
-                    {
-                        return null;
-                    }
-
-                    // this is an ITVF, and does not have a statement list, it has one statement in the return block...
-                    if (func.StatementList == null && func.ReturnType is SelectFunctionReturnType returnType)
-                    {
-                        statementList.Statements.Add(returnType.SelectStatement);
-                        return statementList;
-                    }
-
-                    return func.StatementList;
-
-                case "CREATETRIGGERSTATEMENT":
-                    return (fragment as CreateTriggerStatement)?.StatementList;
-
-                default:
-                    // throw new ApplicationException("Unable to determine statement list for fragment type: " + fragmentTypeName);
-                    return null;
-            }
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseSqlCodeAnalysisRule"/> class.
         /// </summary>
@@ -812,15 +784,14 @@ namespace SqlServer.Rules
             return null;
         }
 
-        protected static string GetDataType(ScalarExpression value, IList<DataTypeView> variables)
+        protected static string GetDataType(ScalarExpression value, IDictionary<string, DataTypeView> variables)
         {
             if (!(value is VariableReference varRef))
             {
                 return GetDataType(value);
             }
 
-            var var1 = variables.FirstOrDefault(v => Comparer.Equals(v.Name, varRef.Name));
-            if (var1 != null)
+            if (variables.TryGetValue(varRef.Name, out var var1))
             {
                 return var1.DataType;
             }
@@ -832,7 +803,7 @@ namespace SqlServer.Rules
             TSqlObject sqlObj,
             QuerySpecification query,
             ScalarExpression expression,
-            IList<DataTypeView> variables,
+            IDictionary<string, DataTypeView> variables,
             TSqlModel model = null)
         {
             if (expression == null)
@@ -902,8 +873,7 @@ namespace SqlServer.Rules
 
             if (expression is VariableReference exprVar)
             {
-                var variable = variables.FirstOrDefault(v => Comparer.Equals(v.Name, exprVar.Name));
-                if (variable != null)
+                if (variables.TryGetValue(exprVar.Name, out var variable))
                 {
                     return variable.DataType;
                 }
@@ -952,15 +922,22 @@ namespace SqlServer.Rules
             return null;
         }
 
-        protected static string GetColumnDataType(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column, TSqlModel model, IList<DataTypeView> variables)
+        protected static string GetColumnDataType(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column, TSqlModel model, IDictionary<string, DataTypeView> variables)
         {
             TSqlObject referencedColumn = null;
 
             var columnName = column.MultiPartIdentifier.Identifiers.Last().Value;
-            var columns = sqlObj.GetReferenced(DacQueryScopes.All).Where(x =>
-                x.ObjectType == Column.TypeClass &&
-                x.Name.GetName().Contains($"[{columnName}]", StringComparison.OrdinalIgnoreCase))
-                .Distinct().ToList();
+
+            // Retrieve (or build once) the full list of Column-typed references for this sqlObj.
+            var allSqlObjColumns = SqlObjColumnsCache.GetValue(sqlObj, static o =>
+                (IReadOnlyList<TSqlObject>)o.GetReferenced(DacQueryScopes.All)
+                    .Where(x => x.ObjectType == Column.TypeClass)
+                    .Distinct()
+                    .ToList());
+
+            var columns = allSqlObjColumns
+                .Where(x => x.Name.GetName().Contains($"[{columnName}]", StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
             if (columns.Count == 0)
             {
@@ -1042,7 +1019,8 @@ namespace SqlServer.Rules
                 // sometimes for some reason, I have to call getreferenced multiple times to get to the datatype. nfc why....
                 while (dataType == null && referencedColumn != null)
                 {
-                    var colReferenced = referencedColumn.GetReferenced(DacQueryScopes.All).ToList();
+                    var colReferenced = ColumnReferencedCache.GetValue(referencedColumn, static c =>
+                        (IReadOnlyList<TSqlObject>)c.GetReferenced(DacQueryScopes.All).ToList());
 
                     dataType = colReferenced.FirstOrDefault(x => Comparer.Equals(x.ObjectType.Name, "DataType"));
                     if (dataType == null)

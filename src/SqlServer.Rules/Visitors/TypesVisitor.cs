@@ -6,7 +6,7 @@ namespace SqlServer.Dac.Visitors
 {
     public class TypesVisitor : BaseVisitor, IVisitor<TSqlFragment>
     {
-        private readonly List<Type> types = new List<Type>();
+        private readonly HashSet<Type> types;
 
         public IList<TSqlFragment> Statements { get; } = new List<TSqlFragment>();
 
@@ -22,7 +22,7 @@ namespace SqlServer.Dac.Visitors
                 throw new ArgumentNullException(nameof(typesToLookFor));
             }
 
-            types = new List<Type>(typesToLookFor);
+            types = new HashSet<Type>(typesToLookFor);
         }
 
         public override void Visit(TSqlFragment fragment)

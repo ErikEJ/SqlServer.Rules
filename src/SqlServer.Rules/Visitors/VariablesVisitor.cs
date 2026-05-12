@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
@@ -45,21 +46,28 @@ namespace SqlServer.Dac.Visitors
             ProcedureParameters.Add(node);
         }
 
-        public IList<DataTypeView> GetVariables()
+        public IDictionary<string, DataTypeView> GetVariables()
         {
-            var ret = new List<DataTypeView>();
+            var ret = new Dictionary<string, DataTypeView>(StringComparer.OrdinalIgnoreCase);
+
+            var parameters =
+                from p in ProcedureParameters
+                select new DataTypeView(p.VariableName.Value, p.DataType, DataTypeViewType.Parameter);
 
             var declares =
                 from dv in DeclareVariables
                 from d in dv.Declarations
                 select new DataTypeView(d.VariableName.Value, d.DataType, DataTypeViewType.Declare);
 
-            var parameters =
-                from p in ProcedureParameters
-                select new DataTypeView(p.VariableName.Value, p.DataType, DataTypeViewType.Parameter);
+            foreach (var v in parameters)
+            {
+                ret[v.Name] = v;
+            }
 
-            ret.AddRange(parameters);
-            ret.AddRange(declares);
+            foreach (var v in declares)
+            {
+                ret[v.Name] = v;
+            }
 
             return ret;
         }
