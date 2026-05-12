@@ -17,12 +17,9 @@ namespace SqlServer.Dac.Visitors
 
         public TypesVisitor(params Type[] typesToLookFor)
         {
-            if (typesToLookFor.Length == 0)
-            {
-                throw new ArgumentNullException(nameof(typesToLookFor));
-            }
-
-            types = new HashSet<Type>(typesToLookFor);
+            types = typesToLookFor is { Length: > 0 }
+                ? new HashSet<Type>(typesToLookFor)
+                : new HashSet<Type>();
         }
 
         public override void Visit(TSqlFragment fragment)
