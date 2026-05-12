@@ -27,7 +27,7 @@ public class TypesVisitorTests
     }
 
     [TestMethod]
-    public void VisitWithNoTypesIsANoop()
+    public void VisitWithNoTypesIsANoOp()
     {
         var visitor = new TypesVisitor();
 
