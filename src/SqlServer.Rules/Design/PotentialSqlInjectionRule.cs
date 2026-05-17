@@ -95,7 +95,8 @@ namespace SqlServer.Rules.Design
                 {
                     if (assignment.Variable != null
                         && assignment.Expression != null
-                        && ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables)
+                        && (ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables) ||
+                            (assignment.Expression is FunctionCall fc && IsConcatFunctionWithTaintedVariable(fc, taintedVariables)))
                         && taintedVariables.Add(assignment.Variable.Name))
                     {
                         changed = true;
@@ -106,7 +107,8 @@ namespace SqlServer.Rules.Design
                 {
                     if (assignment.Variable != null
                         && assignment.Expression != null
-                        && ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables)
+                        && (ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables) ||
+                            (assignment.Expression is FunctionCall fc && IsConcatFunctionWithTaintedVariable(fc, taintedVariables)))
                         && taintedVariables.Add(assignment.Variable.Name))
                     {
                         changed = true;
@@ -117,7 +119,8 @@ namespace SqlServer.Rules.Design
                 {
                     if (declaration.VariableName != null
                         && declaration.Value != null
-                        && ExpressionReferencesTaintedVariable(declaration.Value, taintedVariables)
+                        && (ExpressionReferencesTaintedVariable(declaration.Value, taintedVariables) ||
+                            (declaration.Value is FunctionCall fc && IsConcatFunctionWithTaintedVariable(fc, taintedVariables)))
                         && taintedVariables.Add(declaration.VariableName.Value))
                     {
                         changed = true;
@@ -166,6 +169,30 @@ namespace SqlServer.Rules.Design
             var variableVisitor = new VariableReferenceVisitor();
             expression.Accept(variableVisitor);
             return variableVisitor.Statements.Any(v => taintedVariables.Contains(v.Name));
+        }
+
+        private static bool IsConcatFunctionWithTaintedVariable(FunctionCall functionCall, HashSet<string> taintedVariables)
+        {
+            var functionName = functionCall.FunctionName?.Value;
+            if (string.IsNullOrEmpty(functionName) ||
+                (!functionName!.Equals("CONCAT", StringComparison.OrdinalIgnoreCase) &&
+                 !functionName.Equals("CONCAT_WS", StringComparison.OrdinalIgnoreCase)))
+            {
+                return false;
+            }
+
+            // For CONCAT_WS, the first parameter is the separator, so skip it
+            var parametersToCheck = functionCall.Parameters;
+            if (functionName.Equals("CONCAT_WS", StringComparison.OrdinalIgnoreCase) && parametersToCheck.Count > 0)
+            {
+                parametersToCheck = parametersToCheck.Skip(1).ToList();
+            }
+
+            // Check if any parameter references a tainted variable
+            return parametersToCheck
+                .Where(p => p is ScalarExpression scalarExpr && scalarExpr != null)
+                .Cast<ScalarExpression>()
+                .Any(scalarExpr => ExpressionReferencesTaintedVariable(scalarExpr, taintedVariables));
         }
     }
 }
