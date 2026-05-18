@@ -95,7 +95,8 @@ namespace SqlServer.Rules.Design
                 {
                     if (assignment.Variable != null
                         && assignment.Expression != null
-                        && ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables)
+                        && (ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables) ||
+                            IsConcatFunctionWithTaintedVariable(assignment.Expression, taintedVariables))
                         && taintedVariables.Add(assignment.Variable.Name))
                     {
                         changed = true;
@@ -106,7 +107,8 @@ namespace SqlServer.Rules.Design
                 {
                     if (assignment.Variable != null
                         && assignment.Expression != null
-                        && ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables)
+                        && (ExpressionReferencesTaintedVariable(assignment.Expression, taintedVariables) ||
+                            IsConcatFunctionWithTaintedVariable(assignment.Expression, taintedVariables))
                         && taintedVariables.Add(assignment.Variable.Name))
                     {
                         changed = true;
@@ -117,7 +119,8 @@ namespace SqlServer.Rules.Design
                 {
                     if (declaration.VariableName != null
                         && declaration.Value != null
-                        && ExpressionReferencesTaintedVariable(declaration.Value, taintedVariables)
+                        && (ExpressionReferencesTaintedVariable(declaration.Value, taintedVariables) ||
+                            IsConcatFunctionWithTaintedVariable(declaration.Value, taintedVariables))
                         && taintedVariables.Add(declaration.VariableName.Value))
                     {
                         changed = true;
@@ -166,6 +169,58 @@ namespace SqlServer.Rules.Design
             var variableVisitor = new VariableReferenceVisitor();
             expression.Accept(variableVisitor);
             return variableVisitor.Statements.Any(v => taintedVariables.Contains(v.Name));
+        }
+
+        private static bool IsConcatFunctionWithTaintedVariable(ScalarExpression expression, HashSet<string> taintedVariables)
+        {
+            var visitor = new ConcatFunctionCallVisitor();
+            expression.Accept(visitor);
+
+            if (visitor.Statements.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (var functionCall in visitor.Statements)
+            {
+                var functionName = functionCall.FunctionName?.Value;
+                if (string.IsNullOrEmpty(functionName))
+                {
+                    continue;
+                }
+
+                // For CONCAT_WS, the first parameter is the separator, so skip it
+                IEnumerable<ScalarExpression> parametersToCheck = functionCall.Parameters;
+                if (functionName.Equals("CONCAT_WS", StringComparison.OrdinalIgnoreCase))
+                {
+                    parametersToCheck = parametersToCheck.Skip(1);
+                }
+
+                if (parametersToCheck.Any(parameter => ExpressionReferencesTaintedVariable(parameter, taintedVariables)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private sealed class ConcatFunctionCallVisitor : TSqlFragmentVisitor
+        {
+            public IList<FunctionCall> Statements { get; } = new List<FunctionCall>();
+
+            public override void ExplicitVisit(FunctionCall node)
+            {
+                var functionName = node.FunctionName?.Value;
+                if (!string.IsNullOrEmpty(functionName) &&
+                    (functionName.Equals("CONCAT", StringComparison.OrdinalIgnoreCase) ||
+                     functionName.Equals("CONCAT_WS", StringComparison.OrdinalIgnoreCase)))
+                {
+                    Statements.Add(node);
+                }
+
+                base.ExplicitVisit(node);
+            }
         }
     }
 }
