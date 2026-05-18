@@ -190,9 +190,8 @@ namespace SqlServer.Rules.Design
 
             // Check if any parameter references a tainted variable
             return parametersToCheck
-                .Where(p => p is ScalarExpression scalarExpr && scalarExpr != null)
-                .Cast<ScalarExpression>()
-                .Any(scalarExpr => ExpressionReferencesTaintedVariable(scalarExpr, taintedVariables));
+                .Any(scalarExpr => scalarExpr != null &&
+                                  ExpressionReferencesTaintedVariable(scalarExpr, taintedVariables));
         }
     }
 }
