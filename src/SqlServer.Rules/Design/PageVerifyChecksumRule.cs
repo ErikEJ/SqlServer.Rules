@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Set `<PageVerify>CHECKSUM</PageVerify>` in the project file to enable PAGE_VERIFY = CHECKSUM.";
+        public const string RuleDisplayName = "Set `<PageVerify>CHECKSUM</PageVerify>` in the project file to enable PAGE_VERIFY = CHECKSUM. (Use `<PageVerifyMode>Checksum</PageVerifyMode>` for MSBuild.Sdk.SqlProj projects.)";
 
         /// <summary>
         /// The message

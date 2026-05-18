@@ -32,7 +32,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Set `<QueryStoreDesiredState>READ_WRITE</QueryStoreDesiredState>` in the project file to enable Query Store.";
+        public const string RuleDisplayName = "Set `<QueryStoreDesiredState>READ_WRITE</QueryStoreDesiredState>` in the project file to enable Query Store. (Use `<QueryStoreDesiredState>ReadWrite</QueryStoreDesiredState>` for MSBuild.Sdk.SqlProj projects.)";
 
         /// <summary>
         /// The message
