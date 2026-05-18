@@ -88,7 +88,26 @@ public class SRD0096Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionConcatCleanTest.sql");
 
-        // No problems expected - only literals passed to CONCAT and @param1 is used in CONCAT
+        // No problems expected - only literals are used in dynamic SQL construction
+        RunTest();
+    }
+
+    [TestMethod]
+    public void PotentialSqlInjectionNotDetectedForConcatWSWithLiterals()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionConcatWSCleanTest.sql");
+
+        // No problems expected - only literals are used in dynamic SQL construction
+        RunTest();
+    }
+
+    [TestMethod]
+    public void PotentialSqlInjectionDetectedForConcatPropagation()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionConcatPropagationTest.sql");
+
+        ExpectedProblems.Add(new TestProblem(10, 5, "SqlServer.Rules.SRD0096"));
+
         RunTest();
     }
 }
