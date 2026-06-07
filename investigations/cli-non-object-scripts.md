@@ -197,9 +197,8 @@ All changes are confined to the engine's model-building path plus options:
 ## Implementation (as built)
 
 Option A was implemented as an **always-on, transparent** behavior (sub-option
-A1). No new CLI switch was added; library consumers can opt out via
-`AnalyzerOptions.WrapAdhocBatches` (default `true`). The MCP tool was changed to
-follow the same path.
+A1). No new CLI switch was added; ad-hoc wrapping is applied automatically for
+file and text inputs, including the MCP tool.
 
 - **`Services/BatchWrapper.cs`** (new) — parses the script with `TSql170Parser`
   and, for each `GO`-separated batch whose statements are all in an allow-list of
