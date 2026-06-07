@@ -8,20 +8,15 @@ namespace SqlAnalyzerCli.Services;
 public sealed class AnalyzerTools
 {
     [McpServerTool]
-    [Description("Find design problems and bad practices in a SQL Server CREATE script")]
+    [Description("Analyzes a T-SQL (SQL Server) script for design, naming, and performance problems and bad practices, using the SqlServer.Rules static code-analysis ruleset (the same rules used by DacFx/SSDT). Use this to review or lint SQL such as stored procedures, functions, views, and CREATE/ALTER statements before deploying them. Returns one line per problem found, each describing the rule, the location, and the issue.")]
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public static async Task<string> FindSqlScriptProblems(
-        [Description("The SQL Server CREATE script to find design problems and bad practices in.")] string sqlScript)
+        [Description("The complete T-SQL script to analyze, for example one or more CREATE/ALTER statements for stored procedures, functions, views, or tables. Provide the full script text, not a file path.")] string sqlScript)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         if (string.IsNullOrWhiteSpace(sqlScript))
         {
             return "No script specified, make sure to select one.";
-        }
-
-        if (!sqlScript.Trim().StartsWith("CREATE ", StringComparison.OrdinalIgnoreCase))
-        {
-            return "The script must be an object creation script starting with 'CREATE'";
         }
 
         var factory = new ErikEJ.DacFX.TSQLAnalyzer.AnalyzerFactory(new() { Script = sqlScript });

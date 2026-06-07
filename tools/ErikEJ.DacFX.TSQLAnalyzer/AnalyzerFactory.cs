@@ -57,12 +57,7 @@ public class AnalyzerFactory
 
         result.Analyzers = string.Join(", ", rules.Select(a => a.Namespace).Distinct());
 
-        if (ignoredRules.Count > 0
-                    || ignoredRuleSets.Count > 0)
-        {
-            service.SetProblemSuppressor(p => ignoredRules.Contains(p.Rule.RuleId)
-                || ignoredRuleSets.Any(s => p.Rule.RuleId.StartsWith(s, StringComparison.OrdinalIgnoreCase)));
-        }
+        service.SetProblemSuppressor(IsSuppressed);
 
         var analysisResult = service.Analyze(model);
 
@@ -218,10 +213,10 @@ public class AnalyzerFactory
 
         foreach (var (fileName, fileContents) in files)
         {
-            var options = new TSqlObjectOptions();
+            var contents = BatchWrapper.Wrap(fileContents);
             try
             {
-                model.AddOrUpdateObjects(fileContents, fileName, new TSqlObjectOptions());
+                model.AddOrUpdateObjects(contents, fileName, new TSqlObjectOptions());
             }
             catch (DacModelException dex)
             {
@@ -232,10 +227,10 @@ public class AnalyzerFactory
 
     private static void AddScriptToModel(AnalyzerResult result, TSqlModel model, string script)
     {
-        var options = new TSqlObjectOptions();
+        var contents = BatchWrapper.Wrap(script);
         try
         {
-            model.AddObjects(script, new TSqlObjectOptions());
+            model.AddObjects(contents, new TSqlObjectOptions());
         }
         catch (DacModelException dex)
         {
@@ -251,6 +246,65 @@ public class AnalyzerFactory
                     LoadAsScriptBackedModel = true,
                     ModelStorageType = DacSchemaModelStorageType.Memory,
                 });
+
+    // Rules that only make sense for a real, named programmable object and are therefore pure
+    // noise when raised against the synthetic procedure that wraps an ad-hoc batch.
+    private static readonly HashSet<string> SyntheticObjectShapeRules = new(StringComparer.Ordinal)
+    {
+        "SqlServer.Rules.SRP0005", // SET NOCOUNT ON recommended in stored procedures and triggers
+    };
+
+    private static bool IsNamingRule(string ruleId)
+        => ruleId.Contains(".SRN", StringComparison.OrdinalIgnoreCase)
+            || ruleId.EndsWith("SR0011", StringComparison.Ordinal)
+            || ruleId.EndsWith("SR0012", StringComparison.Ordinal)
+            || ruleId.EndsWith("SR0016", StringComparison.Ordinal);
+
+    private static bool IsSyntheticAdhocElement(TSqlObject? element)
+    {
+        if (element == null)
+        {
+            return false;
+        }
+
+        try
+        {
+            return element.Name?.Parts?.Any(
+                p => p.StartsWith(BatchWrapper.SyntheticObjectPrefix, StringComparison.Ordinal)) == true;
+        }
+#pragma warning disable CA1031 // Do not catch general exception types
+        catch (Exception)
+#pragma warning restore CA1031 // Do not catch general exception types
+        {
+            // Some model elements do not expose a name; treat those as non-synthetic.
+            return false;
+        }
+    }
+
+    private bool IsSuppressed(SqlRuleProblemSuppressionContext context)
+    {
+        var ruleId = context.Rule.RuleId;
+
+        if (ignoredRules.Contains(ruleId))
+        {
+            return true;
+        }
+
+        if (ignoredRuleSets.Any(s => ruleId.StartsWith(s, StringComparison.OrdinalIgnoreCase)))
+        {
+            return true;
+        }
+
+        // Naming and procedure-shape rules raised against the generated wrapper procedure relate to
+        // the synthetic object, not the user's ad-hoc script, so they are dropped as noise.
+        if ((IsNamingRule(ruleId) || SyntheticObjectShapeRules.Contains(ruleId))
+            && IsSyntheticAdhocElement(context.ModelElement))
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     private void BuildRuleLists(string rulesExpression)
     {

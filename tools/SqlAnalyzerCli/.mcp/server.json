@@ -1,13 +1,13 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
-  "description": "Find design problems and bad practices in a SQL Server CREATE script",
+  "description": "Analyzes T-SQL (SQL Server) scripts for design, naming, and performance problems and bad practices using the SqlServer.Rules static code-analysis ruleset, the same rules used by DacFx/SSDT. Lint stored procedures, functions, views, and CREATE/ALTER statements before deployment.",
   "name": "io.github.ErikEJ/SqlServer.Rules",
   "version": "1.1",
   "packages": [
     {
       "registryType": "nuget",
       "identifier": "ErikEJ.DacFX.TSQLAnalyzer.Cli",
-      "version": "1.1",
+      "version": "1.2",
       "registryBaseUrl": "https://api.nuget.org",
       "transport": {
         "type": "stdio"
