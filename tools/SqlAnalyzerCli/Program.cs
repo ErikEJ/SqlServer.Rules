@@ -73,7 +73,9 @@ internal static class Program
             })
           .WithNotParsed(errs => DisplayHelp(parserResult, errs));
 
-        if (!parserResult.Value.NoLogo)
+        var hasHelpError = parserResult.Errors.Any(e => e.Tag == ErrorType.HelpRequestedError || e.Tag == ErrorType.HelpVerbRequestedError);
+
+        if (hasHelpError || (!parserResult.Value?.NoLogo ?? true))
         {
             await PackageService.CheckForPackageUpdateAsync().ConfigureAwait(false);
         }
