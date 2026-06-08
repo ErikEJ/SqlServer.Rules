@@ -204,11 +204,18 @@ internal static class Program
 
         if (result.Result.AnalysisSucceeded)
         {
+            var warnings = new List<string>();
+
             foreach (var err in result.Result.Problems)
             {
                 hadErrors = true;
-                var warning = err.GetOutputMessage(analyzerOptions.Rules);
+                warnings.Add(err.GetOutputMessage(analyzerOptions.Rules));
+            }
 
+            warnings.Sort();
+
+            foreach (var warning in warnings)
+            {
                 if (options.NoLogo)
                 {
                     Console.WriteLine(warning);
