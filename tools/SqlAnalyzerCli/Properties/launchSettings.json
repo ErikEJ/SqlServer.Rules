@@ -2,7 +2,7 @@
   "profiles": {
     "SqlAnalyzerCli": {
       "commandName": "Project",
-      "commandLineArgs": "-i \"C:\\Users\\ErikEjlskovJensen(De\\source\\repos\\Database1\\Database1\\dbo\\Tables\\spAlbum.sql\"",
+      "commandLineArgs": "--help",
       "remoteDebugEnabled": false
     }
   }
