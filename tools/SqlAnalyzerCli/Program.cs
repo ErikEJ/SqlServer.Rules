@@ -212,7 +212,7 @@ internal static class Program
                 warnings.Add(err.GetOutputMessage(analyzerOptions.Rules));
             }
 
-warnings.Sort(StringComparer.Ordinal);
+            warnings.Sort(StringComparer.Ordinal);
 
             foreach (var warning in warnings)
             {
