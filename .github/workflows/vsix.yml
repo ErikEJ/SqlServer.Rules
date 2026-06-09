@@ -37,6 +37,9 @@ jobs:
     - name: Build
       run: msbuild SqlServer.Rules.slnx /property:Configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
 
+    - name: Run Unit Tests
+      run: dotnet test --no-build --configuration Release --verbosity normal
+
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |

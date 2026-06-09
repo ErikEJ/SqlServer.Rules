@@ -5,7 +5,6 @@
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/cli.yml" />
-    <File Path=".github/workflows/pipeline.yml" />
     <File Path=".github/workflows/publish.yml" />
     <File Path=".github/workflows/vsix.yml" />
   </Folder>
