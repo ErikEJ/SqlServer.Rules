@@ -30,13 +30,17 @@ jobs:
         ((Get-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj -Raw) -Replace "0.0.0.0", "${{ env.VERSION }}") | Set-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
       shell: pwsh
 
-    - name: Build
+    - name: Build VS extension
       run: msbuild tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj /property:Configuration=Release
+
+    - name: Build SSMS extension
+      run: msbuild tools/SqlAnalyzerSsms/SqlAnalyzerSsms.csproj /property:Configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
 
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
         mv tools/SqlAnalyzerVsix/bin/Release/net8.0-windows8.0/SqlAnalyzerVsix.vsix SqlAnalyzerVsix-${{ env.VERSION }}.vsix
+        mv tools/SqlAnalyzerSsms/bin/Release/net48/win/SqlAnalyzerSsms.vsix SqlAnalyzerSsms-${{ env.VERSION }}.vsix
 
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
@@ -67,11 +71,24 @@ jobs:
         path: |
           *.vsix
 
-    - name: Publish to Open VSIX Gallery
+    - name: Upload to Open VSIX
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      uses: timheuer/openvsixpublish@v1
+      with:
+        vsix-file: SqlAnalyzerVsix-${{ env.VERSION }}.vsix
+
+    - name: Upload to Open VSIX SSMS
+      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      uses: timheuer/openvsixpublish@v1
+      with:
+        vsix-file: SqlAnalyzerSsms-${{ env.VERSION }}.vsix
+
+    - name: Upload to SSMS Gallery
+      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      shell: cmd
       run: |
-        $ErrorActionPreference='Stop'
-        (new-object Net.WebClient).DownloadString("https://raw.githubusercontent.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1") | iex
-        Vsix-PublishToGallery 
-      shell: pwsh
-      continue-on-error: false
+        if not exist "SqlAnalyzerSsms-${{ env.VERSION }}.vsix" (
+          echo ERROR: Expected VSIX not found: SqlAnalyzerSsms-${{ env.VERSION }}.vsix
+          exit /b 1
+        )
+        curl --fail --show-error "https://ssmsgallery.azurewebsites.net/api/upload" -F "file=@SqlAnalyzerSsms-${{ env.VERSION }}.vsix"
