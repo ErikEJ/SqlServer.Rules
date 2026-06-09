@@ -239,11 +239,12 @@ internal class AnalyzerUtilities
             return null;
         }
 
-        var parts = outputLine.Split([": "], StringSplitOptions.RemoveEmptyEntries);
+        var parts = outputLine.Split([": "], 3, StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length < 3)
         {
             return null;
+        }
         }
 
         // C:\Users\ErikEjlskovJensen(De\AppData\Local\Temp\tsqlanalyzerscratch.sql(23,1): SqlServer.Rules.SRN0007 : Index 'IFK_EmployeeReportsTo' does not follow the company naming standard. Please use a format that starts with IX_Employee*. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Naming/SRN0007.md)
