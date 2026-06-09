@@ -28,6 +28,8 @@ jobs:
     - name: Update Version
       run: |
         ((Get-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj -Raw) -Replace "0.0.0.0", "${{ env.VERSION }}") | Set-Content -Path tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj
+        ((Get-Content -Path tools/SqlAnalyzerSsms/source.extension.vsixmanifest -Raw) -Replace "1.0.0", "${{ env.VERSION }}") | Set-Content -Path tools/SqlAnalyzerSsms/source.extension.vsixmanifest
+
       shell: pwsh
 
     - name: Build VS extension
