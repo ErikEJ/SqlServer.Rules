@@ -45,7 +45,8 @@
       <Deploy />
     </Project>
     <Project Path="tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj">
-      <Build Project="false" />
+      <Build Solution="Release|*" Project="false" />
+      <Deploy Solution="Debug|*" />
     </Project>
     <Project Path="tools/SqlServer.Rules.DocsGenerator/SqlServer.Rules.DocsGenerator.csproj" />
     <Project Path="tools/SqlServer.Rules.Generator/SqlServer.Rules.Generator.csproj" />
