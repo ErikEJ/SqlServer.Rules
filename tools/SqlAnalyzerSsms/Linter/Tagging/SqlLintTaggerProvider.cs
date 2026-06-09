@@ -33,8 +33,9 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 return null;
             }
 
-            if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document)
-                && (!document.FilePath?.EndsWith(".sql", StringComparison.OrdinalIgnoreCase) ?? true))
+            if (!buffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document)
+                || string.IsNullOrEmpty(document.FilePath)
+                || !document.FilePath.EndsWith(".sql", StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
