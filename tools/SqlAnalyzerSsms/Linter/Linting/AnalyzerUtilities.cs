@@ -143,8 +143,8 @@ internal class AnalyzerUtilities
 
         analyzer.StartInfo = new ProcessStartInfo()
         {
-            FileName = "tsqlanalyze",
-            Arguments = args,
+            FileName = "cmd.exe",
+            Arguments = $"/c tsqlanalyze {args}",
             RedirectStandardOutput = true,
             UseShellExecute = false,
             CreateNoWindow = true,
