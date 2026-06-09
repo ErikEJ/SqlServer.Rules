@@ -1,7 +1,6 @@
-using System;
+#nullable enable
+
 using System.ComponentModel.Composition;
-using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -59,6 +58,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 {
                     return;
                 }
+
                 var currentProject = await VS.Solutions.GetActiveProjectAsync();
 
                 if (currentProject != null)

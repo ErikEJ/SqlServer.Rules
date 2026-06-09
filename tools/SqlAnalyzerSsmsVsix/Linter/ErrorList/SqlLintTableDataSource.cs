@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 using SqlAnalyzerSsms.Linter.Linting;
+using SqlAnalyzerSsmsVsix;
 
 namespace SqlAnalyzerSsms.Linter.ErrorList
 {

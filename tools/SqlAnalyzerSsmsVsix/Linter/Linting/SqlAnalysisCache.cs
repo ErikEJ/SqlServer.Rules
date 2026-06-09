@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 
 namespace SqlAnalyzerSsms.Linter.Linting

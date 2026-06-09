@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
@@ -10,6 +10,8 @@
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <VsixDeployOnDebug>true</VsixDeployOnDebug>
     <UseCodebase>true</UseCodebase>    
+    <CopyVsixExtensionFiles Condition="'$(Configuration)' == 'Debug'">True</CopyVsixExtensionFiles>
+    <CopyVsixExtensionLocation Condition="'$(Configuration)' == 'Debug'">C:\Program Files\Microsoft SQL Server Management Studio 22\Release\Common7\IDE\Extensions\SdkSqlAnalyzer</CopyVsixExtensionLocation>
   </PropertyGroup>
   <ItemGroup>
     <ProjectCapability Include="CreateVsixContainer" />
@@ -21,6 +23,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.14.40265" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="18.5.40034" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 
   <!-- Auto-generated files (use Update because SDK auto-includes *.cs) -->
