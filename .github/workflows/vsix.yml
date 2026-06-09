@@ -44,7 +44,7 @@ jobs:
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
         mv tools/SqlAnalyzerVsix/bin/Release/net8.0-windows8.0/SqlAnalyzerVsix.vsix SqlAnalyzerVsix-${{ env.VERSION }}.vsix
-        mv tools/SqlAnalyzerSsms/bin/Release/net48/win/SqlAnalyzerSsms.vsix SqlAnalyzerSsms-${{ env.VERSION }}.vsix
+        mv tools/SqlAnalyzerSsms/bin/Release/net48/SqlAnalyzerSsms.vsix SqlAnalyzerSsms-${{ env.VERSION }}.vsix
 
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
