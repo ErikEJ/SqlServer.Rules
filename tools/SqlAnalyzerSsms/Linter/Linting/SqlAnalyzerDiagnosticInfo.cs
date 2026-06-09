@@ -16,7 +16,7 @@ public class SqlAnalyzerDiagnosticInfo
     /// <param name="message">Message to be presented with the diagnostic.</param>
     /// <param name="errorCode">Unique error code of this type of diagnostic.</param>
     /// <param name="helpLink">Help URL</param>
-    public SqlAnalyzerDiagnosticInfo(Range range, string message, string errorCode, Uri helpLink)
+    public SqlAnalyzerDiagnosticInfo(Range range, string message, string errorCode, Uri? helpLink)
     {
         this.Range = range;
         this.Message = message;
@@ -24,8 +24,7 @@ public class SqlAnalyzerDiagnosticInfo
         this.HelpLink = helpLink;
     }
 
-    public Uri HelpLink { get; set; }
-
+    public Uri? HelpLink { get; set; }
     /// <summary>
     /// Gets the range of the diagnostic.
     /// </summary>
