@@ -5,7 +5,6 @@
   </Folder>
   <Folder Name="/.github/workflows/">
     <File Path=".github/workflows/cli.yml" />
-    <File Path=".github/workflows/pipeline.yml" />
     <File Path=".github/workflows/publish.yml" />
     <File Path=".github/workflows/vsix.yml" />
   </Folder>
@@ -41,8 +40,11 @@
   <Folder Name="/tools/">
     <Project Path="tools/ErikEJ.DacFX.TSQLAnalyzer/ErikEJ.DacFX.TSQLAnalyzer.csproj" />
     <Project Path="tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj" />
+    <Project Path="tools/SqlAnalyzerSsms/SqlAnalyzerSsms.csproj" Id="aacc3286-092d-4665-878d-a1d320260515">
+      <Deploy />
+    </Project>
     <Project Path="tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj">
-      <Build Project="false" />
+      <Deploy Solution="Debug|*" />
     </Project>
     <Project Path="tools/SqlServer.Rules.DocsGenerator/SqlServer.Rules.DocsGenerator.csproj" />
     <Project Path="tools/SqlServer.Rules.Generator/SqlServer.Rules.Generator.csproj" />

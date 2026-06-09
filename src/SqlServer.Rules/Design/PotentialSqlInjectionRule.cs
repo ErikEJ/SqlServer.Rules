@@ -191,7 +191,7 @@ namespace SqlServer.Rules.Design
 
                 // For CONCAT_WS, the first parameter is the separator, so skip it
                 IEnumerable<ScalarExpression> parametersToCheck = functionCall.Parameters;
-                if (functionName.Equals("CONCAT_WS", StringComparison.OrdinalIgnoreCase))
+                if (functionName!.Equals("CONCAT_WS", StringComparison.OrdinalIgnoreCase))
                 {
                     parametersToCheck = parametersToCheck.Skip(1);
                 }
@@ -212,8 +212,9 @@ namespace SqlServer.Rules.Design
             public override void ExplicitVisit(FunctionCall node)
             {
                 var functionName = node.FunctionName?.Value;
+
                 if (!string.IsNullOrEmpty(functionName) &&
-                    (functionName.Equals("CONCAT", StringComparison.OrdinalIgnoreCase) ||
+                    (functionName!.Equals("CONCAT", StringComparison.OrdinalIgnoreCase) ||
                      functionName.Equals("CONCAT_WS", StringComparison.OrdinalIgnoreCase)))
                 {
                     Statements.Add(node);
