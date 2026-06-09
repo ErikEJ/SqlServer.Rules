@@ -76,6 +76,6 @@ namespace SqlAnalyzerSsms.Linter.Tagging
             }
         }
 
-        private static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
+        private static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_' || c == '[';
     }
 }
