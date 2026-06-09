@@ -53,11 +53,11 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                 var options = await ToolOptions.GetLiveInstanceAsync();
-                if (options.DisableCodeAnalysis)
+                enabled = !options.DisableCodeAnalysis;
+                if (!enabled)
                 {
                     return;
                 }
-
                 var currentProject = await VS.Solutions.GetActiveProjectAsync();
 
                 if (currentProject != null)

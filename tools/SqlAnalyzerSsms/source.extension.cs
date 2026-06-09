@@ -8,13 +8,13 @@ namespace SqlAnalyzerSsms
 {
     internal sealed partial class Vsix
     {
-        public const string Id = "SqlProjectsPowerTools.SSMS.D7DABDC8-FE46-4DA4-BED8-2EAF1A2A578D";
-        public const string Name = "SQL Database Project Power Tools for SSMS";
-        public const string Description = @"Tools to enhance the SQL Database Projects experience in SSMS, including import of existing databases, compare schemas, create E-R diagrams and much more.";
+        public const string Id = "TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d";
+        public const string Name = "T-SQL Analyzer for SSMS";
+        public const string Description = @"Live T-SQL static code analysis - checks for bad practices relating to design, naming, performance and security.";
         public const string Language = "en-US";
         public const string Version = "1.0.0";
         public const string Author = "ErikEJ";
         public const string Tags = "";
-        public const bool IsPreview = true;
+        public const bool IsPreview = false;
     }
 }

@@ -36,7 +36,7 @@ jobs:
       run: msbuild tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj /property:Configuration=Release
 
     - name: Build SSMS extension
-      run: msbuild tools/SqlAnalyzerSsms/SqlAnalyzerSsms.csproj /property:Configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
+      run: msbuild tools/SqlAnalyzerSsms/SqlAnalyzerSsms.csproj /restore /property:Configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
 
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')

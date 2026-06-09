@@ -32,7 +32,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
             _analysisCache = analysisCache ?? throw new ArgumentNullException(nameof(analysisCache));
             _currentSnapshot = buffer.CurrentSnapshot;
             _currentResults = [];
-            _filePath = GetFilePath();
+            _filePath = GetFilePath() ?? throw new InvalidOperationException("No file path available for current buffer.");
             _sqlVersion = sqlVersion;
             _rules = rules;
             _projectName = projectName;
