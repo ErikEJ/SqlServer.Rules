@@ -41,6 +41,9 @@
   <Folder Name="/tools/">
     <Project Path="tools/ErikEJ.DacFX.TSQLAnalyzer/ErikEJ.DacFX.TSQLAnalyzer.csproj" />
     <Project Path="tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj" />
+    <Project Path="tools/SqlAnalyzerSsms/SqlAnalyzerSsms.csproj" Id="aacc3286-092d-4665-878d-a1d320260515">
+      <Deploy />
+    </Project>
     <Project Path="tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj">
       <Build Project="false" />
     </Project>
