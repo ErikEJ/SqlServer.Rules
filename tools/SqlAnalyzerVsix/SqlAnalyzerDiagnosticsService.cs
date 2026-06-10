@@ -244,5 +244,5 @@ internal class SqlAnalyzerDiagnosticsService : DisposableObject
 
         return (runAnalyzer, usedRules, sqlVersionFinal);
     }
-}}
+}
 #pragma warning restore VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
