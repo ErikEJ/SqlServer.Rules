@@ -28,7 +28,12 @@ internal class AnalyzerUtilities
         using var analyzer = new Process();
         var lineQueue = new AsyncQueue<string>();
 
-        if (text?.Length > 8192)
+        if (text == null)
+        {
+            return [];
+        }
+
+        if (text.Length > 8192)
         {
             // SQL analyzer has issues processing very large files.
             return [];
