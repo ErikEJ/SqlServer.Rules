@@ -11,6 +11,13 @@
     <VsixDeployOnDebug>true</VsixDeployOnDebug>
     <UseCodebase>true</UseCodebase>    
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="sql-analysis.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>false</Pack>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="CreateVsixContainer" />
   </ItemGroup>
@@ -21,6 +28,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.14.40265" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="18.5.40034" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 
   <!-- Auto-generated files (use Update because SDK auto-includes *.cs) -->

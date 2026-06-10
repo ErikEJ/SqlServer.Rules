@@ -1,5 +1,5 @@
 using System;
-using System.Composition;
+using System.ComponentModel.Composition;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
