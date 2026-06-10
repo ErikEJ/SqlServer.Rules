@@ -26,10 +26,10 @@ The extension will respect any rule configuration you have in your SQL project, 
     <TargetFramework>net8.0</TargetFramework>
     <SqlServerVersion>Sql170</SqlServerVersion>
     <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
-    <CodeAnalysisRules>-SqlServer.Rules.SRD0006;-Smells.*</CodeAnalysisRules>
+    <CodeAnalysisRules>-SqlServer.Rules.SRD0006;-Microsoft.*</CodeAnalysisRules>
     <!-- This property can be added to your .sqlproj file to support wildcard rule filters, -->
     <!-- will override'CodeAnalysisRules' above if present -->
-    <AnalyzerCodeAnalysisRules>-SqlServer.Rules.SRD0006;-Smells.*</AnalyzerCodeAnalysisRules>
+    <AnalyzerCodeAnalysisRules>-SqlServer.Rules.SRD0006;-Microsoft.*</AnalyzerCodeAnalysisRules>
   </PropertyGroup>
 </Project>
 ```
