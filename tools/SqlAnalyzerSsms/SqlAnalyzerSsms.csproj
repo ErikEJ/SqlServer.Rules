@@ -11,6 +11,13 @@
     <VsixDeployOnDebug>true</VsixDeployOnDebug>
     <UseCodebase>true</UseCodebase>    
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="sql-analysis.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>false</Pack>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="CreateVsixContainer" />
   </ItemGroup>
