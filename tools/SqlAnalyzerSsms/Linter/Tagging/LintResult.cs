@@ -1,6 +1,6 @@
+using System;
 using Microsoft.VisualStudio.Text;
 using SqlAnalyzerSsms.Linter.Linting;
-using System;
 
 namespace SqlAnalyzerSsms.Linter.Tagging
 {

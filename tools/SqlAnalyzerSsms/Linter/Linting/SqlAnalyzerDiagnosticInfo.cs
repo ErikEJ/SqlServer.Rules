@@ -5,7 +5,6 @@ namespace SqlAnalyzerSsms.Linter.Linting;
 
 /// <summary>
 /// Class that contains diagnostic information found by the SQL analyzer.
-/// Holds information to be converted to a <see cref="DocumentDiagnostic"/>.
 /// </summary>
 public class SqlAnalyzerDiagnosticInfo
 {
@@ -25,6 +24,7 @@ public class SqlAnalyzerDiagnosticInfo
     }
 
     public Uri? HelpLink { get; set; }
+
     /// <summary>
     /// Gets the range of the diagnostic.
     /// </summary>

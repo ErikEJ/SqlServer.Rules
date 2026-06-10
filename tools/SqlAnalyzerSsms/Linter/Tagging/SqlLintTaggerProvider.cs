@@ -59,6 +59,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 {
                     return;
                 }
+
                 var currentProject = await VS.Solutions.GetActiveProjectAsync();
 
                 if (currentProject != null)
