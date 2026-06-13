@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 using SqlAnalyzerSsms.Linter.Linting;
 
+#pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
+#pragma warning disable IDE1006 // Naming rule violation
 namespace SqlAnalyzerSsms.Linter.ErrorList
 {
     /// <summary>
@@ -177,3 +179,5 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         }
     }
 }
+#pragma warning restore SA1309 // Field names should not begin with underscore
+#pragma warning restore IDE1006 // Naming rule violation

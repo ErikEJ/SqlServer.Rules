@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using SqlAnalyzerSsms.Linter.Linting;
 
+#pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
+#pragma warning disable IDE1006 // Naming rule violation
 namespace SqlAnalyzerSsms.Linter.Tagging
 {
     /// <summary>
@@ -16,13 +18,13 @@ namespace SqlAnalyzerSsms.Linter.Tagging
         private readonly ITextBuffer _buffer;
         private readonly SqlAnalysisCache _analysisCache;
         private readonly string _filePath;
-        private ITextSnapshot _currentSnapshot;
-        private List<LintResult> _currentResults;
-        private bool _isDisposed;
         private readonly object _lock = new();
         private readonly string _sqlVersion;
         private readonly string _rules;
         private readonly string _projectName;
+        private ITextSnapshot _currentSnapshot;
+        private List<LintResult> _currentResults;
+        private bool _isDisposed;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
@@ -177,3 +179,5 @@ namespace SqlAnalyzerSsms.Linter.Tagging
         }
     }
 }
+#pragma warning restore SA1309 // Field names should not begin with underscore
+#pragma warning restore IDE1006 // Naming rule violation

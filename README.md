@@ -3,7 +3,7 @@
 
 # Static Analysis Rule-sets for SQL Projects
 
-![build status](https://img.shields.io/github/actions/workflow/status/ErikEJ/SqlServer.Rules/pipeline.yml?master) [![latest version](https://img.shields.io/nuget/v/ErikEJ.DacFX.SqlServer.Rules)](https://www.nuget.org/packages/ErikEJ.DacFX.SqlServer.Rules) ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
+![build status](https://img.shields.io/github/actions/workflow/status/ErikEJ/SqlServer.Rules/vsix.yml?master) [![latest version](https://img.shields.io/nuget/v/ErikEJ.DacFX.SqlServer.Rules)](https://www.nuget.org/packages/ErikEJ.DacFX.SqlServer.Rules) ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
 
 ## Overview
 

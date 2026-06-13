@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 
+#pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
 namespace SqlAnalyzerSsms.Linter.Linting
 {
     /// <summary>
@@ -50,10 +51,6 @@ namespace SqlAnalyzerSsms.Linter.Linting
             PerformAnalysisNowAsync(buffer, filePath, sqlVersion, rules, projectName, snapshot, text, pendingAnalysis.CancellationTokenSource.Token).FireAndForget();
         }
 
-        /// <summary>
-        /// Triggers debounced analysis on a background thread. Waits for a pause in typing before analyzing to reduce
-        /// CPU usage. Use this when the buffer content changes during editing.
-        /// </summary>
         public void InvalidateAndAnalyze(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName)
         {
             // Cancel any pending analysis for this buffer
@@ -137,10 +134,12 @@ namespace SqlAnalyzerSsms.Linter.Linting
             {
                 // Analysis was cancelled — don't update cache or notify listeners
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
             {
                 ex.Log("Script analysis failed: " + ex.Message);
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         /// <summary>
@@ -185,3 +184,4 @@ namespace SqlAnalyzerSsms.Linter.Linting
         }
     }
 }
+#pragma warning restore SA1309 // Field names should not begin with underscore
