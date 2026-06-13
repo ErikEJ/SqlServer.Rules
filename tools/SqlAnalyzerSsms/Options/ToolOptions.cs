@@ -19,7 +19,7 @@ namespace SqlAnalyzerSsms.Options
 
         [Category("Code Analysis")]
         [DisplayName(@"Code Analysis rule settings")]
-        [Description("Set the rules expression for live static SQL code analysis, for example: '-SqlServer.Rules.SRD0006;-SqlServer.Rules.SRN*'")]
+        [Description("Set the rules expression for live static SQL code analysis when no SQL project rule configuration is available (for example: '-SqlServer.Rules.SRD0006;-SqlServer.Rules.SRN*').")]
         [DefaultValue(null)]
         public string? CodeAnalysisRuleSettings { get; set; }
     }
