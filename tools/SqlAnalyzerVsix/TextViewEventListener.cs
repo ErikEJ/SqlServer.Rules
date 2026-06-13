@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Extensibility.Editor;
 /// Listener for text view lifetime events to start analyzer on new documents or changed documents.
 /// </summary>
 [VisualStudioContribution]
-internal class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListener, ITextViewChangedListener
+internal sealed class TextViewEventListener : ExtensionPart, ITextViewOpenClosedListener, ITextViewChangedListener
 {
 #pragma warning disable CA2213 // This is an extension scoped service.
     private readonly SqlAnalyzerDiagnosticsService diagnosticsProvider;

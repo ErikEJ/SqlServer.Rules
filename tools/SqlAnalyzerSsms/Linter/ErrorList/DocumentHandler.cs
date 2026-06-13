@@ -1,7 +1,9 @@
+using System;
 using Microsoft.VisualStudio.Text.Editor;
 using SqlAnalyzerSsms.Linter.Linting;
-using System;
 
+#pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
+#pragma warning disable IDE1006 // Naming rule violation
 namespace SqlAnalyzerSsms.Linter.ErrorList
 {
     /// <summary>
@@ -55,3 +57,5 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         }
     }
 }
+#pragma warning restore SA1309 // Field names should not begin with underscore
+#pragma warning restore IDE1006 // Naming rule violation

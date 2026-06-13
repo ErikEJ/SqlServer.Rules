@@ -30,7 +30,9 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return;
             }
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
             var handler = new DocumentHandler(textView, TableDataSource, AnalysisCache, filePath);
+#pragma warning restore CA2000 // Dispose objects before losing scope
             textView.Closed += (s, e) => handler.Dispose();
         }
 

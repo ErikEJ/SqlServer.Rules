@@ -20,7 +20,7 @@ namespace SqlAnalyzer;
 /// <summary>
 /// Helper class for running analyzer on a string or file.
 /// </summary>
-internal class AnalyzerUtilities
+internal sealed class AnalyzerUtilities
 {
     private string tempPath = Path.Combine(Path.GetTempPath(), "tsqlanalyzerscratch.sql");
 

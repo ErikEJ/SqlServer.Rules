@@ -11,10 +11,9 @@ using Microsoft.VisualStudio.Threading;
 
 namespace SqlAnalyzerSsms.Linter.Linting;
 
-/// <summary>
-/// Helper class for running analyzer on a string or file.
-/// </summary>
-internal class AnalyzerUtilities
+#pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
+#pragma warning disable IDE1006 // Naming rule violation
+internal sealed class AnalyzerUtilities
 {
     private static readonly Lazy<AnalyzerUtilities> _instance =
             new(() => new AnalyzerUtilities(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
@@ -292,3 +291,5 @@ internal class AnalyzerUtilities
         );
     }
 }
+#pragma warning restore SA1309 // Field names should not begin with underscore
+#pragma warning restore IDE1006 // Naming rule violation

@@ -20,7 +20,7 @@ namespace SqlAnalyzer;
 /// </summary>
 /// <remarks>For a sample ingestion of this service, see <see cref="TextViewEventListener"/> constructor.</remarks>
 #pragma warning disable VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
-internal class SqlAnalyzerDiagnosticsService : DisposableObject
+internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 {
 #pragma warning disable CA2213 // Disposable fields should be disposed, object now owned by this instance.
     private readonly VisualStudioExtensibility extensibility;

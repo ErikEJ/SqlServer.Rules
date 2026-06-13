@@ -17,7 +17,7 @@ namespace SqlAnalyzer;
 /// This command utilizes <see cref="CommandConfiguration.EnabledWhen"/> to describe when command state is enabled.
 /// </remarks>
 [VisualStudioContribution]
-internal class RunAnalyzerOnCurrentFileCommand : Command
+internal sealed class RunAnalyzerOnCurrentFileCommand : Command
 {
     private readonly TraceSource logger;
 

@@ -1,5 +1,5 @@
-using Microsoft.VisualStudio.Shell.TableManager;
 using System;
+using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace SqlAnalyzerSsms.Linter.ErrorList
 {
