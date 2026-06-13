@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
@@ -13,6 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="license.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="license.txt" />
     <Content Include="sql-analysis.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>false</Pack>
