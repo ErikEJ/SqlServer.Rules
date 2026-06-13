@@ -103,7 +103,16 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
             if (newSnapshot != null)
             {
-                NotifySinks(sink => sink.AddSnapshot(newSnapshot));
+                bool isCurrent;
+                lock (_snapshots)
+                {
+                    isCurrent = _snapshots.TryGetValue(filePath, out var current) && ReferenceEquals(current, newSnapshot);
+                }
+
+                if (isCurrent)
+                {
+                    NotifySinks(sink => sink.AddSnapshot(newSnapshot));
+                }
             }
         }
 
