@@ -4,6 +4,8 @@
     <Identity Id="TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d" Version="1.0.0" Language="en-US" Publisher="ErikEJ" />
     <DisplayName>T-SQL Analyzer for SSMS</DisplayName>
     <Description>Live T-SQL static code analysis - checks for bad practices relating to design, naming, performance and security.</Description>
+    <MoreInfo>https://github.com/ErikEJ/SqlServer.Rules/</MoreInfo>
+    <License>license.txt</License>
     <Icon>sql-analysis.png</Icon>
     <Preview>true</Preview>
   </Metadata>

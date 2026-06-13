@@ -45,7 +45,6 @@ namespace SqlAnalyzerSsms.Linter.Tagging
             // TODO Update when new version is available
             var sqlVersion = "Sql170";
 
-            // TODO Enable user to set this in Options
             var rules = string.Empty;
             var projectName = string.Empty;
 
@@ -69,6 +68,13 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                     enabled = runProperties.Run;
                     sqlVersion = runProperties.SqlVersion;
                     rules = runProperties.Rules;
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(options.CodeAnalysisRuleSettings))
+                    {
+                        rules = options.CodeAnalysisRuleSettings;
+                    }
                 }
             });
 
