@@ -44,6 +44,14 @@
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\net472\SqlServer.Rules.NetFx.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
   </ItemGroup>
 
+  <!-- Include MSBuild props and targets for classic .sqlproj support -->
+  <ItemGroup>
+    <None Include="build\ErikEJ.DacFX.SqlServer.Rules.props" Pack="true" PackagePath="build" />
+    <None Include="build\ErikEJ.DacFX.SqlServer.Rules.targets" Pack="true" PackagePath="build" />
+    <None Include="buildTransitive\ErikEJ.DacFX.SqlServer.Rules.props" Pack="true" PackagePath="buildTransitive" />
+    <None Include="buildTransitive\ErikEJ.DacFX.SqlServer.Rules.targets" Pack="true" PackagePath="buildTransitive" />
+  </ItemGroup>
+
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(TargetFramework)' == 'net472' And '$(OS)' == 'Windows_NT' ">
       copy SqlServer.Rules.dll SqlServer.Rules.NetFx.dll
