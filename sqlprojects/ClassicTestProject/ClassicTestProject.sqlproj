@@ -52,9 +52,10 @@
     <SqlCodeAnalysisRules>+!Microsoft.Rules.Data.SR0001</SqlCodeAnalysisRules>
   </PropertyGroup>
 
-  <!-- Test: Try to reference the SqlServer.Rules NuGet package -->
-  <!-- This would normally be done through PackageReference or packages.config -->
-  
+  <!-- Reference the SqlServer.Rules NuGet package -->
+  <ItemGroup>
+    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="5.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
