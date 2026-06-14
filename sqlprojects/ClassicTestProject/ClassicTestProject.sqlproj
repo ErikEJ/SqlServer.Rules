@@ -49,7 +49,6 @@
   
   <!-- Code Analysis Configuration -->
   <PropertyGroup>
-    <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
     <SqlCodeAnalysisRules>+!Microsoft.Rules.Data.SR0001</SqlCodeAnalysisRules>
   </PropertyGroup>
 
