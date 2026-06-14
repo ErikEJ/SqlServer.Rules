@@ -9,9 +9,9 @@
 
 A library of SQL best practices implemented as more than 130 [database code analysis rules](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html) checked at build time.
 
-The rules can be added as NuGet packages to modern SQL Database projects based on either [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx).
-
-You can also download and manually use the rules with Visual Studio and "classic" SQL Database projects, as described in my [blog post here](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html#addrules).
+The rules can be added as NuGet packages to SQL Database projects:
+- **Modern SDK-style projects**: [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) and [Microsoft.Build.Sql](https://github.com/microsoft/DacFx)
+- **Classic .sqlproj**: Legacy SSDT projects with automatic configuration through MSBuild props/targets (Visual Studio 2017+ required)
 
 For a complete list of the current rules we have implemented see [here](docs/readme.md).
 
@@ -23,7 +23,29 @@ The latest version is available on NuGet
 dotnet add package ErikEJ.DacFX.SqlServer.Rules
 ```
 
+### Modern SDK-style Projects
+
 You can read more about using and customizing the rules in the [readme here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
+
+### Classic .sqlproj Projects
+
+The NuGet package now supports classic .sqlproj files through MSBuild props and targets. Simply add the package reference to your project:
+
+**Using PackageReference** (Visual Studio 2017+):
+```xml
+<ItemGroup>
+  <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="5.0.0" />
+</ItemGroup>
+```
+
+**Using packages.config**:
+```powershell
+Install-Package ErikEJ.DacFX.SqlServer.Rules
+```
+
+Code analysis will automatically run during build. No manual installation of DLLs required!
+
+For more details on classic .sqlproj support, see the [investigation documentation](investigations/issue-564-classic-sqlproj-nuget.md).
 
 ## Command line tool - T-SQL Analyzer CLI
 
