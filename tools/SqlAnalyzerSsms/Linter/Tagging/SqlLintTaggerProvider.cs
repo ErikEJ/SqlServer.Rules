@@ -83,6 +83,9 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 return null;
             }
 
+            var logEx = new InvalidCastException("Project: " + projectName + ", SQL Version: " + sqlVersion + ", Rules: " + rules);
+            logEx.Log();
+
             return buffer.Properties.GetOrCreateSingletonProperty(
                 typeof(SqlLintTagger),
                 () => new SqlLintTagger(buffer, AnalysisCache, sqlVersion, rules, projectName)) as ITagger<T>;
