@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Define the path to the SqlServer.Rules analyzer assemblies -->
+    <SqlServerRulesAnalyzerPath Condition="'$(DSP)' != '' And '$(SqlServerRulesAnalyzerPath)' == ''">$(MSBuildThisFileDirectory)..\analyzers\dotnet\cs</SqlServerRulesAnalyzerPath>
+  </PropertyGroup>
+
+  <!-- 
+    Add analyzer assemblies to code analysis for classic .sqlproj files.
+    Classic .sqlproj files are identified by the presence of the DSP property.
+    
+    For .NET Framework-based builds (classic SSDT), use SqlServer.Rules.NetFx.dll
+    For .NET Core/Standard builds (newer tools), use SqlServer.Rules.dll
+  -->
+  <ItemGroup Condition="'$(DSP)' != ''">
+    <!-- Prefer the .NET Framework version for classic .sqlproj -->
+    <SqlCodeAnalysisPath Include="$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll" Condition="Exists('$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll')" />
+    <!-- Fallback to .NET Standard version if .NET Framework version is not available -->
+    <SqlCodeAnalysisPath Include="$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.dll" Condition="!Exists('$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll') And Exists('$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.dll')" />
+  </ItemGroup>
+
+  <!-- Diagnostic message to help users understand if the analyzers are being loaded -->
+  <Target Name="SqlServerRulesInfo" BeforeTargets="Build" Condition="'$(DSP)' != '' And '$(SqlServerRulesVerbose)' == 'True'">
+    <Message Text="SqlServer.Rules: Analyzer path = $(SqlServerRulesAnalyzerPath)" Importance="high" />
+    <Message Text="SqlServer.Rules: RunSqlCodeAnalysis = $(RunSqlCodeAnalysis)" Importance="high" />
+    <Message Text="SqlServer.Rules: Loaded analyzers: @(SqlCodeAnalysisPath)" Importance="high" />
+  </Target>
+</Project>
