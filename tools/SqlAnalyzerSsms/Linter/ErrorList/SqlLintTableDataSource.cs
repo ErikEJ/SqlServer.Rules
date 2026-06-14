@@ -79,41 +79,19 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
             var errors = violations.Select(v => new SqlLintError(v, filePath, projectName)).ToList();
 
-            TableEntriesSnapshot? oldSnapshot = null;
-            TableEntriesSnapshot? newSnapshot = null;
-
             lock (_snapshots)
             {
-                _snapshots.TryGetValue(filePath, out oldSnapshot);
-                if (oldSnapshot != null)
+                if (_snapshots.TryGetValue(filePath, out TableEntriesSnapshot oldSnapshot))
                 {
                     _snapshots.Remove(filePath);
+                    NotifySinks(sink => sink.RemoveSnapshot(oldSnapshot));
                 }
 
                 if (errors.Count > 0)
                 {
-                    newSnapshot = new TableEntriesSnapshot(filePath, errors);
-                    _snapshots[filePath] = newSnapshot;
-                }
-            }
-
-            // Notify sinks outside the lock to avoid potential deadlocks
-            if (oldSnapshot != null)
-            {
-                NotifySinks(sink => sink.RemoveSnapshot(oldSnapshot));
-            }
-
-            if (newSnapshot != null)
-            {
-                bool isCurrent;
-                lock (_snapshots)
-                {
-                    isCurrent = _snapshots.TryGetValue(filePath, out var current) && ReferenceEquals(current, newSnapshot);
-                }
-
-                if (isCurrent)
-                {
-                    NotifySinks(sink => sink.AddSnapshot(newSnapshot));
+                    var snapshot = new TableEntriesSnapshot(filePath, errors);
+                    _snapshots[filePath] = snapshot;
+                    NotifySinks(sink => sink.AddSnapshot(snapshot));
                 }
             }
         }
@@ -125,37 +103,26 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return;
             }
 
-            TableEntriesSnapshot? snapshot = null;
-
             lock (_snapshots)
             {
-                if (_snapshots.TryGetValue(filePath, out snapshot))
+                if (_snapshots.TryGetValue(filePath, out TableEntriesSnapshot snapshot))
                 {
                     _snapshots.Remove(filePath);
+                    NotifySinks(sink => sink.RemoveSnapshot(snapshot));
                 }
-            }
-
-            // Notify sinks outside the lock to avoid potential deadlocks
-            if (snapshot != null)
-            {
-                NotifySinks(sink => sink.RemoveSnapshot(snapshot));
             }
         }
 
         public void ClearAllErrors()
         {
-            List<TableEntriesSnapshot> snapshotsToRemove;
-
             lock (_snapshots)
             {
-                snapshotsToRemove = new List<TableEntriesSnapshot>(_snapshots.Values);
-                _snapshots.Clear();
-            }
+                foreach (TableEntriesSnapshot snapshot in _snapshots.Values)
+                {
+                    NotifySinks(sink => sink.RemoveSnapshot(snapshot));
+                }
 
-            // Notify sinks outside the lock to avoid potential deadlocks
-            foreach (TableEntriesSnapshot snapshot in snapshotsToRemove)
-            {
-                NotifySinks(sink => sink.RemoveSnapshot(snapshot));
+                _snapshots.Clear();
             }
         }
 
