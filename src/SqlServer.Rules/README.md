@@ -42,9 +42,9 @@ If your classic SSDT project does not consume the package directly, you can manu
 </ItemGroup>
 
 <Target Name="AddSqlServerRulesAnalyzerPath" BeforeTargets="Build"
-        Condition="Exists('$(MSBuildProjectDirectory)/SqlServer.Rules.NetFx.dll')">
+        Condition="Exists('$(MSBuildProjectDirectory)\SqlServer.Rules.NetFx.dll')">
   <ItemGroup>
-    <SqlCodeAnalysisPath Include="$(MSBuildProjectDirectory)/SqlServer.Rules.NetFx.dll" />
+    <SqlCodeAnalysisPath Include="$(MSBuildProjectDirectory)\SqlServer.Rules.NetFx.dll" />
   </ItemGroup>
 </Target>
 ```
