@@ -40,7 +40,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
     <PackageReference Include="ModelContextProtocol" Version="1.4.0" />
     <PackageReference Include="NuGet.Protocol" Version="7.6.0" />
-    <PackageReference Include="Spectre.Console" Version="0.56.0" />
+    <PackageReference Include="Spectre.Console" Version="0.57.0" />
   </ItemGroup>
 
   <ItemGroup>
