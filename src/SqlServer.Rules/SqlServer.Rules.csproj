@@ -42,6 +42,10 @@
   <ItemGroup>
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\netstandard2.1\SqlServer.Rules.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
     <None Include="..\SqlServer.Rules\bin\$(Configuration)\net472\SqlServer.Rules.NetFx.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
+    <None Include="build\ErikEJ.DacFX.SqlServer.Rules.props" Pack="true" PackagePath="build\ErikEJ.DacFX.SqlServer.Rules.props" Visible="false" />
+    <None Include="build\ErikEJ.DacFX.SqlServer.Rules.targets" Pack="true" PackagePath="build\ErikEJ.DacFX.SqlServer.Rules.targets" Visible="false" />
+    <None Include="buildTransitive\ErikEJ.DacFX.SqlServer.Rules.props" Pack="true" PackagePath="buildTransitive\ErikEJ.DacFX.SqlServer.Rules.props" Visible="false" />
+    <None Include="buildTransitive\ErikEJ.DacFX.SqlServer.Rules.targets" Pack="true" PackagePath="buildTransitive\ErikEJ.DacFX.SqlServer.Rules.targets" Visible="false" />
   </ItemGroup>
 
   <!-- Include MSBuild props and targets for classic .sqlproj support -->

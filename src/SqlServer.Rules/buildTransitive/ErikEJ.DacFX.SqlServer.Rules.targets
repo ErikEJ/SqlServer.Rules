@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SqlServerRulesAnalyzerPath Condition="'$(SqlServerRulesAnalyzerPath)' == ''">$(MSBuildThisFileDirectory)..\analyzers\dotnet\cs</SqlServerRulesAnalyzerPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(DSP)' != ''">
+    <SqlCodeAnalysisAssemblyPath Condition="'$(SqlCodeAnalysisAssemblyPath)' == ''">$(SqlServerRulesAnalyzerPath)</SqlCodeAnalysisAssemblyPath>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(DSP)' != ''">
+    <SqlCodeAnalysisPath Include="$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll" Condition="Exists('$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll')" />
+    <SqlCodeAnalysisPath Include="$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.dll" Condition="Exists('$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.dll') and !Exists('$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll')" />
+    <Content Include="$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll" Condition="Exists('$(SqlServerRulesAnalyzerPath)\SqlServer.Rules.NetFx.dll') and '$(DesignTimeBuild)' != 'true'" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+</Project>
