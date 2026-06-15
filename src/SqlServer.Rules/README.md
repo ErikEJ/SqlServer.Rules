@@ -20,29 +20,34 @@ dotnet add package ErikEJ.DacFX.SqlServer.Rules
 
 The rules will automatically run during build. See [MSBuild.Sdk.SqlProj documentation](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis) for advanced configuration.
 
-### For Classic .sqlproj Projects
+### For Classic .sqlproj Projects (manual, no NuGet reference)
 
-#### Using PackageReference (Visual Studio 2017+)
+If your classic SSDT project does not consume the package directly, you can manually extract and use the analyzer DLL:
 
-Add to your .sqlproj file:
+1. Download the `ErikEJ.DacFX.SqlServer.Rules` NuGet package (`.nupkg`) from nuget.org.
+2. Extract `analyzers/dotnet/cs/SqlServer.Rules.NetFx.dll`.
+3. Copy `SqlServer.Rules.NetFx.dll` to the same folder as your `.sqlproj` file.
+4. Add the following to your `.sqlproj` file:
 
 ```xml
+<PropertyGroup>
+  <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
+</PropertyGroup>
+
 <ItemGroup>
-  <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="5.0.0" />
+  <!-- Keep the analyzer DLL as content in the project folder -->
+  <Content Include="SqlServer.Rules.NetFx.dll">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
 </ItemGroup>
+
+<Target Name="AddSqlServerRulesAnalyzerPath" BeforeTargets="Build"
+        Condition="Exists('$(MSBuildProjectDirectory)\SqlServer.Rules.NetFx.dll')">
+  <ItemGroup>
+    <SqlCodeAnalysisPath Include="$(MSBuildProjectDirectory)\SqlServer.Rules.NetFx.dll" />
+  </ItemGroup>
+</Target>
 ```
-
-Code analysis will run automatically during build.
-
-#### Using packages.config
-
-Install via NuGet Package Manager or Package Manager Console:
-
-```powershell
-Install-Package ErikEJ.DacFX.SqlServer.Rules
-```
-
-The package will automatically configure itself for classic .sqlproj projects.
 
 ### Configuration
 
@@ -50,7 +55,7 @@ Configure code analysis in your project file:
 
 ```xml
 <PropertyGroup>
-  <!-- Enable/disable analysis (enabled by default for classic .sqlproj) -->
+  <!-- Enable/disable analysis -->
   <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
   
   <!-- Configure which rules to run -->
