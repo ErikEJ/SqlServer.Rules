@@ -29,6 +29,9 @@ public class SqlAnalyzerExtension : Extension
             InstallationTargetVersion = "[17.14,19.0)",
         },
         LoadedWhen = ActivationConstraint.Or(
+            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)), // MSBuild.Sdk.SqlProj
+            ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(MicrosoftBuildSqlCapability)), // Microsoft.Build.Sql
+            ActivationConstraint.ActiveProjectBuildProperty("DSP", ".*"),
             ActivationConstraint.EditorContentType("SQL"),
             ActivationConstraint.EditorContentType("SQL Server Tools")),
     };

@@ -75,6 +75,13 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         {
             var runProperties = await this.IsInSqlProjAsync(documentUri.LocalPath, cancellationToken);
 
+            if (string.IsNullOrEmpty(runProperties.SqlVersion))
+            {
+                runProperties.SqlVersion = "Sql170";
+
+                // TODO set rules from options page if not set in project file
+            }
+
             var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, runProperties.Rules, runProperties.SqlVersion, cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentUri, cancellationToken);
