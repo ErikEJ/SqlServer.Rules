@@ -31,7 +31,9 @@ public class SqlAnalyzerExtension : Extension
         LoadedWhen = ActivationConstraint.Or(
             ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)), // MSBuild.Sdk.SqlProj
             ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(MicrosoftBuildSqlCapability)), // Microsoft.Build.Sql
-            ActivationConstraint.ActiveProjectBuildProperty("DSP", ".*")), // Classic ".sqlproj"
+            ActivationConstraint.ActiveProjectBuildProperty("DSP", ".*"),
+            ActivationConstraint.EditorContentType("SQL"),
+            ActivationConstraint.EditorContentType("SQL Server Tools")),
     };
 
     /// <inheritdoc />
