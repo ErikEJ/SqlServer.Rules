@@ -81,8 +81,8 @@ internal sealed class AnalyzerUtilities
         if (useDnx)
         {
             // Use dnx syntax for VS 2026 (version 18) or later
-            fileName = "dnx";
-            args = "ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- -n -i" +
+            fileName = "cmd";
+            args = "/c dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- -n -i" +
                 $" \"{path}\"";
 
             if (!string.IsNullOrWhiteSpace(rules))
@@ -99,8 +99,8 @@ internal sealed class AnalyzerUtilities
         {
             // Use tsqlanalyze command for older VS versions
             fileName = "cmd.exe";
-            args = "/c \"tsqlanalyze -n -i" +
-                $" \"{path}\"\"";
+            args = "/c tsqlanalyze -n -i" +
+                $" \"{path}\"";
 
             if (!string.IsNullOrWhiteSpace(rules))
             {
