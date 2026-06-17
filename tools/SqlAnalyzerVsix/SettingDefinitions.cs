@@ -17,6 +17,7 @@ public static class SettingDefinitions
         Description = "Enable or disable static T-SQL analysis. When enabled, the extension will analyze your T-SQL code for design, naming and performance issues using more than 140 rules",
     };
 
+    [VisualStudioContribution]
     public static Setting.String Rules { get; } = new(
         "rules",
         "Rule exceptions",
