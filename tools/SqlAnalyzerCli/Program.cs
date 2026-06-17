@@ -193,15 +193,6 @@ internal static class Program
             }
         }
 
-        if (result.ModelErrors.Count > 0)
-        {
-            hadErrors = true;
-            foreach (var dex in result.ModelErrors)
-            {
-                DisplayService.Error(dex.Value.Format(dex.Key));
-            }
-        }
-
         if (result.Result.AnalysisSucceeded)
         {
             var warnings = new List<string>();
@@ -262,11 +253,18 @@ internal static class Program
                         () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds. {result.Result.Problems.Count} problems found.", Decoration.Bold));
                 }
             }
-
-            return hadErrors ? 1 : 0;
         }
 
-        return 1;
+        if (result.ModelErrors.Count > 0)
+        {
+            hadErrors = true;
+            foreach (var dex in result.ModelErrors)
+            {
+                DisplayService.Error(dex.Value.Format(dex.Key));
+            }
+        }
+
+        return hadErrors ? 1 : 0;
     }
 
     private static void DisplayHeader(CliAnalyzerOptions options)
