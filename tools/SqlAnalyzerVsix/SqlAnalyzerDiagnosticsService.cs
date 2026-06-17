@@ -135,8 +135,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 
             var sqlVersion = results.ValueOrDefault(SettingDefinitions.SqlEngineVersion, "Sql170");
             var rules = results.ValueOrDefault(SettingDefinitions.Rules, string.Empty);
-            var enabled = results.ValueOrDefault(SettingDefinitions.RunAnalysis, false);
-#pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            var enabled = results.ValueOrDefault(SettingDefinitions.RunAnalysis, true);
 
             if (enabled)
             {
