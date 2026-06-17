@@ -118,7 +118,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 {
                     yield return new TagSpan<IErrorTag>(
                         span.Value,
-                        new ErrorTag(GetErrorType(result.Severity)));
+                        new ErrorTag(GetErrorType(result.Severity), result.Message));
                 }
             }
         }
