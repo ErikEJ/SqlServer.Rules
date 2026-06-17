@@ -9,7 +9,7 @@ public static class SettingDefinitions
 {
 #pragma warning disable CEE0027 // String not localized
     [VisualStudioContribution]
-    private static SettingCategory AnalyzerCategory { get; } = new("sqlAnalyzerVisx", "T-SQL Analyzer");
+    private static SettingCategory AnalyzerCategory { get; } = new("sqlAnalyzerVsix", "T-SQL Analyzer");
 
     [VisualStudioContribution]
     public static Setting.Boolean RunAnalysis { get; } = new("runAnalysis", "Run static T-SQL analysis", AnalyzerCategory, defaultValue: true)
