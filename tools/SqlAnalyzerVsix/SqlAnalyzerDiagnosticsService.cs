@@ -140,7 +140,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 
             if (enabled)
             {
-                await this.ProcessDocumentAsync(textViewSnapshot.Document, runProperties.Rules, runProperties.SqlVersion, cancellationToken.CombineWith(newCts.Token).Token);
+                await this.ProcessDocumentAsync(textViewSnapshot.Document, rules, sqlVersion, cancellationToken.CombineWith(newCts.Token).Token);
             }
         }
     }
