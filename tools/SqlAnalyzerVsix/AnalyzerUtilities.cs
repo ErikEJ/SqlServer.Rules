@@ -257,8 +257,20 @@ internal sealed class AnalyzerUtilities
             return null;
         }
 
+        // Create the range with start and optional end positions
+        // If end positions are provided, use them; otherwise, range ends at the start position
+        var range = parsed.Value.EndLine.HasValue && parsed.Value.EndColumn.HasValue
+            ? new Microsoft.VisualStudio.RpcContracts.Utilities.Range(
+                startLine: parsed.Value.Line - 1,
+                startColumn: parsed.Value.Column - 1,
+                endLine: parsed.Value.EndLine.Value - 1,
+                endColumn: parsed.Value.EndColumn.Value - 1)
+            : new Microsoft.VisualStudio.RpcContracts.Utilities.Range(
+                startLine: parsed.Value.Line - 1,
+                startColumn: parsed.Value.Column - 1);
+
         return new SqlAnalyzerDiagnosticInfo(
-            range: new Microsoft.VisualStudio.RpcContracts.Utilities.Range(startLine: parsed.Value.Line - 1, startColumn: parsed.Value.Column - 1),
+            range: range,
             message: parsed.Value.Description,
             errorCode: parsed.Value.RuleId,
             helpLink: !string.IsNullOrEmpty(parsed.Value.Url) ? new Uri(parsed.Value.Url) : null);
@@ -266,10 +278,13 @@ internal sealed class AnalyzerUtilities
 
     /// <summary>
     /// Parses a SQL analyzer output line and extracts its components.
+    /// Supports both output formats:
+    /// - Old format: file(line,column): RuleId : Description
+    /// - New format: file(line,column,endLine,endColumn): RuleId : Description
     /// </summary>
     /// <param name="outputLine">The output line to parse</param>
     /// <returns>A tuple containing the parsed components, or null if parsing fails</returns>
-    public static (string Filename, int Line, int Column, string RuleId, string Description, string Url)? ParseSqlAnalyzerOutput(string outputLine)
+    public static (string Filename, int Line, int Column, int? EndLine, int? EndColumn, string RuleId, string Description, string Url)? ParseSqlAnalyzerOutput(string outputLine)
     {
         if (string.IsNullOrWhiteSpace(outputLine))
         {
@@ -283,7 +298,9 @@ internal sealed class AnalyzerUtilities
             return null;
         }
 
-        // C:\Users\ErikEjlskovJensen(De\AppData\Local\Temp\tsqlanalyzerscratch.sql(23,1): SqlServer.Rules.SRN0007 : Index 'IFK_EmployeeReportsTo' does not follow the company naming standard. Please use a format that starts with IX_Employee*. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Naming/SRN0007.md)
+        // Example formats:
+        // Old: C:\Users\ErikEjlskovJensen(De\AppData\Local\Temp\tsqlanalyzerscratch.sql(23,1): SqlServer.Rules.SRN0007 : Index 'IFK_EmployeeReportsTo' does not follow the company naming standard. Please use a format that starts with IX_Employee*. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Naming/SRN0007.md)
+        // New: C:\Users\ErikEjlskovJensen(De\AppData\Local\Temp\tsqlanalyzerscratch.sql(23,1,23,7): SqlServer.Rules.SRN0007 : Index 'IFK_EmployeeReportsTo' does not follow the company naming standard. Please use a format that starts with IX_Employee*. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Naming/SRN0007.md)
         var fileAndPosition = parts[0].Trim();
         var lineColumnStart = fileAndPosition.LastIndexOf('(');
         var lineColumnEnd = fileAndPosition.LastIndexOf(')');
@@ -294,10 +311,38 @@ internal sealed class AnalyzerUtilities
 
         var lineColumn = fileAndPosition.Substring(lineColumnStart + 1, lineColumnEnd - lineColumnStart - 1);
         var lineColumnParts = lineColumn.Split(',');
-        if (lineColumnParts.Length != 2 ||
-            !int.TryParse(lineColumnParts[0], out int line) ||
-            !int.TryParse(lineColumnParts[1], out int column))
+
+        int line, column;
+        int? endLine = null;
+        int? endColumn = null;
+
+        // Parse based on the number of comma-separated values
+        if (lineColumnParts.Length == 2)
         {
+            // Old format: (line,column)
+            if (!int.TryParse(lineColumnParts[0], out line) ||
+                !int.TryParse(lineColumnParts[1], out column))
+            {
+                return null;
+            }
+        }
+        else if (lineColumnParts.Length == 4)
+        {
+            // New format: (line,column,endLine,endColumn)
+            if (!int.TryParse(lineColumnParts[0], out line) ||
+                !int.TryParse(lineColumnParts[1], out column) ||
+                !int.TryParse(lineColumnParts[2], out int parsedEndLine) ||
+                !int.TryParse(lineColumnParts[3], out int parsedEndColumn))
+            {
+                return null;
+            }
+
+            endLine = parsedEndLine;
+            endColumn = parsedEndColumn;
+        }
+        else
+        {
+            // Unknown format
             return null;
         }
 
@@ -317,6 +362,8 @@ internal sealed class AnalyzerUtilities
             Filename: fileAndPosition,
             Line: line,
             Column: column,
+            EndLine: endLine,
+            EndColumn: endColumn,
             RuleId: ruleNumber,
             Description: description,
             Url: url
