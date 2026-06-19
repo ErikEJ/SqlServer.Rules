@@ -55,12 +55,33 @@ public static class SqlRuleProblemExtensions
             }
         }
 
+        var endLine = sqlRuleProblem.StartLine;
+        var endColumn = sqlRuleProblem.StartColumn;
+
+        var fragment = sqlRuleProblem.Fragment;
+        var tokens = fragment?.ScriptTokenStream;
+
+        if (fragment != null && tokens != null && tokens.Count > 0 &&
+            fragment.LastTokenIndex >= 0 && fragment.LastTokenIndex < tokens.Count)
+        {
+            var lastToken = tokens[fragment.LastTokenIndex];
+            if (lastToken != null)
+            {
+                endLine = lastToken.Line;
+                endColumn = lastToken.Column + (lastToken.Text?.Length ?? 0);
+            }
+        }
+
         var stringBuilder = new StringBuilder();
         stringBuilder.Append(sqlRuleProblem.SourceName);
         stringBuilder.Append('(');
         stringBuilder.Append(sqlRuleProblem.StartLine);
         stringBuilder.Append(',');
         stringBuilder.Append(sqlRuleProblem.StartColumn);
+        stringBuilder.Append(',');
+        stringBuilder.Append(endLine);
+        stringBuilder.Append(',');
+        stringBuilder.Append(endColumn);
         stringBuilder.Append("):");
         stringBuilder.Append(' ');
         stringBuilder.Append(CultureInfo.InvariantCulture, $"{sqlRuleProblem.RuleId} : {sqlRuleProblem.Description}{link}");
