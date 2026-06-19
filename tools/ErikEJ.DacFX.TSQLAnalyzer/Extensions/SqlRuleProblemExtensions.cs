@@ -58,9 +58,18 @@ public static class SqlRuleProblemExtensions
         var endLine = sqlRuleProblem.StartLine;
         var endColumn = sqlRuleProblem.StartColumn;
 
-        if (sqlRuleProblem.Fragment != null && sqlRuleProblem.Fragment.ScriptTokenStream != null)
+        var fragment = sqlRuleProblem.Fragment;
+        var tokens = fragment?.ScriptTokenStream;
+
+        if (fragment != null && tokens != null && tokens.Count > 0 &&
+            fragment.LastTokenIndex >= 0 && fragment.LastTokenIndex < tokens.Count)
         {
-            endColumn = sqlRuleProblem.StartColumn + sqlRuleProblem.Fragment.ScriptTokenStream[0].Text.Length;
+            var lastToken = tokens[fragment.LastTokenIndex];
+            if (lastToken != null)
+            {
+                endLine = lastToken.Line;
+                endColumn = lastToken.Column + (lastToken.Text?.Length ?? 0);
+            }
         }
 
         var stringBuilder = new StringBuilder();
