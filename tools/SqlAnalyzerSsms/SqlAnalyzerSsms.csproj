@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
   <!-- Auto-generated files (use Update because SDK auto-includes *.cs) -->
