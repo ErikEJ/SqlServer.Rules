@@ -15,6 +15,26 @@ The rules can be added as NuGet packages to SQL Database projects:
 
 For a complete list of the current rules we have implemented see [here](docs/readme.md).
 
+## Component Stack
+
+```mermaid
+flowchart TD
+    VS["Visual Studio live analyzer<br/>Live feedback in Visual Studio"]
+    SSMS["SSMS live analyzer<br/>Live feedback in SQL Server Management Studio"]
+    CLI["T-SQL Analyzer CLI<br/>`tsqlanalyze` command line tool"]
+    CLILIB["ErikEJ.DacFX.TSQLAnalyzer (CLI library)<br/>Loads models and executes analysis"]
+    MBSQL["Microsoft.Build.Sql<br/>Build-time SQL project analysis"]
+    SQLPROJ["MSBuild.Sdk.SqlProj<br/>SDK-style SQL project analysis"]
+    RULES["SqlServer.Rules<br/>Static SQL code analysis rules"]
+
+    VS --> CLI
+    SSMS --> CLI
+    CLI --> CLILIB
+    CLILIB --> RULES
+    MBSQL --> RULES
+    SQLPROJ --> RULES
+```
+
 ## Usage
 
 The latest version is available on NuGet
