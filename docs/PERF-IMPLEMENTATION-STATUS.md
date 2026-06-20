@@ -31,27 +31,6 @@ Added performance optimization properties:
 
 ### 2. Documentation Created
 
-#### Comprehensive Research Documents
-
-1. **[docs/cli-performance-optimization.md](../docs/cli-performance-optimization.md)**
-   - Full analysis of all .NET startup optimization options
-   - Detailed evaluation of ReadyToRun, trimming, AOT, single-file, etc.
-   - Trade-offs and compatibility assessments
-   - Recommendations with rationale
-
-2. **[docs/tiered-compilation-analysis.md](../docs/tiered-compilation-analysis.md)**
-   - Deep-dive into .NET tiered compilation behavior
-   - Analysis of tier 0 (Quick JIT) vs tier 1 (optimized)
-   - Why default settings are optimal for CLI tools
-   - How ReadyToRun works with tiered compilation
-
-3. **[docs/cli-startup-optimization-summary.md](../docs/cli-startup-optimization-summary.md)**
-   - Executive summary and final recommendations
-   - Cost-benefit analysis
-   - Implementation status
-   - Deployment checklist
-   - Validation procedures
-
 #### Performance Testing Tools
 
 4. **[tools/SqlAnalyzerCli/benchmark-startup.ps1](../tools/SqlAnalyzerCli/benchmark-startup.ps1)**
