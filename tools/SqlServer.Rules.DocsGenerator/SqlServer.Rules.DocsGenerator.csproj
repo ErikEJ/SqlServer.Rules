@@ -13,6 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="LoxSmoke.DocXml" Version="3.9.0" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.3.93" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.4.83" PrivateAssets="All" />
   </ItemGroup>
 </Project>
