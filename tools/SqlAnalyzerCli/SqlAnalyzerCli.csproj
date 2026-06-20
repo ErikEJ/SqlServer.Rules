@@ -7,6 +7,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- Performance Optimizations -->
+  <PropertyGroup>
+    <!-- Enable ReadyToRun for faster startup time (20-40% improvement) -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+
+    <!-- Use Workstation GC for faster startup in short-lived CLI scenarios -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+  </PropertyGroup>
+
   <PropertyGroup>
     <AssemblyName>ErikEJ.TSQLAnalyzerCli</AssemblyName>
     <Copyright>Copyright © ErikEJ 2025 - https://github.com/ErikEJ/SqlServer.Rules</Copyright>
