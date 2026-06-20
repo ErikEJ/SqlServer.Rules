@@ -14,8 +14,6 @@ Download the latest build of this extension from the [SSMS VSIX Gallery][ssmsmar
 
 Analyze your SQL scripts as you type, and get suggestions for improvements based on best practices. The analyzer has over [140 rules](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md) covering performance, security, maintainability, and more.
 
-![editor](Images/editor.png)
-
 The extension works with both SQL Server and Azure SQL Database projects based on [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) or [Microsoft.Build.Sql](https://github.com/microsoft/DacFx/tree/main/src/Microsoft.Build.Sql) as well as classic [SQL database projects](https://learn.microsoft.com/sql/tools/sql-database-projects/get-started?view=sql-server-ver17&pivots=sq1-visual-studio).
 
 The extension will respect any rule configuration you have in your SQL project, including whether analysis is enabled, SQL version and rule suppression.
