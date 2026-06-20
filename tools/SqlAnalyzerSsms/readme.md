@@ -36,7 +36,9 @@ In addition, the extension supports analysis of any SQL script in your editor, w
 
 ### Installation Requirements
 
-- The [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) is required to run the T-SQL Analyzer CLI tool, which is used by the extension to perform analysis. The SDK is automatically installed with the Database DevOps workload in SSMS.
+- The extension automatically uses the `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
+
+- The [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) is required and is automatically installed with the Database DevOps workload in SSMS.
 
 ## How can I help?
 
