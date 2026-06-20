@@ -12,7 +12,7 @@ A library of SQL best practices implemented as over 140 [database code analysis 
 
 The rules can be added as NuGet packages to SQL Database projects:
 - **Modern SDK-style projects**: [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) and [Microsoft.Build.Sql](https://github.com/microsoft/DacFx)
-- **Classic .sqlproj**: Legacy SSDT projects with automatic configuration through MSBuild props/targets (Visual Studio 2017+ required)
+- **Classic .sqlproj**: Legacy SSDT projects (Visual Studio 2017+ required)
 
 For a complete list of the current rules we have implemented see [here](docs/readme.md).
 
