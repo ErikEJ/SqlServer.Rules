@@ -7,30 +7,34 @@ Always reference these instructions first and fallback to search or bash command
 ## Working Effectively
 
 ### Bootstrap and Build Process
-- Prerequisites: .NET 8.0 or later SDK
-- Clone repository and build:
-  - `dotnet restore` -- NEVER CANCEL. Takes approximately 25 seconds. Set timeout to 60+ seconds.
-  - `dotnet build --no-restore` -- NEVER CANCEL. Takes approximately 26 seconds. Set timeout to 90+ seconds.
+- Prerequisites: .NET 10.0 SDK or later
+- The solution file is `SqlServer.Rules.slnx`
+- On Windows, restore and build the full solution:
+  - `dotnet restore SqlServer.Rules.slnx` -- NEVER CANCEL. Takes approximately 25 seconds. Set timeout to 60+ seconds.
+  - `dotnet build SqlServer.Rules.slnx --no-restore --configuration Release` -- NEVER CANCEL. Set timeout to 90+ seconds.
+- On Linux/macOS, do not run `dotnet build` at the repository root. The solution includes Windows-only extension projects (`tools/SqlAnalyzerVsix`, `tools/SqlAnalyzerSsms`) that fail to build outside Windows. Use project-specific build/test commands instead.
 
 ### Testing
-- Run unit tests:
-  - `dotnet test --verbosity normal` -- NEVER CANCEL. Takes approximately 27 seconds. Set timeout to 90+ seconds.
+- On Windows, run the full test command used by CI:
+  - `dotnet test --no-build --configuration Release --verbosity normal` -- NEVER CANCEL. Takes approximately 30 seconds. Set timeout to 90+ seconds.
 - Always run `SqlServer.Rules.Tests` for pull requests:
-  - `dotnet test test/SqlServer.Rules.Test/SqlServer.Rules.Tests.csproj --verbosity normal`
-- Tests run across multiple projects: SqlServer.Rules.Tests, TSQLAnalyzer.Tests
+  - `dotnet test test/SqlServer.Rules.Test/SqlServer.Rules.Tests.csproj --configuration Release --verbosity normal`
+- `TSQLAnalyzer.Tests` covers the analyzer library:
+  - `dotnet test test/TSQLAnalyzer.Tests/TSQLAnalyzer.Tests.csproj --configuration Release --verbosity normal`
 
 ### CLI Tool Development and Testing
-- Build CLI tool: Build is included in main solution build
+- Build CLI tool: Included in the Windows solution build; on Linux/macOS build `tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj` directly if needed
 - Test CLI tool functionality:
-  - Direct execution: `./tools/SqlAnalyzerCli/bin/Release/net8.0/ErikEJ.TSQLAnalyzerCli -i [file]`
+  - Direct execution: `./tools/SqlAnalyzerCli/bin/Release/net10.0/ErikEJ.TSQLAnalyzerCli -i [file]`
   - Package CLI: `dotnet pack tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj --configuration Release`
   - Install globally: `dotnet tool install --global ErikEJ.DacFX.TSQLAnalyzer.Cli`
   - Test samples: Use `tools/SqlAnalyzerCli/testfiles/simple.sql` or `tools/SqlAnalyzerCli/testfiles/Chinook.dacpac`
 
 ### Visual Studio Extension (VSIX)
-- CANNOT BE BUILT ON LINUX: Requires Windows Desktop frameworks (WPF)
-- Build on Windows only with: `msbuild tools/SqlAnalyzerVsix/SqlAnalyzerVsix.csproj /property:Configuration=Release`
-- Do not attempt VSIX builds in Linux environments
+- `tools/SqlAnalyzerVsix` and `tools/SqlAnalyzerSsms` are Windows-only extension projects
+- Do not attempt extension builds in Linux environments
+- Build the solution extensions on Windows with:
+  - `msbuild SqlServer.Rules.slnx /property:Configuration=Release /p:DeployExtension=false`
 
 ## Validation
 
@@ -39,14 +43,14 @@ Always reference these instructions first and fallback to search or bash command
 - Test CLI with both .sql files and .dacpac files
 - Verify rule analysis produces expected warnings/errors
 - Example validation commands:
-  - `tsqlanalyze -i tools/SqlAnalyzerCli/testfiles/simple.sql` (should produce 7 warnings)
-  - `tsqlanalyze -i tools/SqlAnalyzerCli/testfiles/Chinook.dacpac` (should produce 51+ warnings)
+  - `./tools/SqlAnalyzerCli/bin/Release/net10.0/ErikEJ.TSQLAnalyzerCli -i tools/SqlAnalyzerCli/testfiles/simple.sql || true` (currently reports 5 problems and returns exit code 1 because findings were reported)
+  - `./tools/SqlAnalyzerCli/bin/Release/net10.0/ErikEJ.TSQLAnalyzerCli -i tools/SqlAnalyzerCli/testfiles/Chinook.dacpac || true` (currently reports 45 problems)
 
 ### CI Validation
-- GitHub Actions pipeline builds and tests on ubuntu-latest
-- VSIX builds separately on windows-latest
+- GitHub Actions library/CLI workflows run on windows-latest
+- VSIX and SSMS extension builds run separately on windows-latest
 - New pull requests must run `SqlServer.Rules.Tests`
-- All tests must pass before merging changes
+- Run `TSQLAnalyzer.Tests` too when changing the analyzer library or CLI
 
 ## Project Structure
 
@@ -55,9 +59,11 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Tools (`tools/`)
 - `SqlAnalyzerCli` - Command line interface for rule analysis (.NET tool)
+- `SqlAnalyzerSsms` - SSMS extension (Windows only)
 - `SqlAnalyzerVsix` - Visual Studio extension (Windows only)
 - `ErikEJ.DacFX.TSQLAnalyzer` - Core analyzer library used by CLI
-- `SqlServer.Rules.Generator` - Utility for generating rule documentation
+- `SqlServer.Rules.DocsGenerator` - Generates `docs/**/*.md` from rule metadata
+- `SqlServer.Rules.Generator` - Utility for reporting available rules
 - `SqlServer.Rules.Report` - Library for result serialization
 
 ### Test Projects (`test/`)
@@ -76,15 +82,15 @@ Always reference these instructions first and fallback to search or bash command
 - `Performance/` - Documentation for performance rules (SRP* series)  
 - `Naming/` - Documentation for naming rules (SRN* series)
 
-**IMPORTANT**: Never make changes to any files in the `docs/` folder. This documentation is automatically generated by the `DocsGenerator` test class and should not be manually modified.
+**IMPORTANT**: Never make changes to any files in the `docs/` folder. This documentation is automatically generated by `tools/SqlServer.Rules.DocsGenerator` and should not be manually modified.
 
 ## Common Tasks
 
 ### Creating New Analysis Rules
-- Inherit from `SqlCodeAnalysisRule` (see existing examples in `src/SqlServer.Rules/`)
+- Inherit from `BaseSqlCodeAnalysisRule` (see existing examples in `src/SqlServer.Rules/`)
 - Add unit tests in appropriate category under `test/SqlServer.Rules.Test/`
 - Use `TestModel` helper class for test setup
-- Generate documentation with `SqlServer.Rules.Generator`
+- Generate documentation with `SqlServer.Rules.DocsGenerator`
 
 ### CLI Tool Development
 - CLI built on Spectre.Console for rich terminal output
@@ -97,9 +103,11 @@ Always reference these instructions first and fallback to search or bash command
 [TestMethod]
 public void TestRuleName()
 {
-    var problems = GetTestCaseProblems(nameof(RuleClass), RuleClass.RuleId);
-    Assert.AreEqual(expectedCount, problems.Count);
-    // Verify specific problem details
+    TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/Example.sql");
+
+    ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0000"));
+
+    RunTest();
 }
 ```
 
@@ -111,9 +119,9 @@ public void TestRuleName()
 ## Troubleshooting
 
 ### Build Issues
-- Ensure .NET 8.0 SDK is installed
+- Ensure .NET 10.0 SDK is installed
 - Run `dotnet restore` before building
-- VSIX builds require Windows environment
+- Full solution builds require Windows because the solution includes `SqlAnalyzerVsix` and `SqlAnalyzerSsms`
 
 ### Test Failures
 - Check test SQL files are UTF-8 encoded with BOM
@@ -121,7 +129,6 @@ public void TestRuleName()
 - Run individual test categories: `dotnet test --filter TestCategory=Performance`
 
 ### CLI Tool Issues
-- CLI may show null reference on `--help` (known issue)
 - Test with actual files: `tsqlanalyze -i [filepath]`
 - Check tool version: Latest published version may differ from local build
 
