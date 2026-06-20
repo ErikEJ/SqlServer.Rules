@@ -133,7 +133,7 @@ internal sealed class AnalyzerUtilities
 
     private static void StartAnalyzerProcess(Process analyzer, AsyncQueue<string> lineQueue, string path, string rules, string sqlVersion)
     {
-        var args = $"-n -i \"{path}\"";
+        var args = $"/c dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- -n -i \"{path}\"";
 
         if (!string.IsNullOrWhiteSpace(rules))
         {
@@ -148,7 +148,7 @@ internal sealed class AnalyzerUtilities
         analyzer.StartInfo = new ProcessStartInfo()
         {
             FileName = "cmd.exe",
-            Arguments = $"/c tsqlanalyze {args}",
+            Arguments = args,
             RedirectStandardOutput = true,
             UseShellExecute = false,
             CreateNoWindow = true,
