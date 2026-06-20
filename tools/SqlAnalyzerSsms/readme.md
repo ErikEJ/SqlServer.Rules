@@ -1,16 +1,14 @@
-[marketplace]: https://marketplace.visualstudio.com/items?itemName=ErikEJ.TSqlAnalyzer
-[vsixgallery]: http://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/
+[ssmsmarketplace]: https://ssmsgallery.azurewebsites.net/extension/TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d
 [repo]:https://github.com/ErikEJ/SqlServer.Rules
 
 # T-SQL Analyzer
 
-### Live Code Analysis for SQL scripts in Visual Studio
+### Live Code Analysis for SQL scripts in SQL Server Management Studio 22
 
 [![Build](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml/badge.svg)](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
 
-Download this extension from the [Visual Studio Marketplace][marketplace]
-or get the [CI build][vsixgallery]
+Download the latest build of this extension from the [SSMS VSIX Gallery][ssmsmarketplace]
 
 ----------------------------------------
 
@@ -30,31 +28,19 @@ The extension will respect any rule configuration you have in your SQL project, 
     <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
     <CodeAnalysisRules>-SqlServer.Rules.SRD0006</CodeAnalysisRules>
     <!-- This property can be added to your .sqlproj file to support wildcard rule filters, -->
-    <!-- will override'CodeAnalysisRules' above if present -->
+    <!-- will override 'CodeAnalysisRules' above if present -->
     <AnalyzerCodeAnalysisRules>-SqlServer.Rules.SRD0006;-Microsoft.*</AnalyzerCodeAnalysisRules>
   </PropertyGroup>
 </Project>
 ```
 
-In addition, the extension supports analysis of any SQL script in your editor, whether it is part of a project or not. You can customize the behavior of the extension via Tools/Options in Visual Studio.
-
-The extension also adds a menu item under `Tools` to run the T-SQL Analyzer against the currently open SQL script in the editor.
-
-![toolsmenu](Images/toolsmenu.png)
+In addition, the extension supports analysis of any SQL script in your editor, whether it is part of a project or not.
 
 ### Installation Requirements
 
-- **Visual Studio 2026 and later**: The extension automatically uses the `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
-
-- **Visual Studio 2022**: The extension depends on the T-SQL Analyzer CLI tool being installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
-
-```bash
-dotnet tool install -g ErikEJ.DacFX.TSQLAnalyzer.CLI
-```
+- The [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) is required to run the T-SQL Analyzer CLI tool, which is used by the extension to perform analysis. The SDK is automatically installed with the Database DevOps workload in SSMS.
 
 ## How can I help?
-
-If you enjoy using the extension, please give it a ★★★★★ rating on the [Visual Studio Marketplace][marketplace].
 
 Should you encounter bugs or have feature requests, head over to the [GitHub repo][repo] to open an issue if one doesn't already exist.
 

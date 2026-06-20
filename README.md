@@ -1,5 +1,6 @@
-[marketplace]: <https://marketplace.visualstudio.com/items?itemName=ErikEJ.TSqlAnalyzer>
-[vsixgallery]: <http://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/>
+[marketplace]: https://marketplace.visualstudio.com/items?itemName=ErikEJ.TSqlAnalyzer
+[ssmsmarketplace]: https://ssmsgallery.azurewebsites.net/extension/TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d
+[vsixgallery]: http://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/
 
 # Static Analysis Rule-sets for SQL Projects
 
@@ -7,7 +8,7 @@
 
 ## Overview
 
-A library of SQL best practices implemented as more than 130 [database code analysis rules](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html) checked at build time.
+A library of SQL best practices implemented as over 140 [database code analysis rules](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html) checked at build time.
 
 The rules can be added as NuGet packages to SQL Database projects:
 - **Modern SDK-style projects**: [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) and [Microsoft.Build.Sql](https://github.com/microsoft/DacFx)
@@ -21,18 +22,20 @@ For a complete list of the current rules we have implemented see [here](docs/rea
 flowchart TD
     VS["Visual Studio live analyzer<br/>Live feedback in Visual Studio"]
     SSMS["SSMS live analyzer<br/>Live feedback in SQL Server Management Studio"]
-    CLI["T-SQL Analyzer CLI<br/>`tsqlanalyze` command line tool"]
-    CLILIB["ErikEJ.DacFX.TSQLAnalyzer (CLI library)<br/>Loads models and executes analysis"]
-    MBSQL["Microsoft.Build.Sql<br/>Build-time SQL project analysis"]
-    SQLPROJ["MSBuild.Sdk.SqlProj<br/>SDK-style SQL project analysis"]
+    CLI["T-SQL Analyzer CLI<br/>tsqlanalyze command line tool"]
+    CLILIB["ErikEJ.DacFX.TSQLAnalyzer (CLI NuGet library)<br/>Loads scripts and executes analysis"]
+    MBSQL["SDK Style SQL Database Projects<br/>Build-time SQL Project analysis"]
+    CLASSIC["Classic .sqlproj<br/>Build-time SQL Project analysis"]
     RULES["SqlServer.Rules<br/>Static SQL code analysis rules"]
+    MCP["MCP Server<br/>AI Agent integration for SQL code analysis rules"]
 
     VS --> CLI
     SSMS --> CLI
+    CLASSIC --> RULES
     CLI --> CLILIB
     CLILIB --> RULES
     MBSQL --> RULES
-    SQLPROJ --> RULES
+    MCP --> CLI
 ```
 
 ## Usage
@@ -45,35 +48,21 @@ dotnet add package ErikEJ.DacFX.SqlServer.Rules
 
 ### Modern SDK-style Projects
 
-You can read more about using and customizing the rules in the [readme here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
+The rules are available as a NuGet package that can be added to your SQL Database project. The rules will run during build, and report any issues in the Error List window.
+
+You can read more about using and customizing the rules in the [docs here](https://rr-wfm.github.io/MSBuild.Sdk.SqlProj/docs/static-code-analysis.html)
 
 ### Classic .sqlproj Projects
 
-The NuGet package now supports classic .sqlproj files through MSBuild props and targets. Simply add the package reference to your project:
-
-**Using PackageReference** (Visual Studio 2017+):
-```xml
-<ItemGroup>
-  <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="5.0.0" />
-</ItemGroup>
-```
-
-**Using packages.config**:
-```powershell
-Install-Package ErikEJ.DacFX.SqlServer.Rules
-```
-
-Code analysis will automatically run during build. No manual installation of DLLs required!
-
-For more details on classic .sqlproj support, see the [investigation documentation](investigations/issue-564-classic-sqlproj-nuget.md).
+You can download and manually use the rules with Visual Studio and "classic" SQL Database projects, as described in my [blog post here](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html#addrules).
 
 ## Command line tool - T-SQL Analyzer CLI
 
-This repository also contains a .NET command line tool, that uses the rule sets.
+This repository also contains a .NET command line tool that uses the rule set.
 
-You can use it to analyze SQL scripts, or SQL Database projects, and output the results in a variety of formats, including XML, and JSON.
+You can use it to analyze SQL scripts or SQL Database projects and output the results in a variety of formats, including XML and JSON.
 
-You can also use the tool as a MCP Server with GitHub Copilot with VS Code and Visual Studio, allowing you to get feedback on your SQL code using GitHub Copilot Chat.
+You can also use the tool as an MCP Server with GitHub Copilot in VS Code and Visual Studio, allowing you to get feedback on your SQL code using GitHub Copilot Chat.
 
 The T-SQL Analyzer MCP Server supports quick installation across multiple development environments. Choose your preferred client below for streamlined setup:
 
@@ -86,42 +75,21 @@ Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rul
 
 ## Visual Studio extension - T-SQL Analyzer
 
-This repository also contains a Visual Studio extension, that uses the rule sets.
+This repository also contains a Visual Studio extension that uses the rule set.
 
-You can run live analysis of your SQL Database projects in Visual Studio, and get the results in the Error List window.
+Run live analysis of your SQL scripts in Visual Studio and get the results in the Error List window.
 
 Download the extension from the [Visual Studio Marketplace][marketplace]
 or get the [CI build][vsixgallery]
 
 Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerVsix/readme.md)
 
-## Solution Organization
+## SQL Server Management Studio extension - T-SQL Analyzer
 
-`.github` - GitHub actions
+This repository also contains a SQL Server Management Studio extension that uses the rule set.
 
-`docs` - markdown files generated from rule inspection with the DocsGenerator unit test
+Run live analysis of your SQL scripts in SQL Server Management Studio and get the results in the Error List window.
 
-`Solution Items` - files relating to build etc.
+Download the latest build of this extension from the [SSMS VSIX Gallery][ssmsmarketplace]
 
-`src`
-
-- `SqlServer.Rules` - This holds the rules derived from `SqlCodeAnalysisRule`
-
-`test`
-
-- `SqlServer.Rules.Tests` - a few test to demonstrate unit testing of rules
-- `TestHelpers` - shared test base classes
-
-`tools`
-
-- `SqlAnalyzerCli` - a command line tool to run rules against a SQL Project
-- `SqlAnalyzerVsix` - a Visual Studio extension to run rules against a SQL Project
-- `ErikEJ.DacFX.TSQLAnalyzer` - library and NuGet package for running rules against SQL scripts and reporting results. Used by `SqlAnalyzerCli`
-- `SqlServer.Rules.Generator` - a quick console app to report on all rules in a SQL Project.
-- `SqlServer.Rules.Report` - Library for evaluating a rule and serializing the result.
-
-`sqlprojects`
-
-- `AW` - AdventureWorks schema SQL Project for rules validation
-- `TestDatabase` - a small SQL Database Project with some rule violations
-- `TSQLSmellsTest` - a SQL Database Project with some rule violations
+Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerSsms/readme.md)
