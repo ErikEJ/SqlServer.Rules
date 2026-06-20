@@ -42,6 +42,7 @@ Always reference these instructions first and fallback to search or bash command
 - ALWAYS test CLI functionality with actual SQL files after making changes
 - Test CLI with both .sql files and .dacpac files
 - Verify rule analysis produces expected warnings/errors
+- Treat the sample problem counts below as the current verified baseline; update them if rule changes intentionally alter the results
 - Example validation commands:
   - `./tools/SqlAnalyzerCli/bin/Release/net10.0/ErikEJ.TSQLAnalyzerCli -i tools/SqlAnalyzerCli/testfiles/simple.sql || true` (currently reports 5 problems and returns exit code 1 because findings were reported)
   - `./tools/SqlAnalyzerCli/bin/Release/net10.0/ErikEJ.TSQLAnalyzerCli -i tools/SqlAnalyzerCli/testfiles/Chinook.dacpac || true` (currently reports 45 problems)
@@ -99,6 +100,8 @@ Always reference these instructions first and fallback to search or bash command
 - Test changes with sample files in `tools/SqlAnalyzerCli/testfiles/`
 
 ### Rule Testing Pattern
+Test fixture paths are typically referenced relative to `test/SqlServer.Rules.Test/`, which is why examples use deep `../../../../../` paths into `sqlprojects/`.
+
 ```csharp
 [TestMethod]
 public void TestRuleName()
