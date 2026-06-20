@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
+using SqlAnalyzerSsms.Helpers;
 using SqlAnalyzerSsms.Options;
 
 namespace SqlAnalyzerSsms;
@@ -31,5 +33,10 @@ public sealed class SqlAnalyzerSsmsPackage : AsyncPackage
         // When initialized asynchronously, the current thread may be a background thread at this point.
         // Do any initialization that requires the UI thread after switching to the UI thread.
         await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+        _ = UpdateChecker.CheckForUpdatesAsync(
+            Vsix.Id,
+            FileVersionInfo.GetVersionInfo(typeof(SqlAnalyzerSsmsPackage).Assembly.Location).FileVersion,
+            Vsix.Name);
     }
 }
