@@ -73,6 +73,8 @@ namespace SqlAnalyzerSsms.Helpers
                     return;
                 }
 
+                SaveLastCheckDate(extensionId);
+
                 var feedUrl = $"https://www.vsixgallery.com/feed/extension/{extensionId}";
                 string feedContent;
 
@@ -82,7 +84,6 @@ namespace SqlAnalyzerSsms.Helpers
                 }
 
                 var latestVersion = ParseVersionFromFeed(feedContent);
-                SaveLastCheckDate(extensionId);
                 if (latestVersion != null && IsNewerVersion(latestVersion, currentVersion))
                 {
                     await ShowUpdateNotificationAsync(extensionId, extensionName, latestVersion);
