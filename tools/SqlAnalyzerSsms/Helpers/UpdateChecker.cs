@@ -77,12 +77,10 @@ namespace SqlAnalyzerSsms.Helpers
                 var feedUrl = $"https://www.vsixgallery.com/feed/extension/{extensionId}";
                 string feedContent;
 
-#pragma warning disable SYSLIB0014 // WebClient is obsolete
-                using (var webClient = new WebClient())
+                using (var httpClient = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(10) })
                 {
-                    feedContent = await webClient.DownloadStringTaskAsync(feedUrl);
+                    feedContent = await httpClient.GetStringAsync(feedUrl).ConfigureAwait(false);
                 }
-#pragma warning restore SYSLIB0014
 
                 var latestVersion = ParseVersionFromFeed(feedContent);
                 SaveLastCheckDate(extensionId);
