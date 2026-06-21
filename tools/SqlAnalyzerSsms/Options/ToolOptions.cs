@@ -13,7 +13,7 @@ namespace SqlAnalyzerSsms.Options
 
         [Category("Code Analysis")]
         [DisplayName(@"Run static T-SQL analysis")]
-        [Description("Enable or disable static T-SQL analysis. When enabled, the extension will analyze your T-SQL code for design, naming and performance issues using more than 140 rules.")]
+        [Description("Enable or disable static T-SQL analysis. When enabled, the extension will analyze your T-SQL code for design, naming and performance issues using the built-in rule set.")]
         [DefaultValue(true)]
         public bool RunAnalysis { get; set; } = true;
 
