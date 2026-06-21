@@ -13,7 +13,7 @@ namespace SqlAnalyzerSsms;
 [Guid(SqlAnalyzerSsmsPackage.PackageGuidString)]
 
 [InstalledProductRegistration(Vsix.Name, Vsix.Description, Vsix.Version)]
-[ProvideOptionPage(typeof(OptionsProvider.GeneralOptions), "T-SQL Analyzer", "T-SQL Analyzer", 0, 0, true, SupportsProfiles = true)]
+[ProvideOptionPage(typeof(OptionsProvider.GeneralOptions), "T-SQL Analyzer", "General", 0, 0, true, SupportsProfiles = true)]
 [ProvideAutoLoad(AutoloadString, PackageAutoLoadFlags.BackgroundLoad)]
 [ProvideUIContextRule(
     AutoloadString,

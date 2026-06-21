@@ -53,7 +53,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                 var options = await ToolOptions.GetLiveInstanceAsync();
-                enabled = !options.DisableCodeAnalysis;
+                enabled = options.RunAnalysis;
                 if (!enabled)
                 {
                     return;
@@ -74,6 +74,26 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                     if (!string.IsNullOrWhiteSpace(options.CodeAnalysisRuleSettings))
                     {
                         rules = options.CodeAnalysisRuleSettings;
+                    }
+
+                    var engineVersion = options.SqlEngineVersion?.Trim();
+                    if (!string.IsNullOrEmpty(engineVersion)
+                        && engineVersion.StartsWith("Sql", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var safe = true;
+                        for (var i = 0; i < engineVersion.Length; i++)
+                        {
+                            if (!char.IsLetterOrDigit(engineVersion[i]))
+                            {
+                                safe = false;
+                                break;
+                            }
+                        }
+
+                        if (safe)
+                        {
+                            sqlVersion = engineVersion;
+                        }
                     }
                 }
             });
