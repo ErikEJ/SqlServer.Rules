@@ -44,7 +44,7 @@ public class BatchWrapperTests
         Assert.AreNotEqual(sql, wrapped);
         StringAssert.Contains(wrapped, $"CREATE PROCEDURE [dbo].[{BatchWrapper.SyntheticObjectPrefix}1] AS BEGIN ", StringComparison.Ordinal);
         StringAssert.Contains(wrapped, "SELECT * FROM sys.objects;", StringComparison.Ordinal);
-        StringAssert.EndsWith(wrapped, " END", StringComparison.Ordinal);
+        StringAssert.EndsWith(wrapped, " END;", StringComparison.Ordinal);
     }
 
     [TestMethod]
