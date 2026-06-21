@@ -19,7 +19,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
         /// <summary>
         /// Delay in milliseconds before analyzing after the last keystroke.
         /// </summary>
-        private const int _debounceDelayMs = 300;
+        private const int _debounceDelayMs = 500;
 
         private static readonly object _propertyKey = typeof(SqlAnalysisCache);
         private static readonly object _pendingAnalysisKey = typeof(SqlAnalysisCache).FullName + ".PendingAnalysis";
