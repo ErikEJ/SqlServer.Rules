@@ -76,9 +76,24 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                         rules = options.CodeAnalysisRuleSettings;
                     }
 
-                    if (!string.IsNullOrWhiteSpace(options.SqlEngineVersion))
+                    var engineVersion = options.SqlEngineVersion?.Trim();
+                    if (!string.IsNullOrEmpty(engineVersion)
+                        && engineVersion.StartsWith("Sql", StringComparison.OrdinalIgnoreCase))
                     {
-                        sqlVersion = options.SqlEngineVersion;
+                        var safe = true;
+                        for (var i = 0; i < engineVersion.Length; i++)
+                        {
+                            if (!char.IsLetterOrDigit(engineVersion[i]))
+                            {
+                                safe = false;
+                                break;
+                            }
+                        }
+
+                        if (safe)
+                        {
+                            sqlVersion = engineVersion;
+                        }
                     }
                 }
             });
