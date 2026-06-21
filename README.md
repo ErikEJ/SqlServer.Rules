@@ -20,8 +20,8 @@ For a complete list of the current rules we have implemented see [here](docs/rea
 
 ```mermaid
 flowchart TD
-    VS["Visual Studio live analyzer<br/>Live feedback in Visual Studio"]
-    SSMS["SSMS live analyzer<br/>Live feedback in SQL Server Management Studio"]
+    VS["Visual Studio T-SQL Analyzer<br/>Live feedback in Visual Studio"]
+    SSMS["SSMS T-SQL Analyzer<br/>Live feedback in SQL Server Management Studio"]
     CLI["T-SQL Analyzer CLI<br/>tsqlanalyze command line tool"]
     CLILIB["ErikEJ.DacFX.TSQLAnalyzer (CLI NuGet library)<br/>Loads scripts and executes analysis"]
     MBSQL["SDK Style SQL Database Projects<br/>Build-time SQL Project analysis"]

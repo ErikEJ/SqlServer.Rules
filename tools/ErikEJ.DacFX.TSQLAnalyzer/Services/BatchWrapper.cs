@@ -60,7 +60,7 @@ internal sealed class BatchWrapper
             var name = string.Create(CultureInfo.InvariantCulture, $"[dbo].[{SyntheticObjectPrefix}{index}]");
 
             edits.Add((batch.StartOffset, $"CREATE PROCEDURE {name} AS BEGIN "));
-            edits.Add((batch.StartOffset + batch.FragmentLength, " END"));
+            edits.Add((batch.StartOffset + batch.FragmentLength, " END;"));
         }
 
         if (edits.Count == 0)
