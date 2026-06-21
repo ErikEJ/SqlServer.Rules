@@ -12,15 +12,21 @@ namespace SqlAnalyzerSsms.Options
         public bool CheckForUpdates { get; set; } = true;
 
         [Category("Code Analysis")]
-        [DisplayName(@"Disable live code analysis")]
-        [Description("Disable live static SQL code analysis")]
-        [DefaultValue(false)]
-        public bool DisableCodeAnalysis { get; set; }
+        [DisplayName(@"Run static T-SQL analysis")]
+        [Description("Enable or disable static T-SQL analysis. When enabled, the extension will analyze your T-SQL code for design, naming and performance issues using more than 140 rules.")]
+        [DefaultValue(true)]
+        public bool RunAnalysis { get; set; } = true;
 
         [Category("Code Analysis")]
-        [DisplayName(@"Code Analysis rule settings")]
+        [DisplayName(@"Rule exceptions")]
         [Description("Set the rules expression for live static SQL code analysis when no SQL project rule configuration is available (for example: '-SqlServer.Rules.SRD0006;-SqlServer.Rules.SRN*').")]
         [DefaultValue(null)]
         public string? CodeAnalysisRuleSettings { get; set; }
+
+        [Category("Code Analysis")]
+        [DisplayName(@"SQL engine version")]
+        [Description("Set the SQL Server dialect used in analysis, for example Sql170 for SQL Server 2025.")]
+        [DefaultValue(null)]
+        public string? SqlEngineVersion { get; set; }
     }
 }

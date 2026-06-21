@@ -53,7 +53,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                 var options = await ToolOptions.GetLiveInstanceAsync();
-                enabled = !options.DisableCodeAnalysis;
+                enabled = options.RunAnalysis;
                 if (!enabled)
                 {
                     return;
@@ -74,6 +74,11 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                     if (!string.IsNullOrWhiteSpace(options.CodeAnalysisRuleSettings))
                     {
                         rules = options.CodeAnalysisRuleSettings;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(options.SqlEngineVersion))
+                    {
+                        sqlVersion = options.SqlEngineVersion;
                     }
                 }
             });
