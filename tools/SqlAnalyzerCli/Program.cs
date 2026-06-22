@@ -83,7 +83,7 @@ internal static class Program
 
         var hasHelpError = parserResult.Errors.Any(e => e.Tag == ErrorType.HelpRequestedError || e.Tag == ErrorType.HelpVerbRequestedError);
 
-        if (hasHelpError || (parserResult.Value?.NoLogo != true && !parserResult.Value?.ServerMode == true))
+        if (hasHelpError || (parserResult.Value?.NoLogo != true && parserResult.Value?.ServerMode != true))
         {
             await PackageService.CheckForPackageUpdateAsync().ConfigureAwait(false);
         }
