@@ -53,10 +53,6 @@ public class AnalyzerFactory
         var factory = new CodeAnalysisServiceFactory();
         var service = factory.CreateAnalysisService(model, settings);
 
-        var rules = service.GetRules();
-
-        result.Analyzers = string.Join(", ", rules.Select(a => a.Namespace).Distinct());
-
         service.SetProblemSuppressor(IsSuppressed);
 
         var analysisResult = service.Analyze(model);

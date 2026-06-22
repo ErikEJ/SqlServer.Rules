@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft;
+using ErikEJ.DacFX.TSQLAnalyzer.Protocol;
 using Microsoft.VisualStudio.Threading;
 
 namespace SqlAnalyzerSsms.Linter.Linting;
@@ -18,15 +19,23 @@ internal sealed class AnalyzerUtilities
     private static readonly Lazy<AnalyzerUtilities> _instance =
             new(() => new AnalyzerUtilities(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
 
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+    };
+
+    private readonly SemaphoreSlim _requestLock = new(1, 1);
+
+    private Process? _serverProcess;
+    private StreamWriter? _serverInput;
+    private StreamReader? _serverOutput;
+
     public static AnalyzerUtilities Instance => _instance.Value;
 
     private static string CreateTempFilePath() => Path.Combine(Path.GetTempPath(), $"tsqlanalyzerscratch-{Guid.NewGuid()}.sql");
 
     public async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeAsync(string text, string rules, string sqlVersion, CancellationToken cancellationToken = default)
     {
-        using var analyzer = new Process();
-        var lineQueue = new AsyncQueue<string>();
-
         if (text == null)
         {
             return [];
@@ -38,7 +47,6 @@ internal sealed class AnalyzerUtilities
             return [];
         }
 
-        // Create a unique temp file for each analysis to support concurrent calls.
         var tempPath = CreateTempFilePath();
 
         try
@@ -50,58 +58,315 @@ internal sealed class AnalyzerUtilities
             catch (IOException ioex)
             {
                 await ioex.LogAsync();
-
-                // Failed to write temp file; cannot proceed with analysis.
                 return [];
             }
             catch (UnauthorizedAccessException uex)
             {
                 await uex.LogAsync();
-
-                // No permission to write temp file; cannot proceed with analysis.
                 return [];
             }
 
-            StartAnalyzerProcess(analyzer, lineQueue, tempPath, rules, sqlVersion);
-
-            List<SqlAnalyzerDiagnosticInfo> sqlDiagnostics;
-            try
-            {
-                sqlDiagnostics = await ProcessAnalyzerQueueAsync(lineQueue, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (!analyzer.HasExited)
-                {
-                    try
-                    {
-                        analyzer.Kill();
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // Process has already exited or was not started; ignore.
-                    }
-                    catch (Win32Exception)
-                    {
-                        // Failed to kill the process; ignore to avoid throwing during cleanup.
-                    }
-
-                    try
-                    {
-                        await analyzer.WaitForExitAsync(cancellationToken);
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // Process has already exited; nothing more to do.
-                    }
-                }
-            }
-
-            return sqlDiagnostics;
+            return await AnalyzeWithServerModeAsync(tempPath, rules, sqlVersion, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
             DeleteTempFile(tempPath);
+        }
+    }
+
+    private async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string path, string rules, string sqlVersion, CancellationToken cancellationToken)
+    {
+        await _requestLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (!EnsureServerProcessStarted())
+            {
+                return [];
+            }
+
+            var request = new ServerRequest
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                Command = "analyze",
+                Path = path,
+                Rules = string.IsNullOrWhiteSpace(rules) ? null : $"Rules:{rules}",
+                SqlVersion = string.IsNullOrWhiteSpace(sqlVersion) ? null : sqlVersion,
+            };
+
+            var requestJson = JsonSerializer.Serialize(request);
+
+            if (_serverInput is null)
+            {
+                throw new InvalidOperationException("Analyzer server input stream is not available.");
+            }
+
+            await _serverInput.WriteLineAsync(requestJson).ConfigureAwait(false);
+            await _serverInput.FlushAsync().ConfigureAwait(false);
+
+            var response = await ReadResponseAsync(request.Id, cancellationToken).ConfigureAwait(false);
+            if (response is null)
+            {
+                return [];
+            }
+
+            if (!string.Equals(response.Status, "success", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrWhiteSpace(response.Error))
+                {
+                    await new InvalidOperationException($"Server mode analysis failed: {response.Error}").LogAsync().ConfigureAwait(false);
+                }
+
+                return [];
+            }
+
+            return ConvertProblemsToDiagnostics(response.Problems);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (ObjectDisposedException)
+        {
+            ResetServerProcess();
+            return [];
+        }
+        catch (InvalidOperationException ex)
+        {
+            await ex.LogAsync().ConfigureAwait(false);
+            ResetServerProcess();
+            return [];
+        }
+        catch (IOException ex)
+        {
+            await ex.LogAsync().ConfigureAwait(false);
+            ResetServerProcess();
+            return [];
+        }
+        finally
+        {
+            _requestLock.Release();
+        }
+    }
+
+    private static List<SqlAnalyzerDiagnosticInfo> ConvertProblemsToDiagnostics(IList<ServerProblem>? problems)
+    {
+        if (problems is null || problems.Count == 0)
+        {
+            return [];
+        }
+
+        var diagnostics = new List<SqlAnalyzerDiagnosticInfo>(problems.Count);
+
+        foreach (var problem in problems)
+        {
+            if (problem is null)
+            {
+                continue;
+            }
+
+            var startLine = Math.Max(problem.Line, 1) - 1;
+            var startColumn = Math.Max(problem.Column, 1) - 1;
+            var endLine = Math.Max(problem.EndLine, problem.Line) - 1;
+            var endColumn = Math.Max(problem.EndColumn, problem.Column) - 1;
+            var range = new Microsoft.VisualStudio.RpcContracts.Utilities.Range(
+                startLine: startLine,
+                startColumn: startColumn,
+                endLine: endLine,
+                endColumn: endColumn);
+
+            var fullRule = string.IsNullOrWhiteSpace(problem.Rule) ? "unknown" : problem.Rule;
+            var errorCode = fullRule;
+            var separatorIndex = fullRule.LastIndexOf('.');
+            var rulePrefix = string.Empty;
+
+            if (separatorIndex > 0 && separatorIndex < fullRule.Length - 1)
+            {
+                rulePrefix = fullRule.Substring(0, separatorIndex);
+                errorCode = fullRule.Substring(separatorIndex + 1);
+            }
+
+            var message = string.IsNullOrWhiteSpace(problem.Message)
+                ? fullRule
+                : string.IsNullOrWhiteSpace(rulePrefix) ? problem.Message : rulePrefix + ": " + problem.Message;
+
+            Uri? helpLink = null;
+            if (!string.IsNullOrWhiteSpace(problem.HelpLink)
+                && Uri.TryCreate(problem.HelpLink, UriKind.Absolute, out var parsedHelpLink))
+            {
+                helpLink = parsedHelpLink;
+            }
+
+            diagnostics.Add(new SqlAnalyzerDiagnosticInfo(range, message, errorCode, helpLink));
+        }
+
+        return diagnostics;
+    }
+
+    private bool EnsureServerProcessStarted()
+    {
+        if (_serverProcess is not null && !_serverProcess.HasExited)
+        {
+            return true;
+        }
+
+        ResetServerProcess();
+
+        var process = new Process();
+        process.StartInfo = new ProcessStartInfo
+        {
+            FileName = "cmd.exe",
+            Arguments = "/c dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- --server-mode",
+            RedirectStandardInput = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+
+        try
+        {
+            if (!process.Start())
+            {
+                process.Dispose();
+                return false;
+            }
+        }
+        catch (Win32Exception ex)
+        {
+            process.Dispose();
+            throw new InvalidOperationException(message: ex.Message, innerException: ex);
+        }
+
+        _serverProcess = process;
+        _serverInput = process.StandardInput;
+        _serverOutput = process.StandardOutput;
+        _ = DrainServerErrorAsync(process.StandardError);
+
+        return true;
+    }
+
+    private async Task<ServerResponse?> ReadResponseAsync(string requestId, CancellationToken cancellationToken)
+    {
+        while (true)
+        {
+            var line = await _serverOutput!.ReadLineAsync().WithCancellation(cancellationToken).ConfigureAwait(false);
+            if (line is null)
+            {
+                ResetServerProcess();
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
+            ServerResponse? response;
+            try
+            {
+                response = JsonSerializer.Deserialize<ServerResponse>(line, _jsonSerializerOptions);
+            }
+            catch (JsonException)
+            {
+                continue;
+            }
+
+            if (response is null)
+            {
+                continue;
+            }
+
+            if (string.Equals(response.Id, requestId, StringComparison.Ordinal))
+            {
+                return response;
+            }
+
+            if (string.Equals(response.Status, "error", StringComparison.OrdinalIgnoreCase)
+                && (string.IsNullOrEmpty(response.Id) || string.Equals(response.Id, "unknown", StringComparison.OrdinalIgnoreCase)))
+            {
+                ResetServerProcess();
+                return response;
+            }
+        }
+    }
+
+    private static async Task DrainServerErrorAsync(StreamReader errorReader)
+    {
+        try
+        {
+            while (true)
+            {
+                var line = await errorReader.ReadLineAsync().ConfigureAwait(false);
+                if (line is null)
+                {
+                    break;
+                }
+
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    await new InvalidOperationException($"Analyzer server stderr: {line}").LogAsync().ConfigureAwait(false);
+                }
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            // Process is shutting down.
+        }
+        catch (IOException)
+        {
+            // Process ended or stream closed.
+        }
+    }
+
+    private void ResetServerProcess()
+    {
+        var process = _serverProcess;
+        _serverProcess = null;
+
+        try
+        {
+            _serverInput?.Dispose();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+
+        try
+        {
+            _serverOutput?.Dispose();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+
+        _serverInput = null;
+        _serverOutput = null;
+
+        if (process is null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (!process.HasExited)
+            {
+                process.Kill();
+                process.WaitForExit(1000);
+            }
+        }
+        catch (InvalidOperationException)
+        {
+        }
+        catch (Win32Exception)
+        {
+        }
+        finally
+        {
+            process.Dispose();
         }
     }
 
@@ -129,213 +394,6 @@ internal sealed class AnalyzerUtilities
         {
             // No permission to delete; ignore cleanup failure.
         }
-    }
-
-    private static void StartAnalyzerProcess(Process analyzer, AsyncQueue<string> lineQueue, string path, string rules, string sqlVersion)
-    {
-        var args = $"/c dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- -n -i \"{path}\"";
-
-        if (!string.IsNullOrWhiteSpace(rules))
-        {
-            args = args + $" -r Rules:{rules}";
-        }
-
-        if (!string.IsNullOrWhiteSpace(sqlVersion))
-        {
-            args = args + $" -s {sqlVersion}";
-        }
-
-        analyzer.StartInfo = new ProcessStartInfo()
-        {
-            FileName = "cmd.exe",
-            Arguments = args,
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-        };
-
-        analyzer.EnableRaisingEvents = true;
-        analyzer.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
-        {
-            if (e.Data is not null)
-            {
-                lineQueue.Enqueue(e.Data);
-            }
-            else
-            {
-                lineQueue.Complete();
-            }
-        });
-
-        try
-        {
-            analyzer.Start();
-            analyzer.BeginOutputReadLine();
-        }
-        catch (Win32Exception ex)
-        {
-            throw new InvalidOperationException(message: ex.Message, innerException: ex);
-        }
-    }
-
-    private static async Task<List<SqlAnalyzerDiagnosticInfo>> ProcessAnalyzerQueueAsync(AsyncQueue<string> lineQueue, CancellationToken cancellationToken)
-    {
-        Requires.NotNull(lineQueue, nameof(lineQueue));
-
-        List<SqlAnalyzerDiagnosticInfo> diagnostics = new List<SqlAnalyzerDiagnosticInfo>();
-
-        while (!(lineQueue.IsCompleted && lineQueue.IsEmpty))
-        {
-            string line;
-
-            try
-            {
-                line = await lineQueue.DequeueAsync(cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                break;
-            }
-
-            var diagnostic = line is not null ? GetDiagnosticFromAnalyzerOutput(line) : null;
-            if (diagnostic is not null)
-            {
-                diagnostics.Add(diagnostic);
-            }
-            else
-            {
-                // Something went wrong so break and return the current set.
-                break;
-            }
-        }
-
-        return diagnostics;
-    }
-
-    private static SqlAnalyzerDiagnosticInfo? GetDiagnosticFromAnalyzerOutput(string outputLine)
-    {
-        Requires.NotNull(outputLine, nameof(outputLine));
-
-        var parsed = ParseSqlAnalyzerOutput(outputLine);
-
-        if (parsed is null)
-        {
-            // The output line does not match the expected format.
-            return null;
-        }
-
-        // Create the range with start and optional end positions
-        // If end positions are provided, use them; otherwise, range ends at the start position
-        var range = parsed.Value.EndLine.HasValue && parsed.Value.EndColumn.HasValue
-            ? new Microsoft.VisualStudio.RpcContracts.Utilities.Range(
-                startLine: parsed.Value.Line - 1,
-                startColumn: parsed.Value.Column - 1,
-                endLine: parsed.Value.EndLine.Value - 1,
-                endColumn: parsed.Value.EndColumn.Value - 1)
-            : new Microsoft.VisualStudio.RpcContracts.Utilities.Range(
-                startLine: parsed.Value.Line - 1,
-                startColumn: parsed.Value.Column - 1);
-
-        return new SqlAnalyzerDiagnosticInfo(
-            range: range,
-            message: parsed.Value.Description,
-            errorCode: parsed.Value.RuleId,
-            helpLink: !string.IsNullOrEmpty(parsed.Value.Url) ? new Uri(parsed.Value.Url) : null);
-    }
-
-    /// <summary>
-    /// Parses a SQL analyzer output line and extracts its components.
-    /// Supports both output formats:
-    /// - Old format: file(line,column): RuleId : Description
-    /// - New format: file(line,column,endLine,endColumn): RuleId : Description
-    /// </summary>
-    /// <param name="outputLine">The output line to parse</param>
-    /// <returns>A tuple containing the parsed components, or null if parsing fails</returns>
-    public static (string Filename, int Line, int Column, int? EndLine, int? EndColumn, string RuleId, string Description, string Url)? ParseSqlAnalyzerOutput(string outputLine)
-    {
-        if (string.IsNullOrWhiteSpace(outputLine))
-        {
-            return null;
-        }
-
-        var parts = outputLine.Split([": "], 3, StringSplitOptions.RemoveEmptyEntries);
-
-        if (parts.Length < 3)
-        {
-            return null;
-        }
-
-        // Example formats:
-        // Old: C:\Users\ErikEjlskovJensen(De\AppData\Local\Temp\tsqlanalyzerscratch.sql(23,1): SqlServer.Rules.SRN0007 : Index 'IFK_EmployeeReportsTo' does not follow the company naming standard. Please use a format that starts with IX_Employee*. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Naming/SRN0007.md)
-        // New: C:\Users\ErikEjlskovJensen(De\AppData\Local\Temp\tsqlanalyzerscratch.sql(23,1,23,7): SqlServer.Rules.SRN0007 : Index 'IFK_EmployeeReportsTo' does not follow the company naming standard. Please use a format that starts with IX_Employee*. (https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Naming/SRN0007.md)
-        var fileAndPosition = parts[0].Trim();
-        var lineColumnStart = fileAndPosition.LastIndexOf('(');
-        var lineColumnEnd = fileAndPosition.LastIndexOf(')');
-        if (lineColumnStart < 0 || lineColumnEnd < 0 || lineColumnEnd <= lineColumnStart)
-        {
-            return null;
-        }
-
-        var lineColumn = fileAndPosition.Substring(lineColumnStart + 1, lineColumnEnd - lineColumnStart - 1);
-        var lineColumnParts = lineColumn.Split(',');
-
-        int line, column;
-        int? endLine = null;
-        int? endColumn = null;
-
-        // Parse based on the number of comma-separated values
-        if (lineColumnParts.Length == 2)
-        {
-            // Old format: (line,column)
-            if (!int.TryParse(lineColumnParts[0], out line) ||
-                !int.TryParse(lineColumnParts[1], out column))
-            {
-                return null;
-            }
-        }
-        else if (lineColumnParts.Length == 4)
-        {
-            // New format: (line,column,endLine,endColumn)
-            if (!int.TryParse(lineColumnParts[0], out line) ||
-                !int.TryParse(lineColumnParts[1], out column) ||
-                !int.TryParse(lineColumnParts[2], out int parsedEndLine) ||
-                !int.TryParse(lineColumnParts[3], out int parsedEndColumn))
-            {
-                return null;
-            }
-
-            endLine = parsedEndLine;
-            endColumn = parsedEndColumn;
-        }
-        else
-        {
-            // Unknown format
-            return null;
-        }
-
-        fileAndPosition = fileAndPosition.Substring(0, lineColumnStart);
-        var ruleId = parts[1].Trim();
-        var description = parts[2].Trim();
-        var urlStartIndex = description.IndexOf(" (https", StringComparison.OrdinalIgnoreCase);
-        var url = urlStartIndex >= 0 ? description.Substring(urlStartIndex + 2, description.Length - urlStartIndex - 3) : string.Empty;
-
-        var ruleIdParts = ruleId.Split('.');
-        var ruleNumber = ruleIdParts[ruleIdParts.Length - 1];
-        var rulePrefix = ruleId.Replace("." + ruleNumber, string.Empty);
-
-        var descriptionWithoutUrl = urlStartIndex >= 0 ? description.Substring(0, urlStartIndex) : description;
-        description = rulePrefix + ": " + descriptionWithoutUrl;
-
-        return (
-            Filename: fileAndPosition,
-            Line: line,
-            Column: column,
-            EndLine: endLine,
-            EndColumn: endColumn,
-            RuleId: ruleNumber,
-            Description: description,
-            Url: url
-        );
     }
 }
 #pragma warning restore SA1309 // Field names should not begin with underscore

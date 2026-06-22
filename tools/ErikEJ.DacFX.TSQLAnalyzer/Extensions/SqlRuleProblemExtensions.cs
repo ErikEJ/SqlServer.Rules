@@ -55,6 +55,29 @@ public static class SqlRuleProblemExtensions
             }
         }
 
+        var (endLine, endColumn) = sqlRuleProblem.GetEndPosition();
+
+        var stringBuilder = new StringBuilder();
+        stringBuilder.Append(sqlRuleProblem.SourceName);
+        stringBuilder.Append('(');
+        stringBuilder.Append(sqlRuleProblem.StartLine);
+        stringBuilder.Append(',');
+        stringBuilder.Append(sqlRuleProblem.StartColumn);
+        stringBuilder.Append(',');
+        stringBuilder.Append(endLine);
+        stringBuilder.Append(',');
+        stringBuilder.Append(endColumn);
+        stringBuilder.Append("):");
+        stringBuilder.Append(' ');
+        stringBuilder.Append(CultureInfo.InvariantCulture, $"{sqlRuleProblem.RuleId} : {sqlRuleProblem.Description}{link}");
+
+        return stringBuilder.ToString();
+    }
+
+    public static (int EndLine, int EndColumn) GetEndPosition(this SqlRuleProblem sqlRuleProblem)
+    {
+        ArgumentNullException.ThrowIfNull(sqlRuleProblem);
+
         var endLine = sqlRuleProblem.StartLine;
         var endColumn = sqlRuleProblem.StartColumn;
 
@@ -72,20 +95,6 @@ public static class SqlRuleProblemExtensions
             }
         }
 
-        var stringBuilder = new StringBuilder();
-        stringBuilder.Append(sqlRuleProblem.SourceName);
-        stringBuilder.Append('(');
-        stringBuilder.Append(sqlRuleProblem.StartLine);
-        stringBuilder.Append(',');
-        stringBuilder.Append(sqlRuleProblem.StartColumn);
-        stringBuilder.Append(',');
-        stringBuilder.Append(endLine);
-        stringBuilder.Append(',');
-        stringBuilder.Append(endColumn);
-        stringBuilder.Append("):");
-        stringBuilder.Append(' ');
-        stringBuilder.Append(CultureInfo.InvariantCulture, $"{sqlRuleProblem.RuleId} : {sqlRuleProblem.Description}{link}");
-
-        return stringBuilder.ToString();
+        return (endLine, endColumn);
     }
 }
