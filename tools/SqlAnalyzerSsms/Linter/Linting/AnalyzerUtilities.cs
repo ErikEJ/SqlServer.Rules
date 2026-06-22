@@ -106,7 +106,7 @@ internal sealed class AnalyzerUtilities
             await _serverInput.WriteLineAsync(requestJson).ConfigureAwait(false);
             await _serverInput.FlushAsync().ConfigureAwait(false);
 
-            var response = await ReadResponseAsync(request.Id).ConfigureAwait(false);
+            var response = await ReadResponseAsync(request.Id, cancellationToken).ConfigureAwait(false);
             if (response is null)
             {
                 return [];
