@@ -112,6 +112,11 @@ internal sealed class AnalyzerUtilities : IDisposable
                 throw new InvalidOperationException("Analyzer server input stream is not available.");
             }
 
+            if (this.serverOutput is null)
+            {
+                throw new InvalidOperationException("Analyzer server output stream is not available.");
+            }
+
             await this.serverInput.WriteLineAsync(requestJson);
             await this.serverInput.FlushAsync(cancellationToken);
 
