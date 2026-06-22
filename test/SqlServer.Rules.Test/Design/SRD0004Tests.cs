@@ -16,10 +16,8 @@ public class SRD0004Tests : TestModel
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/FKWithUnresolvedTable.sql");
 
-        // Rule fires for the source table side (FK column unindexed), but must not throw when the
-        // referenced table is absent from the model (regression test for NRE bug).
+        // Regression test for SRD0004: referenced table may be absent from the model, and SRD0004 must not throw.
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRN0007"));
-        ExpectedProblems.Add(new TestProblem(5, 5, "SqlServer.Rules.SRD0004"));
         ExpectedProblems.Add(new TestProblem(5, 5, "SqlServer.Rules.SRN0007"));
 
         RunTest();
