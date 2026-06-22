@@ -114,10 +114,8 @@ var diagnostics = await _queue.QueueAnalysisAsync(text, rules, sqlVersion, ct);
 - `tools/SqlAnalyzerCli/test-server-protocol.ps1` - Validation tests (8 tests, all passing)
 
 **Next Steps for SSMS/VSIX:**
-- Modify `AnalyzerUtilities.cs` to use process pool instead of spawning new processes
-- Keep 1-2 long-running server-mode processes
-- Send requests via stdin, read responses via stdout
-- Match responses by request ID
+- ✅ `AnalyzerUtilities.cs` now uses a long-running `--server-mode` process and matches responses by request ID
+- 🔲 (Optional) Add a small pool (1-2 processes) to allow parallel analysis requests and improve resilience to hung processes
 
 **Impact:** 🔥 **Very High** - Near-instantaneous analysis (70-80% latency reduction)
 
