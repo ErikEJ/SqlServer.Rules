@@ -353,7 +353,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         {
             if (!process.HasExited)
             {
-                process.Kill();
+                process.Kill(entireProcessTree: true);
                 process.WaitForExit(1000);
             }
         }
