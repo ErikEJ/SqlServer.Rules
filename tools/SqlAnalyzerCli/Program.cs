@@ -66,20 +66,20 @@ internal static class Program
 
         var res = 0;
 
-        var result = parserResult
-          .WithParsed(async options =>
+        parserResult
+          .WithParsed(options =>
             {
-                // Check if server mode is requested
-                if (options.ServerMode)
-                {
-                    res = await ServerMode.RunAsync().ConfigureAwait(false);
-                }
-                else
+                if (!options.ServerMode)
                 {
                     res = Run(options, args);
                 }
             })
           .WithNotParsed(errs => DisplayHelp(parserResult, errs));
+
+        if (parserResult.Value?.ServerMode == true)
+        {
+            res = await ServerMode.RunAsync().ConfigureAwait(false);
+        }
 
         var hasHelpError = parserResult.Errors.Any(e => e.Tag == ErrorType.HelpRequestedError || e.Tag == ErrorType.HelpVerbRequestedError);
 

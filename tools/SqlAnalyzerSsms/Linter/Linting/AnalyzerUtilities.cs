@@ -248,11 +248,11 @@ internal sealed class AnalyzerUtilities
         return true;
     }
 
-    private async Task<ServerResponse?> ReadResponseAsync(string requestId)
+    private async Task<ServerResponse?> ReadResponseAsync(string requestId, CancellationToken cancellationToken)
     {
         while (true)
         {
-            var line = await _serverOutput!.ReadLineAsync().ConfigureAwait(false);
+            var line = await _serverOutput!.ReadLineAsync().WithCancellation(cancellationToken).ConfigureAwait(false);
             if (line is null)
             {
                 ResetServerProcess();
@@ -281,6 +281,13 @@ internal sealed class AnalyzerUtilities
 
             if (string.Equals(response.Id, requestId, StringComparison.Ordinal))
             {
+                return response;
+            }
+
+            if (string.Equals(response.Status, "error", StringComparison.OrdinalIgnoreCase)
+                && (string.IsNullOrEmpty(response.Id) || string.Equals(response.Id, "unknown", StringComparison.OrdinalIgnoreCase)))
+            {
+                ResetServerProcess();
                 return response;
             }
         }
