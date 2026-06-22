@@ -406,6 +406,10 @@ internal sealed class AnalyzerUtilities : IDisposable
             };
         }
     }
+    public void Dispose()
+    {
+        this.ResetServerProcess();
+    }
     #pragma warning restore CA1001
 
     private static IEnumerable<DocumentDiagnostic> CreateDocumentDiagnosticsForClosedDocument(Uri fileUri, IEnumerable<SqlAnalyzerDiagnosticInfo> diagnostics)
