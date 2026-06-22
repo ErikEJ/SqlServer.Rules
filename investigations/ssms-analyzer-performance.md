@@ -110,7 +110,7 @@ var diagnostics = await _queue.QueueAnalysisAsync(text, rules, sqlVersion, ct);
 
 **Files:**
 - `tools/SqlAnalyzerCli/Services/ServerMode.cs` - Server implementation
-- `tools/SqlAnalyzerCli/Services/ServerProtocol.cs` - Protocol definitions
+- `tools/ErikEJ.DacFX.TSQLAnalyzer.Protocol/ServerProtocol.cs` - Protocol definitions
 - `tools/SqlAnalyzerCli/test-server-protocol.ps1` - Validation tests (8 tests, all passing)
 
 **Next Steps for SSMS/VSIX:**
