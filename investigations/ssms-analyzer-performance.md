@@ -95,8 +95,7 @@ var diagnostics = await _queue.QueueAnalysisAsync(text, rules, sqlVersion, ct);
 - ✅ Reuses JIT-compiled code and loaded assemblies
 - ✅ Can cancel in-flight requests
 
-**Status: ✅ Implemented** (See `tools/SqlAnalyzerCli/SERVER-MODE-IMPLEMENTATION.md`)
-
+**Status: ✅ Implemented** (See `tools/SqlAnalyzerCli/Services/ServerMode.cs` and `tools/ErikEJ.DacFX.TSQLAnalyzer.Protocol/ServerProtocol.cs`)
 **Implementation:**
 1. CLI now supports `--server-mode` flag
 2. JSON protocol over stdin/stdout:
