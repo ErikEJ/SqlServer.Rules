@@ -14,7 +14,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
     <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.9" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.4.83" PrivateAssets="All" />
   </ItemGroup>
 </Project>
