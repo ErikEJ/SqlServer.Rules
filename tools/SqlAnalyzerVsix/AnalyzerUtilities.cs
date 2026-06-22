@@ -45,19 +45,8 @@ internal sealed class AnalyzerUtilities
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
     public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, CancellationToken cancellationToken)
     {
-        if (IsVisualStudioVersion18OrLater())
-        {
-            var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, rules, sqlVersion, cancellationToken);
-            return CreateDocumentDiagnosticsForClosedDocument(fileUri, serverDiagnostics);
-        }
-
-        using var analyzer = new Process();
-        var lineQueue = new AsyncQueue<string>();
-
-        StartAnalyzerProcess(analyzer, lineQueue, fileUri.LocalPath, rules, sqlVersion);
-
-        var sqlDiagnostics = await ProcessAnalyzerQueueAsync(lineQueue);
-        return CreateDocumentDiagnosticsForClosedDocument(fileUri, sqlDiagnostics);
+        var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, rules, sqlVersion, cancellationToken);
+        return CreateDocumentDiagnosticsForClosedDocument(fileUri, serverDiagnostics);
     }
 
     /// <summary>
@@ -83,19 +72,8 @@ internal sealed class AnalyzerUtilities
         {
             await File.WriteAllTextAsync(tempPath, content, Encoding.UTF8, cancellationToken);
 
-            if (IsVisualStudioVersion18OrLater())
-            {
-                var serverDiagnostics = await AnalyzeWithServerModeAsync(tempPath, rules, sqlVersion, cancellationToken);
-                return CreateDocumentDiagnosticsForOpenDocument(textDocument, serverDiagnostics);
-            }
-
-            using var analyzer = new Process();
-            var lineQueue = new AsyncQueue<string>();
-
-            StartAnalyzerProcess(analyzer, lineQueue, tempPath, rules, sqlVersion);
-
-            var sqlDiagnostics = await ProcessAnalyzerQueueAsync(lineQueue);
-            return CreateDocumentDiagnosticsForOpenDocument(textDocument, sqlDiagnostics);
+            var serverDiagnostics = await AnalyzeWithServerModeAsync(tempPath, rules, sqlVersion, cancellationToken);
+            return CreateDocumentDiagnosticsForOpenDocument(textDocument, serverDiagnostics);
         }
         finally
         {
@@ -401,106 +379,6 @@ internal sealed class AnalyzerUtilities
         catch (UnauthorizedAccessException)
         {
         }
-    }
-
-    private static void StartAnalyzerProcess(Process analyzer, AsyncQueue<string> lineQueue, string path, string? rules, string? sqlVersion)
-    {
-        bool useDnx = IsVisualStudioVersion18OrLater();
-        string fileName;
-        string args;
-
-        if (useDnx)
-        {
-            // Use dnx syntax for VS 2026 (version 18) or later
-            fileName = "cmd";
-            args = "/c dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- -n -i" +
-                $" \"{path}\"";
-
-            if (!string.IsNullOrWhiteSpace(rules))
-            {
-                args = args + $" -r Rules:{rules}";
-            }
-
-            if (!string.IsNullOrWhiteSpace(sqlVersion))
-            {
-                args = args + $" -s {sqlVersion}";
-            }
-        }
-        else
-        {
-            // Use tsqlanalyze command for older VS versions
-            fileName = "cmd.exe";
-            args = "/c tsqlanalyze -n -i" +
-                $" \"{path}\"";
-
-            if (!string.IsNullOrWhiteSpace(rules))
-            {
-                args = args + $" -r Rules:{rules}";
-            }
-
-            if (!string.IsNullOrWhiteSpace(sqlVersion))
-            {
-                args = args + $" -s {sqlVersion}";
-            }
-        }
-
-        analyzer.StartInfo = new ProcessStartInfo()
-        {
-            FileName = fileName,
-            Arguments = args,
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-        };
-
-        analyzer.EnableRaisingEvents = true;
-        analyzer.OutputDataReceived += new DataReceivedEventHandler((sender, e) =>
-        {
-            if (e.Data is not null)
-            {
-                lineQueue.Enqueue(e.Data);
-            }
-            else
-            {
-                lineQueue.Complete();
-            }
-        });
-
-        try
-        {
-            analyzer.Start();
-            analyzer.BeginOutputReadLine();
-        }
-        catch (Win32Exception ex)
-        {
-            throw new InvalidOperationException(message: ex.Message, innerException: ex);
-        }
-    }
-
-    /// <summary>
-    /// Determines if the current Visual Studio host is version 18 or later.
-    /// </summary>
-    /// <returns>True if running in VS 2026 (version 18) or later, false otherwise.</returns>
-    private static bool IsVisualStudioVersion18OrLater()
-    {
-        try
-        {
-            var process = Process.GetCurrentProcess();
-            if (process.MainModule?.FileName != null)
-            {
-                var versionInfo = FileVersionInfo.GetVersionInfo(process.MainModule.FileName);
-                return versionInfo.FileMajorPart >= 18;
-            }
-        }
-#pragma warning disable CA1031 // Do not catch general exception types
-        catch (Exception)
-        {
-            // If we can't determine the version (due to security restrictions, process access issues, etc.),
-            // fall back to the old behavior (using tsqlanalyze command).
-            // This ensures the extension continues to work even if version detection fails.
-        }
-#pragma warning restore CA1031
-        return false;
     }
 
     private static IEnumerable<DocumentDiagnostic> CreateDocumentDiagnosticsForOpenDocument(ITextDocumentSnapshot document, IEnumerable<SqlAnalyzerDiagnosticInfo> diagnostics)
