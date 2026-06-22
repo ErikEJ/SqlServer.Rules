@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
@@ -38,6 +38,10 @@
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ErikEJ.DacFX.TSQLAnalyzer.Protocol\ErikEJ.DacFX.TSQLAnalyzer.Protocol.csproj" />
   </ItemGroup>
 
   <!-- Auto-generated files (use Update because SDK auto-includes *.cs) -->

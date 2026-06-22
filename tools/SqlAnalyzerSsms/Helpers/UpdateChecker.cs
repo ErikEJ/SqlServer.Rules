@@ -39,11 +39,13 @@ namespace SqlAnalyzerSsms.Helpers
                 return DateTime.TryParseExact(content, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var lastCheck) &&
                        lastCheck.Date == DateTime.UtcNow.Date;
             }
+#pragma warning disable CA1031 // Do not catch general exception types - we don't want to crash over update check file issues
             catch (Exception ex)
             {
                 ex.Log();
                 return false;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static void SaveLastCheckDate(string extensionId)
@@ -52,10 +54,12 @@ namespace SqlAnalyzerSsms.Helpers
             {
                 File.WriteAllText(GetLastCheckFilePath(extensionId), DateTime.UtcNow.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             }
+#pragma warning disable CA1031 // Do not catch general exception types - we don't want to crash over update check file issues
             catch (Exception ex)
             {
                 ex.Log();
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         public static async Task CheckForUpdatesAsync(string extensionId, string currentVersion, string extensionName)
@@ -80,7 +84,7 @@ namespace SqlAnalyzerSsms.Helpers
 
                 using (var httpClient = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(10) })
                 {
-                    feedContent = await httpClient.GetStringAsync(feedUrl).ConfigureAwait(false);
+                    feedContent = await httpClient.GetStringAsync(new Uri(feedUrl)).ConfigureAwait(false);
                 }
 
                 var latestVersion = ParseVersionFromFeed(feedContent);
@@ -89,10 +93,12 @@ namespace SqlAnalyzerSsms.Helpers
                     await ShowUpdateNotificationAsync(extensionId, extensionName, latestVersion);
                 }
             }
+#pragma warning disable CA1031 // Do not catch general exception types - we don't want to crash over update check issues
             catch (Exception ex)
             {
                 await ex.LogAsync();
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static string? ParseVersionFromFeed(string feedContent)
@@ -146,10 +152,12 @@ namespace SqlAnalyzerSsms.Helpers
                     {
                         Process.Start(new ProcessStartInfo(downloadUrl) { UseShellExecute = true });
                     }
+#pragma warning disable CA1031 // Do not catch general exception types - we don't want to crash over a notification click
                     catch (Exception ex)
                     {
                         ex.Log();
                     }
+#pragma warning restore CA1031 // Do not catch general exception types
                     finally
                     {
                         if (sender is InfoBar bar)

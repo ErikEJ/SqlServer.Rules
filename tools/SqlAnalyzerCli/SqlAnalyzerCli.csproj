@@ -54,6 +54,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ErikEJ.DacFX.TSQLAnalyzer\ErikEJ.DacFX.TSQLAnalyzer.csproj" />
+    <ProjectReference Include="..\ErikEJ.DacFX.TSQLAnalyzer.Protocol\ErikEJ.DacFX.TSQLAnalyzer.Protocol.csproj" />
   </ItemGroup>
 
 </Project>

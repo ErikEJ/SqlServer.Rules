@@ -67,15 +67,23 @@ internal static class Program
         var res = 0;
 
         var result = parserResult
-          .WithParsed(options =>
+          .WithParsed(async options =>
             {
-                res = Run(options, args);
+                // Check if server mode is requested
+                if (options.ServerMode)
+                {
+                    res = await ServerMode.RunAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    res = Run(options, args);
+                }
             })
           .WithNotParsed(errs => DisplayHelp(parserResult, errs));
 
         var hasHelpError = parserResult.Errors.Any(e => e.Tag == ErrorType.HelpRequestedError || e.Tag == ErrorType.HelpVerbRequestedError);
 
-        if (hasHelpError || (parserResult.Value?.NoLogo != true))
+        if (hasHelpError || (parserResult.Value?.NoLogo != true && !parserResult.Value?.ServerMode == true))
         {
             await PackageService.CheckForPackageUpdateAsync().ConfigureAwait(false);
         }
@@ -245,7 +253,7 @@ internal static class Program
                 if (result.FileCount > 0)
                 {
                     DisplayService.MarkupLine(
-                        () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds using '{result.Analyzers}'. {result.Result.Problems.Count} problems found.", Decoration.Bold));
+                        () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds. {result.Result.Problems.Count} problems found.", Decoration.Bold));
                 }
                 else
                 {

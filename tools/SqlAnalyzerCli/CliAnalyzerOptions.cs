@@ -69,4 +69,11 @@ internal sealed class CliAnalyzerOptions
         HelpText = "String to analyze",
         Required = false)]
     public string? Text { get; set; }
+
+    [Option(
+        "server-mode",
+        Required = false,
+        Hidden = true,
+        HelpText = "Run in long-lived server mode, accepting analysis requests via stdin/stdout")]
+    public bool ServerMode { get; set; }
 }
