@@ -179,6 +179,8 @@ internal static class ServerMode
                 {
                     var (endLine, endColumn) = problem.GetEndPosition();
 
+                    var (message, helpLink) = ExtractMessageAndHelpLink(problem.Description);
+
                     problems.Add(new ServerProblem
                     {
                         Rule = problem.RuleId ?? "unknown",
@@ -186,7 +188,8 @@ internal static class ServerMode
                         Column = problem.StartColumn,
                         EndLine = endLine,
                         EndColumn = endColumn,
-                        Message = problem.Description ?? string.Empty,
+                        Message = message,
+                        HelpLink = helpLink,
                         File = problem.SourceName,
                     });
                 }
@@ -211,6 +214,31 @@ internal static class ServerMode
             await Console.Error.WriteLineAsync($"Analysis error: {ex}");
             await WriteErrorAsync(request.Id, $"Analysis failed: {ex.Message}");
         }
+    }
+
+    private static (string Message, string? HelpLink) ExtractMessageAndHelpLink(string? description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return (string.Empty, null);
+        }
+
+        var trimmed = description.Trim();
+        var linkStartIndex = trimmed.LastIndexOf(" (http", StringComparison.OrdinalIgnoreCase);
+
+        if (linkStartIndex < 0 || !trimmed.EndsWith(")", StringComparison.Ordinal))
+        {
+            return (trimmed, null);
+        }
+
+        var candidateLink = trimmed.Substring(linkStartIndex + 2, trimmed.Length - linkStartIndex - 3);
+        if (!Uri.TryCreate(candidateLink, UriKind.Absolute, out _))
+        {
+            return (trimmed, null);
+        }
+
+        var message = trimmed.Substring(0, linkStartIndex).TrimEnd();
+        return (message, candidateLink);
     }
 
     private static async Task WriteResponseAsync(ServerResponse response)

@@ -113,6 +113,12 @@ public sealed class ServerProblem
     public string Message { get; set; } = string.Empty;
 
     /// <summary>
+    /// Documentation URL associated with this problem.
+    /// </summary>
+    [JsonPropertyName("helpLink")]
+    public string? HelpLink { get; set; }
+
+    /// <summary>
     /// File path where problem occurs.
     /// </summary>
     [JsonPropertyName("file")]

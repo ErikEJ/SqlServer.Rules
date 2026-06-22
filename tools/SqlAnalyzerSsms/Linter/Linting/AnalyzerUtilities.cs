@@ -192,7 +192,14 @@ internal sealed class AnalyzerUtilities
                 ? fullRule
                 : string.IsNullOrWhiteSpace(rulePrefix) ? problem.Message : rulePrefix + ": " + problem.Message;
 
-            diagnostics.Add(new SqlAnalyzerDiagnosticInfo(range, message, errorCode, helpLink: null));
+            Uri? helpLink = null;
+            if (!string.IsNullOrWhiteSpace(problem.HelpLink)
+                && Uri.TryCreate(problem.HelpLink, UriKind.Absolute, out var parsedHelpLink))
+            {
+                helpLink = parsedHelpLink;
+            }
+
+            diagnostics.Add(new SqlAnalyzerDiagnosticInfo(range, message, errorCode, helpLink));
         }
 
         return diagnostics;
