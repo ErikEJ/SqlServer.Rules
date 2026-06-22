@@ -23,7 +23,7 @@ namespace SqlAnalyzer;
 /// Helper class for running analyzer on a string or file.
 /// </summary>
 #pragma warning disable CA1001 // AnalyzerUtilities lifetime is extension-scoped singleton
-internal sealed class AnalyzerUtilities
+internal sealed class AnalyzerUtilities : IDisposable
 {
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
