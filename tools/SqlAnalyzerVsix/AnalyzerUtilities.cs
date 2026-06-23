@@ -219,8 +219,8 @@ internal sealed class AnalyzerUtilities : IDisposable
         var process = new Process();
         process.StartInfo = new ProcessStartInfo
         {
-            FileName = "cmd.exe",
-            Arguments = "/c dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- --server-mode",
+            FileName = "dotnet",
+            Arguments = "tool exec ErikEJ.DacFX.TSQLAnalyzer.Cli -- --server-mode",
             RedirectStandardInput = true,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
