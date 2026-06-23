@@ -17,18 +17,21 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         private readonly SqlLintTableDataSource _tableDataSource;
         private readonly SqlAnalysisCache _analysisCache;
         private readonly string _filePath;
+        private readonly string _documentName;
         private bool _disposed;
 
         public DocumentHandler(
             ITextView textView,
             SqlLintTableDataSource tableDataSource,
             SqlAnalysisCache analysisCache,
-            string filePath)
+            string filePath,
+            string documentName)
         {
             _textView = textView;
             _tableDataSource = tableDataSource;
             _analysisCache = analysisCache;
             _filePath = filePath;
+            _documentName = documentName;
 
             // Only listen for analysis results — the tagger owns triggering analysis
             // (on buffer changes, option saves, and initial file open).
@@ -43,7 +46,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             }
 
             // Update error list with new results
-            _tableDataSource?.UpdateErrors(e.FilePath, e.ProjectName, e.Violations);
+            _tableDataSource?.UpdateErrors(e.FilePath, _documentName, e.ProjectName, e.Violations);
         }
 
         public void Dispose()

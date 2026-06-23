@@ -10,6 +10,8 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
     {
         public string FilePath { get; }
 
+        public string DocumentName { get; }
+
         public int Line { get; }
 
         public int Column { get; }
@@ -26,9 +28,10 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         public __VSERRORCATEGORY Severity { get; }
 
-        public SqlLintError(SqlAnalyzerDiagnosticInfo violation, string filePath, string projectName)
+        public SqlLintError(SqlAnalyzerDiagnosticInfo violation, string filePath, string documentName, string projectName)
         {
             FilePath = filePath;
+            DocumentName = documentName;
             Line = violation.Range.StartLine;
             Column = violation.Range.StartColumn;
             Message = violation.Message;
@@ -41,6 +44,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         public SqlLintError(
             string filePath,
+            string documentName,
             int line,
             int column,
             string errorCode,
@@ -51,6 +55,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             DiagnosticSeverity severity)
         {
             FilePath = filePath;
+            DocumentName = documentName;
             Line = line;
             Column = column;
             ErrorCode = errorCode;

@@ -34,7 +34,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             switch (keyName)
             {
                 case StandardTableKeyNames.DocumentName:
-                    content = error.FilePath;
+                    content = error.DocumentName;
                     return true;
 
                 case StandardTableKeyNames.Line:
