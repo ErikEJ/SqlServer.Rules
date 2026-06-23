@@ -24,6 +24,9 @@ namespace SqlAnalyzer;
 internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 {
 #pragma warning disable CA2213 // Disposable fields are injected services; their lifetime/disposal is managed by the VS extensibility host/DI container.
+    private readonly VisualStudioExtensibility extensibility;
+    private readonly AnalyzerUtilities analyzerUtilities;
+#pragma warning restore CA2213 // Disposable fields should be disposed
     private readonly Dictionary<Uri, CancellationTokenSource> documentCancellationTokens;
     private readonly Task initializationTask;
     private OutputChannel? outputChannel;
