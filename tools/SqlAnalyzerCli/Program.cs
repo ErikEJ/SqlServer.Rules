@@ -208,7 +208,7 @@ internal static class Program
             foreach (var err in result.Result.Problems)
             {
                 hadErrors = true;
-                warnings.Add(err.GetOutputMessage(analyzerOptions.Rules));
+                warnings.Add(err.GetOutputMessage(analyzerOptions.Rules, result));
             }
 
             warnings.Sort(StringComparer.Ordinal);

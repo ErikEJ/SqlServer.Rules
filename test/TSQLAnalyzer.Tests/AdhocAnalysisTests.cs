@@ -74,6 +74,37 @@ public class AdhocAnalysisTests
     }
 
     [TestMethod]
+    public void ReportedColumnNumbersMapToOriginalSource()
+    {
+        // The fixture has a DELETE on line 4 (after USE / GO / blank line).
+        // The wrapper prefix is inserted on the same line as DELETE, so without the fix the
+        // reported column would be 64 (= 1 + 63-char prefix) instead of 1.
+        var result = Analyze(new AnalyzerOptions
+        {
+            Scripts = ["../../../../../sqlprojects/AdhocScripts/AdhocBatchStartColumn.sql"],
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        var deleteWithoutWhere = result.Result!.Problems.FirstOrDefault(p => p.RuleId == "SqlServer.Rules.SRD0017");
+
+        Assert.IsNotNull(deleteWithoutWhere, "Expected SRD0017 (DELETE without WHERE) to fire on the ad-hoc file.");
+        Assert.AreEqual(
+            4,
+            deleteWithoutWhere.StartLine,
+            "The DELETE statement should be on line 4.");
+
+        var adjustedColumn = result.GetAdjustedColumn(
+            deleteWithoutWhere.StartLine,
+            deleteWithoutWhere.StartColumn,
+            deleteWithoutWhere.SourceName);
+
+        Assert.AreEqual(
+            1,
+            adjustedColumn,
+            "Inline wrapping must not shift the reported column; the DELETE is at column 1 in the original source.");
+    }
+
+    [TestMethod]
     public void EveryGoSeparatedBatchIsAnalyzed()
     {
         var result = Analyze(new AnalyzerOptions
