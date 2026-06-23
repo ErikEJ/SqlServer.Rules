@@ -57,10 +57,22 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 && captionObject is string caption
                 && !string.IsNullOrWhiteSpace(caption))
             {
-                return caption;
+                return ExtractSqlFileName(caption);
             }
 
             return Path.GetFileName(filePath);
+        }
+
+        private static string ExtractSqlFileName(string caption)
+        {
+            const string sqlSuffix = ".sql ";
+            var index = caption.IndexOf(sqlSuffix, System.StringComparison.OrdinalIgnoreCase);
+            if (index >= 0)
+            {
+                return caption.Substring(0, index + 4); // include ".sql", exclude trailing space
+            }
+
+            return caption;
         }
     }
 }
