@@ -23,12 +23,9 @@ namespace SqlAnalyzer;
 #pragma warning disable VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates.
 internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 {
-#pragma warning disable CA2213 // Disposable fields should be disposed, object now owned by this instance.
-    private readonly VisualStudioExtensibility extensibility;
-#pragma warning restore CA2213 // Disposable fields should be disposed
+#pragma warning disable CA2213 // Disposable fields are injected services; their lifetime/disposal is managed by the VS extensibility host/DI container.
     private readonly Dictionary<Uri, CancellationTokenSource> documentCancellationTokens;
     private readonly Task initializationTask;
-    private readonly AnalyzerUtilities analyzerUtilities;
     private OutputChannel? outputChannel;
     private DiagnosticsReporter? diagnosticsReporter;
 
