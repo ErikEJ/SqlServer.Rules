@@ -254,7 +254,13 @@ internal sealed class AnalyzerUtilities : IDisposable
     {
         while (true)
         {
-            var line = await this.serverOutput!.ReadLineAsync(cancellationToken);
+            var output = this.serverOutput;
+            if (output is null)
+            {
+                return null;
+            }
+
+            var line = await output.ReadLineAsync(cancellationToken);
             if (line is null)
             {
                 this.ResetServerProcess();
