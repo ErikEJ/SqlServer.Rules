@@ -14,10 +14,10 @@ namespace SqlAnalyzerSsms.Linter.Linting;
 
 #pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
 #pragma warning disable IDE1006 // Naming rule violation
-internal sealed class AnalyzerUtilities
+internal sealed class AnalyzerUtilities : IDisposable
 {
     private static readonly Lazy<AnalyzerUtilities> _instance =
-            new(() => new AnalyzerUtilities(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+            new(() => new AnalyzerUtilities(), LazyThreadSafetyMode.ExecutionAndPublication);
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
@@ -72,6 +72,12 @@ internal sealed class AnalyzerUtilities
         {
             DeleteTempFile(tempPath);
         }
+    }
+
+    public void Dispose()
+    {
+        _requestLock.Dispose();
+        this.ResetServerProcess();
     }
 
     private async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string path, string rules, string sqlVersion, CancellationToken cancellationToken)

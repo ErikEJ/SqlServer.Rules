@@ -20,7 +20,6 @@ namespace SqlAnalyzer;
 /// <summary>
 /// Helper class for running analyzer on a string or file.
 /// </summary>
-#pragma warning disable CA1001 // AnalyzerUtilities lifetime is extension-scoped singleton
 internal sealed class AnalyzerUtilities : IDisposable
 {
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
@@ -415,11 +414,12 @@ internal sealed class AnalyzerUtilities : IDisposable
             };
         }
     }
+
     public void Dispose()
     {
+        requestLock.Dispose();
         this.ResetServerProcess();
     }
-    #pragma warning restore CA1001
 
     private static IEnumerable<DocumentDiagnostic> CreateDocumentDiagnosticsForClosedDocument(Uri fileUri, IEnumerable<SqlAnalyzerDiagnosticInfo> diagnostics)
     {
@@ -434,5 +434,4 @@ internal sealed class AnalyzerUtilities : IDisposable
             };
         }
     }
-
 }

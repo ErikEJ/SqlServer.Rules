@@ -25,10 +25,10 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 {
 #pragma warning disable CA2213 // Disposable fields should be disposed, object now owned by this instance.
     private readonly VisualStudioExtensibility extensibility;
+    private readonly AnalyzerUtilities analyzerUtilities;
 #pragma warning restore CA2213 // Disposable fields should be disposed
     private readonly Dictionary<Uri, CancellationTokenSource> documentCancellationTokens;
     private readonly Task initializationTask;
-    private readonly AnalyzerUtilities analyzerUtilities;
     private OutputChannel? outputChannel;
     private DiagnosticsReporter? diagnosticsReporter;
 
