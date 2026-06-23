@@ -44,13 +44,8 @@ The extension also adds a menu item under `Tools` to run the T-SQL Analyzer agai
 
 ### Installation Requirements
 
-- **Visual Studio 2026 and later**: The extension automatically uses the `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
-
-- **Visual Studio 2022**: The extension depends on the T-SQL Analyzer CLI tool being installed as a .NET global tool. If you haven't installed the tool yet, you can do so by running the following command in a terminal:
-
-```bash
-dotnet tool install -g ErikEJ.DacFX.TSQLAnalyzer.CLI
-```
+- The extension automatically uses the .NET 10 `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
+- The [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) is required and is automatically installed with the multiple workloads in Visual Studio.
 
 ## How can I help?
 
