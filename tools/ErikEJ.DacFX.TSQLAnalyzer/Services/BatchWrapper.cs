@@ -31,22 +31,37 @@ internal sealed class BatchWrapper
     /// </summary>
     /// <param name="sql">The T-SQL script to process.</param>
     /// <returns>The script with ad-hoc batches wrapped, or the original text when nothing was wrapped.</returns>
-    public static string Wrap(string sql)
+    public static string Wrap(string sql) => WrapWithAdjustments(sql).WrappedSql;
+
+    /// <summary>
+    /// Returns <paramref name="sql"/> with every wrappable ad-hoc batch enclosed in a synthetic
+    /// stored procedure, along with column-offset adjustments needed to map wrapped positions back
+    /// to the original source. Each adjustment records the line number and the number of characters
+    /// prepended on that line by the wrapper prefix.
+    /// </summary>
+    /// <param name="sql">The T-SQL script to process.</param>
+    /// <returns>
+    /// The wrapped SQL and a list of <c>(Line, PrefixLength)</c> adjustments. For any problem
+    /// reported on a line that appears in the list, subtract <c>PrefixLength</c> from the reported
+    /// column to obtain the original source column.
+    /// </returns>
+    internal static (string WrappedSql, IReadOnlyList<(int Line, int PrefixLength)> Adjustments) WrapWithAdjustments(string sql)
     {
         if (string.IsNullOrWhiteSpace(sql))
         {
-            return sql;
+            return (sql, []);
         }
 
         var script = TryParse(sql);
 
         if (script == null)
         {
-            return sql;
+            return (sql, []);
         }
 
         // Collect the edits first, then apply them right-to-left so earlier offsets stay valid.
         var edits = new List<(int Offset, string Text)>();
+        var adjustments = new List<(int Line, int PrefixLength)>();
         var index = 0;
 
         foreach (var batch in script.Batches)
@@ -58,14 +73,18 @@ internal sealed class BatchWrapper
 
             index++;
             var name = string.Create(CultureInfo.InvariantCulture, $"[dbo].[{SyntheticObjectPrefix}{index}]");
+            var prefix = $"CREATE PROCEDURE {name} AS BEGIN ";
 
-            edits.Add((batch.StartOffset, $"CREATE PROCEDURE {name} AS BEGIN "));
+            edits.Add((batch.StartOffset, prefix));
             edits.Add((batch.StartOffset + batch.FragmentLength, " END;"));
+
+            // Any token on batch.StartLine is shifted right by the prefix length.
+            adjustments.Add((batch.StartLine, prefix.Length));
         }
 
         if (edits.Count == 0)
         {
-            return sql;
+            return (sql, []);
         }
 
         var builder = new StringBuilder(sql);
@@ -75,7 +94,7 @@ internal sealed class BatchWrapper
             builder.Insert(offset, text);
         }
 
-        return builder.ToString();
+        return (builder.ToString(), adjustments.AsReadOnly());
     }
 
     private static bool IsWrappable(TSqlBatch batch)

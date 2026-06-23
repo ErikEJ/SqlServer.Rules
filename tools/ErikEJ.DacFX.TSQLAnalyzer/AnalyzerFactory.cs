@@ -115,7 +115,7 @@ public class AnalyzerFactory
                 {
                     problemList.Problems.Add(new PlainProblem
                     {
-                        Column = problem.StartColumn,
+                        Column = result.GetAdjustedColumn(problem.StartLine, problem.StartColumn, problem.SourceName),
                         Line = problem.StartLine,
                         Description = problem.Description,
                         Rule = problem.RuleId,
@@ -209,7 +209,12 @@ public class AnalyzerFactory
 
         foreach (var (fileName, fileContents) in files)
         {
-            var contents = BatchWrapper.Wrap(fileContents);
+            var (contents, adjustments) = BatchWrapper.WrapWithAdjustments(fileContents);
+            if (adjustments.Count > 0)
+            {
+                result.ColumnAdjustmentsByFile[fileName] = adjustments.ToDictionary(a => a.Line, a => a.PrefixLength);
+            }
+
             try
             {
                 model.AddOrUpdateObjects(contents, fileName, new TSqlObjectOptions());
@@ -223,7 +228,13 @@ public class AnalyzerFactory
 
     private static void AddScriptToModel(AnalyzerResult result, TSqlModel model, string script)
     {
-        var contents = BatchWrapper.Wrap(script);
+        var (contents, adjustments) = BatchWrapper.WrapWithAdjustments(script);
+        if (adjustments.Count > 0)
+        {
+            // Script strings have no file name; use empty string as the sentinel key.
+            result.ColumnAdjustmentsByFile[string.Empty] = adjustments.ToDictionary(a => a.Line, a => a.PrefixLength);
+        }
+
         try
         {
             model.AddObjects(contents, new TSqlObjectOptions());

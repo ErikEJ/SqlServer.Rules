@@ -10,6 +10,9 @@ namespace ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 public static class SqlRuleProblemExtensions
 {
     public static string GetOutputMessage(this SqlRuleProblem sqlRuleProblem, string? rules)
+        => sqlRuleProblem.GetOutputMessage(rules, null);
+
+    public static string GetOutputMessage(this SqlRuleProblem sqlRuleProblem, string? rules, AnalyzerResult? analyzerResult)
     {
         ArgumentNullException.ThrowIfNull(sqlRuleProblem);
 
@@ -55,14 +58,17 @@ public static class SqlRuleProblemExtensions
             }
         }
 
-        var (endLine, endColumn) = sqlRuleProblem.GetEndPosition();
+        var startColumn = analyzerResult?.GetAdjustedColumn(sqlRuleProblem.StartLine, sqlRuleProblem.StartColumn, sqlRuleProblem.SourceName)
+                          ?? sqlRuleProblem.StartColumn;
+
+        var (endLine, endColumn) = sqlRuleProblem.GetEndPosition(analyzerResult);
 
         var stringBuilder = new StringBuilder();
         stringBuilder.Append(sqlRuleProblem.SourceName);
         stringBuilder.Append('(');
         stringBuilder.Append(sqlRuleProblem.StartLine);
         stringBuilder.Append(',');
-        stringBuilder.Append(sqlRuleProblem.StartColumn);
+        stringBuilder.Append(startColumn);
         stringBuilder.Append(',');
         stringBuilder.Append(endLine);
         stringBuilder.Append(',');
@@ -75,6 +81,9 @@ public static class SqlRuleProblemExtensions
     }
 
     public static (int EndLine, int EndColumn) GetEndPosition(this SqlRuleProblem sqlRuleProblem)
+        => sqlRuleProblem.GetEndPosition(null);
+
+    public static (int EndLine, int EndColumn) GetEndPosition(this SqlRuleProblem sqlRuleProblem, AnalyzerResult? analyzerResult)
     {
         ArgumentNullException.ThrowIfNull(sqlRuleProblem);
 
@@ -93,6 +102,11 @@ public static class SqlRuleProblemExtensions
                 endLine = lastToken.Line;
                 endColumn = lastToken.Column + (lastToken.Text?.Length ?? 0);
             }
+        }
+
+        if (analyzerResult != null)
+        {
+            endColumn = analyzerResult.GetAdjustedColumn(endLine, endColumn, sqlRuleProblem.SourceName);
         }
 
         return (endLine, endColumn);

@@ -177,7 +177,7 @@ internal static class ServerMode
             {
                 foreach (var problem in result.Result.Problems)
                 {
-                    var (endLine, endColumn) = problem.GetEndPosition();
+                    var (endLine, endColumn) = problem.GetEndPosition(result);
 
                     var (message, helpLink) = ExtractMessageAndHelpLink(problem.Description);
 
@@ -185,7 +185,7 @@ internal static class ServerMode
                     {
                         Rule = problem.RuleId ?? "unknown",
                         Line = problem.StartLine,
-                        Column = problem.StartColumn,
+                        Column = result.GetAdjustedColumn(problem.StartLine, problem.StartColumn, problem.SourceName),
                         EndLine = endLine,
                         EndColumn = endColumn,
                         Message = message,
