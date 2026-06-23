@@ -1,6 +1,5 @@
 using System.ComponentModel.Composition;
 using System.IO;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -54,7 +53,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         private static string GetDocumentName(ITextView textView, string filePath)
         {
             if (textView.Properties.TryGetProperty(typeof(IVsWindowFrame), out IVsWindowFrame frame)
-                && ErrorHandler.Succeeded(frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out object captionObject))
+                && frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out object captionObject) >= 0
                 && captionObject is string caption
                 && !string.IsNullOrWhiteSpace(caption))
             {
