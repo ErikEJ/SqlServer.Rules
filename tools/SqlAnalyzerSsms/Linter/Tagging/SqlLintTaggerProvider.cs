@@ -23,7 +23,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
     public class SqlLintTaggerProvider : ITaggerProvider
     {
         [Import]
-        internal SqlAnalysisCache AnalysisCache { get; set; }
+        internal SqlAnalysisCache AnalysisCache { get; set; } = null!;
 
         public ITagger<T>? CreateTagger<T>(ITextBuffer buffer)
             where T : ITag
@@ -78,7 +78,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
 
                     var engineVersion = options.SqlEngineVersion?.Trim();
                     if (!string.IsNullOrEmpty(engineVersion)
-                        && engineVersion.StartsWith("Sql", StringComparison.OrdinalIgnoreCase))
+                        && engineVersion!.StartsWith("Sql", StringComparison.OrdinalIgnoreCase))
                     {
                         var safe = true;
                         for (var i = 0; i < engineVersion.Length; i++)
