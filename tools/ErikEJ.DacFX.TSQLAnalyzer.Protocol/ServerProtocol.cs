@@ -68,7 +68,7 @@ public sealed class ServerResponse
     /// List of problems found during analysis.
     /// </summary>
     [JsonPropertyName("problems")]
-    public IList<ServerProblem>? Problems { get; private set; }
+public IList<ServerProblem>? Problems { get; init; }
 }
 
 /// <summary>
