@@ -70,10 +70,12 @@ namespace SqlAnalyzerSsms.Linter.Tagging
             {
                 return trackingSpan.GetSpan(snapshot);
             }
+#pragma warning disable CA1031 // Do not catch general exception types - we want to return null on any failure
             catch
             {
                 return null;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
         }
 
         private static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_' || c == '[';

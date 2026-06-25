@@ -11,7 +11,7 @@ permissions:
   id-token: write # This is required for the federated credential to work
 
 env:
-  VERSION: 0.0.${{ github.run_number }}
+  VERSION: 1.0.${{ github.run_number }}
 
 jobs:
   build:
