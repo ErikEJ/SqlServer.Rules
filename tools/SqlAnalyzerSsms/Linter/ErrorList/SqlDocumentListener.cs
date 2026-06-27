@@ -1,8 +1,7 @@
-using System;
 using System.ComponentModel.Composition;
 using System.IO;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -54,24 +53,20 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         private static string GetDocumentName(string filePath)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            string? caption = null;
 
-            // Use VsShellUtilities.IsDocumentOpen to find the document frame for the file.
-            // See: https://www.vsixcookbook.com/tips/windows.html
-            VsShellUtilities.IsDocumentOpen(
-                ServiceProvider.GlobalProvider,
-                filePath,
-                Guid.Empty,
-                out _,
-                out _,
-                out IVsWindowFrame frame);
-
-            if (frame != null
-                && frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out object captionObject) >= 0
-                && captionObject is string caption
-                && !string.IsNullOrWhiteSpace(caption))
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                return ExtractSqlFileName(caption);
+                var frame = await VS.Windows.FindDocumentWindowAsync(filePath);
+                if (frame != null)
+                {
+                    caption = frame.Caption;
+                }
+            });
+
+            if (!string.IsNullOrWhiteSpace(caption))
+            {
+                return ExtractSqlFileName(caption!);
             }
 
             return Path.GetFileName(filePath);
