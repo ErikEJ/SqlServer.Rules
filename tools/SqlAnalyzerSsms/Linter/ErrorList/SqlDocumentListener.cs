@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.Composition;
 using System.IO;
 using Microsoft.VisualStudio.Shell;
@@ -55,9 +56,16 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            // Use VsShellUtilities to find the document frame for the file via the Running Document Table.
+            // Use VsShellUtilities.IsDocumentOpen to find the document frame for the file.
             // See: https://www.vsixcookbook.com/tips/windows.html
-            var frame = VsShellUtilities.GetDocumentWindow(ServiceProvider.GlobalProvider, filePath);
+            VsShellUtilities.IsDocumentOpen(
+                ServiceProvider.GlobalProvider,
+                filePath,
+                Guid.Empty,
+                out _,
+                out _,
+                out IVsWindowFrame frame);
+
             if (frame != null
                 && frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out object captionObject) >= 0
                 && captionObject is string caption
