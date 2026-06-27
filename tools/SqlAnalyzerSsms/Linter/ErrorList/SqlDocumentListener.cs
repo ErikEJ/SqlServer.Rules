@@ -1,7 +1,7 @@
 using System.ComponentModel.Composition;
 using System.IO;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -33,7 +33,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return;
             }
 
-            var documentName = GetDocumentName(textView, filePath);
+            var documentName = GetDocumentName(filePath);
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
             var handler = new DocumentHandler(textView, TableDataSource, AnalysisCache, filePath, documentName);
@@ -51,16 +51,22 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             return null;
         }
 
-        private static string GetDocumentName(ITextView textView, string filePath)
+        private static string GetDocumentName(string filePath)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            string? caption = null;
 
-            if (textView.Properties.TryGetProperty(typeof(IVsWindowFrame), out IVsWindowFrame frame)
-                && frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out object captionObject) >= 0
-                && captionObject is string caption
-                && !string.IsNullOrWhiteSpace(caption))
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                return ExtractSqlFileName(caption);
+                var frame = await VS.Windows.FindDocumentWindowAsync(filePath);
+                if (frame != null)
+                {
+                    caption = frame.Caption;
+                }
+            });
+
+            if (!string.IsNullOrWhiteSpace(caption))
+            {
+                return ExtractSqlFileName(caption!);
             }
 
             return Path.GetFileName(filePath);
