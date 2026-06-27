@@ -33,7 +33,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return;
             }
 
-            var documentName = GetDocumentName(textView, filePath);
+            var documentName = GetDocumentName(filePath);
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
             var handler = new DocumentHandler(textView, TableDataSource, AnalysisCache, filePath, documentName);
@@ -51,11 +51,14 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             return null;
         }
 
-        private static string GetDocumentName(ITextView textView, string filePath)
+        private static string GetDocumentName(string filePath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (textView.Properties.TryGetProperty(typeof(IVsWindowFrame), out IVsWindowFrame frame)
+            // Use VsShellUtilities to find the document frame for the file via the Running Document Table.
+            // See: https://www.vsixcookbook.com/tips/windows.html
+            var frame = VsShellUtilities.GetDocumentWindow(ServiceProvider.GlobalProvider, filePath);
+            if (frame != null
                 && frame.GetProperty((int)__VSFPROPID.VSFPROPID_Caption, out object captionObject) >= 0
                 && captionObject is string caption
                 && !string.IsNullOrWhiteSpace(caption))
