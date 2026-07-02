@@ -1,7 +1,5 @@
 using System.ComponentModel.Composition;
 using System.IO;
-using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -53,35 +51,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         private static string GetDocumentName(string filePath)
         {
-            string? caption = null;
-
-            ThreadHelper.JoinableTaskFactory.Run(async () =>
-            {
-                var frame = await VS.Windows.FindDocumentWindowAsync(filePath);
-                if (frame != null)
-                {
-                    caption = frame.Caption;
-                }
-            });
-
-            if (!string.IsNullOrWhiteSpace(caption))
-            {
-                return ExtractSqlFileName(caption!);
-            }
-
             return Path.GetFileName(filePath);
-        }
-
-        private static string ExtractSqlFileName(string caption)
-        {
-            const string sqlSuffix = ".sql ";
-            var index = caption.IndexOf(sqlSuffix, System.StringComparison.OrdinalIgnoreCase);
-            if (index >= 0)
-            {
-                return caption.Substring(0, index + 4); // include ".sql", exclude trailing space
-            }
-
-            return caption;
         }
     }
 }
