@@ -212,7 +212,7 @@ public class AnalyzerFactory
             var (contents, adjustments) = BatchWrapper.WrapWithAdjustments(fileContents);
             if (adjustments.Count > 0)
             {
-                result.ColumnAdjustmentsByFile[fileName] = adjustments.ToDictionary(a => a.Line, a => a.PrefixLength);
+                result.ColumnAdjustmentsByFile[fileName] = adjustments;
             }
 
             try
@@ -232,7 +232,7 @@ public class AnalyzerFactory
         if (adjustments.Count > 0)
         {
             // Script strings have no file name; use empty string as the sentinel key.
-            result.ColumnAdjustmentsByFile[string.Empty] = adjustments.ToDictionary(a => a.Line, a => a.PrefixLength);
+            result.ColumnAdjustmentsByFile[string.Empty] = adjustments;
         }
 
         try

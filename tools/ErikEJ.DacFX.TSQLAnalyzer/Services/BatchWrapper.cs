@@ -35,17 +35,12 @@ internal sealed class BatchWrapper
 
     /// <summary>
     /// Returns <paramref name="sql"/> with every wrappable ad-hoc batch enclosed in a synthetic
-    /// stored procedure, along with column-offset adjustments needed to map wrapped positions back
-    /// to the original source. Each adjustment records the line number and the number of characters
-    /// prepended on that line by the wrapper prefix.
+    /// stored procedure, along with column-offset adjustments needed to map wrapped or normalized
+    /// positions back to the original source.
     /// </summary>
     /// <param name="sql">The T-SQL script to process.</param>
-    /// <returns>
-    /// The wrapped SQL and a list of <c>(Line, PrefixLength)</c> adjustments. For any problem
-    /// reported on a line that appears in the list, subtract <c>PrefixLength</c> from the reported
-    /// column to obtain the original source column.
-    /// </returns>
-    internal static (string WrappedSql, IReadOnlyList<(int Line, int PrefixLength)> Adjustments) WrapWithAdjustments(string sql)
+    /// <returns>The transformed SQL and the column adjustments needed to map results back to the original source.</returns>
+    internal static (string WrappedSql, IReadOnlyList<ColumnAdjustment> Adjustments) WrapWithAdjustments(string sql)
     {
         if (string.IsNullOrWhiteSpace(sql))
         {
@@ -60,13 +55,23 @@ internal sealed class BatchWrapper
         }
 
         // Collect the edits first, then apply them right-to-left so earlier offsets stay valid.
-        var edits = new List<(int Offset, string Text)>();
-        var adjustments = new List<(int Line, int PrefixLength)>();
+        var edits = new List<(int Offset, int Length, string Text)>();
+        var adjustments = new List<ColumnAdjustment>();
         var index = 0;
 
         foreach (var batch in script.Batches)
         {
-            if (batch.Statements.Count == 0 || !IsWrappable(batch))
+            if (batch.Statements.Count == 0)
+            {
+                continue;
+            }
+
+            if (TryNormalizeAlterObjectDefinition(sql, batch, edits, adjustments))
+            {
+                continue;
+            }
+
+            if (!IsWrappable(batch))
             {
                 continue;
             }
@@ -75,11 +80,11 @@ internal sealed class BatchWrapper
             var name = string.Create(CultureInfo.InvariantCulture, $"[dbo].[{SyntheticObjectPrefix}{index}]");
             var prefix = $"CREATE PROCEDURE {name} AS BEGIN ";
 
-            edits.Add((batch.StartOffset, prefix));
-            edits.Add((batch.StartOffset + batch.FragmentLength, " END;"));
+            edits.Add((batch.StartOffset, 0, prefix));
+            edits.Add((batch.StartOffset + batch.FragmentLength, 0, " END;"));
 
             // Any token on batch.StartLine is shifted right by the prefix length.
-            adjustments.Add((batch.StartLine, prefix.Length));
+            adjustments.Add(new ColumnAdjustment(batch.StartLine, 1, prefix.Length));
         }
 
         if (edits.Count == 0)
@@ -89,12 +94,60 @@ internal sealed class BatchWrapper
 
         var builder = new StringBuilder(sql);
 
-        foreach (var (offset, text) in edits.OrderByDescending(e => e.Offset))
+        foreach (var (offset, length, text) in edits.OrderByDescending(e => e.Offset))
         {
+            builder.Remove(offset, length);
             builder.Insert(offset, text);
         }
 
         return (builder.ToString(), adjustments.AsReadOnly());
+    }
+
+    private static bool TryNormalizeAlterObjectDefinition(
+        string sql,
+        TSqlBatch batch,
+        List<(int Offset, int Length, string Text)> edits,
+        List<ColumnAdjustment> adjustments)
+    {
+        if (batch.Statements.Count != 1)
+        {
+            return false;
+        }
+
+        var statement = batch.Statements[0];
+
+        if (IsCreateOrAlterDefinition(statement))
+        {
+            var tokens = GetStatementTokens(statement).ToList();
+            var orToken = tokens.FirstOrDefault(t => t.TokenType == TSqlTokenType.Or);
+            var alterToken = tokens.FirstOrDefault(t => t.TokenType == TSqlTokenType.Alter);
+
+            if (orToken == null || alterToken == null || alterToken.Offset < orToken.Offset)
+            {
+                return false;
+            }
+
+            var offset = orToken.Offset;
+            var length = (alterToken.Offset + alterToken.Text.Length) - offset;
+            edits.Add((offset, length, CreateWhitespacePreservingReplacement(sql, offset, length)));
+            return true;
+        }
+
+        if (!IsAlterDefinition(statement))
+        {
+            return false;
+        }
+
+        var alter = GetStatementTokens(statement).FirstOrDefault(t => t.TokenType == TSqlTokenType.Alter);
+        if (alter == null)
+        {
+            return false;
+        }
+
+        const string createKeyword = "CREATE";
+        edits.Add((alter.Offset, alter.Text.Length, createKeyword));
+        adjustments.Add(new ColumnAdjustment(alter.Line, alter.Column + createKeyword.Length, createKeyword.Length - alter.Text.Length));
+        return true;
     }
 
     private static bool IsWrappable(TSqlBatch batch)
@@ -143,6 +196,43 @@ internal sealed class BatchWrapper
         SaveTransactionStatement => true,
         _ => false,
     };
+
+    private static bool IsAlterDefinition(TSqlStatement statement) => statement switch
+    {
+        AlterProcedureStatement => true,
+        AlterFunctionStatement => true,
+        AlterViewStatement => true,
+        AlterTriggerStatement => true,
+        _ => false,
+    };
+
+    private static bool IsCreateOrAlterDefinition(TSqlStatement statement) => statement switch
+    {
+        CreateOrAlterProcedureStatement => true,
+        CreateOrAlterFunctionStatement => true,
+        CreateOrAlterViewStatement => true,
+        CreateOrAlterTriggerStatement => true,
+        _ => false,
+    };
+
+    private static IEnumerable<TSqlParserToken> GetStatementTokens(TSqlStatement statement)
+        => statement.ScriptTokenStream.Where(
+            token => token.Offset >= statement.StartOffset && token.Offset < statement.StartOffset + statement.FragmentLength);
+
+    private static string CreateWhitespacePreservingReplacement(string sql, int offset, int length)
+    {
+        var replacement = sql.Substring(offset, length).ToCharArray();
+
+        for (var i = 0; i < replacement.Length; i++)
+        {
+            if (replacement[i] != '\r' && replacement[i] != '\n')
+            {
+                replacement[i] = ' ';
+            }
+        }
+
+        return new string(replacement);
+    }
 
     private static TSqlScript? TryParse(string sql)
     {
