@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 
@@ -18,17 +19,19 @@ public class AnalyzerResult
     public string? OutputFile { get; internal set; }
 
     /// <summary>
-    /// Per-file column-offset adjustments produced by <see cref="Services.BatchWrapper"/>.
-    /// Outer key is the source file name (as passed to the model). Inner dictionary maps each
-    /// line number to the number of characters prepended on that line by the synthetic-procedure
-    /// wrapper prefix.
+    /// Per-file column adjustments produced by <see cref="Services.BatchWrapper"/>.
+    /// The key is the source file name (as passed to the model). Each adjustment says that for the
+    /// given line, any reported column at or after <see cref="ColumnAdjustment.StartColumn"/> should
+    /// be shifted left by <see cref="ColumnAdjustment.Delta"/> characters to map back to the
+    /// original source text.
     /// </summary>
-    internal Dictionary<string, IReadOnlyDictionary<int, int>> ColumnAdjustmentsByFile { get; } = [];
+    internal Dictionary<string, IReadOnlyList<ColumnAdjustment>> ColumnAdjustmentsByFile { get; } = [];
 
     /// <summary>
     /// Returns the original-source column for a position in the wrapped script.
-    /// When the line was shifted by a synthetic-procedure prefix the prefix length is subtracted;
-    /// otherwise the column is returned as-is.
+    /// When the line was shifted by preprocessing (for example an ad-hoc wrapper prefix or ALTER to
+    /// CREATE normalization), the matching adjustment delta is subtracted; otherwise the column is
+    /// returned as-is.
     /// </summary>
     /// <param name="line">The 1-based line number as reported by the analysis engine.</param>
     /// <param name="column">The 1-based column number as reported by the analysis engine.</param>
@@ -37,10 +40,14 @@ public class AnalyzerResult
     public int GetAdjustedColumn(int line, int column, string? sourceName)
     {
         var key = sourceName ?? string.Empty;
-        if (ColumnAdjustmentsByFile.TryGetValue(key, out var adjustments)
-            && adjustments.TryGetValue(line, out var prefixLength))
+        if (ColumnAdjustmentsByFile.TryGetValue(key, out var adjustments))
         {
-            return column - prefixLength;
+            foreach (var adjustment in adjustments
+                .Where(a => a.Line == line && column >= a.StartColumn)
+                .OrderByDescending(a => a.StartColumn))
+            {
+                column -= adjustment.Delta;
+            }
         }
 
         return column;

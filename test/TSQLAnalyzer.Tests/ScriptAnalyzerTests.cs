@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,6 +12,8 @@ namespace SqlServer.Rules.Tests.Docs;
 [TestCategory("Analyzer")]
 public class ScriptAnalyzerTests
 {
+    private const string SelectStarRuleId = "SqlServer.Rules.SRD0006";
+
     [TestMethod]
     public void CanCallApiWithScriptString()
     {
@@ -29,5 +35,85 @@ public class ScriptAnalyzerTests
         Assert.IsNotNull(analysis);
         Assert.IsNotNull(analysis.Result);
         Assert.IsNotEmpty(analysis.Result.Problems, "Expected problems but found none.");
+    }
+
+    [TestMethod]
+    public void CanCallApiWithAlterProcedureScriptString()
+    {
+        var script = "ALTER PROCEDURE dbo.TestProc AS select * from sys.objects;";
+        var createAnalysis = Analyze(new AnalyzerOptions
+        {
+            Script = "CREATE PROCEDURE dbo.TestProc AS select * from sys.objects;",
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+        var analysis = Analyze(new AnalyzerOptions
+        {
+            Script = script,
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        var createSelectStar = createAnalysis.Result!.Problems.Single(p => p.RuleId == SelectStarRuleId);
+        var selectStar = analysis.Result!.Problems.SingleOrDefault(p => p.RuleId == SelectStarRuleId);
+
+        Assert.IsNotNull(selectStar, "Expected ALTER PROCEDURE input to be analyzed like CREATE PROCEDURE.");
+        Assert.AreEqual(
+            createAnalysis.GetAdjustedColumn(createSelectStar.StartLine, createSelectStar.StartColumn, createSelectStar.SourceName),
+            analysis.GetAdjustedColumn(selectStar.StartLine, selectStar.StartColumn, selectStar.SourceName),
+            "ALTER normalization should preserve the original source column.");
+    }
+
+    [TestMethod]
+    public void CanCallApiWithCreateOrAlterProcedureScriptString()
+    {
+        var analysis = Analyze(new AnalyzerOptions
+        {
+            Script = "CREATE OR ALTER PROCEDURE dbo.TestProc AS select * from sys.objects;",
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        Assert.IsTrue(
+            analysis.Result!.Problems.Any(p => p.RuleId == SelectStarRuleId),
+            "Expected CREATE OR ALTER PROCEDURE input to be analyzed.");
+    }
+
+    [TestMethod]
+    public void CanCallApiWithAlterProcedureFile()
+    {
+        var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".sql");
+
+        try
+        {
+            File.WriteAllText(
+                path,
+                "ALTER PROCEDURE dbo.TestProc\r\nAS\r\nSELECT * FROM sys.objects;\r\n",
+                new UTF8Encoding(true));
+
+            var analysis = Analyze(new AnalyzerOptions
+            {
+                Scripts = [path],
+                SqlVersion = SqlServerVersion.Sql160,
+            });
+
+            Assert.IsTrue(
+                analysis.Result!.Problems.Any(p => p.RuleId == SelectStarRuleId),
+                "Expected ALTER PROCEDURE file input to be analyzed.");
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    private static AnalyzerResult Analyze(AnalyzerOptions options)
+    {
+        var analysis = new AnalyzerFactory(options).Analyze();
+
+        Assert.IsNotNull(analysis);
+        Assert.IsNotNull(analysis.Result);
+
+        return analysis;
     }
 }
