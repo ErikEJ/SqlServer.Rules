@@ -1,4 +1,3 @@
-using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 
@@ -40,14 +39,22 @@ public class AnalyzerResult
     public int GetAdjustedColumn(int line, int column, string? sourceName)
     {
         var key = sourceName ?? string.Empty;
-        if (ColumnAdjustmentsByFile.TryGetValue(key, out var adjustments))
+        if (!ColumnAdjustmentsByFile.TryGetValue(key, out var adjustments))
         {
-            foreach (var adjustment in adjustments
-                .Where(a => a.Line == line && column >= a.StartColumn)
-                .OrderByDescending(a => a.StartColumn))
+            // DacFx assigns an internal default source name (e.g. "-1") to objects added via
+            // AddObjects without a named source. Fall back to the empty-string sentinel used for
+            // script-string inputs so that column adjustments are still applied in that case.
+            if (key.Length == 0 || !ColumnAdjustmentsByFile.TryGetValue(string.Empty, out adjustments))
             {
-                column -= adjustment.Delta;
+                return column;
             }
+        }
+
+        foreach (var adjustment in adjustments
+            .Where(a => a.Line == line && column >= a.StartColumn)
+            .OrderByDescending(a => a.StartColumn))
+        {
+            column -= adjustment.Delta;
         }
 
         return column;

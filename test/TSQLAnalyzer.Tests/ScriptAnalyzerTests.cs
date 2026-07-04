@@ -41,23 +41,20 @@ public class ScriptAnalyzerTests
     public void CanCallApiWithAlterProcedureScriptString()
     {
         var script = "ALTER PROCEDURE dbo.TestProc AS select * from sys.objects;";
-        var createAnalysis = Analyze(new AnalyzerOptions
-        {
-            Script = "CREATE PROCEDURE dbo.TestProc AS select * from sys.objects;",
-            SqlVersion = SqlServerVersion.Sql160,
-        });
         var analysis = Analyze(new AnalyzerOptions
         {
             Script = script,
             SqlVersion = SqlServerVersion.Sql160,
         });
 
-        var createSelectStar = createAnalysis.Result!.Problems.Single(p => p.RuleId == SelectStarRuleId);
         var selectStar = analysis.Result!.Problems.SingleOrDefault(p => p.RuleId == SelectStarRuleId);
 
         Assert.IsNotNull(selectStar, "Expected ALTER PROCEDURE input to be analyzed like CREATE PROCEDURE.");
+
+        // The adjusted column must map back to the position of '*' in the original ALTER script.
+        var expectedColumn = script.IndexOf('*', StringComparison.Ordinal) + 1;
         Assert.AreEqual(
-            createAnalysis.GetAdjustedColumn(createSelectStar.StartLine, createSelectStar.StartColumn, createSelectStar.SourceName),
+            expectedColumn,
             analysis.GetAdjustedColumn(selectStar.StartLine, selectStar.StartColumn, selectStar.SourceName),
             "ALTER normalization should preserve the original source column.");
     }
