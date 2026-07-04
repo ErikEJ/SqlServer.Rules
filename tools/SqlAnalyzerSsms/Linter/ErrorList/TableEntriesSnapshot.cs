@@ -37,6 +37,10 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                     content = error.DocumentName;
                     return true;
 
+                case StandardTableKeyNames.Path:
+                    content = error.FilePath;
+                    return true;
+
                 case StandardTableKeyNames.Line:
                     content = error.Line;
                     return true;
