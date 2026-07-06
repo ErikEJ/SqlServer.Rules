@@ -16,22 +16,16 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         private readonly ITextView _textView;
         private readonly SqlLintTableDataSource _tableDataSource;
         private readonly SqlAnalysisCache _analysisCache;
-        private readonly string _filePath;
-        private readonly string _documentName;
         private bool _disposed;
 
         public DocumentHandler(
             ITextView textView,
             SqlLintTableDataSource tableDataSource,
-            SqlAnalysisCache analysisCache,
-            string filePath,
-            string documentName)
+            SqlAnalysisCache analysisCache)
         {
             _textView = textView;
             _tableDataSource = tableDataSource;
             _analysisCache = analysisCache;
-            _filePath = filePath;
-            _documentName = documentName;
 
             // Only listen for analysis results — the tagger owns triggering analysis
             // (on buffer changes, option saves, and initial file open).
@@ -45,8 +39,14 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return;
             }
 
+            var identity = DocumentIdentity.Get(_textView);
+
+            new InvalidOperationException(
+                $"Identity: filePath='{identity.FilePath}', documentName='{identity.DocumentName}'")
+                .Log();
+
             // Update error list with new results
-            _tableDataSource?.UpdateErrors(_filePath, _documentName, e.ProjectName, e.Violations);
+            _tableDataSource?.UpdateErrors(identity.FilePath, identity.DocumentName, e.ProjectName, e.Violations);
         }
 
         public void Dispose()
@@ -55,7 +55,8 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             {
                 _disposed = true;
                 _analysisCache.AnalysisUpdated -= OnAnalysisUpdated;
-                _tableDataSource?.ClearErrors(_filePath);
+                var identity = DocumentIdentity.Get(_textView);
+                _tableDataSource?.ClearErrors(identity.FilePath);
             }
         }
     }

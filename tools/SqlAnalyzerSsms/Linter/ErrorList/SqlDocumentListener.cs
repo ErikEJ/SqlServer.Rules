@@ -23,10 +23,8 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         public void TextViewCreated(ITextView textView)
         {
-            var identity = DocumentIdentity.Get(textView);
-
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            var handler = new DocumentHandler(textView, TableDataSource, AnalysisCache, identity.FilePath, identity.DocumentName);
+            var handler = new DocumentHandler(textView, TableDataSource, AnalysisCache);
 #pragma warning restore CA2000 // Dispose objects before losing scope
             textView.Closed += (s, e) => handler.Dispose();
         }
