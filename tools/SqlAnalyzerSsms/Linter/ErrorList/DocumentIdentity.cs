@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 
@@ -13,7 +12,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         public static (string FilePath, string DocumentName) Get(ITextView textView)
         {
-            string? windowCaption = GetWindowCaption(textView);
+            string? windowCaption = GetWindowCaption();
             string? virtualDocumentName = GetVirtualDocumentName(windowCaption);
             string filePath = GetFilePath(textView) ?? string.Empty;
 
@@ -75,31 +74,8 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             return string.IsNullOrWhiteSpace(fileName) ? null : fileName;
         }
 
-        private static string? GetWindowCaption(ITextView textView)
+        private static string? GetWindowCaption()
         {
-            try
-            {
-                string? caption = null;
-
-                ThreadHelper.JoinableTaskFactory.Run(async () =>
-                {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                    var window = await Community.VisualStudio.Toolkit.VS.Windows.GetCurrentWindowAsync();
-
-                    if (window != null)
-                    {
-                        caption = window.Caption;
-                    }
-                });
-
-                return caption;
-            }
-            catch (Exception ex)
-            {
-                ex.Log();
-            }
-
             return null;
         }
 
@@ -110,7 +86,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return null;
             }
 
-            Match match = Regex.Match(windowCaption, @"^(?<name>SQLQuery\d+\.sql)\s+-");
+            Match match = Regex.Match(windowCaption, @"^(?<name>SQLQuery\d+\.sql)");
             return match.Success ? match.Groups["name"].Value : null;
         }
     }
