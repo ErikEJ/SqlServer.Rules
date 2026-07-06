@@ -1,5 +1,4 @@
 using System.ComponentModel.Composition;
-using System.IO;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -25,33 +24,12 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         public void TextViewCreated(ITextView textView)
         {
-            var filePath = GetFilePath(textView);
-            if (filePath == null)
-            {
-                return;
-            }
-
-            var documentName = GetDocumentName(filePath);
+            var identity = DocumentIdentity.Get(textView);
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            var handler = new DocumentHandler(textView, TableDataSource, AnalysisCache, filePath, documentName);
+            var handler = new DocumentHandler(textView, TableDataSource, AnalysisCache, identity.FilePath, identity.DocumentName);
 #pragma warning restore CA2000 // Dispose objects before losing scope
             textView.Closed += (s, e) => handler.Dispose();
-        }
-
-        private static string? GetFilePath(ITextView textView)
-        {
-            if (textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document))
-            {
-                return document.FilePath;
-            }
-
-            return null;
-        }
-
-        private static string GetDocumentName(string filePath)
-        {
-            return Path.GetFileName(filePath);
         }
     }
 }

@@ -46,7 +46,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             }
 
             // Update error list with new results
-            _tableDataSource?.UpdateErrors(e.FilePath, _documentName, e.ProjectName, e.Violations);
+            _tableDataSource?.UpdateErrors(_filePath, _documentName, e.ProjectName, e.Violations);
         }
 
         public void Dispose()
