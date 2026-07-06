@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 
@@ -23,8 +25,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             // Only prefer the virtual SSMS tab name when the underlying file is a temp file
             // (SSMS stores unsaved query windows in the user's %temp% folder).
             // For real files saved outside %temp%, preserve the actual file identity.
-            bool useVirtualName = !string.IsNullOrWhiteSpace(virtualDocumentName)
-                && (string.IsNullOrWhiteSpace(filePath) || IsInTempFolder(filePath));
+            bool useVirtualName = !string.IsNullOrWhiteSpace(virtualDocumentName) || IsInTempFolder(filePath);
 
             string documentName = useVirtualName
                 ? virtualDocumentName!
@@ -76,7 +77,15 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         private static string? GetWindowCaption()
         {
-            return null;
+            string? caption = null;
+
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
+            {
+                var window = await VS.Windows.GetCurrentWindowAsync();
+                caption = window?.Caption;
+            });
+
+            return caption;
         }
 
         private static string? GetVirtualDocumentName(string? windowCaption)
