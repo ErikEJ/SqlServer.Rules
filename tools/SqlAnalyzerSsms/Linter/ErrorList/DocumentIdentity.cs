@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -90,13 +91,11 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                     return null;
                 }
 
-                var titleBuilder = new StringBuilder(MaxWindowTitleLength);
-                if (GetWindowText(windowHandle, titleBuilder, titleBuilder.Capacity) <= 0)
-                {
-                    return null;
-                }
-
-                return titleBuilder.ToString().Trim();
+                // GetWindowHandle() returns the inner edit-control HWND whose window text is the
+                // temp file name (e.g. "v5lioamz..sql").  The SSMS tab title that carries the
+                // virtual document name ("SQLQuery6.sql - ...") lives on the MDI child window
+                // further up the parent chain.  Walk upward to find the right caption.
+                return GetCaptionFromWindowChain(windowHandle);
             }
             catch (COMException ex)
             {
@@ -105,6 +104,52 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             catch (InvalidOperationException ex)
             {
                 ex.Log();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Walks up the Win32 parent-window chain from <paramref name="startHandle"/> and returns
+        /// the first window title that contains the virtual document name pattern.  If none match,
+        /// returns the first non-empty title found (preserving previous behaviour) and logs a
+        /// diagnostic message with all collected captions to aid troubleshooting.
+        /// </summary>
+        private static string? GetCaptionFromWindowChain(IntPtr startHandle)
+        {
+            const int maxDepth = 10;
+            var captions = new List<string>();
+            var hWnd = startHandle;
+
+            for (int i = 0; i < maxDepth && hWnd != IntPtr.Zero; i++)
+            {
+                var titleBuilder = new StringBuilder(MaxWindowTitleLength);
+                if (GetWindowText(hWnd, titleBuilder, titleBuilder.Capacity) > 0)
+                {
+                    captions.Add(titleBuilder.ToString().Trim());
+                }
+
+                hWnd = GetParent(hWnd);
+            }
+
+            // Prefer the first caption that yields a virtual document name
+            foreach (string caption in captions)
+            {
+                if (GetVirtualDocumentName(caption) != null)
+                {
+                    return caption;
+                }
+            }
+
+            // No virtual name found — log all captions for diagnostics and fall back to
+            // the first non-empty one (preserves previous behaviour for saved files).
+            if (captions.Count > 0)
+            {
+                new InvalidOperationException(
+                    $"DocumentIdentity: could not resolve virtual document name. " +
+                    $"Window captions tried ({captions.Count}): [{string.Join("] [", captions)}]")
+                    .Log();
+                return captions[0];
             }
 
             return null;
@@ -126,5 +171,11 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         /// </summary>
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+
+        /// <summary>
+        /// Returns the handle of the parent window, or <see cref="IntPtr.Zero"/> if none.
+        /// </summary>
+        [DllImport("user32.dll", ExactSpelling = true)]
+        private static extern IntPtr GetParent(IntPtr hWnd);
     }
 }
