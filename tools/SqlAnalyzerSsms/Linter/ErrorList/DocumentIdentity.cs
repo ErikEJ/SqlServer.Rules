@@ -1,11 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Shell;
+using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -67,61 +64,42 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         {
             try
             {
-                if (Package.GetGlobalService(typeof(SComponentModel)) is not IComponentModel componentModel)
+                if (!textView.Properties.TryGetProperty(typeof(IVsTextView), out IVsTextView vsTextView) || vsTextView == null)
                 {
-                    Debug.WriteLine("Unable to resolve IComponentModel for SSMS window caption extraction.");
                     return null;
                 }
 
-                if (componentModel.GetService<IEditorAdapterFactoryService>() is not IEditorAdapterFactoryService editorFactory)
+                var windowHandle = vsTextView.GetWindowHandle();
+                if (windowHandle == IntPtr.Zero)
                 {
-                    Debug.WriteLine("Unable to resolve IEditorAdapterFactoryService for SSMS window caption extraction.");
                     return null;
                 }
 
-                if (editorFactory.GetViewAdapter(textView) is not IVsTextView viewAdapter)
+                var titleBuilder = new StringBuilder(MaxWindowTitleLength);
+                if (GetWindowText(windowHandle, titleBuilder, titleBuilder.Capacity) <= 0)
                 {
-                    Debug.WriteLine("Unable to resolve the IVsTextView adapter for SSMS window caption extraction.");
                     return null;
                 }
 
-                int windowHandleResult = viewAdapter.GetWindowHandle(out IntPtr windowHandle);
-                if (windowHandleResult != 0 || windowHandle == IntPtr.Zero)
-                {
-                    Debug.WriteLine($"GetWindowHandle failed for the current SSMS text view. HRESULT: 0x{windowHandleResult:X8}");
-                    return null;
-                }
+                var title = titleBuilder.ToString().Trim();
 
-                var title = new StringBuilder(MaxWindowTitleLength);
-                if (GetWindowText(windowHandle, title, title.Capacity) <= 0)
+                // SSMS virtual query tabs use a window title format like
+                // "SQLQuery1.sql - <server>.<db> - Microsoft SQL Server Management Studio".
+                // Look for ".sql - " to identify a virtual document and extract the name.
+                string sqlMarker = SqlExtension + WindowTitleSeparator;
+                var markerIndex = title.IndexOf(sqlMarker, StringComparison.Ordinal);
+                if (markerIndex >= 0)
                 {
-                    Debug.WriteLine($"Unable to retrieve the SSMS window title for the current text view. Win32 error: {Marshal.GetLastWin32Error()}");
-                    return null;
-                }
-
-                var trimmedCaption = title.ToString().Trim();
-                if (!string.IsNullOrWhiteSpace(trimmedCaption))
-                {
-                    // SSMS virtual query tabs use a window title format like
-                    // "SQLQuery1.sql - <server>.<db> - Microsoft SQL Server Management Studio".
-                    // Look for ".sql - " to identify a virtual document and extract the name.
-                    string sqlMarker = SqlExtension + WindowTitleSeparator;
-                    var markerIndex = trimmedCaption.IndexOf(sqlMarker, StringComparison.Ordinal);
-                    if (markerIndex >= 0)
-                    {
-                        return trimmedCaption[..(markerIndex + SqlExtension.Length)];
-                    }
-
-                    return null;
+                    return title.Substring(0, markerIndex + SqlExtension.Length);
                 }
             }
             catch (COMException ex)
             {
-                Debug.WriteLine(ex);
+                ex.Log();
             }
             catch (InvalidOperationException ex)
             {
-                Debug.WriteLine(ex);
+                ex.Log();
             }
 
             return null;
