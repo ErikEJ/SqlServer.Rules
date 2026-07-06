@@ -126,7 +126,11 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 var titleBuilder = new StringBuilder(MaxWindowTitleLength);
                 if (GetWindowText(hWnd, titleBuilder, titleBuilder.Capacity) > 0)
                 {
-                    captions.Add(titleBuilder.ToString().Trim());
+                    string title = titleBuilder.ToString().Trim();
+                    if (!string.IsNullOrEmpty(title))
+                    {
+                        captions.Add(title);
+                    }
                 }
 
                 hWnd = GetParent(hWnd);
