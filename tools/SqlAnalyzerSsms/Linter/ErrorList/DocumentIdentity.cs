@@ -102,7 +102,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return null;
             }
 
-            Match match = Regex.Match(windowCaption, @"^(?<name>SQLQuery\d+\.sql)\s+-", RegexOptions.IgnoreCase);
+            Match match = Regex.Match(windowCaption, @"^(?<name>SQLQuery\d+\.sql)\s+-");
             return match.Success ? match.Groups["name"].Value : null;
         }
 
