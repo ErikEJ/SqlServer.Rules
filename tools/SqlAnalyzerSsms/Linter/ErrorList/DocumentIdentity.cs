@@ -20,7 +20,16 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             string? windowCaption = GetWindowCaption(textView);
             string? virtualDocumentName = GetVirtualDocumentName(windowCaption);
             string filePath = GetFilePath(textView) ?? string.Empty;
-            string documentName = virtualDocumentName ?? GetDocumentName(filePath) ?? windowCaption ?? string.Empty;
+
+            // Only prefer the virtual SSMS tab name when the underlying file is a temp file
+            // (SSMS stores unsaved query windows in the user's %temp% folder).
+            // For real files saved outside %temp%, preserve the actual file identity.
+            bool useVirtualName = !string.IsNullOrWhiteSpace(virtualDocumentName)
+                && (string.IsNullOrWhiteSpace(filePath) || IsInTempFolder(filePath));
+
+            string documentName = useVirtualName
+                ? virtualDocumentName!
+                : (GetDocumentName(filePath) ?? windowCaption ?? string.Empty);
 
             if (string.IsNullOrWhiteSpace(documentName))
             {
@@ -31,12 +40,18 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             {
                 filePath = documentName;
             }
-            else if (!string.IsNullOrWhiteSpace(virtualDocumentName))
+            else if (useVirtualName)
             {
-                filePath = virtualDocumentName;
+                filePath = virtualDocumentName!;
             }
 
             return (filePath, documentName);
+        }
+
+        private static bool IsInTempFolder(string filePath)
+        {
+            string tempPath = Path.GetTempPath();
+            return filePath.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase);
         }
 
         private static string? GetFilePath(ITextView textView)
