@@ -81,6 +81,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var window = await VS.Windows.GetCurrentWindowAsync();
                 caption = window?.Caption;
             });
