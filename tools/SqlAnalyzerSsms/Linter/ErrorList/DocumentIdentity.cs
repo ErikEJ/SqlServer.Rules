@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -13,18 +14,22 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
     {
         private const string DefaultDocumentName = "query.sql";
         private const int MaxWindowTitleLength = 1024;
-        private const string WindowTitleSeparator = " - ";
-        private const string SqlExtension = ".sql";
 
         public static (string FilePath, string DocumentName) Get(ITextView textView)
         {
+            string? windowCaption = GetWindowCaption(textView);
+            string? virtualDocumentName = GetVirtualDocumentName(windowCaption);
             string filePath = GetFilePath(textView) ?? string.Empty;
-            string documentName = GetDocumentName(filePath) ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(documentName))
-            {
-                documentName = GetWindowCaption(textView) ?? string.Empty;
-            }
+            // Only prefer the virtual SSMS tab name when the underlying file is a temp file
+            // (SSMS stores unsaved query windows in the user's %temp% folder).
+            // For real files saved outside %temp%, preserve the actual file identity.
+            bool useVirtualName = !string.IsNullOrWhiteSpace(virtualDocumentName)
+                && (string.IsNullOrWhiteSpace(filePath) || IsInTempFolder(filePath));
+
+            string documentName = useVirtualName
+                ? virtualDocumentName!
+                : (GetDocumentName(filePath) ?? windowCaption ?? string.Empty);
 
             if (string.IsNullOrWhiteSpace(documentName))
             {
@@ -35,8 +40,18 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             {
                 filePath = documentName;
             }
+            else if (useVirtualName)
+            {
+                filePath = virtualDocumentName!;
+            }
 
             return (filePath, documentName);
+        }
+
+        private static bool IsInTempFolder(string filePath)
+        {
+            string tempPath = Path.GetTempPath();
+            return filePath.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase);
         }
 
         private static string? GetFilePath(ITextView textView)
@@ -81,17 +96,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                     return null;
                 }
 
-                var title = titleBuilder.ToString().Trim();
-
-                // SSMS virtual query tabs use a window title format like
-                // "SQLQuery1.sql - <server>.<db> - Microsoft SQL Server Management Studio".
-                // Look for ".sql - " to identify a virtual document and extract the name.
-                string sqlMarker = SqlExtension + WindowTitleSeparator;
-                var markerIndex = title.IndexOf(sqlMarker, StringComparison.Ordinal);
-                if (markerIndex >= 0)
-                {
-                    return title.Substring(0, markerIndex + SqlExtension.Length);
-                }
+                return titleBuilder.ToString().Trim();
             }
             catch (COMException ex)
             {
@@ -103,6 +108,17 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             }
 
             return null;
+        }
+
+        private static string? GetVirtualDocumentName(string? windowCaption)
+        {
+            if (string.IsNullOrWhiteSpace(windowCaption))
+            {
+                return null;
+            }
+
+            Match match = Regex.Match(windowCaption, @"^(?<name>SQLQuery\d+\.sql)\s+-");
+            return match.Success ? match.Groups["name"].Value : null;
         }
 
         /// <summary>
