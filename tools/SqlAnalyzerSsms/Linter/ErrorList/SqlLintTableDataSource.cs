@@ -70,28 +70,28 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         public void UpdateErrors(string filePath, string documentName, string projectName, IEnumerable<SqlAnalyzerDiagnosticInfo> violations)
         {
-            string effectivePath = string.IsNullOrWhiteSpace(filePath) ? documentName : filePath;
-            if (string.IsNullOrWhiteSpace(effectivePath))
+            string snapshotKey = string.IsNullOrWhiteSpace(filePath) ? documentName : filePath;
+            if (string.IsNullOrWhiteSpace(snapshotKey))
             {
                 return;
             }
 
             violations ??= [];
 
-            var errors = violations.Select(v => new SqlLintError(v, effectivePath, documentName, projectName)).ToList();
+            var errors = violations.Select(v => new SqlLintError(v, snapshotKey, documentName, projectName)).ToList();
 
             lock (_snapshots)
             {
-                if (_snapshots.TryGetValue(effectivePath, out TableEntriesSnapshot oldSnapshot))
+                if (_snapshots.TryGetValue(snapshotKey, out TableEntriesSnapshot oldSnapshot))
                 {
-                    _snapshots.Remove(effectivePath);
+                    _snapshots.Remove(snapshotKey);
                     NotifySinks(sink => sink.RemoveSnapshot(oldSnapshot));
                 }
 
                 if (errors.Count > 0)
                 {
-                    var snapshot = new TableEntriesSnapshot(effectivePath, errors);
-                    _snapshots[effectivePath] = snapshot;
+                    var snapshot = new TableEntriesSnapshot(snapshotKey, errors);
+                    _snapshots[snapshotKey] = snapshot;
                     NotifySinks(sink => sink.AddSnapshot(snapshot));
                 }
             }
