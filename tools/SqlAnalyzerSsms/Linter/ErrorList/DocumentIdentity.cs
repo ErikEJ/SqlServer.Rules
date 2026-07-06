@@ -17,6 +17,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         private const string DefaultDocumentName = "query.sql";
         private const int MaxWindowTitleLength = 1024;
         private const string WindowTitleSeparator = " - ";
+        private const string SqlExtension = ".sql";
 
         public static (string FilePath, string DocumentName) Get(ITextView textView)
         {
@@ -101,22 +102,17 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 var trimmedCaption = title.ToString().Trim();
                 if (!string.IsNullOrWhiteSpace(trimmedCaption))
                 {
-                    // SSMS uses a tab caption format like "SqlQuery1.sql - " for virtual query tabs.
-                    // The document name is the portion before the separator, which we keep for the error list.
-                    // This assumes the standard SSMS caption format; localized or customized captions may use a different separator and would need a different parser.
-                    // If that format changes, the fallback chain still uses the text document name first, then the window caption, then the default constant.
-                    var separatorIndex = trimmedCaption.IndexOf(WindowTitleSeparator, StringComparison.Ordinal);
-                    if (separatorIndex > 0)
+                    // SSMS virtual query tabs use a window title format like
+                    // "SQLQuery1.sql - <server>.<db> - Microsoft SQL Server Management Studio".
+                    // Look for ".sql - " to identify a virtual document and extract the name.
+                    string sqlMarker = SqlExtension + WindowTitleSeparator;
+                    var markerIndex = trimmedCaption.IndexOf(sqlMarker, StringComparison.Ordinal);
+                    if (markerIndex >= 0)
                     {
-                        trimmedCaption = trimmedCaption[..separatorIndex];
+                        return trimmedCaption[..(markerIndex + SqlExtension.Length)];
                     }
 
-                    if (string.IsNullOrWhiteSpace(trimmedCaption))
-                    {
-                        return null;
-                    }
-
-                    return trimmedCaption;
+                    return null;
                 }
             }
             catch (COMException ex)
