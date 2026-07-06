@@ -4,7 +4,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -21,6 +20,10 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             string? windowCaption = GetWindowCaption(textView);
             string? virtualDocumentName = GetVirtualDocumentName(windowCaption);
             string filePath = GetFilePath(textView) ?? string.Empty;
+
+            new InvalidOperationException(
+                $"DocumentIdentity: filePath='{filePath}', windowCaption='{windowCaption}', virtualDocumentName='{virtualDocumentName}'")
+                .Log();
 
             // Only prefer the virtual SSMS tab name when the underlying file is a temp file
             // (SSMS stores unsaved query windows in the user's %temp% folder).
