@@ -38,11 +38,12 @@ internal sealed class AnalyzerUtilities : IDisposable
     /// <param name="fileUri">File uri to run SQL analyzer on.</param>
     /// <param name="rules">Rules to apply for the analyzer.</param>
     /// <param name="sqlVersion">SQL version to use for analysis.</param>
+    /// <param name="additionalAnalyzers">Semicolon-separated list of additional analyzer DLL paths.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
     {
-        var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, rules, sqlVersion, cancellationToken);
+        var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, rules, sqlVersion, additionalAnalyzers, cancellationToken);
         return CreateDocumentDiagnosticsForClosedDocument(fileUri, serverDiagnostics);
     }
 
@@ -52,9 +53,10 @@ internal sealed class AnalyzerUtilities : IDisposable
     /// <param name="textDocument">Document to run SQL analyzer on.</param>
     /// <param name="rules">Rules to apply for the analyzer.</param>
     /// <param name="sqlVersion">SQL version to use for analysis.</param>
+    /// <param name="additionalAnalyzers">Semicolon-separated list of additional analyzer DLL paths.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
     {
         if (textDocument.Length > 8192)
         {
@@ -69,7 +71,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         {
             await File.WriteAllTextAsync(tempPath, content, Encoding.UTF8, cancellationToken);
 
-            var serverDiagnostics = await AnalyzeWithServerModeAsync(tempPath, rules, sqlVersion, cancellationToken);
+            var serverDiagnostics = await AnalyzeWithServerModeAsync(tempPath, rules, sqlVersion, additionalAnalyzers, cancellationToken);
             return CreateDocumentDiagnosticsForOpenDocument(textDocument, serverDiagnostics);
         }
         finally
@@ -80,7 +82,28 @@ internal sealed class AnalyzerUtilities : IDisposable
 
     private static string CreateTempFilePath() => Path.Combine(Path.GetTempPath(), $"tsqlanalyzerscratch-{Path.GetRandomFileName()}.sql");
 
-    private async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string path, string? rules, string? sqlVersion, CancellationToken cancellationToken)
+    private static IList<string>? ParseAdditionalAnalyzers(string? additionalAnalyzers)
+    {
+        if (string.IsNullOrWhiteSpace(additionalAnalyzers))
+        {
+            return null;
+        }
+
+        var paths = additionalAnalyzers.Split(';');
+        var result = new List<string>(paths.Length);
+        foreach (var path in paths)
+        {
+            var trimmed = path.Trim();
+            if (!string.IsNullOrEmpty(trimmed))
+            {
+                result.Add(trimmed);
+            }
+        }
+
+        return result.Count > 0 ? result : null;
+    }
+
+    private async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string path, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
     {
         using var lockReleaser = await this.requestLock.EnterAsync(cancellationToken);
 
@@ -100,6 +123,7 @@ internal sealed class AnalyzerUtilities : IDisposable
                 Path = path,
                 Rules = string.IsNullOrWhiteSpace(rules) ? null : $"Rules:{rules}",
                 SqlVersion = string.IsNullOrWhiteSpace(sqlVersion) ? null : sqlVersion,
+                AdditionalAnalyzers = ParseAdditionalAnalyzers(additionalAnalyzers),
             };
 
             var requestJson = JsonSerializer.Serialize(request);

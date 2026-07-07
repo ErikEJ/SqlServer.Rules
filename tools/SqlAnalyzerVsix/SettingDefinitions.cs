@@ -52,5 +52,15 @@ public static class SettingDefinitions
         Description = "Set the SQL Server dialect used in analysis",
     };
 
+    [VisualStudioContribution]
+    public static Setting.String AdditionalAnalyzers { get; } = new(
+        "additionalAnalyzers",
+        "Additional analyzers",
+        AnalyzerCategory,
+        defaultValue: string.Empty)
+    {
+        Description = "Semicolon-separated list of full paths to additional analyzer .dll files to include in analysis (for example: 'C:\\analyzers\\MyAnalyzer.dll;C:\\analyzers\\OtherAnalyzer.dll')",
+    };
+
 #pragma warning restore CEE0027 // String not localized
 }

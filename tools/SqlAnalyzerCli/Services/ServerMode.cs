@@ -134,6 +134,7 @@ internal static class ServerMode
             {
                 Rules = request.Rules ?? string.Empty,
                 SqlVersion = sqlVersion,
+                AdditionalAnalyzers = request.AdditionalAnalyzers?.ToList(),
             };
 
             // Determine if path is a file or directory

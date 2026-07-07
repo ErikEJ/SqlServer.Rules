@@ -76,19 +76,21 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         {
             var runProperties = await this.IsInSqlProjAsync(documentUri.LocalPath, cancellationToken);
 
-            if (!runProperties.InSqlProj)
-            {
 #pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-            var results = await extensibility.Settings().ReadEffectiveValuesAsync(
-                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion],
+            var settingsResults = await extensibility.Settings().ReadEffectiveValuesAsync(
+                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion, SettingDefinitions.AdditionalAnalyzers],
                 cancellationToken);
 
-            runProperties.SqlVersion = results.ValueOrDefault(SettingDefinitions.SqlEngineVersion, "Sql170");
-            runProperties.Rules = results.ValueOrDefault(SettingDefinitions.Rules, string.Empty);
-#pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-            }
+            var additionalAnalyzers = settingsResults.ValueOrDefault(SettingDefinitions.AdditionalAnalyzers, string.Empty);
 
-            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, runProperties.Rules, runProperties.SqlVersion, cancellationToken);
+            if (!runProperties.InSqlProj)
+            {
+                runProperties.SqlVersion = settingsResults.ValueOrDefault(SettingDefinitions.SqlEngineVersion, "Sql170");
+                runProperties.Rules = settingsResults.ValueOrDefault(SettingDefinitions.Rules, string.Empty);
+            }
+#pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentUri, cancellationToken);
             await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
@@ -124,22 +126,32 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         var runProperties = await this.IsInSqlProjAsync(textViewSnapshot.Uri.LocalPath, cancellationToken);
         if (runProperties.InSqlProj)
         {
-            await this.ProcessDocumentAsync(textViewSnapshot.Document, runProperties.Rules, runProperties.SqlVersion, cancellationToken.CombineWith(newCts.Token).Token);
+#pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            var settingsResults = await extensibility.Settings().ReadEffectiveValuesAsync(
+                [SettingDefinitions.AdditionalAnalyzers],
+                cancellationToken);
+
+            var additionalAnalyzers = settingsResults.ValueOrDefault(SettingDefinitions.AdditionalAnalyzers, string.Empty);
+#pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+            await this.ProcessDocumentAsync(textViewSnapshot.Document, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, cancellationToken.CombineWith(newCts.Token).Token);
         }
         else
         {
 #pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             var results = await extensibility.Settings().ReadEffectiveValuesAsync(
-                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion, SettingDefinitions.RunAnalysis],
+                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion, SettingDefinitions.RunAnalysis, SettingDefinitions.AdditionalAnalyzers],
                 cancellationToken);
 
             var sqlVersion = results.ValueOrDefault(SettingDefinitions.SqlEngineVersion, "Sql170");
             var rules = results.ValueOrDefault(SettingDefinitions.Rules, string.Empty);
             var enabled = results.ValueOrDefault(SettingDefinitions.RunAnalysis, true);
+            var additionalAnalyzers = results.ValueOrDefault(SettingDefinitions.AdditionalAnalyzers, string.Empty);
+#pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
             if (enabled)
             {
-                await this.ProcessDocumentAsync(textViewSnapshot.Document, rules, sqlVersion, cancellationToken.CombineWith(newCts.Token).Token);
+                await this.ProcessDocumentAsync(textViewSnapshot.Document, rules, sqlVersion, additionalAnalyzers, cancellationToken.CombineWith(newCts.Token).Token);
             }
         }
     }
@@ -176,7 +188,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         }
     }
 
-    private async Task ProcessDocumentAsync(ITextDocumentSnapshot documentSnapshot, string? rules, string? sqlVersion, CancellationToken cancellationToken)
+    private async Task ProcessDocumentAsync(ITextDocumentSnapshot documentSnapshot, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
     {
         // Wait for 1 second to see if any other changes are being sent.
         await Task.Delay(1000, cancellationToken);
@@ -188,7 +200,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 
         try
         {
-            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, rules, sqlVersion, cancellationToken);
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, rules, sqlVersion, additionalAnalyzers, cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentSnapshot, cancellationToken);
             await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
@@ -209,8 +221,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         Assumes.NotNull(this.diagnosticsReporter);
     }
 
-    private async Task<(bool InSqlProj, string? Rules, string? SqlVersion)> IsInSqlProjAsync(string path, CancellationToken cancellationToken)
-    {
+    private async Task<(bool InSqlProj, string? Rules, string? SqlVersion)> IsInSqlProjAsync(string path, CancellationToken cancellationToken)    {
         var workspace = this.extensibility.Workspaces();
 
 #pragma warning disable VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
