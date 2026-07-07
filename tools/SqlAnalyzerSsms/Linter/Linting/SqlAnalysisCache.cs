@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 
 #pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
+#pragma warning disable IDE1006 // Naming rule violation
 namespace SqlAnalyzerSsms.Linter.Linting
 {
     /// <summary>
@@ -27,7 +28,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
         /// <summary>
         /// Event raised when analysis results are updated for a buffer.
         /// </summary>
-        public event EventHandler<AnalysisUpdatedEventArgs> AnalysisUpdated;
+public event EventHandler<AnalysisUpdatedEventArgs>? AnalysisUpdated;
 
         public void AnalyzeImmediate(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName)
         {
@@ -185,3 +186,4 @@ namespace SqlAnalyzerSsms.Linter.Linting
     }
 }
 #pragma warning restore SA1309 // Field names should not begin with underscore
+#pragma warning restore IDE1006 // Naming Styles

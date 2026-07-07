@@ -22,9 +22,12 @@ namespace SqlServer.Rules.Performance
     /// - Name '{name}' starts with a number.
     /// - Name '{name}' contains invalid characters. Please only use alphanumerics and underscores.
     /// - Primary Key, Index, Foreign Key, Check Constraint, and Default Constraint names must match their configured SRN0007 regex.
-    /// - Regex overrides can be configured in .editorconfig using `sqlserver_rules.srn0007.[pk|fk|ix|ux|ck|df]_regex`.
-    /// - Supported regex tokens are `{{tableName}}`, `{{schemaName}}`, `{{foreignTableName}}`, `{{foreignSchemaName}}`, and `{{columnName}}`.
-    /// - Default regex patterns:
+    ///
+    /// Regex overrides can be configured in `.editorconfig`.
+    ///
+    /// Supported regex tokens are `{{tableName}}`, `{{schemaName}}`, `{{foreignTableName}}`, `{{foreignSchemaName}}`, and `{{columnName}}`.
+    ///
+    /// Default regex patterns:
     ///
     /// ```ini
     /// [*.sql]
