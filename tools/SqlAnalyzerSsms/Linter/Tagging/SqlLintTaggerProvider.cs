@@ -46,7 +46,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
             var sqlVersion = "Sql170";
 
             var rules = string.Empty;
-            var projectName = string.Empty;
+            var projectName = "Miscellaneous Files";
 
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {

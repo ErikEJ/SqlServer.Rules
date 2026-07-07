@@ -18,10 +18,6 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             string? virtualDocumentName = GetVirtualDocumentName(windowCaption);
             string filePath = GetFilePath(textView) ?? string.Empty;
 
-            new InvalidOperationException(
-                $"DocumentIdentity: filePath='{filePath}', windowCaption='{windowCaption}', virtualDocumentName='{virtualDocumentName}'")
-                .Log();
-
             // Only prefer the virtual SSMS tab name when the underlying file is a temp file
             // (SSMS stores unsaved query windows in the user's %temp% folder).
             // For real files saved outside %temp%, preserve the actual file identity.
