@@ -16,9 +16,9 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
     [Export(typeof(SqlLintTableDataSource))]
     public class SqlLintTableDataSource : ITableDataSource
     {
-private static SqlLintTableDataSource? _instance;
+        private static SqlLintTableDataSource? _instance;
 
-public static SqlLintTableDataSource Instance => _instance ?? throw new InvalidOperationException("SqlLintTableDataSource has not been initialized.");
+        public static SqlLintTableDataSource Instance => _instance ?? throw new InvalidOperationException("SqlLintTableDataSource has not been initialized.");
 
         private readonly List<SinkManager> _managers = [];
         private readonly Dictionary<string, TableEntriesSnapshot> _snapshots =
