@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 
 #pragma warning disable SA1309 // Field names should not begin with underscore - we prefer this for private fields
-#pragma warning disable IDE1006 // Naming Styles - we prefer this for private fields
+#pragma warning disable IDE1006 // Naming rule violation
 namespace SqlAnalyzerSsms.Linter.Linting
 {
     /// <summary>
