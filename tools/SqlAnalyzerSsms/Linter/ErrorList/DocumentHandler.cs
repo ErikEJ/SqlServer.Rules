@@ -16,16 +16,19 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
         private readonly ITextView _textView;
         private readonly SqlLintTableDataSource _tableDataSource;
         private readonly SqlAnalysisCache _analysisCache;
+        private readonly string _filePath;
         private bool _disposed;
 
         public DocumentHandler(
             ITextView textView,
             SqlLintTableDataSource tableDataSource,
-            SqlAnalysisCache analysisCache)
+            SqlAnalysisCache analysisCache,
+            string filePath)
         {
             _textView = textView;
             _tableDataSource = tableDataSource;
             _analysisCache = analysisCache;
+            _filePath = filePath;
 
             // Only listen for analysis results — the tagger owns triggering analysis
             // (on buffer changes, option saves, and initial file open).
@@ -39,14 +42,14 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return;
             }
 
-            var identity = DocumentIdentity.Get(_textView);
+            var documentName = DocumentIdentity.GetDocumentName(_textView);
 
             new InvalidOperationException(
-                $"Identity: filePath='{identity.FilePath}', documentName='{identity.DocumentName}'")
+                $"Identity: filePath='{_filePath}', documentName='{documentName}'")
                 .Log();
 
             // Update error list with new results
-            _tableDataSource?.UpdateErrors(identity.FilePath, identity.DocumentName, e.ProjectName, e.Violations);
+            _tableDataSource?.UpdateErrors(_filePath, documentName, e.ProjectName, e.Violations);
         }
 
         public void Dispose()
@@ -55,8 +58,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
             {
                 _disposed = true;
                 _analysisCache.AnalysisUpdated -= OnAnalysisUpdated;
-                var identity = DocumentIdentity.Get(_textView);
-                _tableDataSource?.ClearErrors(identity.FilePath);
+                _tableDataSource?.ClearErrors(_filePath);
             }
         }
     }

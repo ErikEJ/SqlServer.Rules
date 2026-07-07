@@ -128,7 +128,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
 
                 buffer.Properties[_propertyKey] = result;
 
-                AnalysisUpdated?.Invoke(this, new AnalysisUpdatedEventArgs(buffer, snapshot, violations, filePath, projectName));
+                AnalysisUpdated?.Invoke(this, new AnalysisUpdatedEventArgs(buffer, snapshot, violations, projectName));
             }
             catch (OperationCanceledException)
             {
