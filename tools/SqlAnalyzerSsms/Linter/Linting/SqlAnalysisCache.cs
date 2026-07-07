@@ -28,7 +28,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
         /// <summary>
         /// Event raised when analysis results are updated for a buffer.
         /// </summary>
-        public event EventHandler<AnalysisUpdatedEventArgs> AnalysisUpdated = null!;
+public event EventHandler<AnalysisUpdatedEventArgs>? AnalysisUpdated;
 
         public void AnalyzeImmediate(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName)
         {
