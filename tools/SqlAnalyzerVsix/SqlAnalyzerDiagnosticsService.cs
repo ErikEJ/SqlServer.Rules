@@ -221,7 +221,8 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         Assumes.NotNull(this.diagnosticsReporter);
     }
 
-    private async Task<(bool InSqlProj, string? Rules, string? SqlVersion)> IsInSqlProjAsync(string path, CancellationToken cancellationToken)    {
+    private async Task<(bool InSqlProj, string? Rules, string? SqlVersion)> IsInSqlProjAsync(string path, CancellationToken cancellationToken)
+    {
         var workspace = this.extensibility.Workspaces();
 
 #pragma warning disable VSEXTPREVIEW_PROJECTQUERY_PROPERTIES_BUILDPROPERTIES // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
