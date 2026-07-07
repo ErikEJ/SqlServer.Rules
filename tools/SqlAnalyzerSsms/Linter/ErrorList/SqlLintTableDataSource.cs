@@ -16,7 +16,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
     [Export(typeof(SqlLintTableDataSource))]
     public class SqlLintTableDataSource : ITableDataSource
     {
-        private static SqlLintTableDataSource _instance;
+        private static SqlLintTableDataSource _instance = null!;
 
         public static SqlLintTableDataSource Instance => _instance;
 
