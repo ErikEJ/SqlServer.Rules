@@ -28,5 +28,11 @@ namespace SqlAnalyzerSsms.Options
         [Description("Set the SQL Server dialect used in analysis, for example Sql170 for SQL Server 2025.")]
         [DefaultValue(null)]
         public string? SqlEngineVersion { get; set; }
+
+        [Category("Code Analysis")]
+        [DisplayName(@"Additional analyzers")]
+        [Description("Semicolon-separated list of full paths to additional analyzer .dll files to include in analysis (for example: 'C:\\analyzers\\MyAnalyzer.dll;C:\\analyzers\\OtherAnalyzer.dll').")]
+        [DefaultValue(null)]
+        public string? AdditionalAnalyzers { get; set; }
     }
 }

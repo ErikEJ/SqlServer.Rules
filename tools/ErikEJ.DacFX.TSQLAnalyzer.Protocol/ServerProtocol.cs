@@ -39,6 +39,12 @@ public sealed class ServerRequest
     /// </summary>
     [JsonPropertyName("sqlVersion")]
     public string? SqlVersion { get; set; }
+
+    /// <summary>
+    /// Additional analyzer DLL paths to include in the analysis.
+    /// </summary>
+    [JsonPropertyName("additionalAnalyzers")]
+    public IList<string>? AdditionalAnalyzers { get; set; }
 }
 
 /// <summary>

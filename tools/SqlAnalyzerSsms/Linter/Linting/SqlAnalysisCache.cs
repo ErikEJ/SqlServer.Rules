@@ -30,7 +30,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
         /// </summary>
         public event EventHandler<AnalysisUpdatedEventArgs>? AnalysisUpdated;
 
-        public void AnalyzeImmediate(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName)
+        public void AnalyzeImmediate(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName, string? additionalAnalyzers = null)
         {
             ITextSnapshot snapshot = buffer.CurrentSnapshot;
             if (HasPendingAnalysisForSnapshot(buffer, snapshot.Version.VersionNumber))
@@ -49,10 +49,10 @@ namespace SqlAnalyzerSsms.Linter.Linting
 #pragma warning restore CA2000 // Dispose objects before losing scope
             var pendingAnalysis = new PendingAnalysis(cts, snapshot.Version.VersionNumber);
             buffer.Properties[_pendingAnalysisKey] = pendingAnalysis;
-            PerformAnalysisNowAsync(buffer, filePath, sqlVersion, rules, projectName, snapshot, text, pendingAnalysis.CancellationTokenSource.Token).FireAndForget();
+            PerformAnalysisNowAsync(buffer, filePath, sqlVersion, rules, projectName, snapshot, text, additionalAnalyzers, pendingAnalysis.CancellationTokenSource.Token).FireAndForget();
         }
 
-        public void InvalidateAndAnalyze(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName)
+        public void InvalidateAndAnalyze(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName, string? additionalAnalyzers = null)
         {
             // Cancel any pending analysis for this buffer
             CancelPendingAnalysis(buffer);
@@ -65,10 +65,10 @@ namespace SqlAnalyzerSsms.Linter.Linting
             var text = snapshot.GetText();
 
             // Pass the token, not the CTS, to avoid accessing disposed CTS
-            PerformAnalysisAsync(buffer, filePath, sqlVersion, rules, projectName, snapshot, text, cts.Token).FireAndForget();
+            PerformAnalysisAsync(buffer, filePath, sqlVersion, rules, projectName, snapshot, text, additionalAnalyzers, cts.Token).FireAndForget();
         }
 
-        private async Task PerformAnalysisAsync(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName, ITextSnapshot snapshot, string text, CancellationToken cancellationToken)
+        private async Task PerformAnalysisAsync(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName, ITextSnapshot snapshot, string text, string? additionalAnalyzers, CancellationToken cancellationToken)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    PerformAnalysis(buffer, snapshot, text, filePath, sqlVersion, rules, projectName, cancellationToken);
+                    PerformAnalysis(buffer, snapshot, text, filePath, sqlVersion, rules, projectName, additionalAnalyzers, cancellationToken);
                 }
             }
             catch (OperationCanceledException)
@@ -89,12 +89,12 @@ namespace SqlAnalyzerSsms.Linter.Linting
             }
         }
 
-        private async Task PerformAnalysisNowAsync(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName, ITextSnapshot snapshot, string text, CancellationToken cancellationToken)
+        private async Task PerformAnalysisNowAsync(ITextBuffer buffer, string filePath, string sqlVersion, string rules, string projectName, ITextSnapshot snapshot, string text, string? additionalAnalyzers, CancellationToken cancellationToken)
         {
             try
             {
                 // Yield to background thread immediately (no debounce delay)
-                await Task.Run(() => PerformAnalysis(buffer, snapshot, text, filePath, sqlVersion, rules, projectName, cancellationToken), cancellationToken);
+                await Task.Run(() => PerformAnalysis(buffer, snapshot, text, filePath, sqlVersion, rules, projectName, additionalAnalyzers, cancellationToken), cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -113,7 +113,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
         /// <summary>
         /// Performs the actual analysis and updates the cache.
         /// </summary>
-        private void PerformAnalysis(ITextBuffer buffer, ITextSnapshot snapshot, string text, string filePath, string sqlVersion, string rules, string projectName, CancellationToken cancellationToken = default)
+        private void PerformAnalysis(ITextBuffer buffer, ITextSnapshot snapshot, string text, string filePath, string sqlVersion, string rules, string projectName, string? additionalAnalyzers = null, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
 
                 ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
-                    violations = await AnalyzerUtilities.Instance.AnalyzeAsync(text, rules, sqlVersion, cancellationToken);
+                    violations = await AnalyzerUtilities.Instance.AnalyzeAsync(text, rules, sqlVersion, additionalAnalyzers, cancellationToken);
                 });
 
                 var result = new CachedAnalysisResult(snapshot.Version.VersionNumber, violations);

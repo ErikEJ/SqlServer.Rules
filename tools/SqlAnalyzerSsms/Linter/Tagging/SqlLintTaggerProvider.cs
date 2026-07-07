@@ -47,6 +47,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
 
             var rules = string.Empty;
             var projectName = "Miscellaneous Files";
+            string? additionalAnalyzers = null;
 
             ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
@@ -96,6 +97,8 @@ namespace SqlAnalyzerSsms.Linter.Tagging
                         }
                     }
                 }
+
+                additionalAnalyzers = options.AdditionalAnalyzers;
             });
 
             if (!enabled)
@@ -105,7 +108,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
 
             return buffer.Properties.GetOrCreateSingletonProperty(
                 typeof(SqlLintTagger),
-                () => new SqlLintTagger(buffer, AnalysisCache, sqlVersion, rules, projectName)) as ITagger<T>;
+                () => new SqlLintTagger(buffer, AnalysisCache, sqlVersion, rules, projectName, additionalAnalyzers)) as ITagger<T>;
         }
     }
 }
