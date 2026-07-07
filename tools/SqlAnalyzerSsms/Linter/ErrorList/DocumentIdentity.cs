@@ -12,7 +12,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
     {
         private const string DefaultDocumentName = "query.sql";
 
-        public static (string FilePath, string DocumentName) Get(ITextView textView)
+        public static string GetDocumentName(ITextView textView)
         {
             string? windowCaption = GetWindowCaption();
             string? virtualDocumentName = GetVirtualDocumentName(windowCaption);
@@ -36,16 +36,7 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 documentName = DefaultDocumentName;
             }
 
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                filePath = documentName;
-            }
-            else if (useVirtualName)
-            {
-                filePath = virtualDocumentName!;
-            }
-
-            return (filePath, documentName);
+            return documentName;
         }
 
         private static bool IsInTempFolder(string filePath)

@@ -11,7 +11,6 @@ namespace SqlAnalyzerSsms.Linter.Linting
         ITextBuffer buffer,
         ITextSnapshot snapshot,
         IReadOnlyList<SqlAnalyzerDiagnosticInfo> violations,
-        string filePath,
         string projectName) : EventArgs
     {
         public ITextBuffer Buffer { get; } = buffer;
@@ -19,8 +18,6 @@ namespace SqlAnalyzerSsms.Linter.Linting
         public ITextSnapshot Snapshot { get; } = snapshot;
 
         public IReadOnlyList<SqlAnalyzerDiagnosticInfo> Violations { get; } = violations;
-
-        public string FilePath { get; } = filePath;
 
         public string ProjectName { get; } = projectName;
     }

@@ -26,7 +26,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
         private List<LintResult> _currentResults;
         private bool _isDisposed;
 
-public event EventHandler<SnapshotSpanEventArgs>? TagsChanged;
+        public event EventHandler<SnapshotSpanEventArgs>? TagsChanged;
 
         public SqlLintTagger(ITextBuffer buffer, SqlAnalysisCache analysisCache, string sqlVersion, string rules, string projectName)
         {
