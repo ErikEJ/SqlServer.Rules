@@ -250,6 +250,7 @@ public static class Program
         stringBuilder.AppendLine("|----|----|");
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| Id | {attribute.Id.ToId()} |");
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| Friendly Name | {friendlyName} |");
+        stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| Disable with | -{attribute.Id} |");
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| Category | {attribute.Category} |");
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| Ignorable | {isIgnorable} |");
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"| Applicable Types | {elements.First()}  |");
