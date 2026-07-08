@@ -19,9 +19,9 @@ The extension works with both SQL Server and Azure SQL Database projects based o
 The extension will respect any rule configuration you have in your SQL project, including whether analysis is enabled, SQL version and rule suppression.
 
 ```xml
-<Project Sdk="MSBuild.Sdk.SqlProj/3.2.0">
+<Project Sdk="MSBuild.Sdk.SqlProj/4.2.0">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <SqlServerVersion>Sql170</SqlServerVersion>
     <RunSqlCodeAnalysis>True</RunSqlCodeAnalysis>
     <CodeAnalysisRules>-SqlServer.Rules.SRD0006</CodeAnalysisRules>
@@ -32,7 +32,7 @@ The extension will respect any rule configuration you have in your SQL project, 
 </Project>
 ```
 
-In addition, the extension supports analysis of any SQL script in your editor, whether it is part of a project or not.
+In addition, the extension supports analysis of any SQL script in your editor, whether it is part of a project or not. You can customize the behavior of the extension via Tools/Options.
 
 ### Installation Requirements
 
