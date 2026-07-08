@@ -208,17 +208,15 @@ internal sealed class AnalyzerUtilities : IDisposable
             var fullRule = string.IsNullOrWhiteSpace(problem.Rule) ? "unknown" : problem.Rule;
             var errorCode = fullRule;
             var separatorIndex = fullRule.LastIndexOf('.');
-            var rulePrefix = string.Empty;
 
             if (separatorIndex > 0 && separatorIndex < fullRule.Length - 1)
             {
-                rulePrefix = fullRule.Substring(0, separatorIndex);
                 errorCode = fullRule.Substring(separatorIndex + 1);
             }
 
             var message = string.IsNullOrWhiteSpace(problem.Message)
                 ? fullRule
-                : string.IsNullOrWhiteSpace(rulePrefix) ? problem.Message : rulePrefix + ": " + problem.Message;
+                : fullRule + ": " + problem.Message;
 
             Uri? helpLink = null;
             if (!string.IsNullOrWhiteSpace(problem.HelpLink)
