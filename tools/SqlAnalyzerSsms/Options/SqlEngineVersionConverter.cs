@@ -41,7 +41,22 @@ namespace SqlAnalyzerSsms.Options
         public override bool GetStandardValuesExclusive(ITypeDescriptorContext? context) => false;
 
         public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext? context)
-            => new StandardValuesCollection(new List<string>(VersionToLabel.Keys));
+            => new StandardValuesCollection(new[]
+            {
+                "Sql170",
+                "Sql160",
+                "SqlAzure",
+                "SqlDw",
+                "SqlServerless",
+                "SqlDwUnified",
+                "Sql150",
+                "Sql140",
+                "Sql130",
+                "Sql120",
+                "Sql110",
+                "Sql100",
+                "Sql90",
+            });
 
         public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, System.Type destinationType)
         {
