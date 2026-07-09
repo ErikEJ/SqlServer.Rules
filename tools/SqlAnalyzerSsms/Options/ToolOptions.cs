@@ -25,8 +25,9 @@ namespace SqlAnalyzerSsms.Options
 
         [Category("Code Analysis")]
         [DisplayName(@"SQL engine version")]
-        [Description("Set the SQL Server dialect used in analysis, for example Sql170 for SQL Server 2025.")]
+        [Description("Set the SQL Server dialect used in analysis. Select from the dropdown list or type a version code directly (for example Sql170 for SQL Server 2025).")]
         [DefaultValue(null)]
+        [TypeConverter(typeof(SqlEngineVersionConverter))]
         public string? SqlEngineVersion { get; set; }
 
         [Category("Code Analysis")]
