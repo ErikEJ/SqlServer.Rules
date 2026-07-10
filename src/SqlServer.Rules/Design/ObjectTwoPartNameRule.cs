@@ -77,20 +77,20 @@ namespace SqlServer.Rules.Design
             }
 
             var execVisitor = new ExecuteVisitor();
-            var selectStatementVisitor = new SelectStatementVisitor();
+            var queryStatementVisitor = new QueryStatementVisitor();
             var fromClauseVisitor = new FromClauseVisitor();
-            fragment.Accept(fromClauseVisitor, execVisitor, selectStatementVisitor);
+            fragment.Accept(fromClauseVisitor, execVisitor, queryStatementVisitor);
 
             var offenders = new List<NamedTableReference>();
             var handledFromClauses = new HashSet<FromClause>();
 
-            foreach (var select in selectStatementVisitor.Statements)
+            foreach (var statement in queryStatementVisitor.Statements)
             {
-                var selectFromClauseVisitor = new FromClauseVisitor();
-                select.Accept(selectFromClauseVisitor);
+                var statementFromClauseVisitor = new FromClauseVisitor();
+                statement.Accept(statementFromClauseVisitor);
 
-                handledFromClauses.UnionWith(selectFromClauseVisitor.Statements);
-                offenders.AddRange(GetOffenders(selectFromClauseVisitor.Statements, select.WithCtesAndXmlNamespaces));
+                handledFromClauses.UnionWith(statementFromClauseVisitor.Statements);
+                offenders.AddRange(GetOffenders(statementFromClauseVisitor.Statements, statement.WithCtesAndXmlNamespaces));
             }
 
             offenders.AddRange(GetOffenders(fromClauseVisitor.Statements.Where(from => !handledFromClauses.Contains(from)), null));
