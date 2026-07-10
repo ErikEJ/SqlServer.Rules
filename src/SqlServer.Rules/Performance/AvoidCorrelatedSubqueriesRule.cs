@@ -124,7 +124,8 @@ namespace SqlServer.Rules.Performance
 
             var containingStatement = queryStatements
                 .Where(statement => statement.WithCtesAndXmlNamespaces?.CommonTableExpressions?.Count > 0 && ContainsFragment(statement, scalarSubquery))
-                .OrderBy(statement => statement.FragmentLength)
+                .OrderByDescending(statement => statement.StartOffset)
+                .ThenBy(statement => statement.FragmentLength)
                 .FirstOrDefault();
 
             if (containingStatement?.WithCtesAndXmlNamespaces == null)
