@@ -22,4 +22,15 @@ public class SRD0039Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void IgnoreCteReferenceAfterEarlierSelect()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CteJoinAfterEarlierSelect.sql");
+
+        ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRP0005"));
+        ExpectedProblems.Add(new TestProblem(10, 12, "SqlServer.Rules.SRD0038"));
+
+        RunTest();
+    }
 }
