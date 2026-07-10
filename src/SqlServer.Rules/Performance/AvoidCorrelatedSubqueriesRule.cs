@@ -146,7 +146,9 @@ namespace SqlServer.Rules.Performance
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             return cteNames.Count > 0
-                && namedTableVisitor.Statements.All(table => cteNames.Contains(table.SchemaObject.BaseIdentifier.Value));
+                && namedTableVisitor.Statements.All(table =>
+                    table.SchemaObject?.Identifiers?.Count == 1
+                    && cteNames.Contains(table.SchemaObject.Identifiers[0].Value));
         }
 
         private static bool ContainsFragment(TSqlFragment outerFragment, TSqlFragment innerFragment)
