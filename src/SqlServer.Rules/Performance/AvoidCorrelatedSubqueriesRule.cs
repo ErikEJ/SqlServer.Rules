@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -71,10 +72,17 @@ namespace SqlServer.Rules.Performance
             }
 
             var scalarSubqueryVisitor = new ScalarSubqueryVisitor();
+            var queryStatementVisitor = new QueryStatementVisitor();
             fragment.Accept(scalarSubqueryVisitor);
+            fragment.Accept(queryStatementVisitor);
 
             var offenders = scalarSubqueryVisitor.NotIgnoredStatements(RuleId).Where(s =>
             {
+                if (ReferencesOnlyCtes(s, queryStatementVisitor.Statements))
+                {
+                    return false;
+                }
+
                 var whereClause = (s.QueryExpression as QuerySpecification)?.WhereClause;
                 if (whereClause == null)
                 {
@@ -100,6 +108,60 @@ namespace SqlServer.Rules.Performance
             problems.AddRange(offenders.Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
 
             return problems;
+        }
+
+        private static bool ReferencesOnlyCtes(ScalarSubquery scalarSubquery, IEnumerable<StatementWithCtesAndXmlNamespaces> queryStatements)
+        {
+            if (scalarSubquery == null)
+            {
+                throw new ArgumentNullException(nameof(scalarSubquery));
+            }
+
+            if (queryStatements == null)
+            {
+                throw new ArgumentNullException(nameof(queryStatements));
+            }
+
+            var containingStatement = queryStatements
+                .Where(statement => statement.WithCtesAndXmlNamespaces?.CommonTableExpressions?.Count > 0 && ContainsFragment(statement, scalarSubquery))
+                .OrderByDescending(statement => statement.StartOffset)
+                .ThenBy(statement => statement.FragmentLength)
+                .FirstOrDefault();
+
+            if (containingStatement?.WithCtesAndXmlNamespaces == null)
+            {
+                return false;
+            }
+
+            var namedTableVisitor = new NamedTableReferenceVisitor();
+            scalarSubquery.Accept(namedTableVisitor);
+            if (namedTableVisitor.Count == 0)
+            {
+                return false;
+            }
+
+            var cteNames = containingStatement.WithCtesAndXmlNamespaces.CommonTableExpressions
+                .Select(expression => expression.ExpressionName?.Value)
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            return cteNames.Count > 0
+                && namedTableVisitor.Statements.All(table =>
+                    table.SchemaObject?.Identifiers?.Count == 1
+                    && cteNames.Contains(table.SchemaObject.Identifiers[0].Value));
+        }
+
+        private static bool ContainsFragment(TSqlFragment outerFragment, TSqlFragment innerFragment)
+        {
+            if (outerFragment == null || innerFragment == null || outerFragment.StartOffset < 0 || innerFragment.StartOffset < 0)
+            {
+                return false;
+            }
+
+            var outerEnd = outerFragment.StartOffset + outerFragment.FragmentLength;
+            var innerEnd = innerFragment.StartOffset + innerFragment.FragmentLength;
+
+            return outerFragment.StartOffset <= innerFragment.StartOffset && innerEnd <= outerEnd;
         }
     }
 }
