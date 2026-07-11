@@ -76,35 +76,24 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fromClauseVisitor = new FromClauseVisitor();
             var execVisitor = new ExecuteVisitor();
-            var selectStatementVisitor = new SelectStatementVisitor();
-            fragment.Accept(fromClauseVisitor, execVisitor, selectStatementVisitor);
+            var queryStatementVisitor = new QueryStatementVisitor();
+            var fromClauseVisitor = new FromClauseVisitor();
+            fragment.Accept(fromClauseVisitor, execVisitor, queryStatementVisitor);
 
-            WithCtesAndXmlNamespaces cte = null;
-            if (selectStatementVisitor.Count > 0)
+            var offenders = new List<NamedTableReference>();
+            var handledFromClauses = new HashSet<FromClause>();
+
+            foreach (var statement in queryStatementVisitor.Statements)
             {
-                var sel = selectStatementVisitor.Statements.First();
-                cte = sel.WithCtesAndXmlNamespaces;
+                var statementFromClauseVisitor = new FromClauseVisitor();
+                statement.Accept(statementFromClauseVisitor);
+
+                handledFromClauses.UnionWith(statementFromClauseVisitor.Statements);
+                offenders.AddRange(GetOffenders(statementFromClauseVisitor.Statements, statement.WithCtesAndXmlNamespaces));
             }
 
-            var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
-            foreach (var from in fromClauseVisitor.Statements)
-            {
-                from.Accept(tableVisitor);
-            }
-
-            var offenders = tableVisitor.Statements.Where(tbl =>
-            {
-                var id = tbl.GetObjectIdentifier(null);
-
-                if (IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
-                {
-                    return false;
-                }
-
-                return id.Parts.Count < 2 || string.IsNullOrWhiteSpace(id.Parts.First());
-            }).ToList();
+            offenders.AddRange(GetOffenders(fromClauseVisitor.Statements.Where(from => !handledFromClauses.Contains(from)), null));
 
             var execOffenders = execVisitor.Statements.Where(proc => CheckProc(proc));
 
@@ -141,6 +130,28 @@ namespace SqlServer.Rules.Design
             }
 
             return false;
+        }
+
+        private static IEnumerable<NamedTableReference> GetOffenders(IEnumerable<FromClause> fromClauses, WithCtesAndXmlNamespaces cte)
+        {
+            var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
+
+            foreach (var from in fromClauses)
+            {
+                from.Accept(tableVisitor);
+            }
+
+            return tableVisitor.Statements.Where(tbl =>
+            {
+                var id = tbl.GetObjectIdentifier(null);
+
+                if (IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
+                {
+                    return false;
+                }
+
+                return id.Parts.Count < 2 || string.IsNullOrWhiteSpace(id.Parts.First());
+            });
         }
     }
 }
