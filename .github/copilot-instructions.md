@@ -63,6 +63,7 @@ Always reference these instructions first and fallback to search or bash command
 - `SqlAnalyzerSsms` - SSMS extension (Windows only)
 - `SqlAnalyzerVsix` - Visual Studio extension (Windows only)
 - `ErikEJ.DacFX.TSQLAnalyzer` - Core analyzer library used by CLI
+- `ErikEJ.DacFX.TSQLAnalyzer.Protocol` - Shared protocol models used by analyzer tooling
 - `SqlServer.Rules.DocsGenerator` - Generates `docs/**/*.md` from rule metadata
 - `SqlServer.Rules.Generator` - Utility for reporting available rules
 - `SqlServer.Rules.Report` - Library for result serialization
@@ -70,7 +71,6 @@ Always reference these instructions first and fallback to search or bash command
 ### Test Projects (`test/`)
 - `SqlServer.Rules.Test` - Unit tests for core rules
 - `TSQLAnalyzer.Tests` - Tests for analyzer library
-- `TestHelpers` - Shared test infrastructure
 
 ### Sample SQL Projects (`sqlprojects/`)
 - `AW` - AdventureWorks schema for validation
