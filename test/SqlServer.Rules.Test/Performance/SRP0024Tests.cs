@@ -93,10 +93,10 @@ public class SRP0024Tests : TestCasesBase
     }
 
     [TestMethod]
-    public void ExistsAgainstTableNotDetected()
+    public void NotExistsAgainstTableNotDetected()
     {
         const string procedureScript = """
-                                      CREATE PROCEDURE dbo.SRP0024ExistsAgainstTableNotDetected
+                                      CREATE PROCEDURE dbo.SRP0024NotExistsAgainstTableNotDetected
                                       AS
                                       SELECT tt.name
                                       FROM sys.tables AS tt
@@ -110,13 +110,13 @@ public class SRP0024Tests : TestCasesBase
         using var test = new RuleTest(
             new List<Tuple<string, string>>
             {
-                Tuple.Create(procedureScript, "SRP0024ExistsAgainstTableNotDetected.sql"),
+                Tuple.Create(procedureScript, "SRP0024NotExistsAgainstTableNotDetected.sql"),
             },
             new TSqlModelOptions(),
             SqlVersion);
         test.RunTest(AvoidCorrelatedSubqueriesRule.RuleId, (result, _) =>
         {
-            Assert.AreEqual(0, result.Problems.Count, "Expected 0 problems for EXISTS against a table.");
+            Assert.AreEqual(0, result.Problems.Count, "Expected 0 problems for NOT EXISTS against a table.");
         });
     }
 }
