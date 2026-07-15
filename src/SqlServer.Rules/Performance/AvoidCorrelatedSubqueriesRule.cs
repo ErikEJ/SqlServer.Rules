@@ -72,12 +72,19 @@ namespace SqlServer.Rules.Performance
             }
 
             var scalarSubqueryVisitor = new ScalarSubqueryVisitor();
+            var existsPredicateVisitor = new ExistsPredicateVisitor();
             var queryStatementVisitor = new QueryStatementVisitor();
             fragment.Accept(scalarSubqueryVisitor);
+            fragment.Accept(existsPredicateVisitor);
             fragment.Accept(queryStatementVisitor);
 
             var offenders = scalarSubqueryVisitor.NotIgnoredStatements(RuleId).Where(s =>
             {
+                if (IsExistsSubquery(s, existsPredicateVisitor.Statements))
+                {
+                    return false;
+                }
+
                 if (ReferencesOnlyCtes(s, queryStatementVisitor.Statements))
                 {
                     return false;
@@ -108,6 +115,21 @@ namespace SqlServer.Rules.Performance
             problems.AddRange(offenders.Select(o => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, o)));
 
             return problems;
+        }
+
+        private static bool IsExistsSubquery(ScalarSubquery scalarSubquery, IEnumerable<ExistsPredicate> existsPredicates)
+        {
+            if (scalarSubquery == null)
+            {
+                throw new ArgumentNullException(nameof(scalarSubquery));
+            }
+
+            if (existsPredicates == null)
+            {
+                throw new ArgumentNullException(nameof(existsPredicates));
+            }
+
+            return existsPredicates.Any(existsPredicate => HasSameSpan(existsPredicate.Subquery, scalarSubquery));
         }
 
         private static bool ReferencesOnlyCtes(ScalarSubquery scalarSubquery, IEnumerable<StatementWithCtesAndXmlNamespaces> queryStatements)
@@ -162,6 +184,17 @@ namespace SqlServer.Rules.Performance
             var innerEnd = innerFragment.StartOffset + innerFragment.FragmentLength;
 
             return outerFragment.StartOffset <= innerFragment.StartOffset && innerEnd <= outerEnd;
+        }
+
+        private static bool HasSameSpan(TSqlFragment firstFragment, TSqlFragment secondFragment)
+        {
+            if (firstFragment == null || secondFragment == null)
+            {
+                return false;
+            }
+
+            return firstFragment.StartOffset == secondFragment.StartOffset
+                && firstFragment.FragmentLength == secondFragment.FragmentLength;
         }
     }
 }
