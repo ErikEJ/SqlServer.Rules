@@ -31,8 +31,8 @@ public class SRP0024Tests : TestCasesBase
                                       AS
                                       SELECT p.ParentId
                                       FROM dbo.ParentTable AS p
-                                      WHERE EXISTS (
-                                          SELECT 1
+                                      WHERE p.ParentId = (
+                                          SELECT TOP (1) c.ParentId
                                           FROM dbo.ChildTable AS c
                                           WHERE c.ParentId = p.ParentId
                                       );
@@ -49,7 +49,7 @@ public class SRP0024Tests : TestCasesBase
             SqlVersion);
         test.RunTest(AvoidCorrelatedSubqueriesRule.RuleId, (result, _) =>
         {
-            Assert.AreEqual(1, result.Problems.Count, "Expected 1 problem for a correlated subquery against a table.");
+            Assert.AreEqual(1, result.Problems.Count, "Expected 1 problem for a correlated scalar subquery against a table.");
             Assert.IsTrue(result.Problems[0].Description.Contains(AvoidCorrelatedSubqueriesRule.Message, StringComparison.Ordinal));
         });
     }
@@ -72,7 +72,7 @@ public class SRP0024Tests : TestCasesBase
                                       SELECT p.ParentName
                                       FROM dbo.ParentTable AS p
                                       WHERE NOT EXISTS (
-                                          SELECT 1
+                                          SELECT 1 / 0
                                           FROM set1
                                           WHERE a1 = p.ParentName
                                       );
@@ -89,6 +89,34 @@ public class SRP0024Tests : TestCasesBase
         test.RunTest(AvoidCorrelatedSubqueriesRule.RuleId, (result, _) =>
         {
             Assert.AreEqual(0, result.Problems.Count, "Expected 0 problems for EXISTS against a CTE.");
+        });
+    }
+
+    [TestMethod]
+    public void ExistsAgainstTableNotDetected()
+    {
+        const string procedureScript = """
+                                      CREATE PROCEDURE dbo.SRP0024ExistsAgainstTableNotDetected
+                                      AS
+                                      SELECT tt.name
+                                      FROM sys.tables AS tt
+                                      WHERE NOT EXISTS (
+                                          SELECT 1 / 0
+                                          FROM sys.indexes AS ind
+                                          WHERE ind.name = tt.name
+                                      );
+                                      """;
+
+        using var test = new RuleTest(
+            new List<Tuple<string, string>>
+            {
+                Tuple.Create(procedureScript, "SRP0024ExistsAgainstTableNotDetected.sql"),
+            },
+            new TSqlModelOptions(),
+            SqlVersion);
+        test.RunTest(AvoidCorrelatedSubqueriesRule.RuleId, (result, _) =>
+        {
+            Assert.AreEqual(0, result.Problems.Count, "Expected 0 problems for EXISTS against a table.");
         });
     }
 }
