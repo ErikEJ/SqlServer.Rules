@@ -120,11 +120,17 @@ internal static class ServerMode
     /// <returns>A success or error response.</returns>
     internal static ServerResponse BuildAnalyzeResponse(ServerRequest request)
     {
-        var hasContent = !string.IsNullOrWhiteSpace(request.Content);
+        var hasContent = request.Content != null;
 
         if (!hasContent && string.IsNullOrWhiteSpace(request.Path))
         {
             return ErrorResponse(request.Id, "Path or content is required for analyze command");
+        }
+
+        // An empty (non-null) content buffer is a valid in-memory request: no SQL → no problems.
+        if (hasContent && string.IsNullOrWhiteSpace(request.Content))
+        {
+            return new ServerResponse { Id = request.Id, Status = "success", Problems = [] };
         }
 
         try

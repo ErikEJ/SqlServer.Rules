@@ -110,11 +110,30 @@ public class ServerModeTests
     }
 
     [TestMethod]
-    public void ReturnsErrorWhenNeitherPathNorContentProvided()
+    public void EmptyContentTakesPrecedenceOverPath()
     {
         var request = new ServerRequest
         {
             Id = "5",
+            Command = "analyze",
+            Path = "this-path-does-not-exist.sql",
+            Content = string.Empty,
+            SqlVersion = "Sql160",
+        };
+
+        var response = ServerMode.BuildAnalyzeResponse(request);
+
+        Assert.AreEqual("success", response.Status, "An empty content buffer should be analyzed in-memory and not fall back to the (invalid) Path.");
+        Assert.IsNotNull(response.Problems);
+        Assert.AreEqual(0, response.Problems.Count, "An empty buffer should produce no problems.");
+    }
+
+    [TestMethod]
+    public void ReturnsErrorWhenNeitherPathNorContentProvided()
+    {
+        var request = new ServerRequest
+        {
+            Id = "6",
             Command = "analyze",
         };
 
@@ -129,7 +148,7 @@ public class ServerModeTests
     {
         var request = new ServerRequest
         {
-            Id = "6",
+            Id = "7",
             Command = "analyze",
             Path = "this-path-does-not-exist.sql",
         };
