@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\tools\ErikEJ.DacFX.TSQLAnalyzer\ErikEJ.DacFX.TSQLAnalyzer.csproj" />
+    <ProjectReference Include="..\..\tools\SqlAnalyzerCli\SqlAnalyzerCli.csproj" />
   </ItemGroup>
 
 </Project>
