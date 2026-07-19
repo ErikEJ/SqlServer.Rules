@@ -47,7 +47,7 @@
         "tsqlAnalyzer.serverPath": {
           "type": "string",
           "default": "",
-          "description": "Optional path to a build of the ErikEJ.TSQLAnalyzerCli executable. When empty, the analyzer is run as a NuGet package via the .NET 10 SDK 'dnx' command (which requires the .NET 10 SDK to be installed)."
+          "description": "Optional path to a build of the ErikEJ.TSQLAnalyzerCli executable. When empty, the analyzer is run as a NuGet package via the .NET 10 SDK 'dotnet dnx' command (which requires the .NET 10 SDK to be installed)."
         },
         "tsqlAnalyzer.rules": {
           "type": "string",
