@@ -12,6 +12,8 @@ const latestToken = new Map<string, number>();
 let tokenCounter = 0;
 /** Number of analysis requests currently in flight, used to drive the status bar. */
 let inFlightCount = 0;
+/** Whether an analyzer-server failure has already been surfaced to the user (reset on success). */
+let serverFailureReported = false;
 
 export function activate(context: vscode.ExtensionContext): void {
     output = vscode.window.createOutputChannel('T-SQL Analyzer');
@@ -112,7 +114,9 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
             additionalAnalyzers: config.get<string[]>('additionalAnalyzers', []),
         });
     } catch (err) {
-        output.appendLine(`Analysis failed for ${doc.uri.fsPath}: ${err instanceof Error ? err.message : String(err)}`);
+        const message = err instanceof Error ? err.message : String(err);
+        output.appendLine(`Analysis failed for ${doc.uri.fsPath}: ${message}`);
+        reportServerFailure(message);
         diagnostics.delete(doc.uri);
         return;
     } finally {
@@ -126,12 +130,40 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
     }
 
     if (response.status === 'error') {
-        output.appendLine(`Analyzer error for ${doc.uri.fsPath}: ${response.error ?? 'unknown error'}`);
+        const message = response.error ?? 'unknown error';
+        output.appendLine(`Analyzer error for ${doc.uri.fsPath}: ${message}`);
+        reportServerFailure(message);
         diagnostics.delete(doc.uri);
         return;
     }
 
+    // A response was received, so the server is healthy again; allow future failures
+    // to be surfaced to the user.
+    serverFailureReported = false;
     diagnostics.set(doc.uri, (response.problems ?? []).map((p) => toDiagnostic(p)));
+}
+
+/**
+ * Surfaces an analyzer-server startup/communication failure to the user once, so a
+ * missing .NET SDK or unreachable analyzer does not result in a silent lack of diagnostics.
+ * Subsequent failures are only written to the output channel until analysis succeeds again.
+ */
+function reportServerFailure(message: string): void {
+    if (serverFailureReported) {
+        return;
+    }
+    serverFailureReported = true;
+
+    void vscode.window
+        .showErrorMessage(
+            `T-SQL Analyzer could not run the analysis server: ${message}. Ensure the .NET 10 SDK is installed, or set 'tsqlAnalyzer.serverPath'.`,
+            'Show Log',
+        )
+        .then((choice) => {
+            if (choice === 'Show Log') {
+                output.show(true);
+            }
+        });
 }
 
 /**
@@ -220,6 +252,7 @@ function restartClient(): void {
     client = createClient();
     diagnostics.clear();
     latestToken.clear();
+    serverFailureReported = false;
 }
 
 function createClient(): AnalyzerClient {
@@ -242,8 +275,12 @@ function resolveServerCommand(): { command: string; args: string[] } {
     // Run the analyzer CLI as a NuGet package via the .NET 10 SDK `dnx` command,
     // mirroring how the Visual Studio and SSMS extensions launch it. This requires
     // the .NET 10 SDK to be installed.
+    //
+    // We invoke `dotnet dnx` rather than the bare `dnx` launcher: the SDK reliably
+    // puts `dotnet` on the PATH, whereas the standalone `dnx` shim is often not on
+    // the PATH (leading to a silent `spawn dnx ENOENT` and no diagnostics).
     return {
-        command: 'dnx',
-        args: ['ErikEJ.DacFX.TSQLAnalyzer.Cli', '--yes', '--', '--server-mode'],
+        command: 'dotnet',
+        args: ['dnx', 'ErikEJ.DacFX.TSQLAnalyzer.Cli', '--yes', '--', '--server-mode'],
     };
 }
