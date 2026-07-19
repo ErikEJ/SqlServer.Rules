@@ -327,3 +327,7 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder
 .mfractor/
+# VS Code extension build output
+vscode-extension/out/
+vscode-extension/*.vsix
+vscode-extension/server/

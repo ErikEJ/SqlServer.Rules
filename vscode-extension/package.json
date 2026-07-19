@@ -1,0 +1,104 @@
+{
+  "name": "tsqlanalyzer",
+  "displayName": "T-SQL Analyzer",
+  "description": "Live T-SQL code analysis (design, naming and performance rules) powered by SqlServer.Rules and DacFx.",
+  "version": "1.0.0",
+  "publisher": "ErikEJ",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ErikEJ/SqlServer.Rules.git"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Linters",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "sql",
+    "t-sql",
+    "tsql",
+    "sql server",
+    "linter",
+    "analysis"
+  ],
+  "activationEvents": [
+    "onLanguage:sql"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "T-SQL Analyzer",
+      "properties": {
+        "tsqlAnalyzer.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable live T-SQL analysis of .sql files."
+        },
+        "tsqlAnalyzer.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the ErikEJ.TSQLAnalyzerCli executable (or 'tsqlanalyze' dotnet tool). When empty, the analyzer bundled with the extension is used, falling back to 'tsqlanalyze' on the PATH."
+        },
+        "tsqlAnalyzer.rules": {
+          "type": "string",
+          "default": "",
+          "description": "Rules expression controlling which rules are disabled or promoted, e.g. '-SqlServer.Rules.SRD0004;-SqlServer.Rules.SRN*'. Note: unlike the CLI, the server-mode rules string is NOT prefixed with 'Rules:'."
+        },
+        "tsqlAnalyzer.sqlVersion": {
+          "type": "string",
+          "default": "Sql160",
+          "enum": [
+            "Sql90",
+            "Sql100",
+            "Sql110",
+            "Sql120",
+            "Sql130",
+            "Sql140",
+            "Sql150",
+            "Sql160",
+            "SqlAzure"
+          ],
+          "description": "Target SQL Server version used for analysis."
+        },
+        "tsqlAnalyzer.additionalAnalyzers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Additional analyzer .dll paths to load during analysis."
+        },
+        "tsqlAnalyzer.debounceMs": {
+          "type": "number",
+          "default": 400,
+          "description": "Delay in milliseconds after the last edit before analysis is triggered."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "tsqlAnalyzer.restartServer",
+        "title": "T-SQL Analyzer: Restart Analysis Server"
+      },
+      {
+        "command": "tsqlAnalyzer.analyzeActiveFile",
+        "title": "T-SQL Analyzer: Analyze Active File"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --out tsqlanalyzer.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.2.1",
+    "typescript": "^5.5.4"
+  }
+}

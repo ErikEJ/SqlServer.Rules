@@ -152,7 +152,7 @@ internal static class ServerMode
             // Set up analyzer options
             var analyzerOptions = new AnalyzerOptions
             {
-                Rules = request.Rules ?? string.Empty,
+                Rules = NormalizeRules(request.Rules),
                 SqlVersion = sqlVersion,
                 AdditionalAnalyzers = request.AdditionalAnalyzers?.ToList(),
             };
@@ -241,6 +241,28 @@ internal static class ServerMode
             Status = "error",
             Error = errorMessage,
         };
+
+    /// <summary>
+    /// Normalizes a server-mode rules expression so callers (e.g. a language client) do not have to
+    /// include the leading <c>Rules:</c> prefix that the analyzer expects. When the expression is
+    /// empty it is passed through unchanged; when it already starts with <c>Rules:</c> it is kept as
+    /// is; otherwise the prefix is added.
+    /// </summary>
+    /// <param name="rules">The rules expression supplied by the client, e.g. "-SqlServer.Rules.SRD0004".</param>
+    /// <returns>A rules expression prefixed with <c>Rules:</c>, or an empty string.</returns>
+    internal static string NormalizeRules(string? rules)
+    {
+        if (string.IsNullOrWhiteSpace(rules))
+        {
+            return string.Empty;
+        }
+
+        var trimmed = rules.Trim();
+
+        return trimmed.StartsWith("Rules:", StringComparison.OrdinalIgnoreCase)
+            ? trimmed
+            : "Rules:" + trimmed;
+    }
 
     private static (string Message, string? HelpLink) ExtractMessageAndHelpLink(string? description)
     {
