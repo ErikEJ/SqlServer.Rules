@@ -106,10 +106,31 @@ internal static class ServerMode
 
     private static async Task HandleAnalyzeAsync(ServerRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.Path))
+        var response = BuildAnalyzeResponse(request);
+        await WriteResponseAsync(response);
+    }
+
+    /// <summary>
+    /// Runs analysis for a single request and returns the response without touching the console
+    /// transport, so the logic can be exercised in isolation.
+    /// When <see cref="ServerRequest.Content"/> is set it is analyzed in-memory and takes
+    /// precedence over <see cref="ServerRequest.Path"/>.
+    /// </summary>
+    /// <param name="request">The analyze request.</param>
+    /// <returns>A success or error response.</returns>
+    internal static ServerResponse BuildAnalyzeResponse(ServerRequest request)
+    {
+        var hasContent = request.Content != null;
+
+        if (!hasContent && string.IsNullOrWhiteSpace(request.Path))
         {
-            await WriteErrorAsync(request.Id, "Path is required for analyze command");
-            return;
+            return ErrorResponse(request.Id, "Path or content is required for analyze command");
+        }
+
+        // An empty (non-null) content buffer is a valid in-memory request: no SQL → no problems.
+        if (hasContent && string.IsNullOrWhiteSpace(request.Content))
+        {
+            return new ServerResponse { Id = request.Id, Status = "success", Problems = [] };
         }
 
         try
@@ -124,8 +145,7 @@ internal static class ServerMode
                 }
                 else
                 {
-                    await WriteErrorAsync(request.Id, $"Invalid SQL version: {request.SqlVersion}");
-                    return;
+                    return ErrorResponse(request.Id, $"Invalid SQL version: {request.SqlVersion}");
                 }
             }
 
@@ -137,19 +157,19 @@ internal static class ServerMode
                 AdditionalAnalyzers = request.AdditionalAnalyzers?.ToList(),
             };
 
-            // Determine if path is a file or directory
-            if (File.Exists(request.Path))
+            if (hasContent)
             {
-                analyzerOptions.Scripts = [request.Path];
+                // Analyze the in-memory buffer content directly (no temp file).
+                analyzerOptions.Scripts = null;
+                analyzerOptions.Script = request.Content;
             }
-            else if (Directory.Exists(request.Path))
+            else if (File.Exists(request.Path) || Directory.Exists(request.Path))
             {
-                analyzerOptions.Scripts = [request.Path];
+                analyzerOptions.Scripts = [request.Path!];
             }
             else
             {
-                await WriteErrorAsync(request.Id, $"Path not found: {request.Path}");
-                return;
+                return ErrorResponse(request.Id, $"Path not found: {request.Path}");
             }
 
             // Run analysis
@@ -158,8 +178,7 @@ internal static class ServerMode
 
             if (result?.Result == null)
             {
-                await WriteErrorAsync(request.Id, "Analysis returned null result");
-                return;
+                return ErrorResponse(request.Id, "Analysis returned null result");
             }
 
             // Check for errors
@@ -167,8 +186,7 @@ internal static class ServerMode
             if (errors.Any())
             {
                 var errorMessages = string.Join("; ", errors.Select(e => e.GetOutputMessage()));
-                await WriteErrorAsync(request.Id, $"Analysis errors: {errorMessages}");
-                return;
+                return ErrorResponse(request.Id, $"Analysis errors: {errorMessages}");
             }
 
             // Build problems list
@@ -190,32 +208,39 @@ internal static class ServerMode
                         EndLine = endLine,
                         EndColumn = endColumn,
                         Message = message,
+                        Severity = problem.Severity.ToString(),
                         HelpLink = helpLink,
                         File = problem.SourceName,
                     });
                 }
             }
 
-            // Write success response
-            var response = new ServerResponse
+            // Build success response
+            return new ServerResponse
             {
                 Id = request.Id,
                 Status = "success",
                 Problems = problems,
             };
-
-            await WriteResponseAsync(response);
         }
         catch (ArgumentException ex)
         {
-            await WriteErrorAsync(request.Id, ex.Message);
+            return ErrorResponse(request.Id, ex.Message);
         }
         catch (Exception ex)
         {
-            await Console.Error.WriteLineAsync($"Analysis error: {ex}");
-            await WriteErrorAsync(request.Id, $"Analysis failed: {ex.Message}");
+            Console.Error.WriteLine($"Analysis error: {ex}");
+            return ErrorResponse(request.Id, $"Analysis failed: {ex.Message}");
         }
     }
+
+    private static ServerResponse ErrorResponse(string requestId, string errorMessage)
+        => new()
+        {
+            Id = requestId,
+            Status = "error",
+            Error = errorMessage,
+        };
 
     private static (string Message, string? HelpLink) ExtractMessageAndHelpLink(string? description)
     {

@@ -29,6 +29,13 @@ public sealed class ServerRequest
     public string? Path { get; set; }
 
     /// <summary>
+    /// Raw SQL text to analyze in-memory. When set, takes precedence over <see cref="Path"/>.
+    /// Enables analysis of unsaved editor buffer content (e.g. for a language server).
+    /// </summary>
+    [JsonPropertyName("content")]
+    public string? Content { get; set; }
+
+    /// <summary>
     /// Rules configuration string, e.g., "Rules:-SRD0004;-SRN*".
     /// </summary>
     [JsonPropertyName("rules")]
@@ -117,6 +124,12 @@ public sealed class ServerProblem
     /// </summary>
     [JsonPropertyName("message")]
     public string Message { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Severity of the problem, e.g., "Warning" or "Error".
+    /// </summary>
+    [JsonPropertyName("severity")]
+    public string Severity { get; set; } = string.Empty;
 
     /// <summary>
     /// Documentation URL associated with this problem.
