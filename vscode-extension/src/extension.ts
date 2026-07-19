@@ -264,7 +264,7 @@ function provideHover(
 
 /** Escapes Markdown control characters so rule text is rendered verbatim in a hover. */
 function escapeMarkdown(text: string): string {
-    return text.replace(/[\\`*_{}[\]()#+\-.!|<>]/g, '\\$&');
+    return text.replace(/([\\`*_{}\[\]()#+\-.!|<>])/g, '\\$1');
 }
 
 function toSeverity(severity: string): vscode.DiagnosticSeverity {
