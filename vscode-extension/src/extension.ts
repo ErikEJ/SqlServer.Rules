@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { AnalyzerClient, ServerProblem, ServerResponse } from './client';
 
@@ -200,20 +198,11 @@ function resolveServerCommand(): { command: string; args: string[] } {
         return { command: configuredPath, args: ['--server-mode'] };
     }
 
-    const bundled = findBundledServer();
-    if (bundled) {
-        return { command: bundled, args: ['--server-mode'] };
-    }
-
-    // Fall back to the globally installed dotnet tool.
-    return { command: 'tsqlanalyze', args: ['--server-mode'] };
-}
-
-function findBundledServer(): string | undefined {
-    const exeName = process.platform === 'win32'
-        ? 'ErikEJ.TSQLAnalyzerCli.exe'
-        : 'ErikEJ.TSQLAnalyzerCli';
-
-    const candidate = path.join(__dirname, '..', 'server', exeName);
-    return fs.existsSync(candidate) ? candidate : undefined;
+    // Run the analyzer CLI as a NuGet package via the .NET 10 SDK `dnx` command,
+    // mirroring how the Visual Studio and SSMS extensions launch it. This requires
+    // the .NET 10 SDK to be installed.
+    return {
+        command: 'dnx',
+        args: ['ErikEJ.DacFX.TSQLAnalyzer.Cli', '--yes', '--', '--server-mode'],
+    };
 }

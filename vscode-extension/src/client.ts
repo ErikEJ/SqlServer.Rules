@@ -111,6 +111,9 @@ export class AnalyzerClient {
 
         const child = cp.spawn(this.options.command, this.options.args, {
             stdio: ['pipe', 'pipe', 'pipe'],
+            // On Windows, `dnx`/`dotnet` may be resolved via a `.cmd` shim, which
+            // Node's spawn only locates when run through a shell.
+            shell: process.platform === 'win32',
         });
         this.child = child;
 
