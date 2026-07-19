@@ -1,0 +1,114 @@
+{
+  "name": "tsqlanalyzer",
+  "displayName": "T-SQL Analyzer",
+  "description": "Live T-SQL code analysis (design, naming and performance rules) powered by SqlServer.Rules and DacFx.",
+  "version": "0.0.1",
+  "publisher": "ErikEJ",
+  "pricing": "Free",
+  "sponsor": {
+    "url": "https://github.com/sponsors/ErikEJ"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ErikEJ/SqlServer.Rules.git"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Linters",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "sql",
+    "t-sql",
+    "tsql",
+    "sql server",
+    "linter",
+    "analysis"
+  ],
+  "activationEvents": [
+    "onLanguage:sql",
+    "onCommand:tsqlAnalyzer.restartServer",
+    "onCommand:tsqlAnalyzer.analyzeActiveFile"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "T-SQL Analyzer",
+      "properties": {
+        "tsqlAnalyzer.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable live T-SQL analysis of .sql files."
+        },
+        "tsqlAnalyzer.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Optional path to a build of the ErikEJ.TSQLAnalyzerCli executable. When empty, the analyzer is run as a NuGet package via the .NET 10 SDK 'dnx' command (which requires the .NET 10 SDK to be installed)."
+        },
+        "tsqlAnalyzer.rules": {
+          "type": "string",
+          "default": "",
+          "description": "Rules expression. All rules are enabled by default; prefix a rule id with '-' to disable it, or with '+!' to promote it to an error, e.g. '-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0005'. Wildcards are supported, e.g. '-SqlServer.Rules.SRN*'."
+        },
+        "tsqlAnalyzer.sqlVersion": {
+          "type": "string",
+          "default": "Sql170",
+          "enum": [
+            "Sql170",
+            "SqlAzure",
+            "SqlDw",
+            "SqlServerless",
+            "SqlDwUnified",
+            "Sql90",
+            "Sql100",
+            "Sql110",
+            "Sql120",
+            "Sql130",
+            "Sql140",
+            "Sql150",
+            "Sql160"
+          ],
+          "description": "Target SQL Server version used for analysis."
+        },
+        "tsqlAnalyzer.additionalAnalyzers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Additional analyzer .dll paths to load during analysis."
+        },
+        "tsqlAnalyzer.debounceMs": {
+          "type": "number",
+          "default": 400,
+          "description": "Delay in milliseconds after the last edit before analysis is triggered."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "tsqlAnalyzer.restartServer",
+        "title": "T-SQL Analyzer: Restart Analysis Server"
+      },
+      {
+        "command": "tsqlAnalyzer.analyzeActiveFile",
+        "title": "T-SQL Analyzer: Analyze Active File"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --out tsqlanalyzer.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "1.90.0",
+    "@vscode/vsce": "^3.2.1",
+    "typescript": "^5.5.4"
+  }
+}

@@ -40,11 +40,25 @@ jobs:
     - name: Run Unit Tests
       run: dotnet test --no-build --configuration Release --verbosity normal
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Build VS Code extension
+      working-directory: vscode-extension
+      run: |
+        npm ci
+        ((Get-Content -Path package.json -Raw) -Replace '"version":\s*"[0-9]+\.[0-9]+\.[0-9]+"', '"version": "${{ env.VERSION }}"') | Set-Content -Path package.json
+        npm run package
+      shell: pwsh
+
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
         mv tools/SqlAnalyzerVsix/bin/Release/net8.0-windows8.0/SqlAnalyzerVsix.vsix SqlAnalyzerVsix-${{ env.VERSION }}.vsix
         mv tools/SqlAnalyzerSsms/bin/Release/net48/SqlAnalyzerSsms.vsix SqlAnalyzerSsms-${{ env.VERSION }}.vsix
+        mv vscode-extension/tsqlanalyzer.vsix TSQLAnalyzerVSCode-${{ env.VERSION }}.vsix
 
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
