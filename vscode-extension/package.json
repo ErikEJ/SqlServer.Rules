@@ -45,7 +45,7 @@
         "tsqlAnalyzer.rules": {
           "type": "string",
           "default": "",
-          "description": "Rules expression controlling which rules are disabled, e.g. '-SqlServer.Rules.SRD0004;-SqlServer.Rules.SRN*'. Note: unlike the CLI, the server-mode rules string is NOT prefixed with 'Rules:'. Each reported problem carries its own warning/error level."
+          "description": "Rules expression. All rules are enabled by default; prefix a rule id with '-' to disable it, or with '+!' to promote it to an error, e.g. '-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0005'. Wildcards are supported, e.g. '-SqlServer.Rules.SRN*'."
         },
         "tsqlAnalyzer.sqlVersion": {
           "type": "string",

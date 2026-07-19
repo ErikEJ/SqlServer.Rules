@@ -191,4 +191,28 @@ public class ServerModeTests
         Assert.AreEqual("Rules:-SqlServer.Rules.SRD0006", ServerMode.NormalizeRules("Rules:-SqlServer.Rules.SRD0006"));
         Assert.AreEqual("Rules:-SqlServer.Rules.SRD0006", ServerMode.NormalizeRules("  Rules:-SqlServer.Rules.SRD0006  "));
     }
+
+    [TestMethod]
+    public void PromotesRuleToErrorSeverity()
+    {
+        var request = new ServerRequest
+        {
+            Id = "9",
+            Command = "analyze",
+            Content = "CREATE PROCEDURE dbo.TestProc AS SELECT * FROM sys.objects;",
+            SqlVersion = "Sql160",
+
+            // '+!' promotes the rule to error level.
+            Rules = "+!" + SelectStarRuleId,
+        };
+
+        var response = ServerMode.BuildAnalyzeResponse(request);
+
+        Assert.AreEqual("success", response.Status);
+        Assert.IsNotNull(response.Problems);
+
+        var selectStar = response.Problems.FirstOrDefault(p => p.Rule == SelectStarRuleId);
+        Assert.IsNotNull(selectStar, "Expected the SELECT * problem to still be reported.");
+        Assert.AreEqual("Error", selectStar.Severity, "The '+!' prefix should promote the rule to error severity.");
+    }
 }

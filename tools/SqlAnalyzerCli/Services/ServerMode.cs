@@ -2,6 +2,7 @@ using System.Text.Json;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 using ErikEJ.DacFX.TSQLAnalyzer.Protocol;
+using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 
 #pragma warning disable CA1031 // Do not catch general exception types - server mode needs to remain stable
@@ -150,9 +151,10 @@ internal static class ServerMode
             }
 
             // Set up analyzer options
+            var normalizedRules = NormalizeRules(request.Rules);
             var analyzerOptions = new AnalyzerOptions
             {
-                Rules = NormalizeRules(request.Rules),
+                Rules = normalizedRules,
                 SqlVersion = sqlVersion,
                 AdditionalAnalyzers = request.AdditionalAnalyzers?.ToList(),
             };
@@ -191,6 +193,7 @@ internal static class ServerMode
 
             // Build problems list
             var problems = new List<ServerProblem>();
+            var errorRules = ParseErrorRules(normalizedRules);
 
             if (result.Result.AnalysisSucceeded)
             {
@@ -208,7 +211,7 @@ internal static class ServerMode
                         EndLine = endLine,
                         EndColumn = endColumn,
                         Message = message,
-                        Severity = problem.Severity.ToString(),
+                        Severity = GetEffectiveSeverity(problem, errorRules),
                         HelpLink = helpLink,
                         File = problem.SourceName,
                     });
@@ -262,6 +265,61 @@ internal static class ServerMode
         return trimmed.StartsWith("Rules:", StringComparison.OrdinalIgnoreCase)
             ? trimmed
             : "Rules:" + trimmed;
+    }
+
+    /// <summary>
+    /// Parses a normalized rules expression for the rule ids promoted to error level using the
+    /// <c>+!</c> prefix (e.g. "Rules:+!SqlServer.Rules.SRD0004"). Wildcard entries ending in <c>*</c>
+    /// are retained so they can be matched by prefix.
+    /// </summary>
+    /// <param name="normalizedRules">A rules expression already prefixed with <c>Rules:</c>.</param>
+    /// <returns>The set of rule ids (and wildcard prefixes) promoted to error level.</returns>
+    internal static HashSet<string> ParseErrorRules(string? normalizedRules)
+    {
+        var errorRules = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        if (string.IsNullOrEmpty(normalizedRules) || normalizedRules.Length <= 6)
+        {
+            return errorRules;
+        }
+
+        var rulesExpression = normalizedRules.Remove(0, 6);
+
+        foreach (var rule in rulesExpression
+            .Split([';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(rule => rule.StartsWith("+!", StringComparison.OrdinalIgnoreCase) && rule.Length > 2))
+        {
+            errorRules.Add(rule[2..]);
+        }
+
+        return errorRules;
+    }
+
+    /// <summary>
+    /// Determines the effective severity for a problem, promoting it to <c>Error</c> when its rule id
+    /// matches one of the <c>+!</c> entries (directly or by wildcard prefix).
+    /// </summary>
+    /// <param name="problem">The analyzed problem.</param>
+    /// <param name="errorRules">The set of rule ids/wildcards promoted to error level.</param>
+    /// <returns>The severity string ("Error" or the problem's inherent severity).</returns>
+    internal static string GetEffectiveSeverity(SqlRuleProblem problem, HashSet<string> errorRules)
+    {
+        if (errorRules.Count > 0)
+        {
+            if (errorRules.Contains(problem.RuleId))
+            {
+                return SqlRuleProblemSeverity.Error.ToString();
+            }
+
+            if (errorRules
+                .Where(r => r.EndsWith('*'))
+                .Any(r => problem.RuleId.StartsWith(r[..^1], StringComparison.OrdinalIgnoreCase)))
+            {
+                return SqlRuleProblemSeverity.Error.ToString();
+            }
+        }
+
+        return problem.Severity.ToString();
     }
 
     private static (string Message, string? HelpLink) ExtractMessageAndHelpLink(string? description)
