@@ -307,6 +307,11 @@ internal static class ServerMode
     /// <returns>The severity string ("Error" or the problem's inherent severity).</returns>
     internal static string GetEffectiveSeverity(SqlRuleProblem problem, HashSet<string> errorRules)
     {
+        if (string.IsNullOrWhiteSpace(problem.RuleId))
+        {
+            return problem.Severity.ToString();
+        }
+
         if (errorRules.Count > 0)
         {
             if (errorRules.Contains(problem.RuleId))
