@@ -15,6 +15,9 @@ namespace SqlAnalyzerCli.Services;
 /// </summary>
 internal static class ServerMode
 {
+    private const string RulesPrefix = "Rules:";
+    private const string ErrorRulePrefix = "+!";
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -262,9 +265,9 @@ internal static class ServerMode
 
         var trimmed = rules.Trim();
 
-        return trimmed.StartsWith("Rules:", StringComparison.OrdinalIgnoreCase)
+        return trimmed.StartsWith(RulesPrefix, StringComparison.OrdinalIgnoreCase)
             ? trimmed
-            : "Rules:" + trimmed;
+            : RulesPrefix + trimmed;
     }
 
     /// <summary>
@@ -278,18 +281,18 @@ internal static class ServerMode
     {
         var errorRules = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        if (string.IsNullOrEmpty(normalizedRules) || normalizedRules.Length <= 6)
+        if (string.IsNullOrEmpty(normalizedRules) || normalizedRules.Length <= RulesPrefix.Length)
         {
             return errorRules;
         }
 
-        var rulesExpression = normalizedRules.Remove(0, 6);
+        var rulesExpression = normalizedRules.Substring(RulesPrefix.Length);
 
         foreach (var rule in rulesExpression
             .Split([';'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Where(rule => rule.StartsWith("+!", StringComparison.OrdinalIgnoreCase) && rule.Length > 2))
+            .Where(rule => rule.StartsWith(ErrorRulePrefix, StringComparison.OrdinalIgnoreCase) && rule.Length > ErrorRulePrefix.Length))
         {
-            errorRules.Add(rule[2..]);
+            errorRules.Add(rule[ErrorRulePrefix.Length..]);
         }
 
         return errorRules;
