@@ -4,17 +4,23 @@ import { AnalyzerClient, ServerProblem, ServerResponse } from './client';
 let client: AnalyzerClient | undefined;
 let diagnostics: vscode.DiagnosticCollection;
 let output: vscode.OutputChannel;
+let statusBar: vscode.StatusBarItem;
 
 const debounceTimers = new Map<string, NodeJS.Timeout>();
 /** Latest analysis token per document, used to discard superseded (stale) responses. */
 const latestToken = new Map<string, number>();
 let tokenCounter = 0;
+/** Number of analysis requests currently in flight, used to drive the status bar. */
+let inFlightCount = 0;
 
 export function activate(context: vscode.ExtensionContext): void {
     output = vscode.window.createOutputChannel('T-SQL Analyzer');
     diagnostics = vscode.languages.createDiagnosticCollection('tsqlAnalyzer');
+    statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBar.command = 'tsqlAnalyzer.analyzeActiveFile';
 
-    context.subscriptions.push(output, diagnostics);
+    context.subscriptions.push(output, diagnostics, statusBar);
+    updateStatusBar();
 
     context.subscriptions.push(
         vscode.workspace.onDidOpenTextDocument((doc) => scheduleAnalysis(doc, 0)),
@@ -23,6 +29,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.workspace.onDidCloseTextDocument((doc) => clearDocument(doc)),
         vscode.workspace.onDidChangeConfiguration((e) => {
             if (e.affectsConfiguration('tsqlAnalyzer')) {
+                updateStatusBar();
                 restartClient();
                 analyzeAllOpenDocuments();
             }
@@ -93,6 +100,9 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
     const token = ++tokenCounter;
     latestToken.set(key, token);
 
+    inFlightCount++;
+    updateStatusBar();
+
     let response: ServerResponse;
     try {
         response = await getClient().analyze({
@@ -105,6 +115,9 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
         output.appendLine(`Analysis failed for ${doc.uri.fsPath}: ${err instanceof Error ? err.message : String(err)}`);
         diagnostics.delete(doc.uri);
         return;
+    } finally {
+        inFlightCount = Math.max(0, inFlightCount - 1);
+        updateStatusBar();
     }
 
     // Discard responses that have been superseded by a newer edit.
@@ -119,6 +132,32 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
     }
 
     diagnostics.set(doc.uri, (response.problems ?? []).map((p) => toDiagnostic(p)));
+}
+
+/**
+ * Reflects the current analysis state in the status bar: a spinning "Analyzing…"
+ * indicator while requests are in flight, otherwise an idle T-SQL Analyzer label.
+ */
+function updateStatusBar(): void {
+    if (!statusBar) {
+        return;
+    }
+
+    const enabled = vscode.workspace.getConfiguration('tsqlAnalyzer').get<boolean>('enable', true);
+    if (!enabled) {
+        statusBar.hide();
+        return;
+    }
+
+    if (inFlightCount > 0) {
+        statusBar.text = '$(sync~spin) Analyzing…';
+        statusBar.tooltip = 'T-SQL Analyzer is analyzing the current SQL';
+    } else {
+        statusBar.text = '$(check) T-SQL Analyzer';
+        statusBar.tooltip = 'T-SQL Analyzer — click to analyze the active file';
+    }
+
+    statusBar.show();
 }
 
 function toDiagnostic(problem: ServerProblem): vscode.Diagnostic {
