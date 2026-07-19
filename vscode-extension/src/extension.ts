@@ -4,7 +4,7 @@ import { AnalyzerClient, ServerProblem, ServerResponse } from './client';
 let client: AnalyzerClient | undefined;
 let diagnostics: vscode.DiagnosticCollection;
 let output: vscode.OutputChannel;
-let statusBar: vscode.StatusBarItem;
+let statusBar: vscode.StatusBarItem | undefined;
 
 const debounceTimers = new Map<string, NodeJS.Timeout>();
 /** Latest analysis token per document, used to discard superseded (stale) responses. */
