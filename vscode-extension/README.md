@@ -17,11 +17,11 @@ If the analyzer process crashes it is transparently respawned on the next reques
 and the `T-SQL Analyzer: Restart Analysis Server` command can be used to force a
 restart.
 
-## Hover
+## Diagnostics
 
-Hovering over a squiggle shows the rule id, its description and a link to the
-generated rule documentation page (`docs/**/SR*.md`) for the rules under the
-cursor.
+Each problem is published as a `vscode.Diagnostic`, so hovering over a squiggle
+uses VS Code's built-in diagnostic hover to show the rule id, its description and
+a clickable link to the generated rule documentation page (`docs/**/SR*.md`).
 
 ## Requirements
 

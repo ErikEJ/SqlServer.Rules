@@ -9,8 +9,6 @@ let statusBar: vscode.StatusBarItem | undefined;
 const debounceTimers = new Map<string, NodeJS.Timeout>();
 /** Latest analysis token per document, used to discard superseded (stale) responses. */
 const latestToken = new Map<string, number>();
-/** Most recent problems per document, keyed by document URI, used to answer hover requests. */
-const documentProblems = new Map<string, ServerProblem[]>();
 let tokenCounter = 0;
 /** Number of analysis requests currently in flight, used to drive the status bar. */
 let inFlightCount = 0;
@@ -27,7 +25,6 @@ export function activate(context: vscode.ExtensionContext): void {
     updateStatusBar();
 
     context.subscriptions.push(
-        vscode.languages.registerHoverProvider('sql', { provideHover }),
         vscode.workspace.onDidOpenTextDocument((doc) => scheduleAnalysis(doc, 0)),
         vscode.workspace.onDidChangeTextDocument((e) => scheduleAnalysis(e.document)),
         vscode.workspace.onDidSaveTextDocument((doc) => scheduleAnalysis(doc, 0)),
@@ -60,7 +57,6 @@ export function deactivate(): void {
         clearTimeout(timer);
     }
     debounceTimers.clear();
-    documentProblems.clear();
     client?.dispose();
     client = undefined;
 }
@@ -122,7 +118,6 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
         output.appendLine(`Analysis failed for ${doc.uri.fsPath}: ${message}`);
         reportServerFailure(message);
         diagnostics.delete(doc.uri);
-        documentProblems.delete(key);
         return;
     } finally {
         inFlightCount = Math.max(0, inFlightCount - 1);
@@ -139,7 +134,6 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
         output.appendLine(`Analyzer error for ${doc.uri.fsPath}: ${message}`);
         reportServerFailure(message);
         diagnostics.delete(doc.uri);
-        documentProblems.delete(key);
         return;
     }
 
@@ -147,7 +141,6 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
     // to be surfaced to the user.
     serverFailureReported = false;
     const problems = response.problems ?? [];
-    documentProblems.set(key, problems);
     diagnostics.set(doc.uri, problems.map((p) => toDiagnostic(p)));
 }
 
@@ -227,46 +220,6 @@ function toRange(problem: ServerProblem): vscode.Range {
     return new vscode.Range(startLine, startCol, endLine, endCol);
 }
 
-/**
- * Provides a hover for T-SQL Analyzer diagnostics under the cursor, showing each rule id,
- * its description (the analyzer message) and a link to the generated docs/**\/SR*.md page.
- */
-function provideHover(
-    document: vscode.TextDocument,
-    position: vscode.Position,
-): vscode.Hover | undefined {
-    const problems = documentProblems.get(document.uri.toString());
-    if (!problems || problems.length === 0) {
-        return undefined;
-    }
-
-    const matches = problems.filter((p) => toRange(p).contains(position));
-    if (matches.length === 0) {
-        return undefined;
-    }
-
-    const markdown = new vscode.MarkdownString();
-    matches.forEach((problem, index) => {
-        if (index > 0) {
-            markdown.appendMarkdown('\n\n---\n\n');
-        }
-
-        markdown.appendMarkdown(`**T-SQL Analyzer — ${escapeMarkdown(problem.rule)}**\n\n`);
-        markdown.appendMarkdown(`${escapeMarkdown(problem.message)}`);
-
-        if (problem.helpLink) {
-            markdown.appendMarkdown(`\n\n[View rule documentation](${problem.helpLink})`);
-        }
-    });
-
-    return new vscode.Hover(markdown);
-}
-
-/** Escapes Markdown control characters so rule text is rendered verbatim in a hover. */
-function escapeMarkdown(text: string): string {
-    return text.replace(/([\\`*_{}\[\]()#+\-.!|<>])/g, '\\$1');
-}
-
 function toSeverity(severity: string): vscode.DiagnosticSeverity {
     switch ((severity || '').toLowerCase()) {
         case 'error':
@@ -289,7 +242,6 @@ function clearDocument(doc: vscode.TextDocument): void {
         debounceTimers.delete(key);
     }
     latestToken.delete(key);
-    documentProblems.delete(key);
     diagnostics.delete(doc.uri);
 }
 
@@ -305,7 +257,6 @@ function restartClient(): void {
     client = createClient();
     diagnostics.clear();
     latestToken.clear();
-    documentProblems.clear();
     serverFailureReported = false;
 }
 
