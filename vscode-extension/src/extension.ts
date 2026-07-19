@@ -98,7 +98,7 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
         response = await getClient().analyze({
             content: doc.getText(),
             rules: config.get<string>('rules', '') || undefined,
-            sqlVersion: config.get<string>('sqlVersion', 'Sql160'),
+            sqlVersion: config.get<string>('sqlVersion') || undefined,
             additionalAnalyzers: config.get<string[]>('additionalAnalyzers', []),
         });
     } catch (err) {

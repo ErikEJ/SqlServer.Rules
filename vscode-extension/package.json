@@ -49,8 +49,13 @@
         },
         "tsqlAnalyzer.sqlVersion": {
           "type": "string",
-          "default": "Sql160",
+          "default": "Sql170",
           "enum": [
+            "Sql170",
+            "SqlAzure",
+            "SqlDw",
+            "SqlServerless",
+            "SqlDwUnified",
             "Sql90",
             "Sql100",
             "Sql110",
@@ -58,8 +63,7 @@
             "Sql130",
             "Sql140",
             "Sql150",
-            "Sql160",
-            "SqlAzure"
+            "Sql160"
           ],
           "description": "Target SQL Server version used for analysis."
         },
@@ -97,7 +101,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
-    "@types/vscode": "^1.90.0",
+    "@types/vscode": "1.90.0",
     "@vscode/vsce": "^3.2.1",
     "typescript": "^5.5.4"
   }

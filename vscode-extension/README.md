@@ -34,7 +34,7 @@ To use a local build instead, point `tsqlAnalyzer.serverPath` at an
 | `tsqlAnalyzer.enable` | Enable/disable live analysis. |
 | `tsqlAnalyzer.serverPath` | Optional path to a build of `ErikEJ.TSQLAnalyzerCli` (empty = run via `dnx`). |
 | `tsqlAnalyzer.rules` | Rules expression. All rules are enabled by default; prefix a rule id with `-` to disable it, or with `+!` to promote it to an error, e.g. `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0005`. Wildcards are supported, e.g. `-SqlServer.Rules.SRN*`. |
-| `tsqlAnalyzer.sqlVersion` | Target SQL Server version (e.g. `Sql160`, `SqlAzure`). |
+| `tsqlAnalyzer.sqlVersion` | Target SQL Server version (e.g. `Sql170`, `SqlAzure`, `SqlDwUnified`). |
 | `tsqlAnalyzer.additionalAnalyzers` | Additional analyzer `.dll` paths to load. |
 | `tsqlAnalyzer.debounceMs` | Delay after the last edit before analysis runs. |
 
