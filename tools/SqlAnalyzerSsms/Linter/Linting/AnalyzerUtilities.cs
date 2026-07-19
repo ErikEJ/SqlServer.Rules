@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,8 +30,6 @@ internal sealed class AnalyzerUtilities : IDisposable
     private StreamReader? _serverOutput;
 
     public static AnalyzerUtilities Instance => _instance.Value;
-
-    private static string CreateTempFilePath() => Path.Combine(Path.GetTempPath(), $"tsqlanalyzerscratch-{Guid.NewGuid()}.sql");
 
     private static IList<string>? ParseAdditionalAnalyzers(string? additionalAnalyzers)
     {
@@ -68,31 +65,8 @@ internal sealed class AnalyzerUtilities : IDisposable
             return [];
         }
 
-        var tempPath = CreateTempFilePath();
-
-        try
-        {
-            try
-            {
-                await WriteTempFileAsync(tempPath, text, cancellationToken).ConfigureAwait(false);
-            }
-            catch (IOException ioex)
-            {
-                await ioex.LogAsync();
-                return [];
-            }
-            catch (UnauthorizedAccessException uex)
-            {
-                await uex.LogAsync();
-                return [];
-            }
-
-            return await AnalyzeWithServerModeAsync(tempPath, rules, sqlVersion, additionalAnalyzers, cancellationToken).ConfigureAwait(false);
-        }
-        finally
-        {
-            DeleteTempFile(tempPath);
-        }
+        // Analyze the editor buffer content in-memory via server mode; no temp file is written.
+        return await AnalyzeWithServerModeAsync(text, rules, sqlVersion, additionalAnalyzers, cancellationToken).ConfigureAwait(false);
     }
 
     public void Dispose()
@@ -101,7 +75,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         this.ResetServerProcess();
     }
 
-    private async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string path, string rules, string sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    private async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string content, string rules, string sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
     {
         await _requestLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
@@ -118,7 +92,7 @@ internal sealed class AnalyzerUtilities : IDisposable
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Command = "analyze",
-                Path = path,
+                Content = content,
                 Rules = string.IsNullOrWhiteSpace(rules) ? null : $"Rules:{rules}",
                 SqlVersion = string.IsNullOrWhiteSpace(sqlVersion) ? null : sqlVersion,
                 AdditionalAnalyzers = ParseAdditionalAnalyzers(additionalAnalyzers),
@@ -393,32 +367,6 @@ internal sealed class AnalyzerUtilities : IDisposable
         finally
         {
             process.Dispose();
-        }
-    }
-
-    private static async Task WriteTempFileAsync(string path, string content, CancellationToken cancellationToken)
-    {
-        using var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
-        var bytes = Encoding.UTF8.GetBytes(content);
-        await stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
-    }
-
-    private static void DeleteTempFile(string path)
-    {
-        try
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-        }
-        catch (IOException)
-        {
-            // File may be locked; ignore cleanup failure.
-        }
-        catch (UnauthorizedAccessException)
-        {
-            // No permission to delete; ignore cleanup failure.
         }
     }
 }
