@@ -43,6 +43,13 @@ To use a local build instead, point `tsqlAnalyzer.serverPath` at an
 - **T-SQL Analyzer: Analyze Active File**
 - **T-SQL Analyzer: Restart Analysis Server**
 
+## Status bar
+
+A T-SQL Analyzer item is shown in the status bar while live analysis is enabled.
+It displays a spinning **Analyzing…** indicator while the analyzer is processing
+the current buffer, and an idle label otherwise. Clicking it re-analyzes the
+active file.
+
 ## Building
 
 ```bash
