@@ -45,7 +45,7 @@
         "tsqlAnalyzer.rules": {
           "type": "string",
           "default": "",
-          "description": "Rules expression controlling which rules are disabled or promoted, e.g. '-SqlServer.Rules.SRD0004;-SqlServer.Rules.SRN*'. Note: unlike the CLI, the server-mode rules string is NOT prefixed with 'Rules:'."
+          "description": "Rules expression controlling which rules are disabled, e.g. '-SqlServer.Rules.SRD0004;-SqlServer.Rules.SRN*'. Note: unlike the CLI, the server-mode rules string is NOT prefixed with 'Rules:'. Each reported problem carries its own warning/error level."
         },
         "tsqlAnalyzer.sqlVersion": {
           "type": "string",

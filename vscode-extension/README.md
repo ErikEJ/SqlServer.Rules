@@ -30,7 +30,7 @@ The analyzer executable must be available. Either:
 | --- | --- |
 | `tsqlAnalyzer.enable` | Enable/disable live analysis. |
 | `tsqlAnalyzer.serverPath` | Path to `ErikEJ.TSQLAnalyzerCli` (empty = bundled server, then `tsqlanalyze` on PATH). |
-| `tsqlAnalyzer.rules` | Rules expression, e.g. `-SqlServer.Rules.SRD0004;-SqlServer.Rules.SRN*`. Unlike the CLI, the server-mode rules string is **not** prefixed with `Rules:`; it controls which rules are disabled and their warning/error level. |
+| `tsqlAnalyzer.rules` | Rules expression, e.g. `-SqlServer.Rules.SRD0004;-SqlServer.Rules.SRN*`. Unlike the CLI, the server-mode rules string is **not** prefixed with `Rules:`; it disables the listed rules. Each reported problem carries its own warning/error level, which is mapped to the diagnostic severity. |
 | `tsqlAnalyzer.sqlVersion` | Target SQL Server version (e.g. `Sql160`, `SqlAzure`). |
 | `tsqlAnalyzer.additionalAnalyzers` | Additional analyzer `.dll` paths to load. |
 | `tsqlAnalyzer.debounceMs` | Delay after the last edit before analysis runs. |

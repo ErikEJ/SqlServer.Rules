@@ -25,12 +25,12 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.workspace.onDidCloseTextDocument((doc) => clearDocument(doc)),
         vscode.workspace.onDidChangeConfiguration((e) => {
             if (e.affectsConfiguration('tsqlAnalyzer')) {
-                restartClient(context);
+                restartClient();
                 analyzeAllOpenDocuments();
             }
         }),
         vscode.commands.registerCommand('tsqlAnalyzer.restartServer', () => {
-            restartClient(context);
+            restartClient();
             analyzeAllOpenDocuments();
         }),
         vscode.commands.registerCommand('tsqlAnalyzer.analyzeActiveFile', () => {
@@ -176,7 +176,7 @@ function getClient(): AnalyzerClient {
     return client;
 }
 
-function restartClient(_context: vscode.ExtensionContext): void {
+function restartClient(): void {
     client?.dispose();
     client = createClient();
     diagnostics.clear();

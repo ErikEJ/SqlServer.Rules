@@ -48,8 +48,8 @@ jobs:
     - name: Build VS Code extension
       working-directory: vscode-extension
       run: |
-        ((Get-Content -Path package.json -Raw) -Replace '"version": "1.0.0"', '"version": "${{ env.VERSION }}"') | Set-Content -Path package.json
         npm ci
+        ((Get-Content -Path package.json -Raw) -Replace '"version":\s*"[0-9]+\.[0-9]+\.[0-9]+"', '"version": "${{ env.VERSION }}"') | Set-Content -Path package.json
         npm run package
       shell: pwsh
 
