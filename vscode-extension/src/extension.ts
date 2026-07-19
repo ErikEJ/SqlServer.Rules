@@ -112,6 +112,10 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
     let response: ServerResponse;
     try {
         response = await getClient().analyze({
+            // Send the on-disk path alongside the in-memory content so older analyzer
+            // servers (which only understand `path`) keep working; newer servers prefer
+            // `content`, giving accurate results for unsaved edits.
+            path: doc.uri.scheme === 'file' ? doc.uri.fsPath : undefined,
             content: doc.getText(),
             rules: config.get<string>('rules', '') || undefined,
             sqlVersion: config.get<string>('sqlVersion') || undefined,
