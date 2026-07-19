@@ -17,6 +17,12 @@ If the analyzer process crashes it is transparently respawned on the next reques
 and the `T-SQL Analyzer: Restart Analysis Server` command can be used to force a
 restart.
 
+## Hover
+
+Hovering over a squiggle shows the rule id, its description and a link to the
+generated rule documentation page (`docs/**/SR*.md`) for the rules under the
+cursor.
+
 ## Requirements
 
 The [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) must be
