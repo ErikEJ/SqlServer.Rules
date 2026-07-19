@@ -114,6 +114,7 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
 
     if (response.status === 'error') {
         output.appendLine(`Analyzer error for ${doc.uri.fsPath}: ${response.error ?? 'unknown error'}`);
+        diagnostics.delete(doc.uri);
         return;
     }
 
