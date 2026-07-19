@@ -36,6 +36,32 @@ public class ServerModeTests
     }
 
     [TestMethod]
+    public void PopulatesHelpLinkForMicrosoftRules()
+    {
+        var request = new ServerRequest
+        {
+            Id = "help-link",
+            Command = "analyze",
+            Content = "CREATE PROCEDURE dbo.TestProc AS SELECT * FROM sys.objects;",
+            SqlVersion = "Sql160",
+        };
+
+        var response = ServerMode.BuildAnalyzeResponse(request);
+
+        Assert.IsNotNull(response.Problems);
+
+        var microsoftProblem = response.Problems.FirstOrDefault(p => p.Rule == "Microsoft.Rules.Data.SR0001");
+
+        Assert.IsNotNull(microsoftProblem, "Expected the built-in Microsoft SR0001 rule to be reported.");
+        Assert.IsFalse(
+            string.IsNullOrEmpty(microsoftProblem.HelpLink),
+            "The Microsoft rule problem should carry a help link.");
+        Assert.IsTrue(
+            microsoftProblem.HelpLink!.StartsWith("https://learn.microsoft.com/", StringComparison.Ordinal),
+            "The Microsoft rule help link should point to Microsoft Learn.");
+    }
+
+    [TestMethod]
     public void PopulatesSeverityOnProblems()
     {
         var request = new ServerRequest

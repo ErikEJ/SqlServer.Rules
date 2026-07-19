@@ -206,6 +206,8 @@ internal static class ServerMode
 
                     var (message, helpLink) = ExtractMessageAndHelpLink(problem.Description);
 
+                    helpLink ??= problem.GetMicrosoftRuleHelpLink();
+
                     problems.Add(new ServerProblem
                     {
                         Rule = problem.RuleId ?? "unknown",

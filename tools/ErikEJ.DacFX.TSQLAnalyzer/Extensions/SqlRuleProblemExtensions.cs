@@ -48,15 +48,8 @@ public static class SqlRuleProblemExtensions
             sqlRuleProblemSeverity = SqlRuleProblemSeverity.Error;
         }
 
-        var link = string.Empty;
-
-        if (sqlRuleProblem.ShortRuleId.StartsWith("SR00", StringComparison.Ordinal))
-        {
-            if (RulesInfo.MicrosoftRules.TryGetValue(sqlRuleProblem.ShortRuleId, out var ruleInfo))
-            {
-                link = $" ({ruleInfo.Item1})";
-            }
-        }
+        var helpLink = sqlRuleProblem.GetMicrosoftRuleHelpLink();
+        var link = helpLink is null ? string.Empty : $" ({helpLink})";
 
         var startColumn = analyzerResult?.GetAdjustedColumn(sqlRuleProblem.StartLine, sqlRuleProblem.StartColumn, sqlRuleProblem.SourceName)
                           ?? sqlRuleProblem.StartColumn;
@@ -78,6 +71,25 @@ public static class SqlRuleProblemExtensions
         stringBuilder.Append(CultureInfo.InvariantCulture, $"{sqlRuleProblem.RuleId} : {sqlRuleProblem.Description}{link}");
 
         return stringBuilder.ToString();
+    }
+
+    /// <summary>
+    /// Gets the Microsoft Learn help link for a built-in DacFx rule (ids starting with <c>SR00</c>).
+    /// Returns <see langword="null" /> for rules that are not Microsoft rules or have no known link.
+    /// </summary>
+    /// <param name="sqlRuleProblem">The analyzed problem.</param>
+    /// <returns>The help link URL, or <see langword="null" /> when none is available.</returns>
+    public static string? GetMicrosoftRuleHelpLink(this SqlRuleProblem sqlRuleProblem)
+    {
+        ArgumentNullException.ThrowIfNull(sqlRuleProblem);
+
+        if (sqlRuleProblem.ShortRuleId.StartsWith("SR00", StringComparison.Ordinal)
+            && RulesInfo.MicrosoftRules.TryGetValue(sqlRuleProblem.ShortRuleId, out var ruleInfo))
+        {
+            return ruleInfo.Item1;
+        }
+
+        return null;
     }
 
     public static (int EndLine, int EndColumn) GetEndPosition(this SqlRuleProblem sqlRuleProblem)
