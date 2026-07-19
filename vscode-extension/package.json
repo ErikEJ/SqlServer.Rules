@@ -2,8 +2,12 @@
   "name": "tsqlanalyzer",
   "displayName": "T-SQL Analyzer",
   "description": "Live T-SQL code analysis (design, naming and performance rules) powered by SqlServer.Rules and DacFx.",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "publisher": "ErikEJ",
+  "pricing": "Free",
+  "sponsor": {
+    "url": "https://github.com/sponsors/ErikEJ"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
