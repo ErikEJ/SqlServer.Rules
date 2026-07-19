@@ -103,6 +103,7 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
         });
     } catch (err) {
         output.appendLine(`Analysis failed for ${doc.uri.fsPath}: ${err instanceof Error ? err.message : String(err)}`);
+        diagnostics.delete(doc.uri);
         return;
     }
 
