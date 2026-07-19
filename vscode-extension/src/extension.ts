@@ -114,6 +114,10 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
             additionalAnalyzers: config.get<string[]>('additionalAnalyzers', []),
         });
     } catch (err) {
+        if (latestToken.get(key) !== token) {
+            return;
+        }
+
         const message = err instanceof Error ? err.message : String(err);
         output.appendLine(`Analysis failed for ${doc.uri.fsPath}: ${message}`);
         reportServerFailure(message);
