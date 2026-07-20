@@ -7,7 +7,7 @@ naming and performance rule violations are surfaced as squiggles as you type.
 ## How it works
 
 The extension spawns the `ErikEJ.TSQLAnalyzerCli` tool (run via the .NET 10 SDK
-`dotnet dnx` command) in its hidden long-lived **server mode** (`--server-mode`) and
+`dotnet dnx` command) in its long-lived **server mode** (`--server-mode`) and
 communicates with it over newline-delimited JSON on stdin/stdout. Document
 open/change/save events are debounced and the current (possibly unsaved) buffer
 content is sent for analysis; the returned problems are published as
@@ -21,7 +21,7 @@ restart.
 
 Each problem is published as a `vscode.Diagnostic`, so hovering over a squiggle
 uses VS Code's built-in diagnostic hover to show the rule id, its description and
-a clickable link to the generated rule documentation page (`docs/**/SR*.md`).
+a clickable link to the rule documentation page.
 
 ## Requirements
 

@@ -30,9 +30,7 @@
     "analysis"
   ],
   "activationEvents": [
-    "onLanguage:sql",
-    "onCommand:tsqlAnalyzer.restartServer",
-    "onCommand:tsqlAnalyzer.analyzeActiveFile"
+    "onLanguage:sql"
   ],
   "main": "./out/extension.js",
   "contributes": {
