@@ -22,6 +22,7 @@ For a complete list of the current rules we have implemented see [here](docs/rea
 flowchart TD
     VS["Visual Studio T-SQL Analyzer<br/>Live feedback in Visual Studio"]
     SSMS["SSMS T-SQL Analyzer<br/>Live feedback in SQL Server Management Studio"]
+    VSC["VS Code T-SQL Analyzer<br/>Live feedback in Visual Studio Code"]
     CLI["T-SQL Analyzer CLI<br/>tsqlanalyze command line tool"]
     CLILIB["ErikEJ.DacFX.TSQLAnalyzer (CLI NuGet library)<br/>Loads scripts and executes analysis"]
     MBSQL["SDK Style SQL Database Projects<br/>Build-time SQL Project analysis"]
@@ -31,6 +32,7 @@ flowchart TD
 
     VS --> CLI
     SSMS --> CLI
+    VSC --> CLI
     CLASSIC --> RULES
     CLI --> CLILIB
     CLILIB --> RULES
