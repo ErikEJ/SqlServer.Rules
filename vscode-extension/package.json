@@ -1,5 +1,5 @@
 {
-  "name": "tsqlanalyzer",
+  "name": "tsqlanalyzerextension",
   "displayName": "T-SQL Analyzer",
   "description": "Live T-SQL code analysis (design, naming and performance rules) powered by SqlServer.Rules and DacFx.",
   "version": "0.0.1",
