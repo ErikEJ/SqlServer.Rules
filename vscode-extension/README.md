@@ -14,7 +14,7 @@ editor — no build step required.
 - **Hover for details** — hover over any squiggle to see the rule id, a plain
   English description, and a link to the full documentation
 - **Zero configuration** — works out of the box with sensible defaults
-- **Customisable** — disable individual rules, promote warnings to errors, or
+- **Customizable** — disable individual rules, promote warnings to errors, or
   target a specific SQL Server version
 - **Status bar indicator** — shows when analysis is running
 
