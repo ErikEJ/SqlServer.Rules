@@ -5,6 +5,8 @@
   "version": "0.0.1",
   "publisher": "ErikEJ",
   "pricing": "Free",
+  "preview": true,
+  "qna": false,
   "sponsor": {
     "url": "https://github.com/sponsors/ErikEJ"
   },
