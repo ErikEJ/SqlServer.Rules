@@ -50,7 +50,7 @@ Browse the full rule catalogue at
 | `tsqlAnalyzer.enable` | `true` | Turn live analysis on or off. |
 | `tsqlAnalyzer.rules` | *(all enabled)* | Rules expression (see above). |
 | `tsqlAnalyzer.sqlVersion` | `Sql170` | Target SQL Server version (`Sql160`, `Sql170`, `SqlAzure`, `SqlDwUnified`, …). |
-| `tsqlAnalyzer.debounceMs` | `500` | Milliseconds to wait after the last keystroke before analysing. |
+| `tsqlAnalyzer.debounceMs` | `400` | Milliseconds to wait after the last keystroke before analyzing. |
 | `tsqlAnalyzer.additionalAnalyzers` | | Extra analyzer `.dll` paths to load (advanced). |
 | `tsqlAnalyzer.serverPath` | | Path to a local analyzer build (advanced — leave empty to use the published package). |
 
