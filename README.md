@@ -95,3 +95,11 @@ Run live analysis of your SQL scripts in SQL Server Management Studio and get th
 Download the latest build of this extension from the [SSMS VSIX Gallery][ssmsmarketplace]
 
 Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/tools/SqlAnalyzerSsms/readme.md)
+
+## VS Code extension - T-SQL Analyzer
+
+This repository also contains a VS Code extension that uses the rule set.
+
+Get live squiggles and diagnostics for your `.sql` files as you type in Visual Studio Code — no build step required.
+
+Read more in the dedicated [readme file](https://github.com/ErikEJ/SqlServer.Rules/blob/master/vscode-extension/README.md)
