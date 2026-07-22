@@ -28,7 +28,7 @@ editor — no build step required.
 That's it. The analyzer tooling is downloaded automatically on first use; there is
 nothing else to install.
 
-## Customising Rules
+## Customizing Rules
 
 All rules are **enabled** by default. You can fine-tune them in
 **Settings** using a simple expression:
