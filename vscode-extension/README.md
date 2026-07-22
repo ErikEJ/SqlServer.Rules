@@ -1,62 +1,72 @@
 # T-SQL Analyzer for VS Code
 
-Live T-SQL code analysis for `.sql` files, powered by
-[SqlServer.Rules](https://github.com/ErikEJ/SqlServer.Rules) and DacFx. Design,
-naming and performance rule violations are surfaced as squiggles as you type.
+Catch T-SQL mistakes **as you type**. This extension analyzes your `.sql` files in
+real time and highlights design, naming, and performance issues right in the
+editor — no build step required.
 
-## How it works
+![diagnostics screenshot](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/vscode-extension/images/screenshot.png)
 
-The extension spawns the `ErikEJ.TSQLAnalyzerCli` tool (run via the .NET 10 SDK
-`dotnet dnx` command) in its long-lived **server mode** (`--server-mode`) and
-communicates with it over newline-delimited JSON on stdin/stdout. Document
-open/change/save events are debounced and the current (possibly unsaved) buffer
-content is sent for analysis; the returned problems are published as
-`vscode.Diagnostic` entries.
+## Features
 
-If the analyzer process crashes it is transparently respawned on the next request,
-and the `T-SQL Analyzer: Restart Analysis Server` command can be used to force a
-restart.
+- **Live squiggles** — problems appear while you edit, just like compiler errors
+- **100+ built-in rules** — covering design best practices, naming conventions,
+  and performance pitfalls
+- **Hover for details** — hover over any squiggle to see the rule id, a plain
+  English description, and a link to the full documentation
+- **Zero configuration** — works out of the box with sensible defaults
+- **Customisable** — disable individual rules, promote warnings to errors, or
+  target a specific SQL Server version
+- **Status bar indicator** — shows when analysis is running
 
-## Diagnostics
+## Getting Started
 
-Each problem is published as a `vscode.Diagnostic`, so hovering over a squiggle
-uses VS Code's built-in diagnostic hover to show the rule id, its description and
-a clickable link to the rule documentation page.
+1. Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+   (or later).
+2. Install this extension from the VS Code Marketplace.
+3. Open any `.sql` file — analysis starts automatically.
 
-## Requirements
+That's it. The analyzer tooling is downloaded automatically on first use; there is
+nothing else to install.
 
-The [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) must be
-installed. The extension runs the analyzer as a NuGet package
-(`ErikEJ.DacFX.TSQLAnalyzer.Cli`) via the SDK's `dotnet dnx` command, so no separate
-install step is required — the package is fetched on first use.
+## Customising Rules
 
-To use a local build instead, point `tsqlAnalyzer.serverPath` at an
-`ErikEJ.TSQLAnalyzerCli` executable.
+All rules are **enabled** by default. You can fine-tune them in
+**Settings** using a simple expression:
+
+| What you want | Expression |
+| --- | --- |
+| Disable a single rule | `-SqlServer.Rules.SRD0004` |
+| Disable all naming rules | `-SqlServer.Rules.SRN*` |
+| Promote a rule to an error | `+!SqlServer.Rules.SRN0005` |
+| Combine several | `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0005` |
+
+Browse the full rule catalogue at
+[github.com/ErikEJ/SqlServer.Rules/docs](https://github.com/ErikEJ/SqlServer.Rules/tree/master/docs).
 
 ## Settings
 
-| Setting | Description |
-| --- | --- |
-| `tsqlAnalyzer.enable` | Enable/disable live analysis. |
-| `tsqlAnalyzer.serverPath` | Optional path to a build of `ErikEJ.TSQLAnalyzerCli` (empty = run via `dotnet dnx`). |
-| `tsqlAnalyzer.rules` | Rules expression. All rules are enabled by default; prefix a rule id with `-` to disable it, or with `+!` to promote it to an error, e.g. `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0005`. Wildcards are supported, e.g. `-SqlServer.Rules.SRN*`. |
-| `tsqlAnalyzer.sqlVersion` | Target SQL Server version (e.g. `Sql170`, `SqlAzure`, `SqlDwUnified`). |
-| `tsqlAnalyzer.additionalAnalyzers` | Additional analyzer `.dll` paths to load. |
-| `tsqlAnalyzer.debounceMs` | Delay after the last edit before analysis runs. |
+| Setting | Default | Description |
+| --- | --- | --- |
+| `tsqlAnalyzer.enable` | `true` | Turn live analysis on or off. |
+| `tsqlAnalyzer.rules` | *(all enabled)* | Rules expression (see above). |
+| `tsqlAnalyzer.sqlVersion` | `Sql170` | Target SQL Server version (`Sql160`, `Sql170`, `SqlAzure`, `SqlDwUnified`, …). |
+| `tsqlAnalyzer.debounceMs` | `500` | Milliseconds to wait after the last keystroke before analysing. |
+| `tsqlAnalyzer.additionalAnalyzers` | | Extra analyzer `.dll` paths to load (advanced). |
+| `tsqlAnalyzer.serverPath` | | Path to a local analyzer build (advanced — leave empty to use the published package). |
 
 ## Commands
 
-- **T-SQL Analyzer: Analyze Active File**
-- **T-SQL Analyzer: Restart Analysis Server**
+Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and type **T-SQL Analyzer**:
 
-## Status bar
+- **T-SQL Analyzer: Analyze Active File** — run analysis on demand.
+- **T-SQL Analyzer: Restart Analysis Server** — restart the background analyzer
+  process (useful after updating settings).
 
-A T-SQL Analyzer item is shown in the status bar while live analysis is enabled.
-It displays a spinning **Analyzing…** indicator while the analyzer is processing
-the current buffer, and an idle label otherwise. Clicking it re-analyzes the
-active file.
+## Requirements
 
-## Building
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later.
+
+## Building from Source
 
 ```bash
 npm install
