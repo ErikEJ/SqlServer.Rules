@@ -68,6 +68,14 @@ Always reference these instructions first and fallback to search or bash command
 - `SqlServer.Rules.Generator` - Utility for reporting available rules
 - `SqlServer.Rules.Report` - Library for result serialization
 
+### VS Code Extension (`vscode-extension/`)
+- TypeScript extension providing live T-SQL analysis in VS Code
+- Communicates with the CLI tool in server mode over stdin/stdout JSON protocol
+- Key files: `src/extension.ts` (activation & lifecycle), `src/client.ts` (server-mode client)
+- Build with `npm install && npm run compile` from the `vscode-extension/` directory
+- Package with `npm run package` (produces `tsqlanalyzer.vsix`)
+- Not part of the .NET solution — built and packaged separately
+
 ### Test Projects (`test/`)
 - `SqlServer.Rules.Test` - Unit tests for core rules
 - `TSQLAnalyzer.Tests` - Tests for analyzer library
