@@ -4,6 +4,8 @@
 
 # Static Analysis Rule-sets for SQL Projects
 
+[![MCP Toplist](https://mcptoplist.com/badge/glama%2FErikEJ%2FSqlServer.Rules.svg)](https://mcptoplist.com/server/glama%2FErikEJ%2FSqlServer.Rules)
+
 ![build status](https://img.shields.io/github/actions/workflow/status/ErikEJ/SqlServer.Rules/vsix.yml?master) [![latest version](https://img.shields.io/nuget/v/ErikEJ.DacFX.SqlServer.Rules)](https://www.nuget.org/packages/ErikEJ.DacFX.SqlServer.Rules) ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
 
 ## Overview
