@@ -13,6 +13,7 @@
 A library of SQL best practices implemented as over 140 [database code analysis rules](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html) checked at build time.
 
 The rules can be added as NuGet packages to SQL Database projects:
+
 - **Modern SDK-style projects**: [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) and [Microsoft.Build.Sql](https://github.com/microsoft/DacFx)
 - **Classic .sqlproj**: Legacy SSDT projects (Visual Studio 2017+ required)
 

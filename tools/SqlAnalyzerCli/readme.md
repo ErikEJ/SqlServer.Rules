@@ -76,7 +76,7 @@ CREATE TABLE [dbo].[Table3]
 
 ## MCP Server (preview)
 
-You can use the tool to ask GitHub Copilot analyze your SQL Server CREATE scripts in Visual Studio or VS Code.
+You can use the tool to ask GitHub Copilot analyze your SQL Server T-SQL scripts in Visual Studio or VS Code.
 
 The TSQL Analyzer MCP Server supports quick installation across multiple development environments. Choose your preferred client below for streamlined setup:
 
@@ -118,22 +118,4 @@ See [this](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsq
 
 > Enabling this will cause your script files to be updated!
 
-## SQL Server Management Studio (SSMS) integration
-
-You can run the tool against any script in the SQL editor, if configured as an external tool.
-
-From the main menu, select `Tools`, `External Tools` and configure as shown:
-
-![SSMS](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/ssms.png)
-
-Title: `tsqlanalyze`
-
-Command: `C:\Users\<YourUserName>\.dotnet\tools\tsqlanalyze.exe`
-
-Arguments: `-n -i $(ItemPath)`
-
-Use output window: `✓`
-
-To run the tool, select `Tools`, `tsqlanalyze` and the result will be displayed in the Output window. Double click a warning to navigate to the related script line.
-
-![SSMS](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/ssmsoutput.png)
+mcp-name: io.github.ErikEJ/SqlServer.Rules
