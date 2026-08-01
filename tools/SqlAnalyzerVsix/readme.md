@@ -42,8 +42,8 @@ In addition, the extension supports analysis of any SQL script in your editor, w
 
 All rules are enabled by default. You can fine-tune them in Tools/Options using a simple expression:
 
-| What you want | Expression |
-| --- | --- |
+| Promote a rule to an error | `+!SqlServer.Rules.SRN0001` |
+| Combine several | `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0001` |
 | Disable a single rule | `-SqlServer.Rules.SRD0004` |
 | Disable all naming rules | `-SqlServer.Rules.SRN*` |
 | Promote a rule to an error | `+!SqlServer.Rules.SRN0005` |
