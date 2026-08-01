@@ -46,8 +46,8 @@ All rules are enabled by default. You can fine-tune them in Tools/Options using 
 | Combine several | `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0005` |
 
 You can set this expression in the `Rules expression` option under Tools/Options when a SQL project rule configuration is not available.
-
-### Installation Requirements
+| Promote a rule to an error | `+!SqlServer.Rules.SRN0001` |
+| Combine several | `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0001` |
 
 - The extension automatically uses the `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
 
