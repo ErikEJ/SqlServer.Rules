@@ -20,7 +20,7 @@ public static class SettingDefinitions
     [VisualStudioContribution]
     public static Setting.String Rules { get; } = new(
         "rules",
-        "Rule exceptions",
+        "Rules expression",
         AnalyzerCategory,
         defaultValue: string.Empty)
     {

@@ -34,7 +34,20 @@ The extension will respect any rule configuration you have in your SQL project, 
 
 In addition, the extension supports analysis of any SQL script in your editor, whether it is part of a project or not. You can customize the behavior of the extension via Tools/Options.
 
-### Installation Requirements
+### Customizing Rules
+
+All rules are enabled by default. You can fine-tune them in Tools/Options using a simple expression:
+
+| What you want | Expression |
+| --- | --- |
+| Disable a single rule | `-SqlServer.Rules.SRD0004` |
+| Disable all naming rules | `-SqlServer.Rules.SRN*` |
+| Promote a rule to an error | `+!SqlServer.Rules.SRN0005` |
+| Combine several | `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0005` |
+
+You can set this expression in the `Rules expression` option under Tools/Options when a SQL project rule configuration is not available.
+| Promote a rule to an error | `+!SqlServer.Rules.SRN0001` |
+| Combine several | `-SqlServer.Rules.SRD0004;+!SqlServer.Rules.SRN0001` |
 
 - The extension automatically uses the `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
 

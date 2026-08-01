@@ -7,7 +7,7 @@ using SqlServer.Rules.Globals;
 
 namespace SqlServer.Rules.Performance
 {
-    /// <summary>Avoid the use of table variables in join clauses planning and maintenace hazard.</summary>
+    /// <summary>Avoid the use of table variables in join clauses.</summary>
     /// <FriendlyName>Table variable in JOIN</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
     /// <ExampleMd></ExampleMd>
