@@ -29,11 +29,12 @@ internal sealed class BaselineSetup : RuleTest
     public BaselineSetup(TestContext testContext, string testName, TSqlModelOptions databaseOptions, SqlServerVersion sqlServerVersion = SqlServerVersion.Sql150)
         : base(new List<Tuple<string, string>>(), databaseOptions, sqlServerVersion)
     {
-        var folder = Path.Combine(GetBaseFolder() ?? string.Empty, TestScriptsFolder);
+        var baseFolder = GetBaseFolder() ?? throw new InvalidOperationException("Could not determine the test base folder.");
+        var folder = Path.Combine(baseFolder, TestScriptsFolder);
         ScriptsFolder = Directory.EnumerateDirectories(folder, testName, SearchOption.AllDirectories).FirstOrDefault();
         Assert.IsTrue(Directory.Exists(ScriptsFolder), $"Expected the test folder '{ScriptsFolder}' to exist");
 
-        SetupFolder = Path.Combine(GetBaseFolder() ?? string.Empty, TestScriptsFolder, SetupScriptsFolder);
+        SetupFolder = Path.Combine(baseFolder, TestScriptsFolder, SetupScriptsFolder);
 
         var outputDir = testContext.TestResultsDirectory;
         var outputFilename = $"{testName}-{Output}.txt";
