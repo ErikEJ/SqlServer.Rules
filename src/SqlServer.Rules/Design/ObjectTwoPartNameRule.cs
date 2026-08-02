@@ -110,7 +110,7 @@ namespace SqlServer.Rules.Design
                 return false;
             }
 
-            var id = execProc.ProcedureReference.ProcedureReference.GetObjectIdentifier();
+            var id = execProc.ProcedureReference.ProcedureReference.GetObjectIdentifier(null);
             return id.Parts.Count < 2 || string.IsNullOrWhiteSpace(id.Parts.First());
         }
 
@@ -143,7 +143,7 @@ namespace SqlServer.Rules.Design
 
             return tableVisitor.Statements.Where(tbl =>
             {
-                var id = tbl.GetObjectIdentifier();
+                var id = tbl.GetObjectIdentifier(null);
 
                 if (cte != null && IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
                 {

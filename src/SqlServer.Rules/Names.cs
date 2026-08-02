@@ -9,7 +9,7 @@ namespace SqlServer.Dac
 {
     public static class Names
     {
-        public static ObjectIdentifier GetObjectIdentifier(this NamedTableReference table, string assumedSchema = "dbo")
+        public static ObjectIdentifier GetObjectIdentifier(this NamedTableReference table, string? assumedSchema = "dbo")
         {
             var identifiers = table.SchemaObject.Identifiers;
             if (identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
@@ -20,7 +20,7 @@ namespace SqlServer.Dac
             return new ObjectIdentifier(identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value));
         }
 
-        public static ObjectIdentifier GetObjectIdentifier(this ProcedureReference proc, string assumedSchema = "dbo")
+        public static ObjectIdentifier GetObjectIdentifier(this ProcedureReference proc, string? assumedSchema = "dbo")
         {
             var identifiers = proc.Name.Identifiers;
             if (identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
@@ -31,7 +31,7 @@ namespace SqlServer.Dac
             return new ObjectIdentifier(identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value));
         }
 
-        public static ObjectIdentifier GetObjectIdentifier(this SchemaObjectName name, string assumedSchema = "dbo")
+        public static ObjectIdentifier GetObjectIdentifier(this SchemaObjectName name, string? assumedSchema = "dbo")
         {
             if (name.Identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
@@ -41,7 +41,7 @@ namespace SqlServer.Dac
             return new ObjectIdentifier(name.Identifiers.Select(x => x.Value));
         }
 
-        public static ObjectIdentifier GetObjectIdentifier(this MultiPartIdentifier name, string assumedSchema = "dbo")
+        public static ObjectIdentifier GetObjectIdentifier(this MultiPartIdentifier name, string? assumedSchema = "dbo")
         {
             if (name.Identifiers.Count == 1 && !string.IsNullOrWhiteSpace(assumedSchema))
             {
@@ -127,7 +127,7 @@ namespace SqlServer.Dac
             return elementName;
         }
 
-        public static ObjectIdentifier? GetObjectName(this TSqlFragment fragment, string assumedSchema = "dbo")
+        public static ObjectIdentifier? GetObjectName(this TSqlFragment fragment, string? assumedSchema = "dbo")
         {
             ObjectIdentifier? ret;
             if (fragment == null)
