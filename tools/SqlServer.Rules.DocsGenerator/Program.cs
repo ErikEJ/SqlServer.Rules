@@ -309,7 +309,7 @@ public static class Program
             stringBuilder.AppendLine(spaces);
             stringBuilder.AppendLine("### Remarks");
             stringBuilder.AppendLine(spaces);
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{comments.Remarks}");
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{FormatRemarksMarkdown(comments.Remarks)}");
         }
 
         stringBuilder.AppendLine(spaces);
@@ -317,6 +317,79 @@ public static class Program
 
         var filePath = Path.Combine(docsFolder, $"{attribute.Id.ToId()}.md");
         File.WriteAllText(filePath, stringBuilder.ToString(), Encoding.UTF8);
+    }
+
+    private static string FormatRemarksMarkdown(string remarks)
+    {
+        if (string.IsNullOrWhiteSpace(remarks))
+        {
+            return string.Empty;
+        }
+
+        var trimmedRemarks = TrimLeadingWhitespace(remarks).Trim();
+
+        if (!trimmedRemarks.Contains("<list", StringComparison.OrdinalIgnoreCase))
+        {
+            return trimmedRemarks;
+        }
+
+        try
+        {
+            var xml = $"<remarks>{trimmedRemarks}</remarks>";
+            var xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(xml);
+
+            var bulletLists = xmlDocument.SelectNodes("//list[@type='bullet']");
+            if (bulletLists is null || bulletLists.Count == 0)
+            {
+                return trimmedRemarks;
+            }
+
+            var markdownLines = new List<string>();
+            foreach (XmlNode bulletList in bulletLists)
+            {
+                var items = bulletList.SelectNodes("./item");
+                if (items is null)
+                {
+                    continue;
+                }
+
+                foreach (XmlNode item in items)
+                {
+                    var itemText = NormalizeWhitespace(item?.InnerText);
+                    if (!string.IsNullOrWhiteSpace(itemText))
+                    {
+                        markdownLines.Add($"- {itemText}");
+                    }
+                }
+            }
+
+            if (markdownLines.Count > 0)
+            {
+                return string.Join(Environment.NewLine, markdownLines);
+            }
+        }
+        catch (XmlException)
+        {
+            return trimmedRemarks;
+        }
+
+        return trimmedRemarks;
+    }
+
+    private static string NormalizeWhitespace(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
+
+        var lines = text.Split([Environment.NewLine, "\n", "\r"], StringSplitOptions.None)
+            .Select(line => line.Trim())
+            .Where(line => !string.IsNullOrWhiteSpace(line))
+            .ToArray();
+
+        return string.Join(" ", lines);
     }
 
     private static string TrimLeadingWhitespace(string summary)
