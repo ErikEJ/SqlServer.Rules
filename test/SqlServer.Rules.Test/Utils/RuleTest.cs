@@ -90,7 +90,7 @@ internal class RuleTest : IDisposable
                 break;
         }
 
-        trash?.Add(ModelForAnalysis);
+        (trash ?? throw new ObjectDisposedException(nameof(RuleTest))).Add(ModelForAnalysis);
     }
 
     private TSqlModel CreateScriptedModel()
