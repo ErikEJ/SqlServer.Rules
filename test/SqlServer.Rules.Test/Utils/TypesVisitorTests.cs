@@ -1,4 +1,3 @@
-using System;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SqlServer.Dac.Visitors;
@@ -12,15 +11,6 @@ public class TypesVisitorTests
     public void ConstructorAllowsEmptyTypes()
     {
         var visitor = new TypesVisitor();
-
-        Assert.AreEqual(0, visitor.Count);
-        Assert.AreEqual(0, visitor.Statements.Count);
-    }
-
-    [TestMethod]
-    public void ConstructorAllowsNullTypes()
-    {
-        var visitor = new TypesVisitor((Type[])null);
 
         Assert.AreEqual(0, visitor.Count);
         Assert.AreEqual(0, visitor.Statements.Count);

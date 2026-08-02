@@ -70,7 +70,7 @@ namespace SqlServer.Rules.Design
             return problems;
         }
 
-        private static string GetExpressionText(ScalarExpression expression)
+        private static string? GetExpressionText(ScalarExpression expression)
         {
             if (expression is ColumnReferenceExpression colRef)
             {

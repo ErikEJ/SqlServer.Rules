@@ -83,8 +83,8 @@ namespace SqlServer.Rules.Design
 
             var objType = sqlObj.ObjectType;
 
-            ModelPropertyClass ansiNullsOption = null;
-            ModelPropertyClass quotedIdentifierOption = null;
+            ModelPropertyClass? ansiNullsOption = null;
+            ModelPropertyClass? quotedIdentifierOption = null;
             var impactsFunctionality = false;
 
             if (objType == Table.TypeClass)

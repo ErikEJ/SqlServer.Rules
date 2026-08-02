@@ -38,7 +38,7 @@ namespace SqlServer.Dac
             }
         }
 
-        public static bool StringEquals(this object value1, object value2)
+        public static bool StringEquals(this object? value1, object? value2)
         {
             if (value1 == null || value2 == null)
             {

@@ -90,7 +90,7 @@ namespace SqlServer.Rules.Design
                     {
                         TableName = table.Name.GetName(),
                         ColumnName = col.ColumnIdentifier.Value,
-                        DataType = col.DataType.Name.Identifiers.FirstOrDefault()?.Value,
+                        DataType = col.DataType.Name.Identifiers.FirstOrDefault()?.Value ?? string.Empty,
                         DataTypeParameters = GetDataTypeLengthParameters(col),
                         Column = col,
                         Table = table,

@@ -166,7 +166,13 @@ namespace SqlServer.Rules.Performance
                     var foreignTable = tableFk.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignTable, DacQueryScopes.All)
                         .Select(x => x.ObjectName).ToList()
                         .FirstOrDefault();
-                    var foreignTableName = foreignTable?.Parts.LastOrDefault();
+
+                    if (foreignTable == null)
+                    {
+                        return problems;
+                    }
+
+                    var foreignTableName = foreignTable.Parts.LastOrDefault();
                     var foreignSchemaName = GetSchemaName(foreignTable);
                     var fkRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "fk_regex", "^FK_{{tableName}}_{{foreignTableName}}.*");
 
@@ -200,7 +206,7 @@ namespace SqlServer.Rules.Performance
             return problems;
         }
 
-        private static string GetReferencedName(TSqlObject sqlObj, ModelRelationshipClass relation = null, string typeToLookFor = "Table")
+        private static string? GetReferencedName(TSqlObject sqlObj, ModelRelationshipClass? relation = null, string typeToLookFor = "Table")
         {
             var referenced = sqlObj.GetReferenced().FirstOrDefault(o => Comparer.Equals(o.ObjectType.Name, typeToLookFor));
 
@@ -217,9 +223,9 @@ namespace SqlServer.Rules.Performance
             string pattern,
             string tableName,
             string schemaName,
-            string foreignTableName,
-            string foreignSchemaName,
-            string columnName,
+            string? foreignTableName,
+            string? foreignSchemaName,
+            string? columnName,
             out string resolvedPattern)
         {
             resolvedPattern = ResolveRegexPattern(pattern, tableName, schemaName, foreignTableName, foreignSchemaName, columnName);
@@ -239,9 +245,9 @@ namespace SqlServer.Rules.Performance
             string pattern,
             string tableName,
             string schemaName,
-            string foreignTableName,
-            string foreignSchemaName,
-            string columnName)
+            string? foreignTableName,
+            string? foreignSchemaName,
+            string? columnName)
         {
             var resolvedPattern = pattern;
             resolvedPattern = ReplaceToken(resolvedPattern, "tableName", tableName);
@@ -253,7 +259,7 @@ namespace SqlServer.Rules.Performance
             return resolvedPattern;
         }
 
-        private static string ReplaceToken(string pattern, string tokenName, string value)
+        private static string ReplaceToken(string pattern, string tokenName, string? value)
         {
             var replacement = string.IsNullOrEmpty(value)
                 ? string.Empty

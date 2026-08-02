@@ -95,7 +95,7 @@ namespace SqlServer.Dac
             return identifiers.Skip(Math.Max(0, identifiers.Count - 2)).Select(x => x.Value).GetName();
         }
 
-        public static string GetName(this TableReference table, string assumedSchema = null)
+        public static string GetName(this TableReference table, string? assumedSchema = null)
         {
             if (table is NamedTableReference t1)
             {
@@ -127,9 +127,9 @@ namespace SqlServer.Dac
             return elementName;
         }
 
-        public static ObjectIdentifier GetObjectName(this TSqlFragment fragment, string assumedSchema = "dbo")
+        public static ObjectIdentifier? GetObjectName(this TSqlFragment fragment, string assumedSchema = "dbo")
         {
-            ObjectIdentifier ret;
+            ObjectIdentifier? ret;
             if (fragment == null)
             {
                 return null;

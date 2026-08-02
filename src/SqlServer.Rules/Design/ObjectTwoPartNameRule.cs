@@ -110,7 +110,7 @@ namespace SqlServer.Rules.Design
                 return false;
             }
 
-            var id = execProc.ProcedureReference.ProcedureReference.GetObjectIdentifier(null);
+            var id = execProc.ProcedureReference.ProcedureReference.GetObjectIdentifier();
             return id.Parts.Count < 2 || string.IsNullOrWhiteSpace(id.Parts.First());
         }
 
@@ -132,7 +132,7 @@ namespace SqlServer.Rules.Design
             return false;
         }
 
-        private static IEnumerable<NamedTableReference> GetOffenders(IEnumerable<FromClause> fromClauses, WithCtesAndXmlNamespaces cte)
+        private static IEnumerable<NamedTableReference> GetOffenders(IEnumerable<FromClause> fromClauses, WithCtesAndXmlNamespaces? cte)
         {
             var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
 
@@ -143,9 +143,9 @@ namespace SqlServer.Rules.Design
 
             return tableVisitor.Statements.Where(tbl =>
             {
-                var id = tbl.GetObjectIdentifier(null);
+                var id = tbl.GetObjectIdentifier();
 
-                if (IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
+                if (cte != null && IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
                 {
                     return false;
                 }

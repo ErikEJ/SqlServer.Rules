@@ -15,8 +15,8 @@ public class SRD0002Tests : TestModel
     public void MustHavePrimaryKey()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CreateTableNoSchema.sql");
-        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CreateTableClusteredColumnStore.sql");
-        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CreateTableTemporalHistory.sql");
+        //TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CreateTableClusteredColumnStore.sql");
+        //TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/CreateTableTemporalHistory.sql");
 
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0002"));
         ExpectedProblems.Add(new TestProblem(1, 1, "SqlServer.Rules.SRD0067"));

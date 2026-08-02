@@ -33,7 +33,7 @@ internal sealed class AnalyzerUtilities : IDisposable
 
     private static IList<string>? ParseAdditionalAnalyzers(string? additionalAnalyzers)
     {
-        if (string.IsNullOrWhiteSpace(additionalAnalyzers))
+        if (additionalAnalyzers is null || string.IsNullOrWhiteSpace(additionalAnalyzers))
         {
             return null;
         }

@@ -62,6 +62,12 @@ namespace SqlServer.Rules.Performance
             foreach (var functionCall in functionCallVisitor.NotIgnoredStatements(RuleId))
             {
                 var functionName = functionCall.FunctionName?.Value;
+
+                if (functionName == null)
+                {
+                    continue;
+                }
+
                 if (functionCall.OverClause == null
                     || functionCall.OverClause.OrderByClause == null
                     || functionCall.OverClause.WindowFrameClause != null

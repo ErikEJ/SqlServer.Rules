@@ -5,7 +5,7 @@ namespace SqlServer.Rules.Tests.Utils;
 
 public static class ExceptionText
 {
-    public static string GetText(Exception ex, bool stackTrace = false)
+    public static string GetText(Exception? ex, bool stackTrace = false)
     {
         var sb = new StringBuilder();
         var depth = 0;

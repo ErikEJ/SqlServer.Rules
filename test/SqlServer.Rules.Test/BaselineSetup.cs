@@ -18,7 +18,7 @@ internal sealed class BaselineSetup : RuleTest
     private const string Baseline = "Baseline";
     private const string SqlExtension = ".sql";
 
-    public string ScriptsFolder { get; private set; }
+    public string? ScriptsFolder { get; private set; }
 
     public string SetupFolder { get; private set; }
 
@@ -29,11 +29,11 @@ internal sealed class BaselineSetup : RuleTest
     public BaselineSetup(TestContext testContext, string testName, TSqlModelOptions databaseOptions, SqlServerVersion sqlServerVersion = SqlServerVersion.Sql150)
         : base(new List<Tuple<string, string>>(), databaseOptions, sqlServerVersion)
     {
-        var folder = Path.Combine(GetBaseFolder(), TestScriptsFolder);
+        var folder = Path.Combine(GetBaseFolder() ?? string.Empty, TestScriptsFolder);
         ScriptsFolder = Directory.EnumerateDirectories(folder, testName, SearchOption.AllDirectories).FirstOrDefault();
         Assert.IsTrue(Directory.Exists(ScriptsFolder), $"Expected the test folder '{ScriptsFolder}' to exist");
 
-        SetupFolder = Path.Combine(GetBaseFolder(), TestScriptsFolder, SetupScriptsFolder);
+        SetupFolder = Path.Combine(GetBaseFolder() ?? string.Empty, TestScriptsFolder, SetupScriptsFolder);
 
         var outputDir = testContext.TestResultsDirectory;
         var outputFilename = $"{testName}-{Output}.txt";
@@ -43,7 +43,7 @@ internal sealed class BaselineSetup : RuleTest
         BaselineFilePath = Path.Combine(ScriptsFolder, baselineFilename);
     }
 
-    private string GetBaseFolder()
+    private string? GetBaseFolder()
     {
         var testAssemply = GetType().Assembly;
 
@@ -64,9 +64,9 @@ internal sealed class BaselineSetup : RuleTest
         base.RunTest(fullId, RunVerification);
     }
 
-    private void LoadTestScripts(string folder)
+    private void LoadTestScripts(string? folder)
     {
-        if (!Directory.Exists(folder))
+        if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
         {
             return;
         }

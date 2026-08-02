@@ -126,8 +126,7 @@ namespace SqlServer.Rules.Performance
                                     sqlObj,
                                     query,
                                     comparison.FirstExpression,
-                                    variables,
-                                    ruleExecutionContext.SchemaModel);
+                                    variables);
                             }
 
                             if (col2 != null)
@@ -144,8 +143,7 @@ namespace SqlServer.Rules.Performance
                                     sqlObj,
                                     query,
                                     comparison.SecondExpression,
-                                    variables,
-                                    ruleExecutionContext.SchemaModel);
+                                    variables);
                             }
 
                             if (string.IsNullOrWhiteSpace(datatype1) || string.IsNullOrWhiteSpace(datatype2))

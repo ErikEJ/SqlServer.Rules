@@ -114,7 +114,12 @@ namespace SqlServer.Rules.Design
                         }
                         else
                         {
-                            paramTypes.Add(GetDataType(parameter, variables));
+                            var dtView = GetDataType(parameter, variables);
+
+                            if (dtView != null)
+                            {
+                                paramTypes.Add(dtView);
+                            }
                         }
                     }
 

@@ -87,7 +87,7 @@ namespace SqlServer.Rules.Naming
                 return problems;
             }
 
-            var objectId = fragment.GetObjectName(null);
+            var objectId = fragment.GetObjectName();
 
             if (objectId != null && objectId.Parts.Count < 2)
             {
