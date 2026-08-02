@@ -152,12 +152,12 @@ namespace SqlServer.Rules.ReferentialIntegrity
 
                 if (join.FirstTableReference.GetType() == typeof(NamedTableReference))
                 {
-                    joinInfo.Table1 = join.FirstTableReference as NamedTableReference;
+                    joinInfo.Table1 = (NamedTableReference)join.FirstTableReference;
                 }
 
                 if (join.SecondTableReference.GetType() == typeof(NamedTableReference))
                 {
-                    joinInfo.Table2 = join.SecondTableReference as NamedTableReference;
+                    joinInfo.Table2 = (NamedTableReference)join.SecondTableReference;
                 }
 
                 joins.Add(joinInfo);

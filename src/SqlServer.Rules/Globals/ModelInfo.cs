@@ -44,7 +44,7 @@ namespace SqlServer.Rules.Globals
         ///   <c>true</c> if [is white listed] [the specified SQL object]; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="ArgumentNullException">sqlObj</exception>
-        public static bool IsWhiteListed(this TSqlObject sqlObj, SqlRuleExecutionContext executionContext = null)
+        public static bool IsWhiteListed(this TSqlObject sqlObj, SqlRuleExecutionContext? executionContext = null)
         {
             if (sqlObj == null)
             {
@@ -85,7 +85,7 @@ namespace SqlServer.Rules.Globals
             return "[dbo].[RfcVersionHistory]".StringEquals(sqlObj.Name.ToString());
         }
 
-        public static DataTypeView GetDataTypeView(this IDictionary<NamedTableView, IDictionary<string, DataTypeView>> list, ColumnReferenceExpression column)
+        public static DataTypeView? GetDataTypeView(this IDictionary<NamedTableView, IDictionary<string, DataTypeView>> list, ColumnReferenceExpression column)
         {
             if (column == null)
             {
@@ -110,7 +110,7 @@ namespace SqlServer.Rules.Globals
             return null;
         }
 
-        public static string GetSetVariable(this SelectStatement select, string variableName)
+        public static string? GetSetVariable(this SelectStatement select, string variableName)
         {
             if (select.QueryExpression is QuerySpecification query)
             {
@@ -167,9 +167,9 @@ namespace SqlServer.Rules.Globals
                 else if (!string.IsNullOrEmpty(tbl.Alias?.Value))
                 {
                     var kv = list.First(x => x.Key.Equals(tblView));
-                    if (!kv.Key.HasAlias(tbl.Alias?.Value))
+                    if (tbl.Alias != null && !kv.Key.HasAlias(tbl.Alias?.Value))
                     {
-                        kv.Key.Aliases.Add(tbl.Alias?.Value);
+                        kv.Key.Aliases.Add(tbl.Alias!.Value);
                         list.Remove(kv.Key);
                         list.Add(kv.Key, kv.Value);
                     }

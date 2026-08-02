@@ -136,7 +136,7 @@ namespace SqlServer.Rules.Performance
                         return false;
                     }
 
-                    return primaryKeyColumns.Any(pkc => pkc.Name.CompareTo(setClause.Column?.MultiPartIdentifier) >= 5);
+                    return primaryKeyColumns.Any(pkc => pkc.Name.CompareTo(setClause.Column.MultiPartIdentifier) >= 5);
                 });
 
                 if (hasOffense)

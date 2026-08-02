@@ -48,8 +48,13 @@ namespace SqlServer.Rules
         /// <returns>
         ///   <c>true</c> if the specified alias has alias; otherwise, <c>false</c>.
         /// </returns>
-        public bool HasAlias(string alias)
+        public bool HasAlias(string? alias)
         {
+            if (alias == null)
+            {
+                return false;
+            }
+
             return Aliases.Any(a => a.StringEquals(alias));
         }
 

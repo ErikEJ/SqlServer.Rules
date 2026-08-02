@@ -60,11 +60,11 @@ public class InstanceInfo
         }
     }
 
-    public string InstanceName
+    public string? InstanceName
     {
         get
         {
-            string name = null;
+            string? name = null;
             var index = DataSource.IndexOf('\\', StringComparison.OrdinalIgnoreCase);
             if (index > 0)
             {

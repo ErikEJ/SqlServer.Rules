@@ -76,7 +76,7 @@ sqlserver_rules.srn0007.fk_regex = ^FK_{{schemaName}}_{{tableName}}_{{foreignSch
         Assert.AreEqual(0, problems.Count);
     }
 
-    private static List<SqlRuleProblem> AnalyzeRuleProblems(string sql, string editorConfig)
+    private static List<SqlRuleProblem> AnalyzeRuleProblems(string sql, string? editorConfig)
     {
         var folderPath = Path.Combine(Path.GetTempPath(), "SRN0007EditorConfigTests", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(folderPath);

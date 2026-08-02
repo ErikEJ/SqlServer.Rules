@@ -88,7 +88,7 @@ namespace SqlServer.Rules.Performance
                 foreach (var functionCall in functionCallVisitor.NotIgnoredStatements(RuleId))
                 {
                     var createFunctionVisitor = new CreateFunctionVisitor();
-                    TSqlFragment fnFragment;
+                    TSqlFragment? fnFragment;
 
                     var fnName = functionCall.GetName();
                     var modelFunction = modelFunctions.FirstOrDefault(mf => Comparer.Equals(mf.Name.GetName(), fnName));

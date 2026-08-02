@@ -753,7 +753,7 @@ namespace SqlServer.Rules
             return "varchar";
         }
 
-        protected static string GetDataType(ScalarExpression value)
+        protected static string? GetDataType(ScalarExpression value)
         {
             if (value is IntegerLiteral exprInt)
             {
@@ -784,7 +784,7 @@ namespace SqlServer.Rules
             return null;
         }
 
-        protected static string GetDataType(ScalarExpression value, IDictionary<string, DataTypeView> variables)
+        protected static string? GetDataType(ScalarExpression value, IDictionary<string, DataTypeView> variables)
         {
             if (!(value is VariableReference varRef))
             {
@@ -799,12 +799,11 @@ namespace SqlServer.Rules
             return string.Empty;
         }
 
-        protected static string GetDataType(
+        protected static string? GetDataType(
             TSqlObject sqlObj,
             QuerySpecification query,
             ScalarExpression expression,
-            IDictionary<string, DataTypeView> variables,
-            TSqlModel model = null)
+            IDictionary<string, DataTypeView> variables)
         {
             if (expression == null)
             {
@@ -813,7 +812,7 @@ namespace SqlServer.Rules
 
             if (expression is ColumnReferenceExpression expression1)
             {
-                return GetColumnDataType(sqlObj, query, expression1, model, variables);
+                return GetColumnDataType(sqlObj, query, expression1, variables);
             }
 
             if (expression is StringLiteral stringLiteral)
@@ -889,13 +888,13 @@ namespace SqlServer.Rules
             }
             else if (expression is BinaryExpression exprBin)
             {
-                var datatype1 = GetDataType(sqlObj, query, exprBin.FirstExpression, variables, model);
+                var datatype1 = GetDataType(sqlObj, query, exprBin.FirstExpression, variables);
                 if (datatype1 != null)
                 {
                     return datatype1;
                 }
 
-                return GetDataType(sqlObj, query, exprBin.SecondExpression, variables, model);
+                return GetDataType(sqlObj, query, exprBin.SecondExpression, variables);
             }
             else if (expression is ScalarSubquery exprScalar)
             {
@@ -908,11 +907,11 @@ namespace SqlServer.Rules
 
                 var selectElement = scalarQuery.SelectElements.First();
 
-                return GetDataType(sqlObj, scalarQuery, ((SelectScalarExpression)selectElement).Expression, variables, model);
+                return GetDataType(sqlObj, scalarQuery, ((SelectScalarExpression)selectElement).Expression, variables);
             }
             else if (expression is IIfCall exprIf)
             {
-                return GetDataType(sqlObj, query, exprIf.ThenExpression, variables, model);
+                return GetDataType(sqlObj, query, exprIf.ThenExpression, variables);
             }
             else
             {
@@ -922,9 +921,9 @@ namespace SqlServer.Rules
             return null;
         }
 
-        protected static string GetColumnDataType(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column, TSqlModel model, IDictionary<string, DataTypeView> variables)
+        protected static string? GetColumnDataType(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column, IDictionary<string, DataTypeView> variables)
         {
-            TSqlObject referencedColumn = null;
+            TSqlObject? referencedColumn = null;
 
             var columnName = column.MultiPartIdentifier.Identifiers.Last().Value;
 
@@ -943,7 +942,15 @@ namespace SqlServer.Rules
             {
                 // we have an aliased column, probably from a cte, temp table, or sub-select. we need to try to find it
                 var visitor = new SelectScalarExpressionVisitor();
-                sqlObj.GetFragment().Accept(visitor); // sqlObj.GetFragment()
+
+                var fragment = sqlObj.GetFragment();
+
+                if (fragment == null)
+                {
+                    return null;
+                }
+
+                fragment.Accept(visitor); // sqlObj.GetFragment()
 
                 // try to find a select column where the alias matches the column name we are searching for
                 var selectColumns = visitor.Statements.Where(x => Comparer.Equals(x.ColumnName?.Value, columnName)).ToList();
@@ -963,7 +970,13 @@ namespace SqlServer.Rules
 
                 if (column.MultiPartIdentifier.Identifiers.Count > 1)
                 {
-                    sqlObj.GetFragment().Accept(tablesVisitor);
+                    var fragment = sqlObj.GetFragment();
+                    if (fragment == null)
+                    {
+                        return null;
+                    }
+
+                    fragment.Accept(tablesVisitor);
 
                     var columnTableAlias = column.MultiPartIdentifier.Identifiers.First().Value;
                     var tbls = tablesVisitor.Statements
@@ -1014,7 +1027,7 @@ namespace SqlServer.Rules
 
             if (referencedColumn != null)
             {
-                TSqlObject dataType = null;
+                TSqlObject? dataType = null;
 
                 // sometimes for some reason, I have to call getreferenced multiple times to get to the datatype. nfc why....
                 while (dataType == null && referencedColumn != null)
@@ -1043,9 +1056,9 @@ namespace SqlServer.Rules
             return null;
         }
 
-        private static TSqlObject GetReferencedColumn(TableReference table, List<TSqlObject> columns, string columnName)
+        private static TSqlObject? GetReferencedColumn(TableReference table, List<TSqlObject> columns, string columnName)
         {
-            TSqlObject referencedColumn = null;
+            TSqlObject? referencedColumn = null;
 
             if (table == null)
             {
@@ -1075,7 +1088,7 @@ namespace SqlServer.Rules
             return referencedColumn;
         }
 
-        protected static TSqlObject GetTableFromColumn(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column)
+        protected static TSqlObject? GetTableFromColumn(TSqlObject sqlObj, QuerySpecification query, ColumnReferenceExpression column)
         {
             var tables = new List<NamedTableReference>();
 

@@ -60,7 +60,7 @@ namespace SqlServer.Rules.Design
             foreach (var cursor in cursorVisitor.Statements)
             {
                 var cursorName = cursor.Name?.Value;
-                if (string.IsNullOrEmpty(cursorName) || cursor.CursorDefinition?.Select == null)
+                if (cursorName is null || string.IsNullOrEmpty(cursorName) || cursor.CursorDefinition?.Select == null)
                 {
                     continue;
                 }
@@ -94,7 +94,7 @@ namespace SqlServer.Rules.Design
                 }
 
                 var cursorName = fetch.Cursor?.Name?.Value;
-                if (string.IsNullOrEmpty(cursorName))
+                if (cursorName is null || string.IsNullOrEmpty(cursorName))
                 {
                     continue;
                 }

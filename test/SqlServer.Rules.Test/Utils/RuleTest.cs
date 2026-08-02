@@ -20,7 +20,7 @@ namespace SqlServer.Rules.Tests.Utils;
 /// </summary>
 internal class RuleTest : IDisposable
 {
-    private DisposableList trash;
+    private DisposableList? trash;
 
     /// <summary>
     /// What type of target should the test run against? Dacpacs are not backed by scripts, so
@@ -90,7 +90,7 @@ internal class RuleTest : IDisposable
                 break;
         }
 
-        trash.Add(ModelForAnalysis);
+        (trash ?? throw new ObjectDisposedException(nameof(RuleTest))).Add(ModelForAnalysis);
     }
 
     private TSqlModel CreateScriptedModel()
@@ -320,8 +320,23 @@ internal class RuleTest : IDisposable
 
     private sealed class ProblemComparer : IComparer<SqlRuleProblem>
     {
-        public int Compare(SqlRuleProblem x, SqlRuleProblem y)
+        public int Compare(SqlRuleProblem? x, SqlRuleProblem? y)
         {
+            if (x == null && y == null)
+            {
+                return 0;
+            }
+
+            if (x == null)
+            {
+                return -1;
+            }
+
+            if (y == null)
+            {
+                return 1;
+            }
+
             var compare = string.Compare(x.SourceName, y.SourceName, StringComparison.OrdinalIgnoreCase);
             if (compare == 0)
             {

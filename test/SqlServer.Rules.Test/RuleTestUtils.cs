@@ -6,8 +6,8 @@ internal sealed class RuleTestUtils
 {
     public static void SaveStringToFile(string contents, string filename)
     {
-        FileStream fileStream = null;
-        StreamWriter streamWriter = null;
+        FileStream? fileStream = null;
+        StreamWriter? streamWriter = null;
         try
         {
             var directory = Path.GetDirectoryName(filename);

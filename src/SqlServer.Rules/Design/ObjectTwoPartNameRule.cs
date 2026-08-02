@@ -132,7 +132,7 @@ namespace SqlServer.Rules.Design
             return false;
         }
 
-        private static IEnumerable<NamedTableReference> GetOffenders(IEnumerable<FromClause> fromClauses, WithCtesAndXmlNamespaces cte)
+        private static IEnumerable<NamedTableReference> GetOffenders(IEnumerable<FromClause> fromClauses, WithCtesAndXmlNamespaces? cte)
         {
             var tableVisitor = new NamedTableReferenceVisitor { TypeFilter = ObjectTypeFilter.PermanentOnly };
 
@@ -145,7 +145,7 @@ namespace SqlServer.Rules.Design
             {
                 var id = tbl.GetObjectIdentifier(null);
 
-                if (IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
+                if (cte != null && IsCteName(tbl.SchemaObject, cte) && id.Parts.Count < 2)
                 {
                     return false;
                 }

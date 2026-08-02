@@ -18,6 +18,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>

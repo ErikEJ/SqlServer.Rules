@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
@@ -44,7 +44,7 @@ namespace SqlServer.Dac.Visitors
         private static bool IsTempNode(DataModificationStatement node)
         {
             var ret = false;
-            NamedTableReference target = null;
+            NamedTableReference? target = null;
             if (node is InsertStatement nodeInsert)
             {
                 target = nodeInsert.InsertSpecification.Target as NamedTableReference;

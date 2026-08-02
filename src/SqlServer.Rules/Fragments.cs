@@ -19,7 +19,7 @@ namespace SqlServer.Dac
             }
         }
 
-        public static TSqlFragment GetFragment(this SqlRuleExecutionContext ruleExecutionContext, bool forceParse = false)
+        public static TSqlFragment? GetFragment(this SqlRuleExecutionContext ruleExecutionContext, bool forceParse = false)
         {
             // if forceparse is true, we don't care about the type, we want to parse the object so as to get the header comments as well
             if (!forceParse)
@@ -38,15 +38,15 @@ namespace SqlServer.Dac
             return ruleExecutionContext.ModelElement.GetFragment();
         }
 
-        public static TSqlFragment GetFragment(this TSqlObject obj)
+        public static TSqlFragment? GetFragment(this TSqlObject obj)
         {
             return GetFragment(obj, out var parseErrors);
         }
 
-        public static TSqlFragment GetFragment(this TSqlObject obj, out IList<ParseError> parseErrors)
+        public static TSqlFragment? GetFragment(this TSqlObject obj, out IList<ParseError> parseErrors)
         {
-            var tsqlParser = new TSql140Parser(true);
-            TSqlFragment fragment = null;
+            var tsqlParser = new TSql170Parser(true);
+            TSqlFragment? fragment = null;
 
             if (!obj.TryGetAst(out var ast))
             {
@@ -95,7 +95,7 @@ namespace SqlServer.Dac
                 return stmt;
             }
 
-            var tsqlParser = new TSql140Parser(true);
+            var tsqlParser = new TSql170Parser(true);
             using (var stringReader = new StringReader(((TSqlStatementSnippet)stmt).Script))
             {
                 IList<ParseError> parseErrors = new List<ParseError>();

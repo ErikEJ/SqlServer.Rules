@@ -574,3 +574,4 @@ guidelines = 120
 dotnet_diagnostic.CA1062.severity = none            # https://github.com/atc-net/atc-coding-rules/blob/main/documentation/CodeAnalyzersRules/MicrosoftCodeAnalysis/CA1062.md
 dotnet_diagnostic.SA1518.severity = none            # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1518.md
 dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.CS8618.severity = none
