@@ -28,10 +28,13 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
 
         public __VSERRORCATEGORY Severity { get; }
 
-        public SqlLintError(SqlAnalyzerDiagnosticInfo violation, string filePath, string documentName, string projectName)
+        public SqlLintError(SqlAnalyzerDiagnosticInfo violation, string filePath, string projectName)
         {
             FilePath = filePath;
-            DocumentName = documentName;
+
+            // DocumentName must be the document moniker (same value as FilePath) so the Error List
+            // "Current Document" scope filter matches the active window and rows are not hidden.
+            DocumentName = filePath;
             Line = violation.Range.StartLine;
             Column = violation.Range.StartColumn;
             Message = violation.Message;

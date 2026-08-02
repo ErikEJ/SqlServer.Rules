@@ -127,27 +127,33 @@ There is already diagnostic logging in place to confirm this at runtime
 against the active document moniker (from the RDT / `VSFPROPID_pszMkDocument`) in a repro
 will show them differing — the temp path vs. `SQLQuery1.sql`.
 
-## Recommended direction for a fix (not applied here)
+## Fix applied in this PR
 
 The safe invariant is: **the value published under
 `StandardTableKeyNames.DocumentName` must be exactly the document moniker that the shell
 uses for the active window** — i.e. the same string as `ITextDocument.FilePath` /
-`VSFPROPID_pszMkDocument`. Concretely:
+`VSFPROPID_pszMkDocument`. This PR implements that:
 
-1. Publish `DocumentName = _filePath` (the actual moniker used everywhere else in the
-   pipeline) instead of the short/virtual caption. This makes the "Current Document" scope
-   filter match and the list populate.
-2. Keep a friendly display separately: use `StandardTableKeyNames.Path` (or a dedicated
-   display column) for the human-friendly `SQLQuery1.sql`, so the UI still looks clean
-   without affecting filtering or navigation.
-3. If the friendly name must drive the moniker (e.g. a genuinely file-less buffer), obtain
-   the moniker authoritatively from the RDT via `VSFPROPID_pszMkDocument` for the active
-   window frame rather than reconstructing it from the tab caption, and use that identical
-   string for both the row's `DocumentName` and any navigation.
-4. Verify with the existing `DocumentHandler` log that `documentName` equals the active
-   document moniker for: (a) an unsaved query window, (b) a saved `.sql` file, and (c) a
-   `.sql` file that belongs to a loaded SQL project.
+1. `DocumentHandler.OnAnalysisUpdated` now passes the moniker (`_filePath`, the same
+   `ITextDocument.FilePath` the tagger and listener already use) straight through to the
+   Error List, instead of a friendly caption. The per-update debug logging was removed.
+2. `SqlLintError` sets `DocumentName = filePath` (the moniker), so both
+   `StandardTableKeyNames.DocumentName` and `StandardTableKeyNames.Path` resolve to the
+   moniker. This makes the "Current Document" scope filter match and double-click
+   navigation land on the correct document.
+3. `SqlLintTableDataSource.UpdateErrors` no longer takes a separate `documentName`, and the
+   now-redundant `DocumentIdentity` helper (which reconstructed a friendly caption from the
+   window title) was deleted.
+
+The Error List "File" column still displays the file-name portion of the moniker, so saved
+`.sql` files show their normal name; unsaved SSMS query windows show their backing
+temp-file name — a small display trade-off in exchange for a correctly populated,
+filterable list.
+
+If a friendlier caption for unsaved windows is desired later, source the moniker
+authoritatively from the RDT via `VSFPROPID_pszMkDocument` for the active window frame and
+use that identical string for both the row's `DocumentName` and navigation — never
+reconstruct it from the tab caption, which is what previously broke matching.
 
 The key takeaway: **`DocumentName` is a filter/navigation key, not a display string.** It
-must equal the shell's document moniker, and any friendlier text belongs in a separate
-display key.
+must equal the shell's document moniker.

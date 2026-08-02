@@ -42,14 +42,12 @@ namespace SqlAnalyzerSsms.Linter.ErrorList
                 return;
             }
 
-            var documentName = DocumentIdentity.GetDocumentName(_textView);
-
-            new InvalidOperationException(
-                $"Identity: filePath='{_filePath}', documentName='{documentName}'")
-                .Log();
-
-            // Update error list with new results
-            _tableDataSource?.UpdateErrors(_filePath, documentName, e.ProjectName, e.Violations);
+            // The Error List "Current Document" scope filter (and double-click navigation)
+            // matches an entry's StandardTableKeyNames.DocumentName against the active
+            // document's moniker (ITextDocument.FilePath). Publish that moniker verbatim so
+            // the filtered list matches; a friendly caption here would never match the moniker
+            // and the filtered list would appear empty.
+            _tableDataSource?.UpdateErrors(_filePath, e.ProjectName, e.Violations);
         }
 
         public void Dispose()
