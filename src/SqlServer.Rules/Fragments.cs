@@ -95,7 +95,7 @@ namespace SqlServer.Dac
                 return stmt;
             }
 
-            var tsqlParser = new TSql140Parser(true);
+            var tsqlParser = new TSql170Parser(true);
             using (var stringReader = new StringReader(((TSqlStatementSnippet)stmt).Script))
             {
                 IList<ParseError> parseErrors = new List<ParseError>();
