@@ -92,7 +92,7 @@ namespace SqlServer.Rules.Globals
                 return null;
             }
 
-            var colIdentifier = column.MultiPartIdentifier.GetObjectIdentifier();
+            var colIdentifier = column.MultiPartIdentifier.GetObjectIdentifier(null);
             var colName = colIdentifier.Parts.Last();
             if (colIdentifier.Parts.Count == 1)
             {

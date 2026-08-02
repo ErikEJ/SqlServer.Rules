@@ -163,6 +163,12 @@ namespace SqlServer.Rules.Performance
                 case "FOREIGNKEYCONSTRAINT":
                     // var fk = fragment as createke;
                     var tableFk = ruleExecutionContext.SchemaModel.GetObject(ForeignKeyConstraint.TypeClass, sqlObj.Name, DacQueryScopes.All);
+
+                    if (tableFk == null)
+                    {
+                        return problems;
+                    }
+
                     var foreignTable = tableFk.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignTable, DacQueryScopes.All)
                         .Select(x => x.ObjectName).ToList()
                         .FirstOrDefault();
