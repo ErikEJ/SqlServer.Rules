@@ -3,6 +3,9 @@ name: CLI Pipeline
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write  # enable GitHub OIDC token issuance for this job
+
 env:
   VERSION: ${{ github.run_number }}
 
@@ -34,6 +37,13 @@ jobs:
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
         run: dotnet pack tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj -p:PackageVersion=1.0.${{ env.VERSION }} -p:InformationalVersion=1.0.${{ env.VERSION }}
 
+      - name: NuGet login (OIDC => temp API key)
+        if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+    
       - name: Publish NuGet
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
-        run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET }} --skip-duplicate
+        run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{steps.login.outputs.NUGET_API_KEY}} --skip-duplicate

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write # This is required for the federated credential to work
+  id-token: write # This is required for the federated credential and GitHub OIDC token issuance to work
 
 env:
   VERSION: ${{ github.run_number }}
@@ -62,6 +62,13 @@ jobs:
           path: |
             **/*.nupkg
 
+      - name: NuGet login (OIDC => temp API key)
+        if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+    
       - name: Publish NuGet
         if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
-        run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET }} --skip-duplicate
+        run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{steps.login.outputs.NUGET_API_KEY}} --skip-duplicate
