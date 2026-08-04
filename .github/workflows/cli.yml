@@ -38,6 +38,7 @@ jobs:
         run: dotnet pack tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj -p:PackageVersion=1.0.${{ env.VERSION }} -p:InformationalVersion=1.0.${{ env.VERSION }}
 
       - name: NuGet login (OIDC => temp API key)
+        if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
         uses: NuGet/login@v1
         id: login
         with:
