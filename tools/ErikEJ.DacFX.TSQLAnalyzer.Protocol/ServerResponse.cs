@@ -29,5 +29,7 @@ public sealed class ServerResponse
     /// List of problems found during analysis.
     /// </summary>
     [JsonPropertyName("problems")]
+#pragma warning disable CA2227 // Collection properties should be read only
     public IList<ServerProblem>? Problems { get; set; }
+#pragma warning restore CA2227 // Collection properties should be read only
 }

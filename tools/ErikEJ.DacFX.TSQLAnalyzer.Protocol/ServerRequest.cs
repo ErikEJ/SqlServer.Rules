@@ -48,5 +48,7 @@ public sealed class ServerRequest
     /// Additional analyzer DLL paths to include in the analysis.
     /// </summary>
     [JsonPropertyName("additionalAnalyzers")]
+#pragma warning disable CA2227 // Collection properties should be read only
     public IList<string>? AdditionalAnalyzers { get; set; }
+#pragma warning restore CA2227 // Collection properties should be read only
 }
