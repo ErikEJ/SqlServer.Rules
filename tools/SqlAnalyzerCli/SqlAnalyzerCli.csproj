@@ -14,6 +14,9 @@
 
     <!-- Use Workstation GC for faster startup in short-lived CLI scenarios -->
     <ServerGarbageCollection>false</ServerGarbageCollection>
+
+    <!-- Allow the tool to run on any major .NET runtime version >= 8 -->
+    <RollForward>Major</RollForward>
   </PropertyGroup>
 
   <PropertyGroup>

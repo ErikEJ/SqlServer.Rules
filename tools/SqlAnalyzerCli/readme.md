@@ -6,7 +6,7 @@ It evaluates more than [140 rules](https://github.com/ErikEJ/SqlServer.Rules/blo
 
 ## Getting started
 
-The tool runs on any system with the .NET 8.0 runtime installed. 
+The tool runs on any system with the .NET 8.0 runtime (or later) installed. 
 
 ### Installing the tool
 
