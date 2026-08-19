@@ -27,16 +27,14 @@ flowchart TD
     SSMS["SSMS T-SQL Analyzer<br/>Live feedback in SQL Server Management Studio"]
     VSC["VS Code T-SQL Analyzer<br/>Live feedback in Visual Studio Code"]
     CLI["T-SQL Analyzer CLI<br/>tsqlanalyze command line tool"]
-    CLILIB["ErikEJ.DacFX.TSQLAnalyzer (CLI NuGet library)<br/>Loads scripts and executes analysis"]
-    MBSQL["SDK Style SQL Database Projects<br/>Build-time SQL Project analysis"]
-    CLASSIC["Classic .sqlproj<br/>Build-time SQL Project analysis"]
-    RULES["SqlServer.Rules<br/>Static SQL code analysis rules"]
+    CLILIB["ErikEJ.DacFX.TSQLAnalyzer<br/>(NuGet package)<br/>Loads scripts and executes analysis"]
+    MBSQL["SQL Database Projects<br/>Build-time SQL Project analysis"]
+    RULES["SqlServer.Rules<br/>(NuGet package)<br/>Static SQL code analysis rules"]
     MCP["MCP Server<br/>AI Agent integration for SQL code analysis rules"]
 
     VS --> CLI
     SSMS --> CLI
     VSC --> CLI
-    CLASSIC --> RULES
     CLI --> CLILIB
     CLILIB --> RULES
     MBSQL --> RULES
