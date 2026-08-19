@@ -62,6 +62,15 @@ Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and type **T-SQL Analy
 - **T-SQL Analyzer: Restart Analysis Server** — restart the background analyzer
   process (useful after updating settings).
 
+## MCP Server
+
+This extension also contributes the **T-SQL Analyzer** as an
+[MCP server](https://code.visualstudio.com/docs/copilot/chat/mcp-servers), so you
+can get feedback on your SQL code directly from **GitHub Copilot Chat**. It appears
+automatically in the MCP server list — start it from there to enable the analyzer
+tools in agent mode. No manual configuration is required (the MCP server is the
+same analyzer tooling downloaded on first use, and requires the .NET 10 SDK).
+
 ## Requirements
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later.
