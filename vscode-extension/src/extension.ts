@@ -46,6 +46,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 scheduleAnalysis(doc, 0);
             }
         }),
+        registerMcpServerProvider(),
     );
 
     // Analyze documents that are already open at activation time.
@@ -292,4 +293,23 @@ function resolveServerCommand(): { command: string; args: string[] } {
         command: 'dotnet',
         args: ['dnx', 'ErikEJ.DacFX.TSQLAnalyzer.Cli', '--yes', '--', '--server-mode'],
     };
+}
+
+/**
+ * Contributes the T-SQL Analyzer MCP server to VS Code so it appears natively in the
+ * MCP server list (and can be started for use with GitHub Copilot Chat). The server is
+ * the same analyzer CLI launched with `-mcp`, run as a NuGet package via the .NET 10
+ * SDK `dnx` command — mirroring how the analysis server is launched.
+ */
+function registerMcpServerProvider(): vscode.Disposable {
+    return vscode.lm.registerMcpServerDefinitionProvider('tsqlAnalyzer.mcpServerProvider', {
+        provideMcpServerDefinitions: () => {
+            const server = new vscode.McpStdioServerDefinition(
+                'tsqlanalyzer',
+                'dotnet',
+                ['dnx', 'ErikEJ.DacFX.TSQLAnalyzer.Cli', '--yes', '--', '-mcp'],
+            );
+            return [server];
+        },
+    });
 }
