@@ -69,7 +69,7 @@ This extension also contributes the **T-SQL Analyzer** as an
 can get feedback on your SQL code directly from **GitHub Copilot Chat**. It appears
 automatically in the MCP server list — start it from there to enable the analyzer
 tools in agent mode. No manual configuration is required (the MCP server is the
-same analyzer tooling downloaded on first use, and requires the .NET 10 SDK).
+same analyzer tooling downloaded on first use, and requires VS Code 1.101+ and the .NET 10 SDK).
 
 ## Requirements
 
