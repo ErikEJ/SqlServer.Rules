@@ -77,10 +77,12 @@ public class AdhocAnalysisTests
             SqlVersion = SqlServerVersion.Sql160,
         });
 
-        Assert.IsFalse(
-            result.Result!.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRD0063"),
-            "SRD0063 should be suppressed for synthetic ad-hoc batches that are wrapped as procedures for analysis.");
-    }
+Assert.IsTrue(result.Result!.AnalysisSucceeded, "Analysis should succeed for the ad-hoc batch.");
+Assert.IsEmpty(result.ModelErrors, "Ad-hoc batch wrapping should not produce fatal model errors.");
+
+Assert.IsFalse(
+    result.Result.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRD0063"),
+    "SRD0063 should be suppressed for synthetic ad-hoc batches that are wrapped as procedures for analysis.");
 
     [TestMethod]
     public void RealStoredProcedureStillRaisesSrd0063()
