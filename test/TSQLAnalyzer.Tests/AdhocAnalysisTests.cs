@@ -55,6 +55,60 @@ public class AdhocAnalysisTests
     }
 
     [TestMethod]
+    public void SyntheticAdhocMetadataGuardDoesNotRaiseSrd0063()
+    {
+        var result = Analyze(new AnalyzerOptions
+        {
+            Script = """
+                IF OBJECT_ID('dbo.PurchaseOrderLineSplit', 'U') IS NOT NULL
+                BEGIN
+                    IF COL_LENGTH('dbo.PurchaseOrderLine', 'Has2DCode') IS NULL
+                    BEGIN
+                        ALTER TABLE dbo.PurchaseOrderLine ADD [Has2DCode] BIT NULL;
+                        UPDATE dbo.PurchaseOrderLine SET [Has2DCode] = 1;
+                        ALTER TABLE dbo.PurchaseOrderLineSplit DROP COLUMN [Has2DCode];
+                    END
+                    IF COL_LENGTH('dbo.PurchaseOrderLineSplit', 'ActualQuantity') IS NOT NULL
+                    BEGIN
+                        ALTER TABLE dbo.PurchaseOrderLineSplit DROP COLUMN [ActualQuantity];
+                    END
+                END
+                """,
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        Assert.IsTrue(result.Result!.AnalysisSucceeded, "Analysis should succeed for the ad-hoc batch.");
+        Assert.IsEmpty(result.ModelErrors, "Ad-hoc batch wrapping should not produce fatal model errors.");
+
+        Assert.IsFalse(
+            result.Result.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRD0063"),
+            "SRD0063 should be suppressed for synthetic ad-hoc batches that are wrapped as procedures for analysis.");
+    }
+
+    [TestMethod]
+    public void RealStoredProcedureStillRaisesSrd0063()
+    {
+        var result = Analyze(new AnalyzerOptions
+        {
+            Script = """
+                CREATE OR ALTER PROCEDURE dbo.TestProc
+                AS
+                BEGIN
+                    IF EXISTS (SELECT 1 FROM sys.objects)
+                    BEGIN
+                        SELECT * FROM sys.objects;
+                    END
+                END
+                """,
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        Assert.IsTrue(
+            result.Result!.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRD0063"),
+            "SRD0063 should still be reported for real stored procedures.");
+    }
+
+    [TestMethod]
     public void ReportedLineNumbersMapToOriginalSource()
     {
         // The fixture has `SELECT *` on line 3 (after two comment lines).

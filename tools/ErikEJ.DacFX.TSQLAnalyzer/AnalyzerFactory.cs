@@ -259,6 +259,7 @@ public class AnalyzerFactory
     private static readonly HashSet<string> SyntheticObjectShapeRules = new(StringComparer.Ordinal)
     {
         "SqlServer.Rules.SRP0005", // SET NOCOUNT ON recommended in stored procedures and triggers
+        "SqlServer.Rules.SRD0063", // IF-with-query rule is noise on synthetic wrappers for ad-hoc migration batches
     };
 
     private static bool IsNamingRule(string ruleId)
