@@ -62,11 +62,15 @@ public class AdhocAnalysisTests
             Script = """
                 IF OBJECT_ID('dbo.PurchaseOrderLineSplit', 'U') IS NOT NULL
                 BEGIN
-                    IF COL_LENGTH('dbo.PurchaseOrderLineSplit', 'Has2DCode') IS NOT NULL
+                    IF COL_LENGTH('dbo.PurchaseOrderLine', 'Has2DCode') IS NULL
                     BEGIN
                         ALTER TABLE dbo.PurchaseOrderLine ADD [Has2DCode] BIT NULL;
                         UPDATE dbo.PurchaseOrderLine SET [Has2DCode] = 1;
                         ALTER TABLE dbo.PurchaseOrderLineSplit DROP COLUMN [Has2DCode];
+                    END
+                    IF COL_LENGTH('dbo.PurchaseOrderLineSplit', 'ActualQuantity') IS NOT NULL
+                    BEGIN
+                        ALTER TABLE dbo.PurchaseOrderLineSplit DROP COLUMN [ActualQuantity];
                     END
                 END
                 """,
