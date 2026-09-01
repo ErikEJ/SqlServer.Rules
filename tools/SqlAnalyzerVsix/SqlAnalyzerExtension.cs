@@ -18,7 +18,7 @@ public class SqlAnalyzerExtension : Extension
                 version: this.ExtensionAssemblyVersion,
                 publisherName: "ErikEJ",
                 displayName: "T-SQL Analyzer",
-                description: "T-SQL Analyzer, that analyzes your T-SQL object creation code for design, naming and performance issues using more than 140 rules.")
+                description: "T-SQL Analyzer, that analyzes your T-SQL scripts for design, naming and performance issues using more than 140 rules.")
         {
             MoreInfo = "https://github.com/ErikEJ/SqlServer.Rules",
             Tags = ["SQL", "T-SQL", "Analyzer", "SQL Server"],
@@ -27,6 +27,7 @@ public class SqlAnalyzerExtension : Extension
             PreviewImage = "Images/sql-analysis.png",
             Preview = false,
             InstallationTargetVersion = "[17.14,19.0)",
+            DotnetTargetVersions = [DotnetTarget.Net8, DotnetTarget.Custom("10.0")],
         },
         LoadedWhen = ActivationConstraint.Or(
             ActivationConstraint.ActiveProjectCapability(ProjectCapability.Custom(SqlProjCapability)), // MSBuild.Sdk.SqlProj
