@@ -15,6 +15,7 @@ public class SRD0062Tests : TestModel
     public void AliasTypeAndXmlTempTableColumnsDoNotThrow()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0062AliasTypeAndXmlTempTable.sql");
+        ExpectedProblems.Add(new TestProblem(10, 9, "SqlServer.Rules.SRD0062"));
 
         RunTest();
     }
