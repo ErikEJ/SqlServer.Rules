@@ -86,15 +86,47 @@ namespace SqlServer.Rules.Design
 
             foreach (var statement in statements)
             {
-                var noCollationColumns = statement.Definition.ColumnDefinitions.Where(p => p.Collation == null &&
-                            (((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.VarChar
-                                || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.Char
-                                || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.NVarChar
-                                || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.NChar));
+                var noCollationColumns = statement.Definition.ColumnDefinitions
+                    .Where(p => p.Collation == null
+                        && IsCharacterDataType(p.DataType, ruleExecutionContext.SchemaModel));
                 problems.AddRange(noCollationColumns.Select(s => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, s)));
             }
 
             return problems;
+        }
+
+        private static bool IsCharacterDataType(DataTypeReference? dataType, TSqlModel model)
+        {
+            if (dataType is SqlDataTypeReference sqlDataTypeReference)
+            {
+                return sqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.VarChar
+                    || sqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.Char
+                    || sqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.NVarChar
+                    || sqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.NChar;
+            }
+
+            if (dataType is not UserDataTypeReference userDataTypeReference)
+            {
+                return false;
+            }
+
+            var userDefinedType = model.GetObject(ModelSchema.DataType, userDataTypeReference.Name.GetObjectIdentifier(), DacQueryScopes.All);
+            if (userDefinedType == null)
+            {
+                return false;
+            }
+
+            var fragment = userDefinedType.GetFragment();
+            if (fragment is not CreateTypeUddtStatement createTypeUddtStatement
+                || createTypeUddtStatement.DataType is not SqlDataTypeReference aliasSqlDataTypeReference)
+            {
+                return false;
+            }
+
+            return aliasSqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.VarChar
+                || aliasSqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.Char
+                || aliasSqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.NVarChar
+                || aliasSqlDataTypeReference.SqlDataTypeOption == SqlDataTypeOption.NChar;
         }
     }
 }
