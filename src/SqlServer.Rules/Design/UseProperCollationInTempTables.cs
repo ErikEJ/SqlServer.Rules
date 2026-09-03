@@ -86,11 +86,13 @@ namespace SqlServer.Rules.Design
 
             foreach (var statement in statements)
             {
-                var noCollationColumns = statement.Definition.ColumnDefinitions.Where(p => p.Collation == null &&
-                            (((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.VarChar
-                                || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.Char
-                                || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.NVarChar
-                                || ((SqlDataTypeReference)p.DataType).SqlDataTypeOption == SqlDataTypeOption.NChar));
+                var noCollationColumns = statement.Definition.ColumnDefinitions
+                    .Where(p => p.Collation == null
+                        && p.DataType is SqlDataTypeReference dataTypeReference
+                        && (dataTypeReference.SqlDataTypeOption == SqlDataTypeOption.VarChar
+                            || dataTypeReference.SqlDataTypeOption == SqlDataTypeOption.Char
+                            || dataTypeReference.SqlDataTypeOption == SqlDataTypeOption.NVarChar
+                            || dataTypeReference.SqlDataTypeOption == SqlDataTypeOption.NChar));
                 problems.AddRange(noCollationColumns.Select(s => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, s)));
             }
 
