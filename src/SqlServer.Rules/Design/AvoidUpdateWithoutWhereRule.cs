@@ -168,9 +168,13 @@ namespace SqlServer.Rules.Design
 
         private static bool ReferencesSameSchemaObject(NamedTableReference targetReference, NamedTableReference candidateReference)
         {
-            return targetReference.GetObjectIdentifier().Parts.SequenceEqual(
-                candidateReference.GetObjectIdentifier().Parts,
-                Comparer);
+            var targetIdentifier = targetReference.GetObjectIdentifier();
+            var candidateIdentifier = candidateReference.GetObjectIdentifier();
+
+            return targetIdentifier.Parts.Count >= 2
+                && candidateIdentifier.Parts.Count >= 2
+                && Comparer.Equals(targetIdentifier.Parts[^2], candidateIdentifier.Parts[^2])
+                && Comparer.Equals(targetIdentifier.Parts[^1], candidateIdentifier.Parts[^1]);
         }
 
         private static bool ContainsTargetReference(TableReference tableReference, string targetAliasOrName, string targetTableName)
