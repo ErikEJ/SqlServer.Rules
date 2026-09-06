@@ -180,8 +180,8 @@ namespace SqlServer.Rules.Design
         private static (string Schema, string Name) GetNormalizedSchemaObjectIdentifier(NamedTableReference tableReference)
         {
             var identifiers = tableReference.SchemaObject.Identifiers;
-            var schema = identifiers.Count > 1 ? identifiers[^2].Value : string.Empty;
-            var name = identifiers[^1].Value;
+            var schema = identifiers.Count > 1 ? identifiers[identifiers.Count - 2].Value : string.Empty;
+            var name = identifiers[identifiers.Count - 1].Value;
 
             return (schema, name);
         }
