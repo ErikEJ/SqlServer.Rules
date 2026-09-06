@@ -168,7 +168,9 @@ namespace SqlServer.Rules.Design
 
         private static bool ReferencesSameSchemaObject(NamedTableReference targetReference, NamedTableReference candidateReference)
         {
-            return targetReference.SchemaObject.GetObjectIdentifier().CompareTo(candidateReference.SchemaObject.GetObjectIdentifier()) >= 8;
+            return targetReference.SchemaObject.GetObjectIdentifier().Parts.SequenceEqual(
+                candidateReference.SchemaObject.GetObjectIdentifier().Parts,
+                Comparer);
         }
 
         private static bool ContainsTargetReference(TableReference tableReference, string targetAliasOrName, string targetTableName)
