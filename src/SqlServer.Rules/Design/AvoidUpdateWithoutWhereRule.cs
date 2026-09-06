@@ -42,6 +42,8 @@ namespace SqlServer.Rules.Design
         /// </summary>
         public const string Message = RuleDisplayName;
 
+        private const int SchemaObjectMatchScore = 8;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidUpdateWithoutWhereRule"/> class.
         /// </summary>
@@ -168,7 +170,7 @@ namespace SqlServer.Rules.Design
 
         private static bool ReferencesSameSchemaObject(NamedTableReference targetReference, NamedTableReference candidateReference)
         {
-            return targetReference.GetObjectIdentifier().CompareTo(candidateReference.GetObjectIdentifier()) >= 8;
+            return targetReference.GetObjectIdentifier().CompareTo(candidateReference.GetObjectIdentifier()) >= SchemaObjectMatchScore;
         }
 
         private static bool ContainsTargetReference(TableReference tableReference, string targetAliasOrName, string targetTableName)
