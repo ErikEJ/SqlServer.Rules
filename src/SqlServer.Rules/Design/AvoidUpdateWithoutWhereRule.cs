@@ -95,9 +95,11 @@ namespace SqlServer.Rules.Design
                     stmt.UpdateSpecification.FromClause.Accept(tableVisitor);
 
                     var table = tableVisitor.Statements.OfType<NamedTableReference>()
-                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, targetAliasOrName));
+                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, targetAliasOrName)
+                            || ReferencesSameSchemaObject(reference, t));
                     if (table != null)
                     {
+                        targetAliasOrName = table.Alias?.Value ?? targetAliasOrName;
                         tableName = table.SchemaObject.Identifiers.Last().Value;
                     }
 
@@ -162,6 +164,11 @@ namespace SqlServer.Rules.Design
             }
 
             return identifiers[identifiers.Count - 2].Value;
+        }
+
+        private static bool ReferencesSameSchemaObject(NamedTableReference targetReference, NamedTableReference candidateReference)
+        {
+            return targetReference.SchemaObject.GetObjectIdentifier().CompareTo(candidateReference.SchemaObject.GetObjectIdentifier()) >= 8;
         }
 
         private static bool ContainsTargetReference(TableReference tableReference, string targetAliasOrName, string targetTableName)
