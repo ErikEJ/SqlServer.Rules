@@ -168,8 +168,8 @@ namespace SqlServer.Rules.Design
 
         private static bool ReferencesSameSchemaObject(NamedTableReference targetReference, NamedTableReference candidateReference)
         {
-            return targetReference.SchemaObject.GetObjectIdentifier().Parts.SequenceEqual(
-                candidateReference.SchemaObject.GetObjectIdentifier().Parts,
+            return targetReference.GetObjectIdentifier().Parts.SequenceEqual(
+                candidateReference.GetObjectIdentifier().Parts,
                 Comparer);
         }
 
