@@ -86,6 +86,34 @@ public class AdhocAnalysisTests
     }
 
     [TestMethod]
+    public void AdhocUpdateJoinUsingTargetAliasDoesNotRaiseSrd0018()
+    {
+        var result = Analyze(new AnalyzerOptions
+        {
+            Script = """
+                DECLARE @someTable TABLE (
+                    originalId  VARCHAR(50),
+                    currentId   VARCHAR(50)
+                );
+
+                UPDATE dst
+                SET currentId = bodyItems.currentId
+                FROM dbo.test dst
+                INNER JOIN @someTable bodyItems
+                ON bodyItems.originalId = dst.originalId;
+                """,
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        Assert.IsFalse(
+            result.Result!.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRD0018"),
+            "SRD0018 should not be raised for an ad-hoc UPDATE joined through the target alias.");
+        Assert.IsTrue(
+            result.Result.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRP0014"),
+            "The ad-hoc batch should still be analyzed, so SRP0014 should remain reported for the table variable join.");
+    }
+
+    [TestMethod]
     public void RealStoredProcedureStillRaisesSrd0063()
     {
         var result = Analyze(new AnalyzerOptions
