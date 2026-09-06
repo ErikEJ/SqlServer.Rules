@@ -88,6 +88,11 @@ namespace SqlServer.Rules.Design
 
                 var tableName = reference.SchemaObject.Identifiers.Last().Value;
 
+                if (ContainsJoinKeyword(stmt))
+                {
+                    continue;
+                }
+
                 if (stmt.UpdateSpecification.FromClause != null)
                 {
                     var tableVisitor = new TableReferenceVisitor();
@@ -108,6 +113,26 @@ namespace SqlServer.Rules.Design
             }
 
             return problems;
+        }
+
+        private static bool ContainsJoinKeyword(UpdateStatement stmt)
+        {
+            if (stmt.ScriptTokenStream == null
+                || stmt.FirstTokenIndex < 0
+                || stmt.LastTokenIndex < stmt.FirstTokenIndex)
+            {
+                return false;
+            }
+
+            for (var tokenIndex = stmt.FirstTokenIndex; tokenIndex <= stmt.LastTokenIndex; tokenIndex++)
+            {
+                if (stmt.ScriptTokenStream[tokenIndex].TokenType == TSqlTokenType.Join)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

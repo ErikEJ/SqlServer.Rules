@@ -46,4 +46,12 @@ public class DesignTestCases : TestCasesBase
 
         Assert.IsEmpty(problems, "Expected 0 problems to be found");
     }
+
+    [TestMethod]
+    public void TestAvoidUpdateWithoutWhereRuleJoinPredicate()
+    {
+        var problems = GetTestCaseProblems(nameof(AvoidUpdateWithoutWhereRule), AvoidUpdateWithoutWhereRule.RuleId);
+
+        Assert.IsEmpty(problems, "Expected 0 problems to be found");
+    }
 }
