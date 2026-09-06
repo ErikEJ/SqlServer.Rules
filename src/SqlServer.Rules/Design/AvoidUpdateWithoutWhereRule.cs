@@ -107,8 +107,8 @@ namespace SqlServer.Rules.Design
                     stmt.UpdateSpecification.FromClause.Accept(joinVisitor);
 
                     if (joinVisitor.QualifiedJoins.Any(join =>
-                        (ContainsTargetReference(join.FirstTableReference, targetAliasOrName, tableName)
-                        || ContainsTargetReference(join.SecondTableReference, targetAliasOrName, tableName))
+                        (ContainsTargetReference(join.FirstTableReference, targetAliasOrName, reference)
+                        || ContainsTargetReference(join.SecondTableReference, targetAliasOrName, reference))
                         && JoinSearchConditionReferencesTarget(join, targetAliasOrName, tableName)))
                     {
                         continue;
@@ -184,17 +184,17 @@ namespace SqlServer.Rules.Design
             return (schema, name);
         }
 
-        private static bool ContainsTargetReference(TableReference tableReference, string targetAliasOrName, string targetTableName)
+        private static bool ContainsTargetReference(TableReference tableReference, string targetAliasOrName, NamedTableReference targetReference)
         {
             return tableReference switch
             {
                 NamedTableReference named => Comparer.Equals(named.Alias?.Value, targetAliasOrName)
-                    || Comparer.Equals(named.SchemaObject.Identifiers.Last().Value, targetTableName),
-                QualifiedJoin qualified => ContainsTargetReference(qualified.FirstTableReference, targetAliasOrName, targetTableName)
-                    || ContainsTargetReference(qualified.SecondTableReference, targetAliasOrName, targetTableName),
-                UnqualifiedJoin unqualified => ContainsTargetReference(unqualified.FirstTableReference, targetAliasOrName, targetTableName)
-                    || ContainsTargetReference(unqualified.SecondTableReference, targetAliasOrName, targetTableName),
-                JoinParenthesisTableReference parenthesized => ContainsTargetReference(parenthesized.Join, targetAliasOrName, targetTableName),
+                    || ReferencesSameSchemaObject(targetReference, named),
+                QualifiedJoin qualified => ContainsTargetReference(qualified.FirstTableReference, targetAliasOrName, targetReference)
+                    || ContainsTargetReference(qualified.SecondTableReference, targetAliasOrName, targetReference),
+                UnqualifiedJoin unqualified => ContainsTargetReference(unqualified.FirstTableReference, targetAliasOrName, targetReference)
+                    || ContainsTargetReference(unqualified.SecondTableReference, targetAliasOrName, targetReference),
+                JoinParenthesisTableReference parenthesized => ContainsTargetReference(parenthesized.Join, targetAliasOrName, targetReference),
                 _ => false,
             };
         }
