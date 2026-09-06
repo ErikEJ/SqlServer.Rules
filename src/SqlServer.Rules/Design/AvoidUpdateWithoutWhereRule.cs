@@ -171,15 +171,17 @@ namespace SqlServer.Rules.Design
             var targetIdentifier = GetNormalizedSchemaObjectIdentifier(targetReference);
             var candidateIdentifier = GetNormalizedSchemaObjectIdentifier(candidateReference);
 
-            return Comparer.Equals(targetIdentifier.Schema, candidateIdentifier.Schema)
-                && Comparer.Equals(targetIdentifier.Name, candidateIdentifier.Name);
+            return Comparer.Equals(targetIdentifier.Name, candidateIdentifier.Name)
+                && (string.IsNullOrWhiteSpace(targetIdentifier.Schema)
+                    || string.IsNullOrWhiteSpace(candidateIdentifier.Schema)
+                    || Comparer.Equals(targetIdentifier.Schema, candidateIdentifier.Schema));
         }
 
         private static (string Schema, string Name) GetNormalizedSchemaObjectIdentifier(NamedTableReference tableReference)
         {
-            var identifier = tableReference.GetObjectIdentifier();
-            var schema = identifier.Parts.Count > 1 ? identifier.Parts[^2] : "dbo";
-            var name = identifier.Parts[^1];
+            var identifiers = tableReference.SchemaObject.Identifiers;
+            var schema = identifiers.Count > 1 ? identifiers[^2].Value : string.Empty;
+            var name = identifiers[^1].Value;
 
             return (schema, name);
         }
