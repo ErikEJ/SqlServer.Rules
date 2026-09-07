@@ -71,20 +71,22 @@ internal sealed class BatchWrapper
                 continue;
             }
 
-            if (!IsWrappable(batch))
+            foreach (var group in GetWrappableStatementGroups(batch))
             {
-                continue;
+                if (!TryAddBatchSeparator(sql, batch, group.StartIndex, group.StartOffset, group.EndIndex, group.EndOffset, edits))
+                {
+                    continue;
+                }
+
+                index++;
+                var name = string.Create(CultureInfo.InvariantCulture, $"[dbo].[{SyntheticObjectPrefix}{index}]");
+                var prefix = $"CREATE PROCEDURE {name} AS BEGIN ";
+
+                edits.Add((group.StartOffset, 0, prefix));
+                edits.Add((group.EndOffset, 0, " END;"));
+
+                adjustments.Add(new ColumnAdjustment(group.StartLine, group.StartColumn, prefix.Length));
             }
-
-            index++;
-            var name = string.Create(CultureInfo.InvariantCulture, $"[dbo].[{SyntheticObjectPrefix}{index}]");
-            var prefix = $"CREATE PROCEDURE {name} AS BEGIN ";
-
-            edits.Add((batch.StartOffset, 0, prefix));
-            edits.Add((batch.StartOffset + batch.FragmentLength, 0, " END;"));
-
-            // Any token on batch.StartLine is shifted right by the prefix length.
-            adjustments.Add(new ColumnAdjustment(batch.StartLine, 1, prefix.Length));
         }
 
         if (edits.Count == 0)
@@ -150,17 +152,120 @@ internal sealed class BatchWrapper
         return true;
     }
 
-    private static bool IsWrappable(TSqlBatch batch)
+    private static bool TryAddBatchSeparator(
+        string sql,
+        TSqlBatch batch,
+        int startIndex,
+        int startOffset,
+        int endIndex,
+        int endOffset,
+        List<(int Offset, int Length, string Text)> edits)
     {
-        foreach (var statement in batch.Statements)
+        if (startIndex > 0)
         {
-            if (!IsWrappableStatement(statement))
+            var previous = batch.Statements[startIndex - 1];
+            var separatorOffset = previous.StartOffset + previous.FragmentLength;
+            if (!TryCreateBatchSeparatorReplacement(sql, separatorOffset, startOffset - separatorOffset, out var separator))
             {
                 return false;
             }
+
+            edits.Add((separatorOffset, startOffset - separatorOffset, separator));
+        }
+
+        if (endIndex + 1 < batch.Statements.Count)
+        {
+            var next = batch.Statements[endIndex + 1];
+            if (!TryCreateBatchSeparatorReplacement(sql, endOffset, next.StartOffset - endOffset, out var separator))
+            {
+                return false;
+            }
+
+            edits.Add((endOffset, next.StartOffset - endOffset, separator));
         }
 
         return true;
+    }
+
+    private static bool TryCreateBatchSeparatorReplacement(string sql, int offset, int length, out string replacement)
+    {
+        replacement = string.Empty;
+
+        if (length <= 0)
+        {
+            return false;
+        }
+
+        var boundary = sql.Substring(offset, length);
+        var lineBreaks = GetLineBreaks(boundary);
+        if (lineBreaks.Count < 2)
+        {
+            return false;
+        }
+
+        var first = lineBreaks[0];
+        var second = lineBreaks[1];
+
+        var builder = new StringBuilder(boundary.Length + 2);
+        builder.Append(' ', first.Start);
+        builder.Append(boundary, first.Start, first.Length);
+        builder.Append("GO");
+        builder.Append(CreateWhitespacePreservingReplacement(boundary, second.Start, boundary.Length - second.Start));
+
+        replacement = builder.ToString();
+        return true;
+    }
+
+    private static List<(int Start, int Length)> GetLineBreaks(string text)
+    {
+        var lineBreaks = new List<(int Start, int Length)>();
+
+        for (var i = 0; i < text.Length; i++)
+        {
+            if (text[i] == '\r')
+            {
+                var length = i + 1 < text.Length && text[i + 1] == '\n' ? 2 : 1;
+                lineBreaks.Add((i, length));
+                i += length - 1;
+                continue;
+            }
+
+            if (text[i] == '\n')
+            {
+                lineBreaks.Add((i, 1));
+            }
+        }
+
+        return lineBreaks;
+    }
+
+    private static IEnumerable<(int StartIndex, int EndIndex, int StartOffset, int EndOffset, int StartLine, int StartColumn)> GetWrappableStatementGroups(TSqlBatch batch)
+    {
+        var i = 0;
+
+        while (i < batch.Statements.Count)
+        {
+            if (!IsWrappableStatement(batch.Statements[i]))
+            {
+                i++;
+                continue;
+            }
+
+            var start = batch.Statements[i];
+            var startOffset = start.StartOffset;
+            var startLine = start.StartLine;
+            var startColumn = start.StartColumn;
+            var endIndex = i;
+
+            while (endIndex + 1 < batch.Statements.Count && IsWrappableStatement(batch.Statements[endIndex + 1]))
+            {
+                endIndex++;
+            }
+
+            var last = batch.Statements[endIndex];
+            yield return (i, endIndex, startOffset, last.StartOffset + last.FragmentLength, startLine, startColumn);
+            i = endIndex + 1;
+        }
     }
 
     // Allow-list of statements that are both valuable to analyze and legal inside a procedure body.

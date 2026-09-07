@@ -142,6 +142,40 @@ public class AdhocAnalysisTests
     }
 
     [TestMethod]
+    public void MixedBatchWithTableCreationStillAnalyzesWrappableDml()
+    {
+        var result = Analyze(new AnalyzerOptions
+        {
+            Script = """
+                CREATE TABLE dbo.test (
+                    originalId  VARCHAR(50),
+                    currentId   VARCHAR(50)
+                );
+
+                DECLARE @someTable TABLE (
+                    originalId  VARCHAR(50),
+                    currentId   VARCHAR(50)
+                );
+
+                UPDATE dst
+                SET currentId = bodyItems.currentId
+                FROM dbo.test dst
+                INNER JOIN @someTable bodyItems
+                ON bodyItems.originalId = dst.originalId;
+                """,
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        Assert.IsTrue(result.Result!.AnalysisSucceeded, "Analysis should succeed for a mixed CREATE TABLE + ad-hoc UPDATE batch.");
+        Assert.IsFalse(
+            result.Result.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRD0018"),
+            "SRD0018 should not be raised for the qualified UPDATE target alias in the mixed batch.");
+        Assert.IsTrue(
+            result.Result.Problems.Any(p => p.RuleId == "SqlServer.Rules.SRP0014"),
+            "The wrapped ad-hoc DML after the CREATE TABLE should still be analyzed, so SRP0014 should remain reported.");
+    }
+
+    [TestMethod]
     public void RealStoredProcedureStillRaisesSrd0063()
     {
         var result = Analyze(new AnalyzerOptions
