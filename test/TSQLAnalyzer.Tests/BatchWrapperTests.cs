@@ -37,7 +37,12 @@ public class BatchWrapperTests
     [TestMethod]
     public void WrapEnclosesOnlyTheWrappableTailOfAMixedBatch()
     {
-        var sql = "CREATE TABLE dbo.Foo (Id INT NOT NULL); DECLARE @value INT = 1; UPDATE dbo.Foo SET Id = @value;";
+        var sql = """
+            CREATE TABLE dbo.Foo (Id INT NOT NULL);
+
+            DECLARE @value INT = 1;
+            UPDATE dbo.Foo SET Id = @value;
+            """;
 
         var wrapped = BatchWrapper.Wrap(sql);
 
@@ -46,6 +51,7 @@ public class BatchWrapperTests
         StringAssert.Contains(wrapped, $"CREATE PROCEDURE [dbo].[{BatchWrapper.SyntheticObjectPrefix}1] AS BEGIN ", StringComparison.Ordinal);
         StringAssert.Contains(wrapped, "DECLARE @value INT = 1;", StringComparison.Ordinal);
         StringAssert.Contains(wrapped, "UPDATE dbo.Foo SET Id = @value;", StringComparison.Ordinal);
+        Assert.AreEqual(sql.Count(c => c == '\n'), wrapped.Count(c => c == '\n'));
         Assert.IsTrue(wrapped.EndsWith("GO\n", StringComparison.Ordinal) || wrapped.EndsWith(" END;", StringComparison.Ordinal));
     }
 
