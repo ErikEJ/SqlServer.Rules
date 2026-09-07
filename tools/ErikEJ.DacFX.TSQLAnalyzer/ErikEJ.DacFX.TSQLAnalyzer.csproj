@@ -27,8 +27,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.4.83" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.400" PrivateAssets="All" />
-    <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="5.1.3" />
     <PackageReference Include="System.ComponentModel.Composition" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SqlServer.Rules\SqlServer.Rules.csproj" />
   </ItemGroup>
 
   <ItemGroup>

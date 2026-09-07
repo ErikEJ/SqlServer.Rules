@@ -86,7 +86,8 @@ namespace SqlServer.Rules.Design
                     continue;
                 }
 
-                var tableName = reference.SchemaObject.Identifiers.Last().Value;
+                var targetAliasOrName = reference.SchemaObject.Identifiers.Last().Value;
+                var tableName = targetAliasOrName;
 
                 if (stmt.UpdateSpecification.FromClause != null)
                 {
@@ -94,10 +95,23 @@ namespace SqlServer.Rules.Design
                     stmt.UpdateSpecification.FromClause.Accept(tableVisitor);
 
                     var table = tableVisitor.Statements.OfType<NamedTableReference>()
-                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, tableName));
+                        .FirstOrDefault(t => Comparer.Equals(t.Alias?.Value, targetAliasOrName)
+                            || ReferencesSameSchemaObject(reference, t));
                     if (table != null)
                     {
+                        targetAliasOrName = table.Alias?.Value ?? targetAliasOrName;
                         tableName = table.SchemaObject.Identifiers.Last().Value;
+                    }
+
+                    var joinVisitor = new JoinVisitor();
+                    stmt.UpdateSpecification.FromClause.Accept(joinVisitor);
+
+                    if (joinVisitor.QualifiedJoins.Any(join =>
+                        (ContainsTargetReference(join.FirstTableReference, targetAliasOrName, reference)
+                        || ContainsTargetReference(join.SecondTableReference, targetAliasOrName, reference))
+                        && JoinSearchConditionReferencesTarget(join, targetAliasOrName, tableName)))
+                    {
+                        continue;
                     }
                 }
 
@@ -108,6 +122,83 @@ namespace SqlServer.Rules.Design
             }
 
             return problems;
+        }
+
+        private static bool JoinSearchConditionReferencesTarget(QualifiedJoin join, string targetAliasOrName, string targetTableName)
+        {
+            if (join.SearchCondition == null)
+            {
+                return false;
+            }
+
+            var columnVisitor = new ColumnReferenceExpressionVisitor();
+            join.SearchCondition.Accept(columnVisitor);
+
+            var qualifiers = columnVisitor.Statements
+                .Select(GetTableOrAliasQualifier)
+                .Where(q => !string.IsNullOrWhiteSpace(q))
+                .ToList();
+
+            var referencesTarget = qualifiers.Any(qualifier =>
+            {
+                return Comparer.Equals(qualifier, targetAliasOrName)
+                    || Comparer.Equals(qualifier, targetTableName);
+            });
+
+            if (!referencesTarget)
+            {
+                return false;
+            }
+
+            return qualifiers.Any(qualifier =>
+                !Comparer.Equals(qualifier, targetAliasOrName)
+                && !Comparer.Equals(qualifier, targetTableName));
+        }
+
+        private static string? GetTableOrAliasQualifier(ColumnReferenceExpression column)
+        {
+            var identifiers = column.MultiPartIdentifier?.Identifiers;
+            if (identifiers == null || identifiers.Count < 2)
+            {
+                return null;
+            }
+
+            return identifiers[identifiers.Count - 2].Value;
+        }
+
+        private static bool ReferencesSameSchemaObject(NamedTableReference targetReference, NamedTableReference candidateReference)
+        {
+            var targetIdentifier = GetNormalizedSchemaObjectIdentifier(targetReference);
+            var candidateIdentifier = GetNormalizedSchemaObjectIdentifier(candidateReference);
+
+            return Comparer.Equals(targetIdentifier.Name, candidateIdentifier.Name)
+                && (string.IsNullOrWhiteSpace(targetIdentifier.Schema)
+                    || string.IsNullOrWhiteSpace(candidateIdentifier.Schema)
+                    || Comparer.Equals(targetIdentifier.Schema, candidateIdentifier.Schema));
+        }
+
+        private static (string Schema, string Name) GetNormalizedSchemaObjectIdentifier(NamedTableReference tableReference)
+        {
+            var identifiers = tableReference.SchemaObject.Identifiers;
+            var schema = identifiers.Count > 1 ? identifiers[identifiers.Count - 2].Value : string.Empty;
+            var name = identifiers[identifiers.Count - 1].Value;
+
+            return (schema, name);
+        }
+
+        private static bool ContainsTargetReference(TableReference tableReference, string targetAliasOrName, NamedTableReference targetReference)
+        {
+            return tableReference switch
+            {
+                NamedTableReference named => Comparer.Equals(named.Alias?.Value, targetAliasOrName)
+                    || ReferencesSameSchemaObject(targetReference, named),
+                QualifiedJoin qualified => ContainsTargetReference(qualified.FirstTableReference, targetAliasOrName, targetReference)
+                    || ContainsTargetReference(qualified.SecondTableReference, targetAliasOrName, targetReference),
+                UnqualifiedJoin unqualified => ContainsTargetReference(unqualified.FirstTableReference, targetAliasOrName, targetReference)
+                    || ContainsTargetReference(unqualified.SecondTableReference, targetAliasOrName, targetReference),
+                JoinParenthesisTableReference parenthesized => ContainsTargetReference(parenthesized.Join, targetAliasOrName, targetReference),
+                _ => false,
+            };
         }
     }
 }
