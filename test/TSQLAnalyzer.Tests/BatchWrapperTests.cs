@@ -35,6 +35,21 @@ public class BatchWrapperTests
     }
 
     [TestMethod]
+    public void WrapEnclosesOnlyTheWrappableTailOfAMixedBatch()
+    {
+        var sql = "CREATE TABLE dbo.Foo (Id INT NOT NULL); DECLARE @value INT = 1; UPDATE dbo.Foo SET Id = @value;";
+
+        var wrapped = BatchWrapper.Wrap(sql);
+
+        StringAssert.Contains(wrapped, "CREATE TABLE dbo.Foo (Id INT NOT NULL);", StringComparison.Ordinal);
+        StringAssert.Contains(wrapped, "GO", StringComparison.Ordinal);
+        StringAssert.Contains(wrapped, $"CREATE PROCEDURE [dbo].[{BatchWrapper.SyntheticObjectPrefix}1] AS BEGIN ", StringComparison.Ordinal);
+        StringAssert.Contains(wrapped, "DECLARE @value INT = 1;", StringComparison.Ordinal);
+        StringAssert.Contains(wrapped, "UPDATE dbo.Foo SET Id = @value;", StringComparison.Ordinal);
+        Assert.IsTrue(wrapped.EndsWith("GO\n", StringComparison.Ordinal) || wrapped.EndsWith(" END;", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
     public void WrapEnclosesDmlBatchInSyntheticProcedure()
     {
         var sql = "SELECT * FROM sys.objects;";

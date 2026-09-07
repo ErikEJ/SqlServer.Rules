@@ -71,20 +71,19 @@ internal sealed class BatchWrapper
                 continue;
             }
 
-            if (!IsWrappable(batch))
+            foreach (var group in GetWrappableStatementGroups(batch))
             {
-                continue;
+                index++;
+                var name = string.Create(CultureInfo.InvariantCulture, $"[dbo].[{SyntheticObjectPrefix}{index}]");
+                var leadingSeparator = group.StartOffset > batch.StartOffset ? "\nGO\n" : string.Empty;
+                var trailingSeparator = group.EndOffset < batch.StartOffset + batch.FragmentLength ? "\nGO\n" : string.Empty;
+                var prefix = $"{leadingSeparator}CREATE PROCEDURE {name} AS BEGIN ";
+
+                edits.Add((group.StartOffset, 0, prefix));
+                edits.Add((group.EndOffset, 0, $" END;{trailingSeparator}"));
+
+                adjustments.Add(new ColumnAdjustment(group.StartLine, group.StartColumn, prefix.Length));
             }
-
-            index++;
-            var name = string.Create(CultureInfo.InvariantCulture, $"[dbo].[{SyntheticObjectPrefix}{index}]");
-            var prefix = $"CREATE PROCEDURE {name} AS BEGIN ";
-
-            edits.Add((batch.StartOffset, 0, prefix));
-            edits.Add((batch.StartOffset + batch.FragmentLength, 0, " END;"));
-
-            // Any token on batch.StartLine is shifted right by the prefix length.
-            adjustments.Add(new ColumnAdjustment(batch.StartLine, 1, prefix.Length));
         }
 
         if (edits.Count == 0)
@@ -150,17 +149,33 @@ internal sealed class BatchWrapper
         return true;
     }
 
-    private static bool IsWrappable(TSqlBatch batch)
+    private static IEnumerable<(int StartOffset, int EndOffset, int StartLine, int StartColumn)> GetWrappableStatementGroups(TSqlBatch batch)
     {
-        foreach (var statement in batch.Statements)
-        {
-            if (!IsWrappableStatement(statement))
-            {
-                return false;
-            }
-        }
+        var i = 0;
 
-        return true;
+        while (i < batch.Statements.Count)
+        {
+            if (!IsWrappableStatement(batch.Statements[i]))
+            {
+                i++;
+                continue;
+            }
+
+            var start = batch.Statements[i];
+            var startOffset = start.StartOffset;
+            var startLine = start.StartLine;
+            var startColumn = start.StartColumn;
+            var endIndex = i;
+
+            while (endIndex + 1 < batch.Statements.Count && IsWrappableStatement(batch.Statements[endIndex + 1]))
+            {
+                endIndex++;
+            }
+
+            var last = batch.Statements[endIndex];
+            yield return (startOffset, last.StartOffset + last.FragmentLength, startLine, startColumn);
+            i = endIndex + 1;
+        }
     }
 
     // Allow-list of statements that are both valuable to analyze and legal inside a procedure body.
