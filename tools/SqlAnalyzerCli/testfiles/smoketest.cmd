@@ -1,17 +1,17 @@
-..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe
+..\bin\Debug\net10.0\ErikEJ.TSQLAnalyzerCli.exe
 pause
 
-..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -i sproc.sql
+..\bin\Debug\net10.0\ErikEJ.TSQLAnalyzerCli.exe -i sproc.sql
 pause
 
-..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -i simple.sql
+..\bin\Debug\net10.0\ErikEJ.TSQLAnalyzerCli.exe -i simple.sql
 pause
 
-..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -i sproc.sql -o output.xml
+..\bin\Debug\net10.0\ErikEJ.TSQLAnalyzerCli.exe -i sproc.sql -o output.xml
 pause
 
-..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -i Chinook.dacpac
+..\bin\Debug\net10.0\ErikEJ.TSQLAnalyzerCli.exe -i Chinook.dacpac
 pause
 
-..\bin\Debug\net8.0\ErikEJ.TSQLAnalyzerCli.exe -c "Data Source=.\SQLEXPRESS;Initial Catalog=Chinook;Integrated Security=True;Encrypt=false"
+..\bin\Debug\net10.0\ErikEJ.TSQLAnalyzerCli.exe -c "Data Source=.\SQLEXPRESS;Initial Catalog=Chinook;Integrated Security=True;Encrypt=false"
 pause
