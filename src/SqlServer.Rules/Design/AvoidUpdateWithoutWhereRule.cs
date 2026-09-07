@@ -172,8 +172,8 @@ namespace SqlServer.Rules.Design
             var candidateIdentifier = GetNormalizedSchemaObjectIdentifier(candidateReference);
 
             return Comparer.Equals(targetIdentifier.Name, candidateIdentifier.Name)
-                && ((string.IsNullOrWhiteSpace(targetIdentifier.Schema)
-                    && string.IsNullOrWhiteSpace(candidateIdentifier.Schema))
+                && (string.IsNullOrWhiteSpace(targetIdentifier.Schema)
+                    || string.IsNullOrWhiteSpace(candidateIdentifier.Schema)
                     || Comparer.Equals(targetIdentifier.Schema, candidateIdentifier.Schema));
         }
 
