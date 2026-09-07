@@ -25,6 +25,11 @@ internal static class PackageService
             var repository = Repository.Factory.GetCoreV3("https://api.nuget.org/v3/index.json");
             var resource = await repository.GetResourceAsync<PackageMetadataResource>().ConfigureAwait(false);
 
+            if (resource == null)
+            {
+                return;
+            }
+
             var packages = await resource.GetMetadataAsync(
                 "ErikEJ.DacFX.TSQLAnalyzer.Cli",
                 includePrerelease: false,
