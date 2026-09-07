@@ -1,12 +1,12 @@
 # T-SQL Analyzer CLI
 
-T-SQL Analyzer is a command line tool for identifying, and reporting the presence of anti-patterns in T-SQL scripts. 
+T-SQL Analyzer is a command line tool for identifying, and reporting the presence of anti-patterns in T-SQL scripts.
 
 It evaluates more than [140 rules](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/readme.md) for design, naming and performance issues.
 
 ## Getting started
 
-The tool runs on any system with the .NET 8.0 runtime (or later) installed.
+The tool runs on any system with the .NET 10.0 SDK (or later) installed.
 
 ### Installing the tool
 

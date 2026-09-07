@@ -1,10 +1,10 @@
-[marketplace]: https://marketplace.visualstudio.com/items?itemName=ErikEJ.TSqlAnalyzer
-[vsixgallery]: http://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/
-[repo]:https://github.com/ErikEJ/SqlServer.Rules
+[marketplace]: <https://marketplace.visualstudio.com/items?itemName=ErikEJ.TSqlAnalyzer>
+[vsixgallery]: <http://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/>
+[repo]:<https://github.com/ErikEJ/SqlServer.Rules>
 
 # T-SQL Analyzer
 
-### Live Code Analysis for SQL scripts in Visual Studio
+## Live Code Analysis for SQL scripts in Visual Studio
 
 [![Build](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml/badge.svg)](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)

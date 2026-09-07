@@ -1,9 +1,9 @@
-[ssmsmarketplace]: https://ssmsgallery.azurewebsites.net/extension/TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d
-[repo]:https://github.com/ErikEJ/SqlServer.Rules
+[ssmsmarketplace]: <https://ssmsgallery.azurewebsites.net/extension/TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d>
+[repo]:<https://github.com/ErikEJ/SqlServer.Rules>
 
 # T-SQL Analyzer
 
-### Live Code Analysis for SQL scripts in SQL Server Management Studio 22
+## Live Code Analysis for SQL scripts in SQL Server Management Studio 22
 
 [![Build](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml/badge.svg)](https://github.com/ErikEJ/SqlServer.Rules/actions/workflows/vsix.yml)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/ErikEJ)
