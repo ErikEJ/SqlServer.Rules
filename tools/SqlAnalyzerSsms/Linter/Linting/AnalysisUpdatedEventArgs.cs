@@ -4,9 +4,6 @@ using Microsoft.VisualStudio.Text;
 
 namespace SqlAnalyzerSsms.Linter.Linting
 {
-    /// <summary>
-    /// Event args for analysis completion.
-    /// </summary>
     public class AnalysisUpdatedEventArgs(
         ITextBuffer buffer,
         ITextSnapshot snapshot,

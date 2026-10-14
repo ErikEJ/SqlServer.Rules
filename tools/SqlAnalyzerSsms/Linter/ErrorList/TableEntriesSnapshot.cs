@@ -3,9 +3,6 @@ using Microsoft.VisualStudio.Shell.TableManager;
 
 namespace SqlAnalyzerSsms.Linter.ErrorList
 {
-    /// <summary>
-    /// Snapshot of error entries for a file.
-    /// </summary>
     internal sealed class TableEntriesSnapshot(string filePath, List<SqlLintError> errors) : ITableEntriesSnapshot
     {
         public string FilePath { get; } = filePath;

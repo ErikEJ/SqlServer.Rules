@@ -8,6 +8,6 @@
 
   <ItemGroup>
     <!-- Shared code analyzers used for all projects in the solution -->
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.3.18-beta" PrivateAssets="all" />
   </ItemGroup>
 </Project>
