@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <PropertyGroup>
@@ -14,7 +14,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
     <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.11" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.13" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.5.96" PrivateAssets="All" />
   </ItemGroup>
 </Project>
