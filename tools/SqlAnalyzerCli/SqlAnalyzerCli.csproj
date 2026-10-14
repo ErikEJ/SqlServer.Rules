@@ -16,7 +16,7 @@
     <ServerGarbageCollection>false</ServerGarbageCollection>
 
     <!-- Allow the tool to roll forward to a higher major .NET runtime (>= 8) when the targeted major isn’t installed -->
-    <RollForward>Major</RollForward>
+    <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -39,7 +39,6 @@
     <Company>ErikEJ</Company>
     <PackageTags>SQL analyzer T-SQL rules</PackageTags>
     <PackageReleaseNotes>Initial release</PackageReleaseNotes>
-    <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
   <ItemGroup>
