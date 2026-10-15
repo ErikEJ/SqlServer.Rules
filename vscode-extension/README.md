@@ -4,6 +4,8 @@ Catch T-SQL mistakes **as you type**. This extension analyzes your `.sql` files 
 real time and highlights design, naming, and performance issues right in the
 editor — no build step required.
 
+[Demo video - 3 minutes](https://www.youtube.com/watch?v=yW20lGyGYQI)
+
 ![diagnostics screenshot](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/vscode-extension/images/screenshot.png)
 
 ## Features

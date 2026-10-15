@@ -2,15 +2,15 @@
 
 # ErikEJ.DacFX.TSQLAnalyzer
 
-This .NET 8 library allows you to run 140+ static T-SQL code analysis rules against .sql files, and report any rule violations.
+This .NET library allows you to run 140+ static T-SQL code analysis rules against .sql files, and report any rule violations.
 
 ## Installation
 
-Install the latest package from [NuGet](https://www.nuget.org/packages/ErikEJ.SqlClient.Extensions).
+Install the latest package from [NuGet](https://www.nuget.org/packages/ErikEJ.DacFX.TSQLAnalyzer).
 
 ## Getting started
 
-Once installed, you can use the library to analyze T-SQL files. The library comes with a couple of useful extension methods to help you format the output of the analysis. 
+Once installed, you can use the library to analyze T-SQL files. The library comes with a couple of useful extension methods to help you format the output of the analysis.
 
 ```csharp
 using ErikEJ.DacFX.TSQLAnalyzer;
