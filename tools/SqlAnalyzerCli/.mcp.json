@@ -1,0 +1,10 @@
+{
+  "inputs": [],
+  "servers": {
+    "ErikEJDacFXTSQLAnalyzerCli": {
+      "type": "stdio",
+      "command": "dnx",
+      "args": [ "ErikEJ.DacFX.TSQLAnalyzer.Cli", "--yes", "--", "-mcp" ]
+    }
+  }
+}
