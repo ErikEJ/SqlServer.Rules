@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Text;
+using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 using ModelContextProtocol.Server;
 
 namespace SqlAnalyzerCli.Services;
@@ -8,7 +9,7 @@ namespace SqlAnalyzerCli.Services;
 public sealed class AnalyzerTools
 {
     [McpServerTool]
-    [Description("Analyzes a T-SQL (SQL Server) script for design, naming, and performance problems and bad practices, using the SqlServer.Rules static code-analysis ruleset (the same rules used by DacFx/SSDT). Use this to review or lint SQL such as stored procedures, functions, views, and CREATE/ALTER statements before deploying them. Returns one line per problem found, each describing the rule, the location, and the issue.")]
+    [Description("Analyzes a T-SQL (SQL Server) script for design, naming, performance problems and bad practices, using the SqlServer.Rules static code-analysis ruleset. Use this to review or lint SQL such as stored procedures, functions, views, CREATE/ALTER statements and any ad-hoc T-SQL before deploying them. Returns one line per problem found, each describing the rule namespace, rule id, location of the issue and an optional link to rule documentation.")]
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public static async Task<string> FindSqlScriptProblems(
         [Description("The complete T-SQL script to analyze, for example one or more CREATE/ALTER statements for stored procedures, functions, views, or tables. Provide the full script text, not a file path.")] string sqlScript)
@@ -25,14 +26,21 @@ public sealed class AnalyzerTools
 
         var output = new StringBuilder();
 
+        if (result.ModelErrors.Count > 0)
+        {
+            output.AppendLine("The script contains syntax errors and could not be analyzed.");
+            return output.ToString();
+        }
+
         if (result.Result == null || result.Result.Problems.Count == 0)
         {
-            return "No problems found.";
+            output.AppendLine("No problems were found.");
+            return output.ToString();
         }
 
         foreach (var problem in result.Result.Problems)
         {
-            output.AppendLine(problem.Description);
+            output.AppendLine(SqlRuleProblemExtensions.GetOutputMessage(problem, null, result));
         }
 
         return output.ToString();

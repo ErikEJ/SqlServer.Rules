@@ -1,0 +1,55 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Enable an MCP Server for the CLI",
+  "description": "A guided walkthrough of the changes required to turn the tsqlanalyze CLI into a Model Context Protocol (MCP) server, and how to publish and consume it.",
+  "steps": [
+    {
+      "file": "tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj",
+      "line": 53,
+      "title": "1. Reference the MCP NuGet package",
+      "description": "The first step is adding a reference to the official `ModelContextProtocol` NuGet package. This brings in the server hosting primitives (`AddMcpServer`, `WithStdioServerTransport`, `WithTools<T>`) and the attributes (`[McpServerToolType]`, `[McpServerTool]`) used to expose functionality as MCP tools."
+    },
+    {
+      "file": "tools/SqlAnalyzerCli/Services/AnalyzerTools.cs",
+      "line": 7,
+      "title": "2. Implement the AnalyzerTools class",
+      "description": "The class is decorated with `[McpServerToolType]`, which marks it as a container of MCP tools. When the host registers it via `WithTools<AnalyzerTools>()`, the MCP runtime reflects over this type to discover tool methods."
+    },
+    {
+      "file": "tools/SqlAnalyzerCli/Services/AnalyzerTools.cs",
+      "line": 10,
+      "title": "2a. Expose a tool method",
+      "description": "`[McpServerTool]` turns `FindSqlScriptProblems` into a callable MCP tool. The `[Description]` attributes on the method and its parameter are sent to the MCP client (the AI model) so it knows what the tool does and how to call it. The method takes the raw T-SQL script, runs it through the `AnalyzerFactory`, and returns one line per problem found."
+    },
+    {
+      "file": "tools/SqlAnalyzerCli/Program.cs",
+      "line": 21,
+      "title": "3. Hook the MCP server into Program.cs",
+      "description": "When the CLI is launched with the single `-mcp` argument, we switch from the normal Spectre.Console CLI path into MCP server mode. A generic host is created with `Host.CreateApplicationBuilder`, then `AddMcpServer()` wires up the server, `WithStdioServerTransport()` configures it to communicate over stdin/stdout (the standard MCP transport for local tools), and `WithTools<AnalyzerTools>()` registers the tool class from step 2. Logging is redirected to stderr so it doesn't corrupt the JSON protocol on stdout. Finally `RunAsync()` runs the server until the host shuts down."
+    },
+    {
+      "file": "tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj",
+      "line": 26,
+      "title": "4. Mark the package as an MCP server tool",
+      "description": "To publish to NuGet as an MCP server, set `<PackageType>McpServer</PackageType>`. Combined with `<PackAsTool>true</PackAsTool>` (line 25) and `<ToolCommandName>tsqlanalyze</ToolCommandName>` (line 27), this produces a .NET tool package that NuGet-aware MCP clients can discover and install."
+    },
+    {
+      "file": "tools/SqlAnalyzerCli/.mcp/server.json",
+      "line": 1,
+      "title": "5. Add the .mcp/server.json manifest",
+      "description": "The MCP server manifest describes the server for the NuGet MCP registry: its name, description, version, and how to launch it. Note the `packageArguments` entry supplies the `-mcp` positional argument — this is exactly the switch Program.cs checks for in step 3 to enter server mode. The `transport` is `stdio`, matching `WithStdioServerTransport()`."
+    },
+    {
+      "file": "tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj",
+      "line": 46,
+      "title": "5a. Pack server.json into the NuGet package",
+      "description": "This `<None Include>` item ensures `.mcp/server.json` is included in the produced .nupkg at the `/.mcp/` path, which is where MCP tooling expects to find the manifest inside the package."
+    },
+    {
+      "file": "tools/SqlAnalyzerCli/.mcp.json",
+      "line": 3,
+      "title": "6. Consuming the server: the .mcp.json servers entry",
+      "description": "Finally, this is how a client (for example VS Code) registers the published server. The `servers` entry runs the tool via `dnx`, passing the package id/version and the `-mcp` switch after `--`. Once configured, the AI assistant can call the `FindSqlScriptProblems` tool to analyze T-SQL on demand."
+    }
+  ]
+}
