@@ -57,7 +57,11 @@ public static class SqlRuleProblemExtensions
         var (endLine, endColumn) = sqlRuleProblem.GetEndPosition(analyzerResult);
 
         var stringBuilder = new StringBuilder();
-        stringBuilder.Append(sqlRuleProblem.SourceName);
+        if (sqlRuleProblem.SourceName is not null && sqlRuleProblem.SourceName != "-1")
+        {
+            stringBuilder.Append(sqlRuleProblem.SourceName);
+        }
+
         stringBuilder.Append('(');
         stringBuilder.Append(sqlRuleProblem.StartLine);
         stringBuilder.Append(',');

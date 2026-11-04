@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Text;
+using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
 using ModelContextProtocol.Server;
 
 namespace SqlAnalyzerCli.Services;
@@ -8,7 +9,7 @@ namespace SqlAnalyzerCli.Services;
 public sealed class AnalyzerTools
 {
     [McpServerTool]
-    [Description("Analyzes a T-SQL (SQL Server) script for design, naming, performance problems and bad practices, using the SqlServer.Rules static code-analysis ruleset. Use this to review or lint SQL such as stored procedures, functions, views, CREATE/ALTER statements and any ad-hoc T-SQL before deploying them. Returns one line per problem found, each describing the rule namespace, rule id, the issue and an optional link to rule documentation.")]
+    [Description("Analyzes a T-SQL (SQL Server) script for design, naming, performance problems and bad practices, using the SqlServer.Rules static code-analysis ruleset. Use this to review or lint SQL such as stored procedures, functions, views, CREATE/ALTER statements and any ad-hoc T-SQL before deploying them. Returns one line per problem found, each describing the rule namespace, rule id, location of the issue and an optional link to rule documentation.")]
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public static async Task<string> FindSqlScriptProblems(
         [Description("The complete T-SQL script to analyze, for example one or more CREATE/ALTER statements for stored procedures, functions, views, or tables. Provide the full script text, not a file path.")] string sqlScript)
@@ -40,7 +41,7 @@ public sealed class AnalyzerTools
 
         foreach (var problem in result.Result.Problems)
         {
-            output.AppendLine(problem.ErrorMessageString);
+            output.AppendLine(SqlRuleProblemExtensions.GetOutputMessage(problem, null, result));
         }
 
         return output.ToString();
