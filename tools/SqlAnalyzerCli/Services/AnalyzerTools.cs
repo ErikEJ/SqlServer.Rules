@@ -26,16 +26,15 @@ public sealed class AnalyzerTools
 
         var output = new StringBuilder();
 
+        if (result.ModelErrors.Count > 0)
+        {
+            output.AppendLine("The script contains syntax errors and could not be analyzed.");
+            return output.ToString();
+        }
+
         if (result.Result == null || result.Result.Problems.Count == 0)
         {
-            if (result.ModelErrors.Count > 0)
-            {
-                output.AppendLine("The script contains syntax errors and could not be analyzed.");
-                return output.ToString();
-            }
-
             output.AppendLine("No problems were found.");
-
             return output.ToString();
         }
 
