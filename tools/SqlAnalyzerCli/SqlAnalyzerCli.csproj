@@ -9,9 +9,6 @@
 
   <!-- Performance Optimizations -->
   <PropertyGroup>
-    <!-- Enable ReadyToRun for faster startup time (20-40% improvement) -->
-    <PublishReadyToRun>true</PublishReadyToRun>
-
     <!-- Use Workstation GC for faster startup in short-lived CLI scenarios -->
     <ServerGarbageCollection>false</ServerGarbageCollection>
 

@@ -4,6 +4,7 @@
     <Name>ForsDW</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlDwUnifiedDatabaseSchemaProvider</DSP>
     <DefaultCollation>Latin1_General_100_BIN2_UTF8</DefaultCollation>
+    <ProjectGuid>{2466BFFD-B190-448A-890C-E3717A95173A}</ProjectGuid>
   </PropertyGroup>
   <Target Name="BeforeBuild">
     <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />

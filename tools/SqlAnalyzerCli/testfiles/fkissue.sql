@@ -11,11 +11,6 @@ CREATE TABLE [dbo].[InvoiceLine] (
 
 GO
 
-CREATE NONCLUSTERED INDEX [IFK_InvoiceLineInvoiceId]
-    ON [dbo].[InvoiceLine]([InvoiceId] ASC);
-
-GO
-
 CREATE NONCLUSTERED INDEX [IFK_InvoiceLineTrackId]
     ON [dbo].[InvoiceLine]([TrackId] ASC);
 
