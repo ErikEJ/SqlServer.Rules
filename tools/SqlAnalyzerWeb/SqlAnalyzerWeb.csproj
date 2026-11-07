@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>SqlAnalyzerWeb</AssemblyName>
+    <RootNamespace>SqlAnalyzerWeb</RootNamespace>
+    <NoWarn>$(NoWarn);SA1402;SA1649;CA2000</NoWarn>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ErikEJ.DacFX.TSQLAnalyzer\ErikEJ.DacFX.TSQLAnalyzer.csproj" />
+  </ItemGroup>
+
+</Project>
