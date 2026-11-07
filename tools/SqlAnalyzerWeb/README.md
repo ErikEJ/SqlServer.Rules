@@ -32,6 +32,8 @@ The `web-demo.yml` workflow pushes `ghcr.io/<owner>/tsql-analyzer-demo:latest`. 
 - **Azure Container Apps** (consumption, scale to zero, monthly free grant): create an app from the GHCR image, target port `8080`, ingress external, min replicas `0`.
 - **Fly.io**: `fly launch --dockerfile tools/SqlAnalyzerWeb/Dockerfile` with internal port `8080`.
 
+When running behind a reverse proxy, configure its actual trusted address or network so forwarded client IPs are used for rate limiting. Set `ForwardedHeaders__KnownProxies__0` to a proxy IP, or `ForwardedHeaders__KnownNetworks__0` to a CIDR network (for example, `10.0.0.0/8`). Add further entries with `__1`, `__2`, and so on. Do not trust arbitrary forwarded headers; configure only the proxy addresses or ranges used by your deployment.
+
 ## Limits
 
 Scripts are limited to 8 KB (8,192 characters), requests to 64 KB, 10 requests per minute per client IP, 2 concurrent analyses, and a 30 second timeout.

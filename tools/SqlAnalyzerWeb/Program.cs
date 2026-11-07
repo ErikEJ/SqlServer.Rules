@@ -1,6 +1,8 @@
+using System.Net;
 using System.Threading.RateLimiting;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.SqlServer.Dac.Model;
 
@@ -20,12 +22,22 @@ builder.Services.AddRateLimiter(o =>
 
 var app = builder.Build();
 
-// Honor X-Forwarded-* from the host's proxy so rate limiting sees client IPs.
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+var forwardedHeadersOptions = new ForwardedHeadersOptions
 {
-    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor
-        | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto,
-});
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+};
+
+foreach (var proxy in builder.Configuration.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>() ?? [])
+{
+    forwardedHeadersOptions.KnownProxies.Add(IPAddress.Parse(proxy));
+}
+
+foreach (var network in builder.Configuration.GetSection("ForwardedHeaders:KnownNetworks").Get<string[]>() ?? [])
+{
+    forwardedHeadersOptions.KnownIPNetworks.Add(System.Net.IPNetwork.Parse(network));
+}
+
+app.UseForwardedHeaders(forwardedHeadersOptions);
 app.UseRateLimiter();
 app.UseDefaultFiles();
 app.UseStaticFiles();
@@ -65,8 +77,14 @@ app.MapPost("/api/analyze", async (AnalyzeRequest request, CancellationToken ct)
             Rules = string.IsNullOrWhiteSpace(request.Rules) ? null : request.Rules,
         };
 
-        var analysis = await Task.Run(() => new AnalyzerFactory(options).Analyze(), ct)
-            .WaitAsync(TimeSpan.FromSeconds(30), ct);
+        var analysisTask = Task.Run(() => new AnalyzerFactory(options).Analyze(), ct);
+        _ = analysisTask.ContinueWith(
+            _ => gate.Release(),
+            CancellationToken.None,
+            TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+
+        var analysis = await analysisTask.WaitAsync(TimeSpan.FromSeconds(30), ct);
 
         var modelErrors = analysis.ModelErrors.Values.Select(e => e.Message).ToList();
 
@@ -104,10 +122,6 @@ app.MapPost("/api/analyze", async (AnalyzeRequest request, CancellationToken ct)
     catch (ArgumentException ex)
     {
         return Results.BadRequest(new { error = ex.Message });
-    }
-    finally
-    {
-        gate.Release();
     }
 }).RequireRateLimiting("analyze");
 

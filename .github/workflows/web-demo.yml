@@ -26,6 +26,10 @@ jobs:
       - name: Build web app
         run: dotnet build tools/SqlAnalyzerWeb/SqlAnalyzerWeb.csproj -c Release
 
+      - name: Normalize image owner
+        id: image
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
+
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -37,4 +41,4 @@ jobs:
           context: .
           file: tools/SqlAnalyzerWeb/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/tsql-analyzer-demo:latest
+          tags: ghcr.io/${{ steps.image.outputs.owner }}/tsql-analyzer-demo:latest
