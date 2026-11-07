@@ -2,8 +2,6 @@
 
 A small ASP.NET Core (.NET 10) app: a page where you paste T-SQL and get the analysis findings. Scripts are analyzed only (never executed) and not stored.
 
-GitHub Pages only serves static files, so the app is hosted as a container on a free tier, and Pages can optionally link to it.
-
 ## Run locally
 
 ```pwsh
