@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T-SQL Analyzer demo</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f6f8fa; color: #24292f; }
+  header { background: #24292f; color: #fff; padding: 1rem 2rem; }
+  header a { color: #9cf; }
+  main { max-width: 1100px; margin: 1rem auto; padding: 0 1rem; }
+  textarea { width: 100%; height: 300px; font: 14px ui-monospace, monospace; box-sizing: border-box; padding: .5rem; }
+  .bar { display: flex; gap: .75rem; align-items: center; margin: .75rem 0; flex-wrap: wrap; }
+  button { padding: .5rem 1.2rem; font-size: 1rem; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
+  th, td { border: 1px solid #d0d7de; padding: .35rem .6rem; text-align: left; vertical-align: top; }
+  .Error { color: #cf222e; font-weight: 600; } .Warning { color: #9a6700; font-weight: 600; }
+  #status { color: #57606a; } .err { color: #cf222e; }
+</style>
+</head>
+<body>
+<header>
+  <h1 style="margin:0">T-SQL Analyzer demo</h1>
+  <a href="https://github.com/ErikEJ/SqlServer.Rules">github.com/ErikEJ/SqlServer.Rules</a>
+  &middot; scripts are analyzed only, never executed or stored
+</header>
+<main>
+  <textarea id="script" spellcheck="false">CREATE PROCEDURE dbo.GetOrders
+AS
+BEGIN
+    SELECT * FROM Orders WHERE CustomerId = 1
+    SET ROWCOUNT 10
+END</textarea>
+  <div class="bar">
+    <label>SQL Server version
+      <select id="version">
+        <option>Sql160</option><option>Sql170</option><option>Sql150</option>
+        <option>Sql140</option><option>Sql130</option><option>SqlAzure</option>
+      </select>
+    </label>
+    <label>Rules <input id="rules" size="40" placeholder="Rules:-SqlServer.Rules.SRD0004"></label>
+    <button id="run">Analyze</button>
+    <span id="status"></span>
+  </div>
+  <div id="out"></div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+$('run').onclick = async () => {
+  $('status').textContent = 'Analyzing... (first request may be slow on a cold start)';
+  $('out').innerHTML = '';
+  $('run').disabled = true;
+  try {
+    const r = await fetch('api/analyze', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({script: $('script').value, sqlVersion: $('version').value, rules: $('rules').value})
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { $('out').innerHTML = `<p class="err">${esc(d.error || 'Request failed (' + r.status + ')')}</p>`; return; }
+    let html = '';
+    [...d.modelErrors, ...d.errors].forEach(e => html += `<p class="err">${esc(e)}</p>`);
+    html += `<p>${d.problems.length} finding(s)</p>`;
+    if (d.problems.length) {
+      html += '<table><tr><th>Severity</th><th>Rule</th><th>Line</th><th>Col</th><th>Description</th></tr>';
+      d.problems.forEach(p => {
+        const rule = p.helpLink ? `<a href="${esc(p.helpLink)}" target="_blank" rel="noopener">${esc(p.rule)}</a>` : esc(p.rule);
+        html += `<tr><td class="${esc(p.severity)}">${esc(p.severity)}</td><td>${rule}</td><td>${p.line}</td><td>${p.column}</td><td>${esc(p.description)}</td></tr>`;
+      });
+      html += '</table>';
+    }
+    $('out').innerHTML = html;
+  } catch (e) {
+    $('out').innerHTML = `<p class="err">${esc(e.message)}</p>`;
+  } finally {
+    $('status').textContent = ''; $('run').disabled = false;
+  }
+};
+</script>
+</body>
+</html>
