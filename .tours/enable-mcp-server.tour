@@ -28,16 +28,16 @@
       "description": "When the CLI is launched with the single `-mcp` argument, we switch from the normal Spectre.Console CLI path into MCP server mode. A generic host is created with `Host.CreateApplicationBuilder`, then `AddMcpServer()` wires up the server, `WithStdioServerTransport()` configures it to communicate over stdin/stdout (the standard MCP transport for local tools), and `WithTools<AnalyzerTools>()` registers the tool class from step 2. Logging is redirected to stderr so it doesn't corrupt the JSON protocol on stdout. Finally `RunAsync()` runs the server until the host shuts down."
     },
     {
+      "file": "tools/SqlAnalyzerCli/.mcp.json",
+      "line": 3,
+      "title": "6. Consuming the server: the .mcp.json servers entry",
+      "description": "Finally, this is how a client (for example VS Code) registers the published server. The `servers` entry runs the tool via `dnx`, passing the package id/version and the `-mcp` switch after `--`. Once configured, the AI assistant can call the `FindSqlScriptProblems` tool to analyze T-SQL on demand."
+    },
+    {
       "file": "tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj",
       "line": 26,
       "title": "4. Mark the package as an MCP server tool",
       "description": "To publish to NuGet as an MCP server, set `<PackageType>McpServer</PackageType>`. Combined with `<PackAsTool>true</PackAsTool>` (line 25) and `<ToolCommandName>tsqlanalyze</ToolCommandName>` (line 27), this produces a .NET tool package that NuGet-aware MCP clients can discover and install."
-    },
-    {
-      "file": "tools/SqlAnalyzerCli/.mcp/server.json",
-      "line": 1,
-      "title": "5. Add the .mcp/server.json manifest",
-      "description": "The MCP server manifest describes the server for the NuGet MCP registry: its name, description, version, and how to launch it. Note the `packageArguments` entry supplies the `-mcp` positional argument — this is exactly the switch Program.cs checks for in step 3 to enter server mode. The `transport` is `stdio`, matching `WithStdioServerTransport()`."
     },
     {
       "file": "tools/SqlAnalyzerCli/SqlAnalyzerCli.csproj",
@@ -46,10 +46,10 @@
       "description": "This `<None Include>` item ensures `.mcp/server.json` is included in the produced .nupkg at the `/.mcp/` path, which is where MCP tooling expects to find the manifest inside the package."
     },
     {
-      "file": "tools/SqlAnalyzerCli/.mcp.json",
-      "line": 3,
-      "title": "6. Consuming the server: the .mcp.json servers entry",
-      "description": "Finally, this is how a client (for example VS Code) registers the published server. The `servers` entry runs the tool via `dnx`, passing the package id/version and the `-mcp` switch after `--`. Once configured, the AI assistant can call the `FindSqlScriptProblems` tool to analyze T-SQL on demand."
+      "file": "tools/SqlAnalyzerCli/.mcp/server.json",
+      "line": 1,
+      "title": "5. Add the .mcp/server.json manifest",
+      "description": "The MCP server manifest describes the server for the NuGet MCP registry: its name, description, version, and how to launch it. Note the `packageArguments` entry supplies the `-mcp` positional argument — this is exactly the switch Program.cs checks for in step 3 to enter server mode. The `transport` is `stdio`, matching `WithStdioServerTransport()`."
     }
   ]
 }

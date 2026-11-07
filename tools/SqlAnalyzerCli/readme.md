@@ -74,7 +74,7 @@ CREATE TABLE [dbo].[Table3]
 
 ![Sample](https://raw.githubusercontent.com/ErikEJ/SqlServer.Rules/master/docs/cli.png)
 
-## MCP Server (preview)
+## MCP Server
 
 You can use the tool to ask GitHub Copilot analyze your SQL Server T-SQL scripts in Visual Studio or VS Code.
 
