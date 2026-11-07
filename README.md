@@ -1,6 +1,7 @@
-[marketplace]: https://marketplace.visualstudio.com/items?itemName=ErikEJ.TSqlAnalyzer
-[ssmsmarketplace]: https://ssmsgallery.azurewebsites.net/extension/TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d
-[vsixgallery]: http://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/
+[marketplace]: <https://marketplace.visualstudio.com/items?itemName=ErikEJ.TSqlAnalyzer>
+[ssmsmarketplace]: <https://ssmsgallery.azurewebsites.net/extension/TSqlAnalyzerSsms.f1322c34-dfaa-4842-8933-b439626da91d>
+[vsixgallery]: <https://www.vsixgallery.com/extension/SqlAnalyzer.abc6ba2-edd5-4419-8646-a55d0a83f7ff/>
+[demo]: <https://tsqlrules.proudpebble-52b04c81.swedencentral.azurecontainerapps.io/>
 
 # T-SQL Analyzer & SQL Server Rules
 
@@ -10,6 +11,8 @@
 
 Catch T-SQL design, naming, and performance issues as you type, when you build, or from the command line. T-SQL Analyzer brings over 140 SQL best-practice rules to SQL Server and Azure SQL developers.
 
+**Try before you install!** [Open the demo web app][demo] and paste a T-SQL script to see the analysis findings. No installation required; scripts are analyzed only, never executed or stored.
+
 **You don't need a SQL Database project to get started** - the live analyzers work with standalone SQL scripts too. All tools use the same core [rule set](docs/readme.md).
 
 ## Choose how you work
@@ -17,7 +20,7 @@ Catch T-SQL design, naming, and performance issues as you type, when you build, 
 | Where you work | What you get | Get started |
 | --- | --- | --- |
 | **Visual Studio** | Live feedback in the Error List while editing SQL scripts | [Install extension][marketplace] · [Setup and options](tools/SqlAnalyzerVsix/readme.md) |
-| **SQL Server Management Studio 22** | Live feedback in the Error List while editing SQL scripts | [Install extension][ssmsmarketplace] · [Setup and options](tools/SqlAnalyzerSsms/readme.md) |
+| **SQL Server Management Studio** | Live feedback in the Error List while editing SQL scripts | [Install extension][ssmsmarketplace] · [Setup and options](tools/SqlAnalyzerSsms/readme.md) |
 | **VS Code** | Live squiggles and diagnostics in `.sql` files | [Install extension](https://marketplace.visualstudio.com/items?itemName=ErikEJ.tsqlanalyzerextension) · [Setup and options](vscode-extension/README.md) |
 | **SQL Database projects / CI** | Check rules during builds | [Build-time setup](#check-rules-during-project-builds) |
 | **Command line** | Analyze scripts, folders, `.dacpac` files, or live databases | [CLI quick start](#analyze-from-the-command-line) |
@@ -38,7 +41,7 @@ For Visual Studio, a [CI build][vsixgallery] is also available.
 Add [ErikEJ.DacFX.SqlServer.Rules](https://www.nuget.org/packages/ErikEJ.DacFX.SqlServer.Rules) to your SQL Database project to report issues during local and CI builds.
 
 - **Modern SDK-style projects**: Supported by [MSBuild.Sdk.SqlProj](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj) and [Microsoft.Build.Sql](https://github.com/microsoft/DacFx). Follow the [setup and rule configuration guide](https://rr-wfm.github.io/MSBuild.Sdk.SqlProj/docs/static-code-analysis.html) to add the package and enable analysis.
-- **Classic `.sqlproj` projects**: Use the [SSDT setup guide](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html#addrules) (Visual Studio 2017 or later).
+- **`.sqlproj` projects in Visual Studio**: Use the [SSDT setup guide](https://erikej.github.io/dacfx/codeanalysis/sqlserver/2024/04/02/dacfx-codeanalysis.html#addrules)
 
 Build-time checks complement live feedback by checking your SQL project as part of your build workflow.
 
