@@ -58,7 +58,7 @@ Use the CLI for one-off checks or automation, with console, XML, or JSON output.
 
 The analyzer also runs as an MCP server, letting GitHub Copilot Chat use the rules to analyze your SQL code in VS Code or Visual Studio. This is separate from automatic live editor feedback.
 
-The VS Code extension includes the MCP server integration - start **T-SQL Analyzer** from the MCP server list to enable it. For standalone MCP installation in either editor, see the [MCP setup guide](tools/SqlAnalyzerCli/readme.md#mcp-server-preview).
+The VS Code extension includes the MCP server integration - start **T-SQL Analyzer** from the MCP server list to enable it. For standalone MCP installation in either editor, see the [MCP setup guide](tools/SqlAnalyzerCli/readme.md#mcp-server).
 
 ## Explore and customize the rules
 
