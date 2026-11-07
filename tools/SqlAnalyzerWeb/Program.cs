@@ -58,7 +58,7 @@ app.MapPost("/api/analyze", async (AnalyzeRequest request, CancellationToken ct)
         return Results.BadRequest(new { error = $"Script is limited to {MaxScriptLength:N0} characters (8 KB)." });
     }
 
-    if (!Enum.TryParse<SqlServerVersion>(request.SqlVersion ?? "Sql160", true, out var version))
+    if (!Enum.TryParse<SqlServerVersion>(request.SqlVersion ?? "Sql170", true, out var version))
     {
         return Results.BadRequest(new { error = "Unknown SQL Server version." });
     }
