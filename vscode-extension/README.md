@@ -11,7 +11,7 @@ editor — no build step required.
 ## Features
 
 - **Live squiggles** — problems appear while you edit, just like compiler errors
-- **100+ built-in rules** — covering design best practices, naming conventions,
+- **140+ built-in rules** — covering design best practices, naming conventions,
   and performance pitfalls
 - **Hover for details** — hover over any squiggle to see the rule id, a plain
   English description, and a link to the full documentation
