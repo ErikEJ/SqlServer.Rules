@@ -223,7 +223,7 @@ private ensureChild() {
     return this.child;                              // reuse the live process
   const child = cp.spawn(this.options.command, this.options.args, {
     stdio: ['pipe', 'pipe', 'pipe'],
-    shell: process.platform === 'win32',            // resolve dotnet/dnx shim
+    shell: process.platform === 'win32',            // mainly for `.cmd`/shim commands on Windows; `dotnet.exe` itself typically doesn't need a shell (shell mode also changes quoting)
   });
   // readline over stdout → handleLine(); error/exit → failAllPending()
 }
