@@ -12,6 +12,7 @@ namespace SqlServer.Rules.Design
 {
     /// <summary>
     /// Dynamic SQL built from procedure input can introduce SQL injection vulnerabilities.
+    /// Input wrapped in QUOTENAME is treated as safe: QUOTENAME delimits the value and escapes the delimiter.
     /// </summary>
     /// <FriendlyName>Potential SQL injection issue</FriendlyName>
     /// <IsIgnorable>false</IsIgnorable>
@@ -166,9 +167,9 @@ namespace SqlServer.Rules.Design
 
         private static bool ExpressionReferencesTaintedVariable(ScalarExpression expression, HashSet<string> taintedVariables)
         {
-            var variableVisitor = new VariableReferenceVisitor();
+            var variableVisitor = new UnquotedVariableReferenceVisitor();
             expression.Accept(variableVisitor);
-            return variableVisitor.Statements.Any(v => taintedVariables.Contains(v.Name));
+            return variableVisitor.Variables.Any(v => taintedVariables.Contains(v.Name));
         }
 
         private static bool IsConcatFunctionWithTaintedVariable(ScalarExpression expression, HashSet<string> taintedVariables)
@@ -203,6 +204,33 @@ namespace SqlServer.Rules.Design
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Collects variable references, skipping the arguments of the built-in QUOTENAME: its result is a delimited
+        /// identifier or string literal with the delimiter escaped, so it cannot change the structure of the dynamic
+        /// statement. A schema-qualified call such as dbo.QUOTENAME(...) is a user-defined function and is not exempted.
+        /// </summary>
+        private sealed class UnquotedVariableReferenceVisitor : TSqlFragmentVisitor
+        {
+            public IList<VariableReference> Variables { get; } = new List<VariableReference>();
+
+            public override void ExplicitVisit(FunctionCall node)
+            {
+                if (node.CallTarget == null
+                    && string.Equals(node.FunctionName?.Value, "QUOTENAME", StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                base.ExplicitVisit(node);
+            }
+
+            public override void ExplicitVisit(VariableReference node)
+            {
+                Variables.Add(node);
+                base.ExplicitVisit(node);
+            }
         }
 
         private sealed class ConcatFunctionCallVisitor : TSqlFragmentVisitor
