@@ -36,6 +36,63 @@ public class ServerModeTests
     }
 
     [TestMethod]
+    public void ReportsModelErrorsInSuccessfulResponse()
+    {
+        // RAISERROR with an integer and a string is a syntax removed in SQL Server 2012: the script cannot be modeled.
+        var request = new ServerRequest
+        {
+            Id = "1",
+            Command = "analyze",
+            Content = "CREATE PROCEDURE dbo.TestProc AS RAISERROR 13001 'Removed syntax';",
+            SqlVersion = "Sql160",
+        };
+
+        var response = ServerMode.BuildAnalyzeResponse(request);
+
+        Assert.AreEqual("success", response.Status, "A script that cannot be modeled is not a server failure.");
+        Assert.IsNotNull(response.Errors, "The model error must be reported, otherwise the empty result looks clean.");
+        Assert.IsTrue(
+            response.Errors.Any(e => e.Kind == "model" && e.Code == "SQL46010"),
+            string.Join("; ", response.Errors.Select(e => $"{e.Kind} {e.Code} {e.Message}")));
+    }
+
+    [TestMethod]
+    public void KeepsProblemsWhenARuleFails()
+    {
+        // The second batch adds an unnamed constraint to a table that is not in the model, on which some rules may fail.
+        // The problems of the first batch must still be returned.
+        var request = new ServerRequest
+        {
+            Id = "1",
+            Command = "analyze",
+            Content = "CREATE PROCEDURE dbo.TestProc AS SELECT * FROM sys.objects;\nGO\nALTER TABLE dbo.Orders ADD PRIMARY KEY (Id);",
+            SqlVersion = "Sql160",
+        };
+
+        var response = ServerMode.BuildAnalyzeResponse(request);
+
+        Assert.AreEqual("success", response.Status, response.Error);
+        Assert.IsNotNull(response.Problems);
+        Assert.IsTrue(response.Problems.Any(p => p.Rule == SelectStarRuleId), "Expected the SELECT * problem.");
+    }
+
+    [TestMethod]
+    public void HasNoErrorsForValidScript()
+    {
+        var request = new ServerRequest
+        {
+            Id = "1",
+            Command = "analyze",
+            Content = "CREATE PROCEDURE dbo.TestProc AS SELECT * FROM sys.objects;",
+            SqlVersion = "Sql160",
+        };
+
+        var response = ServerMode.BuildAnalyzeResponse(request);
+
+        Assert.IsNull(response.Errors);
+    }
+
+    [TestMethod]
     public void PopulatesHelpLinkForMicrosoftRules()
     {
         var request = new ServerRequest

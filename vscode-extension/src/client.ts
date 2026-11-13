@@ -17,12 +17,20 @@ export interface ServerProblem {
     file?: string | null;
 }
 
+/** Error that left part of the script unanalyzed, returned with a successful response. */
+export interface ServerError {
+    kind: 'model' | 'analysis' | string;
+    code?: string | null;
+    message: string;
+}
+
 /** Response envelope returned by the server over stdout (newline-delimited JSON). */
 export interface ServerResponse {
     id: string;
     status: string;
     error?: string | null;
     problems?: ServerProblem[] | null;
+    errors?: ServerError[] | null;
 }
 
 /** Request envelope sent to the server over stdin (newline-delimited JSON). */

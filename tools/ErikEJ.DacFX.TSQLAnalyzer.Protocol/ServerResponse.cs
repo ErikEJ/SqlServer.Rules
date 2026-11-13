@@ -31,5 +31,12 @@ public sealed class ServerResponse
     [JsonPropertyName("problems")]
 #pragma warning disable CA2227 // Collection properties should be read only
     public IList<ServerProblem>? Problems { get; set; }
+
+    /// <summary>
+    /// Errors that left part of the script unanalyzed, when status is "success": scripts that could not be added to the
+    /// model and rules that failed. Problems are then incomplete. Null when there are none.
+    /// </summary>
+    [JsonPropertyName("errors")]
+    public IList<ServerError>? Errors { get; set; }
 #pragma warning restore CA2227 // Collection properties should be read only
 }

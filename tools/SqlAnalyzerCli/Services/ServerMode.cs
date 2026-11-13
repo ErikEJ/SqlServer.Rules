@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
@@ -187,11 +188,27 @@ internal static class ServerMode
             }
 
             // Check for errors
-            var errors = result.Result.GetAllErrors();
-            if (errors.Any())
+            // Model errors (scripts that could not be added to the model) and rule errors leave part of the script
+            // unanalyzed but are not server failures: they are returned with the problems that were found.
+            var errors = new List<ServerError>();
+            foreach (var modelError in result.ModelErrors.Values.SelectMany(e => e.Messages))
             {
-                var errorMessages = string.Join("; ", errors.Select(e => e.GetOutputMessage()));
-                return ErrorResponse(request.Id, $"Analysis errors: {errorMessages}");
+                errors.Add(new ServerError
+                {
+                    Kind = "model",
+                    Code = $"{modelError.Prefix}{modelError.Number}",
+                    Message = modelError.Message,
+                });
+            }
+
+            foreach (var analysisError in result.Result.GetAllErrors())
+            {
+                errors.Add(new ServerError
+                {
+                    Kind = "analysis",
+                    Code = analysisError.ErrorCode.ToString(CultureInfo.InvariantCulture),
+                    Message = analysisError.Message,
+                });
             }
 
             // Build problems list
@@ -229,6 +246,7 @@ internal static class ServerMode
                 Id = request.Id,
                 Status = "success",
                 Problems = problems,
+                Errors = errors.Count > 0 ? errors : null,
             };
         }
         catch (ArgumentException ex)
