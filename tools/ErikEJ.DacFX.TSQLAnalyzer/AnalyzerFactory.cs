@@ -53,6 +53,8 @@ public class AnalyzerFactory
         var factory = new CodeAnalysisServiceFactory();
         var service = factory.CreateAnalysisService(model, settings);
 
+        DisableIgnoredRules(service);
+
         service.SetProblemSuppressor(IsSuppressed);
 
         var analysisResult = service.Analyze(model);
@@ -287,6 +289,34 @@ public class AnalyzerFactory
             // Some model elements do not expose a name; treat those as non-synthetic.
             return false;
         }
+    }
+
+    // Rules excluded with the rules filter are not executed at all: the analysis is faster, and an excluded rule that
+    // fails on a script can no longer report an analysis error. The problem suppressor still covers the synthetic
+    // ad hoc wrappers.
+    private void DisableIgnoredRules(CodeAnalysisService service)
+    {
+        if (ignoredRules.Count == 0 && ignoredRuleSets.Count == 0)
+        {
+            return;
+        }
+
+        var disabled = service.GetRules()
+            .Select(rule => rule.RuleId)
+            .Where(ruleId => ignoredRules.Contains(ruleId)
+                || ignoredRuleSets.Any(s => ruleId.StartsWith(s, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        if (disabled.Count == 0)
+        {
+            return;
+        }
+
+        // Same "-RuleId;-RuleId" syntax as SQL projects. CodeAnalysisRuleSettings.DisableRule only changes rules that
+        // are already in the settings, so the settings are created from the string.
+        var ruleSettings = CodeAnalysisRuleSettings.CreateFromSettingsString(
+            string.Join(';', disabled.Select(ruleId => "-" + ruleId)), out _);
+        service.ApplyRuleSettings(ruleSettings);
     }
 
     private bool IsSuppressed(SqlRuleProblemSuppressionContext context)

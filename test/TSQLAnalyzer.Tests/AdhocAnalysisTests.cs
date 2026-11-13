@@ -281,6 +281,41 @@ public class AdhocAnalysisTests
             "The ad-hoc SELECT * batch should still be analyzed alongside the real object.");
     }
 
+    [TestMethod]
+    [DataRow("Rules:-SqlServer.Rules.SRN0007")]
+    [DataRow("Rules:-SqlServer.Rules.SRN*")]
+    public void ExcludedRulesAreNotExecuted(string rules)
+    {
+        // SRN0007 throws on an unnamed constraint added to a table that is not in the model. Once excluded with the
+        // rules filter it must not run at all, so it cannot report an analysis error.
+        var result = Analyze(new AnalyzerOptions
+        {
+            Script = "ALTER TABLE dbo.Orders ADD PRIMARY KEY (Id);",
+            SqlVersion = SqlServerVersion.Sql160,
+            Rules = rules,
+        });
+
+        var errors = result.Result!.GetAllErrors().Select(e => e.Message).ToList();
+        Assert.IsFalse(
+            errors.Any(e => e.Contains("SqlServer.Rules.SRN0007", StringComparison.Ordinal)),
+            string.Join(Environment.NewLine, errors));
+    }
+
+    [TestMethod]
+    public void RulesNotExcludedStillReportProblems()
+    {
+        var result = Analyze(new AnalyzerOptions
+        {
+            Script = "SELECT * FROM sys.objects;",
+            SqlVersion = SqlServerVersion.Sql160,
+            Rules = "Rules:-SqlServer.Rules.SRN*",
+        });
+
+        Assert.IsTrue(
+            result.Result!.Problems.Any(p => p.RuleId == SelectStarRuleId),
+            $"Expected {SelectStarRuleId} to still fire when only naming rules are excluded.");
+    }
+
     private static AnalyzerResult Analyze(AnalyzerOptions options)
     {
         var analysis = new AnalyzerFactory(options).Analyze();
