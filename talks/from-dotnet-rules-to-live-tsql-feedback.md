@@ -37,7 +37,7 @@ style: |
 
 ### Keep the engine in .NET. Make the editor layer thin and reliable
 
-**Erik Ejlskov Jensen** · 28 min (+2 for Q&A)
+**Erik Ejlskov Jensen - @ErikEJ**
 
 <!--
 Speaker notes:
@@ -49,7 +49,7 @@ Speaker notes:
 
 <!-- _header: "1 · The editor gap" -->
 
-## The editor gap (0–2 min)
+## The editor gap
 
 - **SqlServer.Rules** = 140+ analysis rules, written in **C#** on **DacFx / ScriptDom**
 - VS Code extensions are **TypeScript / Node.js**
@@ -110,7 +110,7 @@ Speaker notes:
 
 <!-- _header: "3 · See it working" -->
 
-## See it working (5–8 min) — live demo
+## See it working — live demo
 
 1. Open a `.sql` file → analysis starts automatically
 2. Introduce a rule violation → **squiggle appears while typing**
@@ -129,7 +129,7 @@ Speaker notes:
 
 <!-- _header: "4 · Extension lifecycle" -->
 
-## Code tour: `extension.ts` — activation (8–12 min)
+## Code tour: `extension.ts` — activation
 
 ```ts
 export function activate(context: vscode.ExtensionContext): void {
@@ -148,8 +148,8 @@ export function activate(context: vscode.ExtensionContext): void {
 }
 ```
 
-- Three host resources created once, disposed via `subscriptions`
-- **Editor events become analysis requests**
+- Three host resources created once, disposed via `subscriptions` — think of it as a lifetime/disposal bag for `IDisposable` resources
+- **Editor events become analysis requests** (callbacks are familiar if you have used .NET events and delegates)
 
 ---
 
@@ -184,7 +184,7 @@ function scheduleAnalysis(doc, delayOverrideMs?) {
 
 <!-- _header: "5 · Process & protocol" -->
 
-## Code tour: `client.ts` — the long-lived process (12–16 min)
+## Code tour: `client.ts` — the long-lived process
 
 ```ts
 export class AnalyzerClient {
@@ -200,7 +200,8 @@ export class AnalyzerClient {
 ```
 
 - One child process wraps `SqlAnalyzerCli --server-mode`
-- Every request gets a **unique id**; a `pending` map correlates replies
+- `Promise<ServerResponse>` is the familiar `Task<ServerResponse>` shape; `Map<string, PendingRequest>` plays the role of `Dictionary<string, PendingRequest>`
+- Every request gets a **unique id**; the map correlates replies
 - **Why keep it alive?** DacFx model loading is expensive — pay startup **once**
 
 ---
@@ -251,13 +252,14 @@ private handleLine(line: string): void {
 ```
 
 - `error` / `exit` handlers `failAllPending(...)` → promises **reject, never hang**
+- `as ServerResponse` is only a compile-time assertion: unlike deserializing into a C# DTO, it does not validate the JSON at runtime
 - A dead process never leaves the editor spinning forever
 
 ---
 
 <!-- _header: "6 · Reliability & UX" -->
 
-## Reliability & good UX (16–20 min)
+## Reliability & good UX
 
 <div class="cols">
 
@@ -315,7 +317,7 @@ function toRange(problem: ServerProblem): vscode.Range {
 
 <!-- _header: "7 · Distribution" -->
 
-## Distribution without a manual install (20–23 min)
+## Distribution without a manual install
 
 ```ts
 function resolveServerCommand(): { command: string; args: string[] } {
@@ -360,15 +362,19 @@ function resolveServerCommand(): { command: string; args: string[] } {
 
 </div>
 
-### Learning TypeScript with no prior experience?
+### TypeScript through a .NET lens
 
-Approachable — the hard parts were the **process and protocol boundaries**, not the language.
+- `Promise<T>` ≈ `Task<T>`; `Map<K, V>` ≈ `Dictionary<K, V>`
+- `context.subscriptions` is a disposal bag for resources, much like managing `IDisposable` lifetimes
+- Types and interfaces describe compile-time shapes; they're erased at runtime
+
+The language is approachable for C# developers. The hard parts were the **process and protocol boundaries**, not the syntax.
 
 ---
 
 <!-- _header: "9 · Takeaways" -->
 
-## Takeaways & next steps (26–28 min)
+## Takeaways & next steps
 
 **The reusable pattern:**
 
