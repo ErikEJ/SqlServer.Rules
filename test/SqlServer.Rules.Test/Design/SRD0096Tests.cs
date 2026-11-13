@@ -103,6 +103,16 @@ public class SRD0096Tests : TestModel
     }
 
     [TestMethod]
+    public void PotentialSqlInjectionDetectedForSchemaQualifiedQuotename()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionQuotenameQualifiedTest.sql");
+
+        ExpectedProblems.Add(new TestProblem(18, 5, "SqlServer.Rules.SRD0096"));
+
+        RunTest();
+    }
+
+    [TestMethod]
     public void PotentialSqlInjectionNotDetectedForConcatWithLiterals()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/PotentialSqlInjectionConcatCleanTest.sql");

@@ -207,8 +207,9 @@ namespace SqlServer.Rules.Design
         }
 
         /// <summary>
-        /// Collects variable references, skipping the arguments of QUOTENAME: its result is a delimited identifier or
-        /// string literal with the delimiter escaped, so it cannot change the structure of the dynamic statement.
+        /// Collects variable references, skipping the arguments of the built-in QUOTENAME: its result is a delimited
+        /// identifier or string literal with the delimiter escaped, so it cannot change the structure of the dynamic
+        /// statement. A schema-qualified call such as dbo.QUOTENAME(...) is a user-defined function and is not exempted.
         /// </summary>
         private sealed class UnquotedVariableReferenceVisitor : TSqlFragmentVisitor
         {
@@ -216,7 +217,8 @@ namespace SqlServer.Rules.Design
 
             public override void ExplicitVisit(FunctionCall node)
             {
-                if (string.Equals(node.FunctionName?.Value, "QUOTENAME", StringComparison.OrdinalIgnoreCase))
+                if (node.CallTarget == null
+                    && string.Equals(node.FunctionName?.Value, "QUOTENAME", StringComparison.OrdinalIgnoreCase))
                 {
                     return;
                 }
