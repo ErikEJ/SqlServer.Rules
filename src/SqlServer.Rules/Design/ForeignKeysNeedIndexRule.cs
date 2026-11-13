@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using SqlServer.Rules.Globals;
@@ -63,6 +64,14 @@ namespace SqlServer.Rules.Design
             var sqlObj = ruleExecutionContext.ModelElement;
 
             if (sqlObj == null || sqlObj.IsWhiteListed())
+            {
+                return problems;
+            }
+
+            // A foreign key added with ALTER TABLE to a table that is not in the model (for example in an ad hoc script)
+            // has no resolved columns on one side: there is nothing to check.
+            if (!sqlObj.GetReferencedRelationshipInstances(ForeignKeyConstraint.Columns, DacQueryScopes.All).Any()
+                || !sqlObj.GetReferencedRelationshipInstances(ForeignKeyConstraint.ForeignColumns, DacQueryScopes.All).Any())
             {
                 return problems;
             }
