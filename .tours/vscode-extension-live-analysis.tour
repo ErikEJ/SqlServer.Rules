@@ -1,121 +1,121 @@
 {
   "$schema": "https://aka.ms/codetour-schema",
   "title": "From .NET Rules to Live T-SQL Feedback in VS Code",
-  "description": "A guided walkthrough of the thin TypeScript layer that turns the C#/DacFx SqlServer.Rules engine into live diagnostics in VS Code: editor lifecycle, the long-lived CLI process and JSON protocol, reliability/UX, and zero-install distribution.",
+  "description": "A guided walkthrough, written for .NET developers, of the thin TypeScript layer that turns the C#/DacFx SqlServer.Rules engine into live diagnostics in VS Code. Each step maps the TypeScript/VS Code concept to its closest .NET equivalent (IDisposable, events, Task/TaskCompletionSource, CancellationToken, System.Text.Json, dotnet tools) so you can read the code with the mental model you already have.",
   "steps": [
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 18,
       "title": "1. Activation: create the shared VS Code resources",
-      "description": "`activate` runs once when the extension loads. It creates the three long-lived UI/host resources the extension owns: an **output channel** for logs, a **diagnostic collection** (the squiggles), and a **status bar item**. Everything that stays in .NET lives behind the analyzer process; everything here is pure editor integration.\n\nNote all three are pushed onto `context.subscriptions` so VS Code disposes them automatically on deactivate."
+      "description": "`activate` runs once when the extension loads — think of it as `Program.Main` / the composition root in a .NET host. It creates the three long-lived UI/host resources the extension owns: an **output channel** for logs (roughly an `ILogger` sink), a **diagnostic collection** (the squiggles — the VS Code counterpart of Roslyn `Diagnostic`s in the Error List), and a **status bar item**. Everything that stays in .NET (DacFx, `SqlCodeAnalysisRule`s, the `TSqlModel`) lives behind the analyzer process; everything here is pure editor integration.\n\nAll three are pushed onto `context.subscriptions`. Every VS Code `Disposable` is the equivalent of `IDisposable`, and `context.subscriptions` behaves like a DI container disposing singletons on shutdown (or a `CompositeDisposable`) — VS Code calls `Dispose` on all of them when the extension deactivates."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 28,
       "title": "2. Turn editor events into analysis requests",
-      "description": "The extension subscribes to the document lifecycle: **open**, **change**, **save**, and **close**. Open/save/close are immediate (`delay = 0` / clear), while every keystroke (`onDidChangeTextDocument`) goes through the debounced scheduler. This is the core idea of the talk's section 4 — editor events become analysis requests."
+      "description": "The extension subscribes to the document lifecycle: **open**, **change**, **save**, and **close**. In .NET terms these `onDid…` functions are just `event EventHandler<T>` members: calling `onDidSaveTextDocument(handler)` is `+= handler`, and the returned `Disposable` is your `-=` (unsubscribe) — which is why it goes into `context.subscriptions`.\n\nOpen/save/close are immediate (`delay = 0` / clear), while every keystroke (`onDidChangeTextDocument`) goes through the debounced scheduler. This is the core idea of the talk's section 4 — editor events become analysis requests, much like a `FileSystemWatcher` feeding a background worker."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 32,
       "title": "3. React to configuration changes",
-      "description": "When any `tsqlAnalyzer.*` setting changes we refresh the status bar, **restart the analyzer client** (the process may need new launch args or rules), and re-analyze everything that's open. Commands for manual restart and 'analyze active file' are registered here too, plus the MCP server provider."
+      "description": "When any `tsqlAnalyzer.*` setting changes we refresh the status bar, **restart the analyzer client** (the process may need new launch args or rules), and re-analyze everything that's open. If you know ASP.NET Core configuration, this is `IOptionsMonitor<T>.OnChange`: VS Code settings are hierarchical keys (`tsqlAnalyzer.rules` ≈ `TsqlAnalyzer:Rules` in `appsettings.json`) and `affectsConfiguration('tsqlAnalyzer')` is the section filter.\n\nCommands for manual restart and 'analyze active file' are registered here too (think `ICommand` bound to a menu item in WPF/VSIX), plus the MCP server provider."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 75,
       "title": "4. Debounced scheduling",
-      "description": "`scheduleAnalysis` filters to SQL documents, bails out if analysis is disabled, then (re)arms a per-document `setTimeout`. A new keystroke clears the previous timer, so we only analyze once typing pauses for `debounceMs` (default 400ms). `delayOverrideMs = 0` lets open/save/manual runs skip the wait."
+      "description": "`scheduleAnalysis` filters to SQL documents, bails out if analysis is disabled, then (re)arms a per-document `setTimeout`. A new keystroke clears the previous timer, so we only analyze once typing pauses for `debounceMs` (default 400ms). `delayOverrideMs = 0` lets open/save/manual runs skip the wait.\n\n.NET equivalent: a `Dictionary<Uri, System.Threading.Timer>` where each change calls `timer.Change(debounceMs, Timeout.Infinite)`, or Rx.NET's `Throttle(TimeSpan.FromMilliseconds(400))`. Note there is no locking: Node's single-threaded event loop behaves like a UI `SynchronizationContext`, so all callbacks run on one thread."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 100,
       "title": "5. The analyze request and the stale-response token",
-      "description": "Each run takes a monotonically increasing **token** stored per document (`latestToken`). This is how we discard superseded results: by the time a slow response comes back, a newer edit may have bumped the token, so we throw the stale answer away rather than show out-of-date squiggles. `inFlightCount` + `updateStatusBar()` drive the spinner."
+      "description": "Each run takes a monotonically increasing **token** stored per document (`latestToken`). This is how we discard superseded results: by the time a slow response comes back, a newer edit may have bumped the token, so we throw the stale answer away rather than show out-of-date squiggles. `inFlightCount` + `updateStatusBar()` drive the spinner.\n\nIn .NET you would typically reach for a `CancellationTokenSource` per document and cancel the previous one. The version-number approach is the lightweight alternative when the work can't actually be cancelled (the request is already on the wire to another process) — it's the same idea as optimistic concurrency with a `rowversion` column: only the latest version wins."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 111,
       "title": "6. Calling the analyzer and converting results",
-      "description": "We send the document text plus the resolved settings (rules expression, SQL version, extra analyzers) to the client. On success — and only if this token is still the latest — we map each `ServerProblem` into a `vscode.Diagnostic`. A successful response also resets `serverFailureReported` so the server is treated as healthy again.\n\nCrucially, failures `delete` the diagnostics instead of setting an empty list: a crash must not look like a clean file."
+      "description": "We send the document text plus the resolved settings (rules expression, SQL version, extra analyzers) to the client. `await client.analyze(...)` is exactly C# `await` on a `Task<T>` — a TypeScript `Promise<T>` is a `Task<T>`, and `try/catch` around `await` works the same way.\n\nOn success — and only if this token is still the latest — we map each `ServerProblem` into a `vscode.Diagnostic`. `ServerProblem` is a TypeScript mirror of the C# DTO in `ErikEJ.DacFX.TSQLAnalyzer.Protocol`, which in turn is projected from DacFx's `SqlRuleProblem`. A successful response also resets `serverFailureReported` so the server is treated as healthy again.\n\nCrucially, failures `delete` the diagnostics instead of setting an empty list: a crash must not look like a clean file (think `null` vs. empty collection)."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 157,
       "title": "7. Surfacing failures once (not silently)",
-      "description": "`reportServerFailure` shows a single actionable error toast (with a 'Show Log' button) the first time analysis fails, then stays quiet until analysis succeeds again. This is the UX answer to 'what if the .NET SDK isn't installed?' — the user gets a clear message instead of a mysteriously empty Problems panel."
+      "description": "`reportServerFailure` shows a single actionable error toast (with a 'Show Log' button) the first time analysis fails, then stays quiet until analysis succeeds again. This is the UX answer to 'what if the .NET SDK isn't installed?' — the user gets a clear message instead of a mysteriously empty Problems panel.\n\nThe pattern is a simple circuit-breaker flag, the same idea as Polly's circuit breaker or a health check that transitions Healthy → Unhealthy once and logs only on state change, rather than spamming on every failure."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 179,
       "title": "8. Status bar state",
-      "description": "The status bar is the at-a-glance health indicator: hidden when disabled, a spinning `$(sync~spin) Analyzing…` while requests are in flight, and `$(check) T-SQL Analyzer` when idle. Clicking it runs analysis on the active file."
+      "description": "The status bar is the at-a-glance health indicator: hidden when disabled, a spinning `$(sync~spin) Analyzing…` while requests are in flight, and `$(check) T-SQL Analyzer` when idle. Clicking it runs analysis on the active file.\n\nIf you've built a Visual Studio extension (like `tools/SqlAnalyzerVsix` in this repo), this is the VS Code counterpart of `IVsStatusbar` / a background task status — but declarative: set `text`, `tooltip` and `command` properties and VS Code renders it, much like binding a view-model property in WPF."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 201,
       "title": "9. Diagnostic + coordinate conversion",
-      "description": "`toDiagnostic` builds the squiggle, attaching the rule id as a clickable `code` that links to the rule's help page when a `helpLink` is present (this powers the hover details). `toRange` handles the classic off-by-one boundary: **server positions are 1-based, VS Code ranges are 0-based**. `toSeverity` maps the engine's severity strings onto VS Code severities."
+      "description": "`toDiagnostic` builds the squiggle, attaching the rule id (e.g. `SqlServer.Rules.SRD0006`) as a clickable `code` that links to the rule's help page when a `helpLink` is present (this powers the hover details). This is the same shape as a Roslyn `DiagnosticDescriptor` with `id` + `helpLinkUri`.\n\n`toRange` handles the classic off-by-one boundary: **DacFx/ScriptDom positions (`StartLine`/`StartColumn`) are 1-based, VS Code ranges are 0-based**. `toSeverity` maps the engine's `SqlRuleProblemSeverity`-derived strings (Error/Warning) onto VS Code severities — the same mapping MSBuild does when analyzer warnings show up in `dotnet build` output."
     },
     {
       "file": "vscode-extension/src/client.ts",
       "line": 57,
       "title": "10. The client: a long-lived process wrapper",
-      "description": "`AnalyzerClient` owns the `SqlAnalyzerCli --server-mode` child process and exposes a promise-based `analyze`. It keeps a `pending` map of in-flight request ids → resolve/reject callbacks. Keeping the process alive is the whole point: DacFx model loading is expensive, so we pay startup once rather than per keystroke."
+      "description": "`AnalyzerClient` owns the `SqlAnalyzerCli --server-mode` child process and exposes a promise-based `analyze`. Node's `spawn` is `System.Diagnostics.Process.Start` with `RedirectStandardInput/Output/Error = true`.\n\nIt keeps a `pending` map of in-flight request ids → resolve/reject callbacks. In C# this is a `ConcurrentDictionary<string, TaskCompletionSource<ServerResponse>>`: each `{ resolve, reject }` pair is a `TaskCompletionSource` whose `.Task` the caller awaits.\n\nKeeping the process alive is the whole point: JIT warm-up, MEF discovery of `[ExportCodeAnalysisRule]` rules, and DacFx model creation are expensive, so we pay startup once rather than per keystroke — the same reason ASP.NET Core apps are long-running hosts and not CGI."
     },
     {
       "file": "vscode-extension/src/client.ts",
       "line": 67,
       "title": "11. Request ids and the protocol envelope",
-      "description": "Every call gets a unique `req-N` id and is wrapped in a `ServerRequest` envelope (`command: 'analyze'` plus the payload). The id is what lets a single stdout stream carry many concurrent responses — we correlate each reply back to the right promise."
+      "description": "Every call gets a unique `req-N` id and is wrapped in a `ServerRequest` envelope (`command: 'analyze'` plus the payload). The TypeScript interfaces mirror the C# `ServerRequest` / `ServerResponse` / `ServerProblem` classes in `tools/ErikEJ.DacFX.TSQLAnalyzer.Protocol` — a shared contract project, just like you'd share DTOs between an ASP.NET Core API and its client.\n\nThe id is what lets a single stdout stream carry many concurrent responses — we correlate each reply back to the right promise. This is the same correlation-id pattern used by JSON-RPC, StreamJsonRpc (which Visual Studio itself uses), and Azure Service Bus `CorrelationId`."
     },
     {
       "file": "vscode-extension/src/client.ts",
       "line": 84,
       "title": "12. Sending over stdin as newline-delimited JSON",
-      "description": "`send` registers the promise in `pending`, then writes `JSON.stringify(request) + '\\n'` to the child's stdin. Newline-delimited JSON (NDJSON) is the entire wire format — simple, streamable, and trivial to parse on both sides. If the process is disposed or the write throws, the promise rejects immediately."
+      "description": "`send` registers the promise in `pending`, then writes `JSON.stringify(request) + '\\n'` to the child's stdin. Newline-delimited JSON (NDJSON) is the entire wire format — simple, streamable, and trivial to parse on both sides.\n\nOn the .NET side (`tools/SqlAnalyzerCli/Services/ServerMode.cs`) the mirror image is a loop of `await Console.In.ReadLineAsync()` → `JsonSerializer.Deserialize<ServerRequest>(line, JsonOptions)` → analyze → `JsonSerializer.Serialize(response)` + `Console.Out.WriteLine`. `JSON.stringify` is `JsonSerializer.Serialize`, and the camelCase property names line up because the server uses `JsonNamingPolicy.CamelCase`.\n\nIf the process is disposed or the write throws, the promise rejects immediately — like `tcs.TrySetException(...)`."
     },
     {
       "file": "vscode-extension/src/client.ts",
       "line": 107,
       "title": "13. Lazy (re)spawn — crash recovery for free",
-      "description": "`ensureChild` returns the existing process if it's still alive, otherwise it spawns a new one. Because spawning is lazy, a crashed analyzer simply results in a fresh process on the next request — no explicit supervision loop needed. Note `shell: true` on Windows so Node can resolve the `dotnet`/`dnx` `.cmd` shim."
+      "description": "`ensureChild` returns the existing process if it's still alive, otherwise it spawns a new one — essentially `Lazy<Process>` that resets itself when `Process.HasExited` is true. Because spawning is lazy, a crashed analyzer simply results in a fresh process on the next request — no explicit supervision loop (no `BackgroundService` restart policy) needed.\n\nNote `shell: true` on Windows so Node can resolve the `dotnet`/`dnx` `.cmd` shim — the same issue you hit in .NET when `ProcessStartInfo.UseShellExecute = false` can't find a `.cmd` file on PATH."
     },
     {
       "file": "vscode-extension/src/client.ts",
       "line": 120,
       "title": "14. Reading responses and wiring failure handlers",
-      "description": "A `readline` interface splits stdout into lines (`handleLine`). stderr is forwarded to the output channel. The `error` and `exit` handlers both call `failAllPending(...)` so any outstanding promises reject instead of hanging forever — a dead process never leaves the editor waiting."
+      "description": "A `readline` interface splits stdout into lines (`handleLine`) — the equivalent of subscribing to `Process.OutputDataReceived` after `BeginOutputReadLine()`. stderr is forwarded to the output channel (`ErrorDataReceived`), which is where the .NET server's logging and unhandled exception traces end up.\n\nThe `error` and `exit` handlers (≈ `Process.Exited`) both call `failAllPending(...)` so any outstanding promises reject instead of hanging forever — like iterating the `TaskCompletionSource` map and calling `TrySetException` on each. A dead process never leaves the editor waiting on a `Task` that will never complete."
     },
     {
       "file": "vscode-extension/src/client.ts",
       "line": 146,
       "title": "15. Correlating a response to its pending promise",
-      "description": "`handleLine` ignores non-JSON noise, parses the `ServerResponse`, looks up its `id` in `pending`, resolves that promise, and removes it from the map. This is the counterpart to the request-id scheme in step 11 and completes the request/response round-trip."
+      "description": "`handleLine` ignores non-JSON noise (e.g. a stray `Console.WriteLine` or the `dotnet` first-run banner), parses the `ServerResponse`, looks up its `id` in `pending`, resolves that promise, and removes it from the map — in C#: `if (pending.TryRemove(response.Id, out var tcs)) tcs.TrySetResult(response);`.\n\nThis is the counterpart to the request-id scheme in step 11 and completes the request/response round-trip: a hand-rolled, ~100-line version of what StreamJsonRpc gives you in .NET."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 278,
       "title": "16. Distribution: resolveServerCommand()",
-      "description": "This is the zero-install story. If the user set `tsqlAnalyzer.serverPath` (the dev escape hatch), we run that local build directly. Otherwise we launch the analyzer **as a NuGet tool** via `dotnet dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- --server-mode`. We invoke `dotnet dnx` rather than a bare `dnx` because the SDK reliably puts `dotnet` on PATH. The only prerequisite is the .NET 10 SDK."
+      "description": "This is the zero-install story. If the user set `tsqlAnalyzer.serverPath` (the dev escape hatch), we run that local build directly — handy when iterating on a rule: `dotnet build` the CLI and point the setting at `tools/SqlAnalyzerCli/bin/.../ErikEJ.TSQLAnalyzerCli`.\n\nOtherwise we launch the analyzer **as a .NET tool straight from NuGet** via `dotnet dnx ErikEJ.DacFX.TSQLAnalyzer.Cli --yes -- --server-mode`. `dnx` (new in the .NET 10 SDK) is .NET's answer to `npx`: download a `PackAsTool` package into the NuGet cache and run it, without a `dotnet tool install`. We invoke `dotnet dnx` rather than a bare `dnx` because the SDK reliably puts `dotnet` on PATH. The only prerequisite is the .NET 10 SDK — no bundled binaries, and updates ship as normal NuGet package versions."
     },
     {
       "file": "vscode-extension/src/extension.ts",
       "line": 304,
       "title": "17. Same engine, second surface: the MCP provider",
-      "description": "The extension also contributes the analyzer as an **MCP server** by launching the same CLI with `-mcp` instead of `--server-mode`. One analyzer engine, two editor-native surfaces: live diagnostics and Copilot Chat tools — exactly the reusable pattern from the talk's takeaways."
+      "description": "The extension also contributes the analyzer as an **MCP server** by launching the same CLI with `-mcp` instead of `--server-mode`. On the .NET side that mode is built with the official `ModelContextProtocol` C# SDK, and the CLI's `PackageType` includes `McpServer` so NuGet.org lists it as an MCP server.\n\nOne analyzer engine, two editor-native surfaces: live diagnostics and Copilot Chat tools — exactly the reusable pattern from the talk's takeaways. It's the same layering you'd use in any .NET solution: core library (`ErikEJ.DacFX.TSQLAnalyzer`) + thin hosts (CLI, VSIX, SSMS extension, server mode, MCP)."
     },
     {
       "file": "vscode-extension/package.json",
       "line": 34,
       "title": "18. Manifest: activation, settings, commands, MCP",
-      "description": "The manifest ties it together: `activationEvents` (activate on the `sql` language, the commands, and the MCP collection), the `tsqlAnalyzer.*` `configuration` properties surfaced in Settings, the two `commands`, and the `mcpServerDefinitionProviders` contribution that makes the MCP server appear natively."
+      "description": "The manifest ties it together. For .NET developers, `package.json` plays the role of both the `.csproj` (dependencies, build scripts) and the VSIX `source.extension.vsixmanifest` (identity, contributions).\n\n`activationEvents` (activate on the `sql` language, the commands, and the MCP collection) are the equivalent of `[ProvideAutoLoad]` / UI context rules on a Visual Studio `AsyncPackage`. The `tsqlAnalyzer.*` `configuration` properties are a JSON-schema'd settings model (≈ a strongly typed options class), surfaced automatically in the Settings UI. Then the two `commands`, and the `mcpServerDefinitionProviders` contribution that makes the MCP server appear natively."
     },
     {
       "file": "vscode-extension/README.md",
       "line": 23,
       "title": "19. User-facing setup",
-      "description": "Finally, the README is the user's contract: install the .NET 10 SDK, install the extension, open a `.sql` file — analysis starts automatically and the tooling is downloaded on first use. The rules table and settings reference document the customization surface."
+      "description": "Finally, the README is the user's contract: install the .NET 10 SDK, install the extension, open a `.sql` file — analysis starts automatically and the tooling is downloaded on first use. The rules table and settings reference document the customization surface.\n\nThe rules expression setting uses the same `Rules:-SqlServer.Rules.SRD0004` syntax as `<SqlCodeAnalysisRules>` in MSBuild.Sdk.SqlProj / Microsoft.Build.Sql projects, so the rule set you tune in the editor is the one your `dotnet build` enforces in CI."
     }
   ]
 }
