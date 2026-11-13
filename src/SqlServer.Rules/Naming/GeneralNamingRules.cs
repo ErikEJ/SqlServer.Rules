@@ -103,7 +103,8 @@ namespace SqlServer.Rules.Performance
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"{objectType} found without a name.", RuleId), parentObj));
+                // The parent table is not in the model when the constraint is added with ALTER TABLE in an ad hoc script.
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"{objectType} found without a name.", RuleId), parentObj ?? sqlObj));
                 return problems;
             }
 
