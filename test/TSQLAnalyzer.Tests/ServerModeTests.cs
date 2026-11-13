@@ -74,6 +74,10 @@ public class ServerModeTests
         Assert.AreEqual("success", response.Status, response.Error);
         Assert.IsNotNull(response.Problems);
         Assert.IsTrue(response.Problems.Any(p => p.Rule == SelectStarRuleId), "Expected the SELECT * problem.");
+        Assert.IsNotNull(response.Errors, "The rule failure must be reported.");
+        Assert.IsTrue(
+            response.Errors.Any(e => e.Kind == "analysis" && e.Message.Contains("SqlServer.Rules.SRN0007", StringComparison.Ordinal)),
+            string.Join("; ", response.Errors.Select(e => $"{e.Kind} {e.Code} {e.Message}")));
     }
 
     [TestMethod]

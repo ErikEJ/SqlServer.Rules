@@ -215,29 +215,28 @@ internal static class ServerMode
             var problems = new List<ServerProblem>();
             var errorRules = ParseErrorRules(normalizedRules);
 
-            if (result.Result.AnalysisSucceeded)
+            // The problems found so far are returned even when the analysis did not fully succeed: the reasons are in
+            // the errors list, and an empty list would look like a clean script.
+            foreach (var problem in result.Result.Problems)
             {
-                foreach (var problem in result.Result.Problems)
+                var (endLine, endColumn) = problem.GetEndPosition(result);
+
+                var (message, helpLink) = ExtractMessageAndHelpLink(problem.Description);
+
+                helpLink ??= problem.GetMicrosoftRuleHelpLink();
+
+                problems.Add(new ServerProblem
                 {
-                    var (endLine, endColumn) = problem.GetEndPosition(result);
-
-                    var (message, helpLink) = ExtractMessageAndHelpLink(problem.Description);
-
-                    helpLink ??= problem.GetMicrosoftRuleHelpLink();
-
-                    problems.Add(new ServerProblem
-                    {
-                        Rule = problem.RuleId ?? "unknown",
-                        Line = problem.StartLine,
-                        Column = result.GetAdjustedColumn(problem.StartLine, problem.StartColumn, problem.SourceName),
-                        EndLine = endLine,
-                        EndColumn = endColumn,
-                        Message = message,
-                        Severity = GetEffectiveSeverity(problem, errorRules),
-                        HelpLink = helpLink,
-                        File = problem.SourceName,
-                    });
-                }
+                    Rule = problem.RuleId ?? "unknown",
+                    Line = problem.StartLine,
+                    Column = result.GetAdjustedColumn(problem.StartLine, problem.StartColumn, problem.SourceName),
+                    EndLine = endLine,
+                    EndColumn = endColumn,
+                    Message = message,
+                    Severity = GetEffectiveSeverity(problem, errorRules),
+                    HelpLink = helpLink,
+                    File = problem.SourceName,
+                });
             }
 
             // Build success response
