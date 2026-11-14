@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AnalyzerClient, ServerProblem, ServerResponse } from './client';
+import { AnalyzerClient, ServerError, ServerProblem, ServerResponse } from './client';
 
 let client: AnalyzerClient | undefined;
 let diagnostics: vscode.DiagnosticCollection;
@@ -14,6 +14,13 @@ let tokenCounter = 0;
 let inFlightCount = 0;
 /** Whether an analyzer-server failure has already been surfaced to the user (reset on success). */
 let serverFailureReported = false;
+/**
+ * Errors returned with the latest successful analysis of each document: parts of the script that could not be
+ * analyzed (model errors, such as a syntax error) or rules that failed. Problems are incomplete when present.
+ */
+const documentErrors = new Map<string, ServerError[]>();
+/** Last errors written to the output channel per document, so the log is not repeated on every keystroke. */
+const loggedErrors = new Map<string, string>();
 
 export function activate(context: vscode.ExtensionContext): void {
     output = vscode.window.createOutputChannel('T-SQL Analyzer');
@@ -29,6 +36,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.workspace.onDidChangeTextDocument((e) => scheduleAnalysis(e.document)),
         vscode.workspace.onDidSaveTextDocument((doc) => scheduleAnalysis(doc, 0)),
         vscode.workspace.onDidCloseTextDocument((doc) => clearDocument(doc)),
+        vscode.window.onDidChangeActiveTextEditor(() => updateStatusBar()),
         vscode.workspace.onDidChangeConfiguration((e) => {
             if (e.affectsConfiguration('tsqlAnalyzer')) {
                 updateStatusBar();
@@ -147,6 +155,35 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
     serverFailureReported = false;
     const problems = response.problems ?? [];
     diagnostics.set(doc.uri, problems.map((p) => toDiagnostic(p)));
+    recordErrors(doc, response.errors ?? []);
+}
+
+/**
+ * Keeps the errors of a successful response for the status bar, and writes them to the output channel when they
+ * change. An analysis with errors still returns the problems found in the rest of the script.
+ */
+function recordErrors(doc: vscode.TextDocument, errors: ServerError[]): void {
+    const key = doc.uri.toString();
+    if (errors.length === 0) {
+        documentErrors.delete(key);
+        loggedErrors.delete(key);
+    } else {
+        documentErrors.set(key, errors);
+        const text = errors.map(formatError).join('\n');
+        if (loggedErrors.get(key) !== text) {
+            loggedErrors.set(key, text);
+            output.appendLine(`Part of ${doc.uri.fsPath} could not be analyzed, problems may be incomplete:`);
+            for (const error of errors) {
+                output.appendLine(`  ${formatError(error)}`);
+            }
+        }
+    }
+
+    updateStatusBar();
+}
+
+function formatError(error: ServerError): string {
+    return `${error.kind}${error.code ? ` ${error.code}` : ''}: ${error.message}`;
 }
 
 /**
@@ -187,9 +224,20 @@ function updateStatusBar(): void {
         return;
     }
 
+    const activeKey = vscode.window.activeTextEditor?.document.uri.toString();
+    const activeErrors = activeKey ? documentErrors.get(activeKey) : undefined;
+
     if (inFlightCount > 0) {
         statusBar.text = '$(sync~spin) Analyzing…';
         statusBar.tooltip = 'T-SQL Analyzer is analyzing the current SQL';
+    } else if (activeErrors && activeErrors.length > 0) {
+        const listed = activeErrors.slice(0, 5).map((e) => `- ${formatError(e)}`);
+        if (activeErrors.length > listed.length) {
+            listed.push(`- … and ${activeErrors.length - listed.length} more (see the T-SQL Analyzer output)`);
+        }
+        statusBar.text = '$(warning) T-SQL Analyzer';
+        statusBar.tooltip = ['Part of this script could not be analyzed, problems may be incomplete:', ...listed,
+            'Click to analyze the active file again.'].join('\n');
     } else {
         statusBar.text = '$(check) T-SQL Analyzer';
         statusBar.tooltip = 'T-SQL Analyzer — click to analyze the active file';
@@ -247,7 +295,10 @@ function clearDocument(doc: vscode.TextDocument): void {
         debounceTimers.delete(key);
     }
     latestToken.delete(key);
+    documentErrors.delete(key);
+    loggedErrors.delete(key);
     diagnostics.delete(doc.uri);
+    updateStatusBar();
 }
 
 function getClient(): AnalyzerClient {
