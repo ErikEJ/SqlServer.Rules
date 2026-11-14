@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
@@ -187,40 +188,55 @@ internal static class ServerMode
             }
 
             // Check for errors
-            var errors = result.Result.GetAllErrors();
-            if (errors.Any())
+            // Model errors (scripts that could not be added to the model) and rule errors leave part of the script
+            // unanalyzed but are not server failures: they are returned with the problems that were found.
+            var errors = new List<ServerError>();
+            foreach (var modelError in result.ModelErrors.Values.SelectMany(e => e.Messages))
             {
-                var errorMessages = string.Join("; ", errors.Select(e => e.GetOutputMessage()));
-                return ErrorResponse(request.Id, $"Analysis errors: {errorMessages}");
+                errors.Add(new ServerError
+                {
+                    Kind = "model",
+                    Code = $"{modelError.Prefix}{modelError.Number}",
+                    Message = modelError.Message,
+                });
+            }
+
+            foreach (var analysisError in result.Result.GetAllErrors())
+            {
+                errors.Add(new ServerError
+                {
+                    Kind = "analysis",
+                    Code = analysisError.ErrorCode.ToString(CultureInfo.InvariantCulture),
+                    Message = analysisError.Message,
+                });
             }
 
             // Build problems list
             var problems = new List<ServerProblem>();
             var errorRules = ParseErrorRules(normalizedRules);
 
-            if (result.Result.AnalysisSucceeded)
+            // The problems found so far are returned even when the analysis did not fully succeed: the reasons are in
+            // the errors list, and an empty list would look like a clean script.
+            foreach (var problem in result.Result.Problems)
             {
-                foreach (var problem in result.Result.Problems)
+                var (endLine, endColumn) = problem.GetEndPosition(result);
+
+                var (message, helpLink) = ExtractMessageAndHelpLink(problem.Description);
+
+                helpLink ??= problem.GetMicrosoftRuleHelpLink();
+
+                problems.Add(new ServerProblem
                 {
-                    var (endLine, endColumn) = problem.GetEndPosition(result);
-
-                    var (message, helpLink) = ExtractMessageAndHelpLink(problem.Description);
-
-                    helpLink ??= problem.GetMicrosoftRuleHelpLink();
-
-                    problems.Add(new ServerProblem
-                    {
-                        Rule = problem.RuleId ?? "unknown",
-                        Line = problem.StartLine,
-                        Column = result.GetAdjustedColumn(problem.StartLine, problem.StartColumn, problem.SourceName),
-                        EndLine = endLine,
-                        EndColumn = endColumn,
-                        Message = message,
-                        Severity = GetEffectiveSeverity(problem, errorRules),
-                        HelpLink = helpLink,
-                        File = problem.SourceName,
-                    });
-                }
+                    Rule = problem.RuleId ?? "unknown",
+                    Line = problem.StartLine,
+                    Column = result.GetAdjustedColumn(problem.StartLine, problem.StartColumn, problem.SourceName),
+                    EndLine = endLine,
+                    EndColumn = endColumn,
+                    Message = message,
+                    Severity = GetEffectiveSeverity(problem, errorRules),
+                    HelpLink = helpLink,
+                    File = problem.SourceName,
+                });
             }
 
             // Build success response
@@ -229,6 +245,7 @@ internal static class ServerMode
                 Id = request.Id,
                 Status = "success",
                 Problems = problems,
+                Errors = errors.Count > 0 ? errors : null,
             };
         }
         catch (ArgumentException ex)
