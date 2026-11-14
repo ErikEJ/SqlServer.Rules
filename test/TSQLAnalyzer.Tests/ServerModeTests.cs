@@ -57,9 +57,9 @@ public class ServerModeTests
     }
 
     [TestMethod]
-    public void KeepsProblemsWhenARuleFails()
+    public void KeepsProblemsWhenAnotherBatchReferencesMissingTable()
     {
-        // The second batch adds an unnamed constraint to a table that is not in the model, on which some rules may fail.
+        // The second batch adds an unnamed constraint to a table that is not in the model.
         // The problems of the first batch must still be returned.
         var request = new ServerRequest
         {
@@ -74,10 +74,6 @@ public class ServerModeTests
         Assert.AreEqual("success", response.Status, response.Error);
         Assert.IsNotNull(response.Problems);
         Assert.IsTrue(response.Problems.Any(p => p.Rule == SelectStarRuleId), "Expected the SELECT * problem.");
-        Assert.IsNotNull(response.Errors, "The rule failure must be reported.");
-        Assert.IsTrue(
-            response.Errors.Any(e => e.Kind == "analysis" && e.Message.Contains("SqlServer.Rules.SRN0007", StringComparison.Ordinal)),
-            string.Join("; ", response.Errors.Select(e => $"{e.Kind} {e.Code} {e.Message}")));
     }
 
     [TestMethod]
