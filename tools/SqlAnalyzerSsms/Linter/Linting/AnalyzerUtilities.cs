@@ -124,6 +124,14 @@ internal sealed class AnalyzerUtilities : IDisposable
                 return [];
             }
 
+            if (response.Errors is { Count: > 0 })
+            {
+                foreach (var error in response.Errors)
+                {
+                    await new InvalidOperationException($"{error.Kind} {error.Code}: {error.Message}").LogAsync().ConfigureAwait(false);
+                }
+            }
+
             return ConvertProblemsToDiagnostics(response.Problems);
         }
         catch (OperationCanceledException)

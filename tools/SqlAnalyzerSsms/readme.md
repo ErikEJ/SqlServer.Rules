@@ -53,6 +53,10 @@ You can set this expression in the `Rules expression` option under Tools/Options
 
 - The [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) is required and is automatically installed with the Database DevOps workload in SSMS.
 
+### Analysis Errors
+
+If a script cannot be fully modeled or an analysis rule fails, the available findings are still shown in the Error List. Details of these errors (kind, code, and message) are logged to the **Output** window. Findings may be incomplete until these errors are resolved.
+
 ## How can I help?
 
 Should you encounter bugs or have feature requests, head over to the [GitHub repo][repo] to open an issue if one doesn't already exist.

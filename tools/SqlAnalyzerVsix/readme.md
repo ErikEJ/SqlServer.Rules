@@ -55,6 +55,10 @@ The extension also adds a menu item under `Tools` to run the T-SQL Analyzer agai
 
 ![toolsmenu](Images/toolsmenu.png)
 
+### Analysis Errors
+
+If a script cannot be fully modeled or an analysis rule fails, the available findings are still shown in the Error List. Details of these errors (kind, code, and message) are written to the **T-SQL Analyzer** pane in **View > Output**. Findings may be incomplete until these errors are resolved.
+
 ### Installation Requirements
 
 - The extension automatically uses the .NET 10 `dnx` command to run the T-SQL Analyzer CLI tool as a NuGet package. No separate installation is required.
