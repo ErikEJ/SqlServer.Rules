@@ -76,7 +76,7 @@ CREATE TABLE [dbo].[Table3]
 
 ## MCP Server
 
-You can use the tool to ask GitHub Copilot analyze your SQL Server T-SQL scripts in Visual Studio or VS Code.
+You can use the tool to ask GitHub Copilot to analyze your SQL Server T-SQL scripts in Visual Studio, SSMS or VS Code.
 
 The TSQL Analyzer MCP Server supports quick installation across multiple development environments. Choose your preferred client below for streamlined setup:
 

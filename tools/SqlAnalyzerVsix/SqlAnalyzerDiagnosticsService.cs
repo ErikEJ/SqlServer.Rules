@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ErikEJ.DacFX.TSQLAnalyzer.Protocol;
 using Microsoft;
 using Microsoft.VisualStudio.Extensibility;
 using Microsoft.VisualStudio.Extensibility.Documents;
@@ -90,7 +91,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
             }
 #pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
-            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, cancellationToken);
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, errors => this.WriteAnalysisErrorsAsync(documentUri, errors), cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentUri, cancellationToken);
             await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
@@ -200,7 +201,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 
         try
         {
-            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, rules, sqlVersion, additionalAnalyzers, cancellationToken);
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, rules, sqlVersion, additionalAnalyzers, errors => this.WriteAnalysisErrorsAsync(documentSnapshot.Uri, errors), cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentSnapshot, cancellationToken);
             await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
@@ -211,6 +212,17 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
             {
                 await this.outputChannel.WriteLineAsync(Strings.MissingAnalyzerError);
             }
+        }
+    }
+
+    private async Task WriteAnalysisErrorsAsync(Uri documentUri, IList<ServerError> errors)
+    {
+        await this.initializationTask;
+        Assumes.NotNull(this.outputChannel);
+
+        foreach (var error in errors)
+        {
+            await this.outputChannel.WriteLineAsync($"{documentUri.LocalPath}: {error.Kind} {error.Code}: {error.Message}");
         }
     }
 

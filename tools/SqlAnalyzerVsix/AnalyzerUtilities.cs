@@ -38,11 +38,12 @@ internal sealed class AnalyzerUtilities : IDisposable
     /// <param name="rules">Rules to apply for the analyzer.</param>
     /// <param name="sqlVersion">SQL version to use for analysis.</param>
     /// <param name="additionalAnalyzers">Semicolon-separated list of additional analyzer DLL paths.</param>
+    /// <param name="reportErrorsAsync">Reports errors that left part of the script unanalyzed.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, string? additionalAnalyzers, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
     {
-        var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, content: null, rules, sqlVersion, additionalAnalyzers, cancellationToken);
+        var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, content: null, rules, sqlVersion, additionalAnalyzers, reportErrorsAsync, cancellationToken);
         return CreateDocumentDiagnosticsForClosedDocument(fileUri, serverDiagnostics);
     }
 
@@ -53,9 +54,10 @@ internal sealed class AnalyzerUtilities : IDisposable
     /// <param name="rules">Rules to apply for the analyzer.</param>
     /// <param name="sqlVersion">SQL version to use for analysis.</param>
     /// <param name="additionalAnalyzers">Semicolon-separated list of additional analyzer DLL paths.</param>
+    /// <param name="reportErrorsAsync">Reports errors that left part of the script unanalyzed.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, string? additionalAnalyzers, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
     {
         if (textDocument.Length > 8192)
         {
@@ -66,7 +68,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         var content = textDocument.Text.CopyToString();
 
         // Analyze the editor buffer content in-memory via server mode; no temp file is written.
-        var serverDiagnostics = await AnalyzeWithServerModeAsync(path: null, content, rules, sqlVersion, additionalAnalyzers, cancellationToken);
+        var serverDiagnostics = await AnalyzeWithServerModeAsync(path: null, content, rules, sqlVersion, additionalAnalyzers, reportErrorsAsync, cancellationToken);
         return CreateDocumentDiagnosticsForOpenDocument(textDocument, serverDiagnostics);
     }
 
@@ -91,7 +93,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         return result.Count > 0 ? result : null;
     }
 
-    private async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string? path, string? content, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    private async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string? path, string? content, string? rules, string? sqlVersion, string? additionalAnalyzers, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
     {
         using var lockReleaser = await this.requestLock.EnterAsync(cancellationToken);
 
@@ -144,6 +146,11 @@ internal sealed class AnalyzerUtilities : IDisposable
                 }
 
                 return [];
+            }
+
+            if (response.Errors is { Count: > 0 })
+            {
+                await reportErrorsAsync(response.Errors);
             }
 
             return ConvertProblemsToDiagnostics(response.Problems);

@@ -38,7 +38,7 @@ internal static class Program
             else if (args.Length == 1 && args[0] == "-mcp-test")
             {
                 var result = await AnalyzerTools.FindSqlScriptProblems("SELECT * FROM MyTable");
-                Console.Write(result);
+                Console.Write(System.Text.Json.JsonSerializer.Serialize(result));
                 return 1;
             }
             else
