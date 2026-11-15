@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Do not change DATEFIRST.";
+        public const string RuleDisplayName = "Changing DATEFIRST makes weekday calculations session-dependent and can produce inconsistent results.";
 
         /// <summary>
         /// The message

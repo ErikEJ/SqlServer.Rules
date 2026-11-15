@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Single character aliases are poor practice.";
+        public const string RuleDisplayName = "Use descriptive table aliases to make queries easier to read and maintain.";
 
         /// <summary>
         /// The message

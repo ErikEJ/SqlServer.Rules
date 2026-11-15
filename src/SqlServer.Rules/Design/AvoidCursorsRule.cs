@@ -30,12 +30,12 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Avoid using cursors.";
+        public const string RuleDisplayName = "Cursors process rows one at a time; set-based operations can be simpler and faster.";
 
         /// <summary>
         /// The message
         /// </summary>
-        public const string Message = "Avoid using cursors.";
+        public const string Message = RuleDisplayName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AvoidCursorsRule"/> class.

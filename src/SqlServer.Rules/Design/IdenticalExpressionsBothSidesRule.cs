@@ -26,7 +26,7 @@ namespace SqlServer.Rules.Design
     public sealed class IdenticalExpressionsBothSidesRule : BaseSqlCodeAnalysisRule
     {
         public const string RuleId = Constants.RuleNameSpace + "SRD0076";
-        public const string RuleDisplayName = "Identical expressions on both sides of a comparison operator.";
+        public const string RuleDisplayName = "Comparing an expression with itself is redundant and may indicate a logic error.";
         public const string Message = RuleDisplayName;
 
         public IdenticalExpressionsBothSidesRule()

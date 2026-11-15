@@ -38,7 +38,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Index has exact duplicate or borderline overlapping index.";
+        public const string RuleDisplayName = "This index duplicates or substantially overlaps another, adding storage and write overhead.";
 
         /// <summary>
         /// The message duplicate

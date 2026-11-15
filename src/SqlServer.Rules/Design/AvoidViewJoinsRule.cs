@@ -32,7 +32,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Avoid joining tables with views.";
+        public const string RuleDisplayName = "Views can obscure query complexity and make performance tuning harder; join base tables when practical.";
 
         /// <summary>
         /// The message

@@ -28,7 +28,7 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Local cursor not explicitly deallocated.";
+        public const string RuleDisplayName = "Deallocate local cursors after use to release their resources.";
 
         /// <summary>
         /// The message

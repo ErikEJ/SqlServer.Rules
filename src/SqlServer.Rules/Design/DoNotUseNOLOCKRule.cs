@@ -36,7 +36,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Do not use the NOLOCK clause.";
+        public const string RuleDisplayName = "NOLOCK can return uncommitted or inconsistent data; choose an appropriate isolation level.";
 
         /// <summary>
         /// The message

@@ -36,7 +36,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Wrap multiple action statements within a transaction.";
+        public const string RuleDisplayName = "Wrap related changes in one transaction so they succeed or fail together.";
 
         /// <summary>
         /// The message

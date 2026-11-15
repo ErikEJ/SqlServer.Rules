@@ -38,7 +38,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Wrap multiple action statements within a try catch.";
+        public const string RuleDisplayName = "Use TRY...CATCH around related actions so errors can be handled consistently.";
 
         /// <summary>
         /// The message

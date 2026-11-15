@@ -25,7 +25,7 @@ namespace SqlServer.Rules.Performance
     public sealed class SelectStarInExistsRule : BaseSqlCodeAnalysisRule
     {
         public const string RuleId = Constants.RuleNameSpace + "SRP0025";
-        public const string RuleDisplayName = "Use SELECT 1 instead of SELECT * in EXISTS subqueries.";
+        public const string RuleDisplayName = "EXISTS checks presence only, so use SELECT 1 instead of SELECT *.";
         public const string Message = RuleDisplayName;
 
         public SelectStarInExistsRule()

@@ -36,7 +36,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Always use parameter names when calling stored procedures.";
+        public const string RuleDisplayName = "Named parameters make procedure calls clearer and resilient to parameter-order changes.";
 
         /// <summary>
         /// The message

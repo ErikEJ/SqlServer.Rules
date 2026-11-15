@@ -30,7 +30,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Avoid using CHARINDEX function in WHERE clauses.";
+        public const string RuleDisplayName = "CHARINDEX in a predicate can prevent efficient index seeks; prefer a sargable condition.";
 
         /// <summary>
         /// The message

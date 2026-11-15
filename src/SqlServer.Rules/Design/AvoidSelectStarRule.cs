@@ -30,7 +30,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Avoid using SELECT *.";
+        public const string RuleDisplayName = "List columns explicitly so schema changes do not alter results or return unnecessary data.";
 
         /// <summary>
         /// The message

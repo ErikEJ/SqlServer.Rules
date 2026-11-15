@@ -57,7 +57,7 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "General naming rules.";
+        public const string RuleDisplayName = "Consistent naming makes database objects easier to recognize and maintain.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GeneralNamingRules"/> class.

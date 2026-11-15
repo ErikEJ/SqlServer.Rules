@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Local cursor not closed.";
+        public const string RuleDisplayName = "Close local cursors after use to release their resources.";
 
         /// <summary>
         /// The message

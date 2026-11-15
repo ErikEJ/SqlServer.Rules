@@ -43,7 +43,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Query statements should finish with a semicolon - ';'.";
+        public const string RuleDisplayName = "Terminate statements with semicolons to clearly mark their ends and avoid parsing ambiguity.";
 
         /// <summary>
         /// The message

@@ -46,7 +46,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Use BEGIN and END symbols inside conditional statements.";
+        public const string RuleDisplayName = "BEGIN...END makes conditional blocks explicit and prevents statements from being unintentionally excluded.";
 
         /// <summary>
         /// The message

@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Single character variable names are poor practice.";
+        public const string RuleDisplayName = "Use descriptive variable names to make code easier to read and maintain.";
 
         /// <summary>
         /// The message

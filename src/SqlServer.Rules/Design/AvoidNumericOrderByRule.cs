@@ -31,7 +31,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Avoid using column numbers in ORDER BY clause.";
+        public const string RuleDisplayName = "Use column names in ORDER BY so sorting remains clear when the select list changes.";
 
         /// <summary>
         /// The message

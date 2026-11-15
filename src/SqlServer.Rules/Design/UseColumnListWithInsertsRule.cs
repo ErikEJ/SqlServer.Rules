@@ -37,12 +37,12 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Always use a column list in INSERT statements.";
+        public const string RuleDisplayName = "Specify INSERT columns explicitly so statements remain correct when table schemas change.";
 
         /// <summary>
         /// The message
         /// </summary>
-        public const string Message = "Always use a column list in INSERT statements.";
+        public const string Message = RuleDisplayName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UseColumnListWithInsertsRule"/> class.
