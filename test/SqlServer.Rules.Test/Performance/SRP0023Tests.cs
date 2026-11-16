@@ -14,7 +14,8 @@ public class SRP0023Tests : TestCasesBase
     private const string TableScript = """
                                      CREATE TABLE dbo.TestTable
                                      (
-                                         Id INT NOT NULL
+                                         Id INT NOT NULL,
+                                         NullableId INT NULL
                                      );
                                      """;
 
@@ -62,6 +63,9 @@ public class SRP0023Tests : TestCasesBase
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) < 3", DisplayName = "count < 3")]
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) <= 4", DisplayName = "count <= 4")]
     [DataRow("1 < (SELECT COUNT(*) FROM dbo.TestTable)", DisplayName = "1 < count")]
+    [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) + 1 > 0", DisplayName = "count arithmetic")]
+    [DataRow("ABS((SELECT COUNT(*) FROM dbo.TestTable)) > 0", DisplayName = "wrapped count")]
+    [DataRow("(SELECT COUNT(NullableId) FROM dbo.TestTable) > 0", DisplayName = "count nullable column")]
     public void NonExistenceComparisonNotDetected(string predicate)
     {
         var procedureScript = $"""

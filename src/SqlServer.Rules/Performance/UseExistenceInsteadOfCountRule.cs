@@ -109,6 +109,12 @@ namespace SqlServer.Rules.Performance
                 return false;
             }
 
+            var countExpression = firstLiteral == null ? booleanCompare.FirstExpression : booleanCompare.SecondExpression;
+            if (!IsCountStar(countExpression))
+            {
+                return false;
+            }
+
             var comparisonType = booleanCompare.ComparisonType;
             var literal = (secondLiteral ?? firstLiteral)!;
 
@@ -124,6 +130,26 @@ namespace SqlServer.Rules.Performance
             }
 
             return IsExistenceComparison(comparisonType, value);
+        }
+
+        private static bool IsCountStar(ScalarExpression expression)
+        {
+            if (expression is not ScalarSubquery { QueryExpression: QuerySpecification querySpecification }
+                || querySpecification.SelectElements.Count != 1
+                || querySpecification.GroupByClause != null
+                || querySpecification.HavingClause != null
+                || querySpecification.TopRowFilter != null
+                || querySpecification.OffsetClause != null
+                || querySpecification.SelectElements[0] is not SelectScalarExpression { Expression: FunctionCall functionCall }
+                || functionCall.OverClause != null
+                || !string.Equals(functionCall.FunctionName.Value, "count", System.StringComparison.OrdinalIgnoreCase)
+                || functionCall.Parameters.Count != 1
+                || functionCall.Parameters[0] is not ColumnReferenceExpression { ColumnType: ColumnType.Wildcard })
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static BooleanComparisonType ReverseComparison(BooleanComparisonType comparisonType)
