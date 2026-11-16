@@ -22,6 +22,7 @@ public class SRP0023Tests : TestCasesBase
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) > 0", DisplayName = "count > 0")]
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) >= 1", DisplayName = "count >= 1")]
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) <> 0", DisplayName = "count <> 0")]
+    [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) != 0", DisplayName = "count != 0")]
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) = 0", DisplayName = "count = 0")]
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) < 1", DisplayName = "count < 1")]
     [DataRow("(SELECT COUNT(*) FROM dbo.TestTable) <= 0", DisplayName = "count <= 0")]
