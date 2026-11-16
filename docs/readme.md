@@ -6,75 +6,75 @@
   
 | Rule Id | Friendly Name | Ignorable | Description | Example? |
 |----|----|----|----|----|
-| [SRD0001](Design/SRD0001.md) | Missing natural key |   | Table does not have a natural key. |   |
-| [SRD0002](Design/SRD0002.md) | Missing primary key |   | Table does not have a primary key. | Yes |
+| [SRD0001](Design/SRD0001.md) | Missing natural key |   | A unique constraint can enforce the table's natural key and prevent duplicate entities. |   |
+| [SRD0002](Design/SRD0002.md) | Missing primary key |   | A primary key uniquely identifies each row and supports reliable references to the table. | Yes |
 | [SRD0003](Design/SRD0003.md) | Avoid wide primary keys |   | Primary Keys should avoid using GUIDS or wide VARCHAR columns. |   |
 | [SRD0004](Design/SRD0004.md) | Index on Foreign Key |   | Columns on both sides of a foreign key should be indexed. | Yes |
 | [SRD0005](Design/SRD0005.md) | Avoid long CHAR types | Yes | Avoid the (n)char column type except for short static length data. |   |
-| [SRD0006](Design/SRD0006.md) | Avoid SELECT * | Yes | Avoid using SELECT *. | Yes |
-| [SRD0009](Design/SRD0009.md) | Non-transactional body |   | Wrap multiple action statements within a transaction. | Yes |
+| [SRD0006](Design/SRD0006.md) | Avoid SELECT * | Yes | List columns explicitly so schema changes do not alter results or return unnecessary data. | Yes |
+| [SRD0009](Design/SRD0009.md) | Non-transactional body |   | Wrap related changes in one transaction so they succeed or fail together. | Yes |
 | [SRD0011](Design/SRD0011.md) | Equality Compare With NULL Rule |   | Equality and inequality comparisons involving a NULL constant found. Use IS NULL or IS NOT NULL. | Yes |
-| [SRD0012](Design/SRD0012.md) | Unused variable |   | Variable declared but never referenced or assigned. | Yes |
-| [SRD0013](Design/SRD0013.md) | Expected error handeling |   | Wrap multiple action statements within a try catch. | Yes |
+| [SRD0012](Design/SRD0012.md) | Unused variable |   | This variable is never referenced or assigned; remove it if it is unnecessary. | Yes |
+| [SRD0013](Design/SRD0013.md) | Expected error handeling |   | Use TRY...CATCH around related actions so errors can be handled consistently. | Yes |
 | [SRD0014](Design/SRD0014.md) | TOP without an ORDER BY |   | TOP clause used in a query without an ORDER BY clause. | Yes |
-| [SRD0015](Design/SRD0015.md) | Implicit column list |   | Always use a column list in INSERT statements. | Yes |
+| [SRD0015](Design/SRD0015.md) | Implicit column list |   | Specify INSERT columns explicitly so statements remain correct when table schemas change. | Yes |
 | [SRD0016](Design/SRD0016.md) | Unused input parameter | Yes | Input parameter never used. Consider removing the parameter or using it. | Yes |
 | [SRD0017](Design/SRD0017.md) | Avoid Deletes Without Where Rule | Yes | DELETE statement without row limiting conditions. |   |
 | [SRD0018](Design/SRD0018.md) | Unbounded UPDATE | Yes | UPDATE statement without row limiting conditions. |   |
-| [SRD0019](Design/SRD0019.md) | Avoid joining tables with views | Yes | Avoid joining tables with views. |   |
+| [SRD0019](Design/SRD0019.md) | Avoid joining tables with views | Yes | Views can obscure query complexity and make performance tuning harder; join base tables when practical. |   |
 | [SRD0020](Design/SRD0020.md) | Incomplete or missing JOIN predicate |   | The query has issues with the join clause. It is either missing a backing foreign key or the join is missing one or more columns. |   |
 | [SRD0021](Design/SRD0021.md) | Consider EXISTS Instead Of In Rule | Yes | Consider using EXISTS instead of IN when used with a subquery. |   |
 | [SRD0024](Design/SRD0024.md) | Avoid EXEC or EXECUTE | Yes | Avoid EXEC and EXECUTE with string literals. Use parameterized sp_executesql instead. | Yes |
-| [SRD0025](Design/SRD0025.md) | Avoid ORDER BY with numbers | Yes | Avoid using column numbers in ORDER BY clause. | Yes |
+| [SRD0025](Design/SRD0025.md) | Avoid ORDER BY with numbers | Yes | Use column names in ORDER BY so sorting remains clear when the select list changes. | Yes |
 | [SRD0026](Design/SRD0026.md) | Unspecified type length |   | Do not use these data types (VARCHAR, NVARCHAR, CHAR, NCHAR) without specifying length. |   |
 | [SRD0027](Design/SRD0027.md) | Unspecified precision or scale  |   | Do not use DECIMAL or NUMERIC data types without specifying precision and scale. |   |
 | [SRD0028](Design/SRD0028.md) | Consider Column Prefix Rule | Yes | Consider prefixing column names with table name or table alias. |   |
 | [SRD0030](Design/SRD0030.md) | Avoid Use of HINTS | Yes | Avoid using Hints to force a particular behavior. | Yes |
-| [SRD0031](Design/SRD0031.md) | Avoid using CHARINDEX | Yes | Avoid using CHARINDEX function in WHERE clauses. |   |
+| [SRD0031](Design/SRD0031.md) | Avoid using CHARINDEX | Yes | CHARINDEX in a predicate can prevent efficient index seeks; prefer a sargable condition. |   |
 | [SRD0032](Design/SRD0032.md) | Avoid use of OR in where clause | Yes | Try to avoid the OR operator in query where clauses if possible.  (Sargable) |   |
-| [SRD0033](Design/SRD0033.md) | Avoid Cursors | Yes | Avoid using cursors. |   |
-| [SRD0034](Design/SRD0034.md) | Use of NOLOCK |   | Do not use the NOLOCK clause. | Yes |
+| [SRD0033](Design/SRD0033.md) | Avoid Cursors | Yes | Cursors process rows one at a time; set-based operations can be simpler and faster. |   |
+| [SRD0034](Design/SRD0034.md) | Use of NOLOCK |   | NOLOCK can return uncommitted or inconsistent data; choose an appropriate isolation level. | Yes |
 | [SRD0035](Design/SRD0035.md) | Forced delay |   | Do not use WAITFOR DELAY/TIME statement in stored procedures, functions, and triggers. |   |
-| [SRD0036](Design/SRD0036.md) | Do not use SET ROWCOUNT | Yes | Do not use SET ROWCOUNT to restrict the number of rows. |   |
+| [SRD0036](Design/SRD0036.md) | Do not use SET ROWCOUNT | Yes | Use TOP or a row-limiting clause instead of SET ROWCOUNT for predictable statement behavior. |   |
 | [SRD0038](Design/SRD0038.md) | Alias Tables Rule | Yes | Consider aliasing all table sources in the query. | Yes |
 | [SRD0039](Design/SRD0039.md) | Object not schema qualified |   | Use fully qualified object names in SELECT, UPDATE, DELETE, MERGE and EXECUTE statements. [schema].[name]. | Yes |
 | [SRD0041](Design/SRD0041.md) | Avoid SELECT INTO temp or table variables | Yes | Avoid use of the SELECT INTO syntax. |   |
 | [SRD0043](Design/SRD0043.md) | Possible side-effects implicit cast  |   | The arguments of the function '{0}' are not of the same datatype. |   |
 | [SRD0044](Design/SRD0044.md) | Error handling requires SA permissions |   | The RAISERROR statement with severity above 18 requires the WITH LOG clause. |   |
-| [SRD0045](Design/SRD0045.md) | Excessive indexes on table |   | Excessive number of indexes on table found on table. |   |
+| [SRD0045](Design/SRD0045.md) | Excessive indexes on table |   | Too many indexes increase write overhead and maintenance costs. |   |
 | [SRD0046](Design/SRD0046.md) | Use of approximate data type |   | Do not use the real or float data types for parameters or columns as they are approximate value data types. |   |
 | [SRD0047](Design/SRD0047.md) | Ambiguous column name across design | Yes | Avoid using columns that match other columns by name, but are different in type or size. |   |
 | [SRD0050](Design/SRD0050.md) | Expression reducible to constaint | Yes | The comparison expression always evaluates to TRUE or FALSE. | Yes |
 | [SRD0051](Design/SRD0051.md) | Do Not Use Deprecated Types Rule | Yes | Don't use deprecated TEXT, NTEXT and IMAGE data types. | Yes |
-| [SRD0052](Design/SRD0052.md) | Duplicate/Overlapping Index |   | Index has exact duplicate or borderline overlapping index. |   |
+| [SRD0052](Design/SRD0052.md) | Duplicate/Overlapping Index |   | This index duplicates or substantially overlaps another, adding storage and write overhead. |   |
 | [SRD0053](Design/SRD0053.md) | Explicit collation other | Yes | Object has different collation than the rest of the database. Try to avoid using a different collation unless by design. |   |
-| [SRD0055](Design/SRD0055.md) | Object level option override |   | The object was created with invalid options. |   |
+| [SRD0055](Design/SRD0055.md) | Object level option override |   | This object was created with ANSI_NULLS or QUOTED_IDENTIFIER off, which can affect its behavior. |   |
 | [SRD0056](Design/SRD0056.md) | Unsafe identity retrieval | Yes | Use OUTPUT or SCOPE_IDENTITY() instead of @@IDENTITY. |   |
 | [SRD0057](Design/SRD0057.md) | Do Not Mix DML With DDL Rule | Yes | Do not mix DML with DDL statements. Group DDL statements at the beginning of procedures followed by DML statements. |   |
-| [SRD0058](Design/SRD0058.md) | Ordinal parameters used |   | Always use parameter names when calling stored procedures. |   |
+| [SRD0058](Design/SRD0058.md) | Ordinal parameters used |   | Named parameters make procedure calls clearer and resilient to parameter-order changes. |   |
 | [SRD0060](Design/SRD0060.md) | Permission change in stored procedure |   | The procedure grants itself permissions. Possible missing GO command. | Yes |
-| [SRD0061](Design/SRD0061.md) | Invalid database configured options |   | The database is configured with invalid options. |   |
+| [SRD0061](Design/SRD0061.md) | Invalid database configured options |   | Database options may conflict with project settings or required SQL Server behavior. |   |
 | [SRD0062](Design/SRD0062.md) | Implicit collation |   | Create SQL Server temporary tables with the correct collation or use database default as the tempdb having a different collation than the database can cause issues and or data instability. |   |
 | [SRD0063](Design/SRD0063.md) | Avoid wrapping SQL in IF statement | Yes | Do not use IF statements containing queries in stored procedures. | Yes |
 | [SRD0064](Design/SRD0064.md) | Consider Caching Get Date To Variable | Yes | Cache multiple calls to GETDATE or SYSDATETIME into a variable. |   |
 | [SRD0065](Design/SRD0065.md) | Avoid NOT FOR REPLICATION |   | Avoid 'NOT FOR REPLICATION' unless this is the desired behavior and replication is in use. |   |
-| [SRD0066](Design/SRD0066.md) | BEGIN and END symbols inside conditional statements. | Yes | Use BEGIN and END symbols inside conditional statements. | Yes |
+| [SRD0066](Design/SRD0066.md) | BEGIN and END symbols inside conditional statements. | Yes | BEGIN...END makes conditional blocks explicit and prevents statements from being unintentionally excluded. | Yes |
 | [SRD0067](Design/SRD0067.md) | Use capitalized keywords for enhanced readability. |   | Use capitalized keywords for enhanced readability. | Yes |
-| [SRD0068](Design/SRD0068.md) | Terminate statements with semicolon. | Yes | Query statements should finish with a semicolon - ';'. | Yes |
+| [SRD0068](Design/SRD0068.md) | Terminate statements with semicolon. | Yes | Terminate statements with semicolons to clearly mark their ends and avoid parsing ambiguity. | Yes |
 | [SRD0069](Design/SRD0069.md) | Xact_Abort On | Yes | Use SET XACT_ABORT ON in stored procedures with explicit transactions. | Yes |
 | [SRD0071](Design/SRD0071.md) | CASE without ELSE | Yes | CASE expression should include an ELSE clause. | Yes |
 | [SRD0072](Design/SRD0072.md) | Variable self-assignment | Yes | Variable should not be assigned to itself. | Yes |
 | [SRD0073](Design/SRD0073.md) | Repeated NOT operator | Yes | Repeated NOT operators found. Simplify the expression. | Yes |
 | [SRD0074](Design/SRD0074.md) | Weak hashing algorithm | Yes | Avoid weak hashing algorithms (MD2, MD4, MD5, SHA, SHA1). Use SHA2_256 or SHA2_512. | Yes |
 | [SRD0075](Design/SRD0075.md) | Hard-coded credentials | Yes | Avoid hard-coded credentials. Use secure configuration instead. | Yes |
-| [SRD0076](Design/SRD0076.md) | Identical expressions on both sides | Yes | Identical expressions on both sides of a comparison operator. | Yes |
+| [SRD0076](Design/SRD0076.md) | Identical expressions on both sides | Yes | Comparing an expression with itself is redundant and may indicate a logic error. | Yes |
 | [SRD0077](Design/SRD0077.md) | FETCH variable count mismatch | Yes | FETCH variable count does not match cursor column count. | Yes |
-| [SRD0078](Design/SRD0078.md) | Single character alias | Yes | Single character aliases are poor practice. | Yes |
-| [SRD0079](Design/SRD0079.md) | Single character variable | Yes | Single character variable names are poor practice. | Yes |
+| [SRD0078](Design/SRD0078.md) | Single character alias | Yes | Use descriptive table aliases to make queries easier to read and maintain. | Yes |
+| [SRD0079](Design/SRD0079.md) | Single character variable | Yes | Use descriptive variable names to make code easier to read and maintain. | Yes |
 | [SRD0080](Design/SRD0080.md) | TOP expression should use parentheses | Yes | Expression used with TOP should be wrapped in parentheses. | Yes |
 | [SRD0081](Design/SRD0081.md) | TOP(100) PERCENT ignored by optimizer |   | TOP(100) PERCENT is ignored by the optimizer. | Yes |
 | [SRD0082](Design/SRD0082.md) | Do not change DATEFORMAT | Yes | Changing DATEFORMAT can cause date parsing issues. | Yes |
-| [SRD0083](Design/SRD0083.md) | Avoid changing DATEFIRST | Yes | Do not change DATEFIRST. | Yes |
+| [SRD0083](Design/SRD0083.md) | Avoid changing DATEFIRST | Yes | Changing DATEFIRST makes weekday calculations session-dependent and can produce inconsistent results. | Yes |
 | [SRD0084](Design/SRD0084.md) | Concat Null Yields Null ON | Yes | SET CONCAT_NULL_YIELDS_NULL should be ON. | Yes |
 | [SRD0085](Design/SRD0085.md) | ANSI_NULLS should be ON | Yes | ANSI_NULLS should be ON. | Yes |
 | [SRD0086](Design/SRD0086.md) | ANSI_PADDING should be ON | Yes | ANSI_PADDING should be ON. | Yes |
@@ -87,7 +87,7 @@
 | [SRD0093](Design/SRD0093.md) | Do not name default constraints on temporary tables |   | Default constraints on temporary tables should not be named. | Yes |
 | [SRD0094](Design/SRD0094.md) | Avoid named foreign keys on temporary tables | Yes | Foreign key constraints on temp tables should not be named. |   |
 | [SRD0095](Design/SRD0095.md) | Named check constraints on temp tables | Yes | Check constraints on temp tables should not be named. | Yes |
-| [SRD0096](Design/SRD0096.md) | Potential SQL injection issue |   | Potential SQL injection issue. | Yes |
+| [SRD0096](Design/SRD0096.md) | Potential SQL injection issue |   | Dynamic SQL built from procedure input can execute unintended commands; parameterize values to reduce injection risk. | Yes |
 | [SRD0700](Design/SRD0700.md) | Database PAGE_VERIFY option is not CHECKSUM |   | Set `<PageVerify>CHECKSUM</PageVerify>` in the project file to enable PAGE_VERIFY = CHECKSUM. (Use `<PageVerifyMode>Checksum</PageVerifyMode>` for MSBuild.Sdk.SqlProj projects.) |   |
 | [SRD0701](Design/SRD0701.md) | Database QUERY_STORE option is not READ_WRITE |   | Set `<QueryStoreDesiredState>READ_WRITE</QueryStoreDesiredState>` in the project file to enable Query Store. (Use `<QueryStoreDesiredState>ReadWrite</QueryStoreDesiredState>` for MSBuild.Sdk.SqlProj projects.) |   |
 | [SRD0703](Design/SRD0703.md) | Database QUERY_STORE_CAPTURE_MODE option is not AUTO |   | Set `<QueryStoreCaptureMode>AUTO</QueryStoreCaptureMode>` in the project file to enable QUERY_STORE_CAPTURE_MODE = AUTO. |   |
@@ -101,8 +101,8 @@
 |----|----|----|----|----|
 | [SRN0001](Naming/SRN0001.md) | UDF with System prefix | Yes | Avoid 'fn_' prefix when naming functions. |   |
 | [SRN0002](Naming/SRN0002.md) | Procedure name may conflict system name | Yes | Avoid 'sp_' prefix when naming stored procedures. |   |
-| [SRN0006](Naming/SRN0006.md) | Use of default schema |   | Two part naming on objects is required. | Yes |
-| [SRN0007](Naming/SRN0007.md) | Name standard |   | General naming rules. | Yes |
+| [SRN0006](Naming/SRN0006.md) | Use of default schema |   | Schema-qualify object names to avoid ambiguity and make name resolution predictable. | Yes |
+| [SRN0007](Naming/SRN0007.md) | Name standard |   | Consistent naming makes database objects easier to recognize and maintain. | Yes |
   
 ## Performance
   
@@ -114,8 +114,8 @@
 | [SRP0004](Performance/SRP0004.md) | Noisy trigger | Yes | Avoid returning results in triggers. |   |
 | [SRP0005](Performance/SRP0005.md) | Noisy trigger | Yes | SET NOCOUNT ON is recommended to be enabled in stored procedures and triggers. | Yes |
 | [SRP0006](Performance/SRP0006.md) | Use of inequality | Yes | Try to avoid using not equal operator (<>,!=) in the WHERE clause if possible. (Sargable) |   |
-| [SRP0007](Performance/SRP0007.md) | Dangling cursor |   | Local cursor not closed. |   |
-| [SRP0008](Performance/SRP0008.md) | Unfreed cursor |   | Local cursor not explicitly deallocated. |   |
+| [SRP0007](Performance/SRP0007.md) | Dangling cursor |   | Close local cursors after use to release their resources. |   |
+| [SRP0008](Performance/SRP0008.md) | Unfreed cursor |   | Deallocate local cursors after use to release their resources. |   |
 | [SRP0009](Performance/SRP0009.md) | Filtering on calculated value | Yes | Avoid wrapping columns within a function in the WHERE clause. (Sargable) | Yes |
 | [SRP0010](Performance/SRP0010.md) | Function in data modification | Yes | Avoid the use of user defined functions with UPDATE/INSERT/DELETE statements. (Halloween Protection) |   |
 | [SRP0011](Performance/SRP0011.md) | Non-member test in predicate | Yes | Avoid using the NOT IN predicate in a WHERE clause. (Sargable) |   |
@@ -125,18 +125,18 @@
 | [SRP0015](Performance/SRP0015.md) | Avoid Column Calculations | Yes | Avoid the use of calculations on columns in the where clause. (Sargable) |   |
 | [SRP0016](Performance/SRP0016.md) | Equality test with mismatched types |   | Data types on both sides of an equality check should be the same in the where clause. (Sargable) | Yes |
 | [SRP0017](Performance/SRP0017.md) | Update of Primary key | Yes | Avoid updating columns that are part of the primary key.  (Halloween Protection) |   |
-| [SRP0018](Performance/SRP0018.md) | High join count |   | Query uses a high number of joins.  |   |
+| [SRP0018](Performance/SRP0018.md) | High join count |   | Queries with many joins can be complex and may perform poorly. |   |
 | [SRP0020](Performance/SRP0020.md) | Missing Clustered index |   | Table does not have a clustered index. | Yes |
 | [SRP0021](Performance/SRP0021.md) | Manipulated parameter value | Yes | Avoid modification of parameters in a stored procedure prior to use in a select query. |   |
 | [SRP0022](Performance/SRP0022.md) | Procedure level recompile option | Yes | Consider using RECOMPILE query hint instead of the WITH RECOMPILE option. | Yes |
-| [SRP0023](Performance/SRP0023.md) | Enumerating for existence check | Yes | When checking for existence use EXISTS instead of COUNT | Yes |
+| [SRP0023](Performance/SRP0023.md) | Enumerating for existence check | Yes | Use EXISTS for existence checks; COUNT performs unnecessary aggregation. | Yes |
 | [SRP0024](Performance/SRP0024.md) | Correlated subquery | Yes | Avoid the use of correlated subqueries except for very small tables. |   |
-| [SRP0025](Performance/SRP0025.md) | SELECT * in EXISTS | Yes | Use SELECT 1 instead of SELECT * in EXISTS subqueries. | Yes |
+| [SRP0025](Performance/SRP0025.md) | SELECT * in EXISTS | Yes | EXISTS checks presence only, so use SELECT 1 instead of SELECT *. | Yes |
 | [SRP0026](Performance/SRP0026.md) | Avoid cross-server joins | Yes | Avoid cross-server joins. | Yes |
 | [SRP0027](Performance/SRP0027.md) | Avoid explicit conversion of columnar data | Yes | Avoid explicit conversion of columnar data in the WHERE clause. (Sargable) | Yes |
 | [SRP0028](Performance/SRP0028.md) | Explicit RANGE window frame | Yes | Avoid explicit RANGE window frames; prefer explicit ROWS. | Yes |
 | [SRP0029](Performance/SRP0029.md) | Implicit RANGE window frame | Yes | Specify a window frame explicitly for window functions with ORDER BY to avoid implicit RANGE semantics. | Yes |
-| [SRP0030](Performance/SRP0030.md) | Specify FAST_FORWARD for cursors | Yes | Cursors default to writable. Specify FAST_FORWARD. | Yes |
+| [SRP0030](Performance/SRP0030.md) | Specify FAST_FORWARD for cursors | Yes | Use FAST_FORWARD when a cursor is read-only and forward-only to reduce cursor overhead. | Yes |
   
 ## Microsoft 
   
