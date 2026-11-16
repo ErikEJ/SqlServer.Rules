@@ -51,14 +51,14 @@ internal sealed class TextViewEventListener : ExtensionPart, ITextViewOpenClosed
     }
 
     /// <inheritdoc />
-    public async Task TextViewClosedAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
+    public async Task TextViewClosedAsync(ITextViewSnapshot textView, CancellationToken cancellationToken)
     {
-        await this.diagnosticsProvider.ClearEntriesForDocumentAsync(textViewSnapshot.Document.Uri, cancellationToken);
+        await this.diagnosticsProvider.ClearEntriesForDocumentAsync(textView.Document.Uri, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task TextViewOpenedAsync(ITextViewSnapshot textViewSnapshot, CancellationToken cancellationToken)
+    public async Task TextViewOpenedAsync(ITextViewSnapshot textView, CancellationToken cancellationToken)
     {
-        await this.diagnosticsProvider.ProcessTextViewAsync(textViewSnapshot, cancellationToken);
+        await this.diagnosticsProvider.ProcessTextViewAsync(textView, cancellationToken);
     }
 }
