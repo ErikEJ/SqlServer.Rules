@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ErikEJ.DacFX.TSQLAnalyzer.Protocol;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 
 namespace SqlAnalyzerSsms.Linter.Linting;
@@ -23,7 +24,10 @@ internal sealed class AnalyzerUtilities : IDisposable
         PropertyNameCaseInsensitive = true,
     };
 
-    private readonly SemaphoreSlim _requestLock = new(1, 1);
+    private readonly ReentrantSemaphore _requestLock = ReentrantSemaphore.Create(
+        initialCount: 1,
+        joinableTaskContext: ThreadHelper.JoinableTaskContext,
+        mode: ReentrantSemaphore.ReentrancyMode.NotRecognized);
 
     private Process? _serverProcess;
     private StreamWriter? _serverInput;
@@ -66,7 +70,9 @@ internal sealed class AnalyzerUtilities : IDisposable
         }
 
         // Analyze the editor buffer content in-memory via server mode; no temp file is written.
-        return await AnalyzeWithServerModeAsync(text, rules, sqlVersion, additionalAnalyzers, cancellationToken).ConfigureAwait(false);
+        return await _requestLock.ExecuteAsync(
+            () => AnalyzeWithServerModeAsync(text, rules, sqlVersion, additionalAnalyzers, cancellationToken),
+            cancellationToken).ConfigureAwait(false);
     }
 
     public void Dispose()
@@ -75,10 +81,8 @@ internal sealed class AnalyzerUtilities : IDisposable
         this.ResetServerProcess();
     }
 
-    private async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string content, string rules, string sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    private async ValueTask<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string content, string rules, string sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
     {
-        await _requestLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -154,10 +158,6 @@ internal sealed class AnalyzerUtilities : IDisposable
             await ex.LogAsync().ConfigureAwait(false);
             ResetServerProcess();
             return [];
-        }
-        finally
-        {
-            _requestLock.Release();
         }
     }
 
