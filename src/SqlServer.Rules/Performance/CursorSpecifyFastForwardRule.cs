@@ -75,7 +75,7 @@ namespace SqlServer.Rules.Performance
             return problems;
         }
 
-        private static bool HasConflictingCursorOption(IList<CursorOption> options)
+        private static bool HasConflictingCursorOption(IList<CursorOption>? options)
         {
             return options?.Any(o =>
                 o.OptionKind == CursorOptionKind.Scroll
