@@ -1,0 +1,15 @@
+﻿CREATE PROCEDURE dbo.CursorScrollOrUpdateTest
+AS
+SET NOCOUNT ON;
+
+DECLARE scroll_cursor SCROLL CURSOR FOR
+SELECT Col1, Col2
+FROM [dbo].[TestTableSSDT]
+WHERE Col3=1
+ORDER BY Col1;
+
+DECLARE update_cursor CURSOR FOR
+SELECT Col1, Col2
+FROM [dbo].[TestTableSSDT]
+WHERE Col3=1
+FOR UPDATE;

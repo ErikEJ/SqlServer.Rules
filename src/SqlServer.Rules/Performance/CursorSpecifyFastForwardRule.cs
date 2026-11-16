@@ -53,14 +53,43 @@ namespace SqlServer.Rules.Performance
 
             foreach (var cursor in cursorVisitor.NotIgnoredStatements(RuleId))
             {
-                var hasFastForward = cursor.CursorDefinition?.Options?.Any(o => o.OptionKind == CursorOptionKind.FastForward) == true;
-                if (!hasFastForward)
+                var definition = cursor.CursorDefinition;
+                if (definition == null)
                 {
-                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, cursor));
+                    continue;
                 }
+
+                // FAST_FORWARD implies FORWARD_ONLY and READ_ONLY. Only recommend it for cursors that
+                // are already read-only and forward-only candidates; flagging SCROLL, updatable, keyset,
+                // dynamic or static cursors would change their semantics.
+                var options = definition.Options;
+                var hasFastForward = options?.Any(o => o.OptionKind == CursorOptionKind.FastForward) == true;
+                if (hasFastForward || HasConflictingCursorOption(options) || IsUpdatableCursor(definition))
+                {
+                    continue;
+                }
+
+                problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, cursor));
             }
 
             return problems;
+        }
+
+        private static bool HasConflictingCursorOption(IList<CursorOption>? options)
+        {
+            return options?.Any(o =>
+                o.OptionKind == CursorOptionKind.Scroll
+                || o.OptionKind == CursorOptionKind.Keyset
+                || o.OptionKind == CursorOptionKind.Dynamic
+                || o.OptionKind == CursorOptionKind.Static
+                || o.OptionKind == CursorOptionKind.ScrollLocks
+                || o.OptionKind == CursorOptionKind.Optimistic
+                || o.OptionKind == CursorOptionKind.Insensitive) == true;
+        }
+
+        private static bool IsUpdatableCursor(CursorDefinition definition)
+        {
+            return definition.Select?.QueryExpression?.ForClause is UpdateForClause;
         }
     }
 }

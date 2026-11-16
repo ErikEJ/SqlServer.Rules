@@ -28,4 +28,12 @@ public class SRP0030Tests : TestModel
 
         RunTest();
     }
+
+    [TestMethod]
+    public void TestCursorScrollOrForUpdateNotFlagged()
+    {
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/DeclareCursorScrollOrUpdate.sql");
+
+        RunTest();
+    }
 }
