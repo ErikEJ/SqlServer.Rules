@@ -38,7 +38,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "This module was created with ANSI_NULLS or QUOTED_IDENTIFIER off, which can affect its behavior.";
+public const string RuleDisplayName = "This object was created with ANSI_NULLS or QUOTED_IDENTIFIER off, which can affect its behavior.";
 
         /// <summary>
         /// The message
