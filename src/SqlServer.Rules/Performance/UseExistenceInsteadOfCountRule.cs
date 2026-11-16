@@ -95,12 +95,102 @@ namespace SqlServer.Rules.Performance
 
         private static bool CheckIf(IfStatement ifstmt)
         {
-            if (ifstmt.Predicate is BooleanComparisonExpression booleanCompare)
+            if (ifstmt.Predicate is not BooleanComparisonExpression booleanCompare)
             {
-                return booleanCompare.FirstExpression is IntegerLiteral || booleanCompare.SecondExpression is IntegerLiteral;
+                return false;
             }
 
-            return false;
+            var firstLiteral = booleanCompare.FirstExpression as IntegerLiteral;
+            var secondLiteral = booleanCompare.SecondExpression as IntegerLiteral;
+
+            // Exactly one side must be an integer literal; the other side holds the COUNT expression.
+            if ((firstLiteral == null) == (secondLiteral == null))
+            {
+                return false;
+            }
+
+            var countExpression = firstLiteral == null ? booleanCompare.FirstExpression : booleanCompare.SecondExpression;
+            if (!IsCountStar(countExpression))
+            {
+                return false;
+            }
+
+            var comparisonType = booleanCompare.ComparisonType;
+            var literal = (secondLiteral ?? firstLiteral)!;
+
+            if (!int.TryParse(literal.Value, out var value))
+            {
+                return false;
+            }
+
+            // Normalize so the comparison always reads as "count <operator> value".
+            if (secondLiteral == null)
+            {
+                comparisonType = ReverseComparison(comparisonType);
+            }
+
+            return IsExistenceComparison(comparisonType, value);
+        }
+
+        private static bool IsCountStar(ScalarExpression expression)
+        {
+            if (expression is not ScalarSubquery { QueryExpression: QuerySpecification querySpecification }
+                || querySpecification.SelectElements.Count != 1
+                || querySpecification.GroupByClause != null
+                || querySpecification.HavingClause != null
+                || querySpecification.TopRowFilter != null
+                || querySpecification.OffsetClause != null
+                || querySpecification.SelectElements[0] is not SelectScalarExpression { Expression: FunctionCall functionCall }
+                || functionCall.OverClause != null
+                || !string.Equals(functionCall.FunctionName.Value, "count", System.StringComparison.OrdinalIgnoreCase)
+                || functionCall.Parameters.Count != 1
+                || functionCall.Parameters[0] is not ColumnReferenceExpression { ColumnType: ColumnType.Wildcard })
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static BooleanComparisonType ReverseComparison(BooleanComparisonType comparisonType)
+        {
+            switch (comparisonType)
+            {
+                case BooleanComparisonType.GreaterThan:
+                    return BooleanComparisonType.LessThan;
+                case BooleanComparisonType.GreaterThanOrEqualTo:
+                    return BooleanComparisonType.LessThanOrEqualTo;
+                case BooleanComparisonType.LessThan:
+                    return BooleanComparisonType.GreaterThan;
+                case BooleanComparisonType.LessThanOrEqualTo:
+                    return BooleanComparisonType.GreaterThanOrEqualTo;
+                default:
+                    return comparisonType;
+            }
+        }
+
+        private static bool IsExistenceComparison(BooleanComparisonType comparisonType, int value)
+        {
+            // COUNT(...) is always a non-negative integer, so only the comparisons below are
+            // equivalent to EXISTS (at least one row) or NOT EXISTS (no rows).
+            switch (comparisonType)
+            {
+                case BooleanComparisonType.GreaterThan:
+                    return value == 0; // count > 0
+                case BooleanComparisonType.GreaterThanOrEqualTo:
+                    return value == 1; // count >= 1
+                case BooleanComparisonType.NotEqualToBrackets:
+                case BooleanComparisonType.NotEqualToExclamation:
+                    return value == 0; // count <> 0
+                case BooleanComparisonType.Equals:
+                    return value == 0; // count = 0
+                case BooleanComparisonType.LessThan:
+                    return value == 1; // count < 1
+                case BooleanComparisonType.LessThanOrEqualTo:
+                    return value == 0; // count <= 0
+                default:
+                    return false;
+            }
         }
     }
 }
