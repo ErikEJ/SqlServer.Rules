@@ -32,7 +32,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Table does not have a natural key.";
+        public const string RuleDisplayName = "A unique constraint can enforce the table's natural key and prevent duplicate entities.";
 
         /// <summary>
         /// The message

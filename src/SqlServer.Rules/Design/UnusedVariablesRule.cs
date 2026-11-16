@@ -32,7 +32,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Variable declared but never referenced or assigned.";
+        public const string RuleDisplayName = "This variable is never referenced or assigned; remove it if it is unnecessary.";
 
         /// <summary>
         /// The message

@@ -33,7 +33,7 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "When checking for existence use EXISTS instead of COUNT";
+        public const string RuleDisplayName = "Use EXISTS for existence checks; COUNT performs unnecessary aggregation.";
 
         /// <summary>
         /// The message

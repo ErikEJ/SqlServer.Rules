@@ -35,12 +35,12 @@ namespace SqlServer.Rules.Performance
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Query uses a high number of joins. ";
+        public const string RuleDisplayName = "Queries with many joins can be complex and may perform poorly.";
 
         /// <summary>
         /// The message
         /// </summary>
-        public const string Message = "Query uses {0} joins. This is a high number of joins and can lead to performance issues.";
+        public const string Message = "Query uses {0} joins, which can increase complexity and hurt performance.";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryHighJoinCountRule"/> class.

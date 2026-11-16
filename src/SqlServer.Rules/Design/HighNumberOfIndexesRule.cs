@@ -34,7 +34,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Excessive number of indexes on table found on table.";
+        public const string RuleDisplayName = "Too many indexes increase write overhead and maintenance costs.";
 
         /// <summary>
         /// The message

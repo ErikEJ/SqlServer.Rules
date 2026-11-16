@@ -38,7 +38,7 @@ namespace SqlServer.Rules.Naming
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Two part naming on objects is required.";
+        public const string RuleDisplayName = "Schema-qualify object names to avoid ambiguity and make name resolution predictable.";
 
         /// <summary>
         /// The message

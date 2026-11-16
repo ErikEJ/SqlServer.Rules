@@ -28,7 +28,7 @@ namespace SqlServer.Rules.Design
         private const string SpExecuteSqlStmtParameter = "@stmt";
 
         public const string RuleId = Constants.RuleNameSpace + "SRD0096";
-        public const string RuleDisplayName = "Potential SQL injection issue.";
+        public const string RuleDisplayName = "Dynamic SQL built from procedure input can execute unintended commands; parameterize values to reduce injection risk.";
         public const string Message = RuleDisplayName;
 
         public PotentialSqlInjectionRule()

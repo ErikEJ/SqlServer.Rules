@@ -30,7 +30,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Do not use SET ROWCOUNT to restrict the number of rows.";
+        public const string RuleDisplayName = "Use TOP or a row-limiting clause instead of SET ROWCOUNT for predictable statement behavior.";
 
         /// <summary>
         /// The message

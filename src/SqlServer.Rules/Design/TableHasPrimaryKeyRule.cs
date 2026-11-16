@@ -31,7 +31,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "Table does not have a primary key.";
+        public const string RuleDisplayName = "A primary key uniquely identifies each row and supports reliable references to the table.";
 
         /// <summary>
         /// The message

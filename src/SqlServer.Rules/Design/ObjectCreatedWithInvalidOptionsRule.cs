@@ -38,7 +38,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "The object was created with invalid options.";
+public const string RuleDisplayName = "This object was created with ANSI_NULLS or QUOTED_IDENTIFIER off, which can affect its behavior.";
 
         /// <summary>
         /// The message

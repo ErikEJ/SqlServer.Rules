@@ -25,7 +25,7 @@ namespace SqlServer.Rules.Performance
     public sealed class CursorSpecifyFastForwardRule : BaseSqlCodeAnalysisRule
     {
         public const string RuleId = Constants.RuleNameSpace + "SRP0030";
-        public const string RuleDisplayName = "Cursors default to writable. Specify FAST_FORWARD.";
+        public const string RuleDisplayName = "Use FAST_FORWARD when a cursor is read-only and forward-only to reduce cursor overhead.";
         public const string Message = RuleDisplayName;
 
         public CursorSpecifyFastForwardRule()

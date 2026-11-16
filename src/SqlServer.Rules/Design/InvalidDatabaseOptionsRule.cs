@@ -45,7 +45,7 @@ namespace SqlServer.Rules.Design
         /// <summary>
         /// The rule display name
         /// </summary>
-        public const string RuleDisplayName = "The database is configured with invalid options.";
+        public const string RuleDisplayName = "Database options may conflict with project settings or required SQL Server behavior.";
 
         /// <summary>
         /// The message
