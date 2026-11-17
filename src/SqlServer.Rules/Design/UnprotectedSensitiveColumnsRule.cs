@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
@@ -8,6 +9,8 @@ namespace SqlServer.Rules.Design
 {
     /// <summary>
     /// Sensitive columns should be masked or encrypted.
+    /// Classifications with a Public label or an explicit RANK = NONE are excluded.
+    /// Omitting the rank does not exempt a sensitive classification. A rank alone does not trigger this rule.
     /// </summary>
     /// <FriendlyName>Protect sensitive columns</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
@@ -39,11 +42,18 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
+            // DacFx uses 0 for explicit NONE and -1 for an omitted rank.
             var columns = table.GetReferenced(DacQueryScopes.All)
                 .Where(column => column.ObjectType == Column.TypeClass && !column.IsWhiteListed())
                 .Where(column =>
                     !string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.SensitivityLabel))
                     || !string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.SensitivityInformationType)))
+                .Where(column =>
+                    !string.Equals(
+                        column.GetProperty<string>(Column.SensitivityLabel),
+                        "Public",
+                        StringComparison.OrdinalIgnoreCase))
+                .Where(column => column.GetProperty<int>(Column.SensitivityRank) != 0)
                 .Where(column =>
                     string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.MaskingFunction))
                     && column.GetProperty<int>(Column.EncryptionType) == 0);
