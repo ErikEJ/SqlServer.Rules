@@ -12,7 +12,7 @@ public class SRD0097Tests : TestModel
     }
 
     [TestMethod]
-    public void FlagsClassifiedTableColumnOnlyOnceAcrossMultipleViews()
+    public void FlagsClassifiedUnprotectedColumnOnly()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0097SensitiveColumns.sql");
 

@@ -25,7 +25,7 @@ namespace SqlServer.Rules.Design
         public const string Message = RuleDisplayName;
 
         public UnprotectedSensitiveColumnsRule()
-            : base(ModelSchema.Table, ModelSchema.View)
+            : base(ModelSchema.Table)
         {
         }
 
@@ -39,7 +39,7 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var columns = table.GetChildren(DacQueryScopes.All)
+            var columns = table.GetReferenced(DacQueryScopes.All)
                 .Where(column => column.ObjectType == Column.TypeClass && !column.IsWhiteListed())
                 .Where(column =>
                     !string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.SensitivityLabel))
