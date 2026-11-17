@@ -12,11 +12,13 @@ public class SRD0097Tests : TestModel
     }
 
     [TestMethod]
-    public void FlagsClassifiedUnprotectedColumnOnly()
+    public void FlagsSensitiveUnprotectedColumnsButNotPublicOrNoneRankedColumns()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0097SensitiveColumns.sql");
 
         ExpectedProblems.Add(new TestProblem(9, 5, "SqlServer.Rules.SRD0097"));
+        ExpectedProblems.Add(new TestProblem(15, 5, "SqlServer.Rules.SRD0097"));
+        ExpectedProblems.Add(new TestProblem(18, 5, "SqlServer.Rules.SRD0097"));
 
         RunTest();
     }
