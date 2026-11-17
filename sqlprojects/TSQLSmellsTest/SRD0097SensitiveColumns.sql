@@ -21,3 +21,8 @@ ADD SENSITIVITY CLASSIFICATION TO [dbo].[SensitiveColumns].[Masked]
 GO
 ADD SENSITIVITY CLASSIFICATION TO [dbo].[SensitiveColumns].[Encrypted]
     WITH (LABEL = 'Highly Confidential', INFORMATION_TYPE = 'National ID');
+GO
+CREATE VIEW [dbo].[SensitiveColumnsView]
+AS
+SELECT [Unprotected]
+FROM [dbo].[SensitiveColumns];

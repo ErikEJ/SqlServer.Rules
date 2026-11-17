@@ -25,7 +25,7 @@ namespace SqlServer.Rules.Design
         public const string Message = RuleDisplayName;
 
         public UnprotectedSensitiveColumnsRule()
-            : base(ModelSchema.Table)
+            : base(ModelSchema.Table, ModelSchema.View)
         {
         }
 
