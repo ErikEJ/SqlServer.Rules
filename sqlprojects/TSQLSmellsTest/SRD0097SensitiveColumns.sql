@@ -26,3 +26,8 @@ CREATE VIEW [dbo].[SensitiveColumnsView]
 AS
 SELECT [Unprotected]
 FROM [dbo].[SensitiveColumns];
+GO
+CREATE VIEW [dbo].[SensitiveColumnsView2]
+AS
+SELECT [Unprotected]
+FROM [dbo].[SensitiveColumns];

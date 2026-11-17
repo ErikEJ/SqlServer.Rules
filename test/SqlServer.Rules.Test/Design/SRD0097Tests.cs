@@ -12,11 +12,10 @@ public class SRD0097Tests : TestModel
     }
 
     [TestMethod]
-    public void FlagsClassifiedUnprotectedColumnsOnTablesAndViews()
+    public void FlagsClassifiedTableColumnOnlyOnceAcrossMultipleViews()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0097SensitiveColumns.sql");
 
-        ExpectedProblems.Add(new TestProblem(9, 5, "SqlServer.Rules.SRD0097"));
         ExpectedProblems.Add(new TestProblem(9, 5, "SqlServer.Rules.SRD0097"));
 
         RunTest();
