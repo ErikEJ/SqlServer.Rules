@@ -53,6 +53,7 @@ public class AnalyzerFactory
         var factory = new CodeAnalysisServiceFactory();
         var service = factory.CreateAnalysisService(model, settings);
 
+        ConfigureSensitivityPolicy(service);
         DisableIgnoredRules(service);
 
         service.SetProblemSuppressor(IsSuppressed);
@@ -80,6 +81,47 @@ public class AnalyzerFactory
         }
 
         return result;
+    }
+
+    private void ConfigureSensitivityPolicy(CodeAnalysisService service)
+    {
+        if (string.IsNullOrWhiteSpace(request.SensitivityPolicyFile)
+            && string.IsNullOrWhiteSpace(request.SensitivityExceptionsFile))
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(request.SensitivityPolicyFile))
+        {
+            throw new ArgumentException("A sensitivity exceptions file requires a sensitivity policy file.");
+        }
+
+        var policyPath = Path.GetFullPath(request.SensitivityPolicyFile);
+        var exceptionsPath = string.IsNullOrWhiteSpace(request.SensitivityExceptionsFile)
+            ? null
+            : Path.GetFullPath(request.SensitivityExceptionsFile);
+
+        if (!File.Exists(policyPath))
+        {
+            throw new ArgumentException($"Sensitivity policy file not found: {policyPath}");
+        }
+
+        if (exceptionsPath != null && !File.Exists(exceptionsPath))
+        {
+            throw new ArgumentException($"Sensitivity exceptions file not found: {exceptionsPath}");
+        }
+
+        var descriptor = service.GetRules().SingleOrDefault(candidate => candidate.RuleId == "SqlServer.Rules.SRD0097");
+        var rule = descriptor?.Rule;
+        var policyProperty = rule?.GetType().GetProperty("PolicyFile");
+        var exceptionsProperty = rule?.GetType().GetProperty("ExceptionsFile");
+        if (rule == null || policyProperty == null || exceptionsProperty == null)
+        {
+            throw new ArgumentException("SRD0097 is unavailable; the sensitivity policy cannot be applied.");
+        }
+
+        policyProperty.SetValue(rule, policyPath);
+        exceptionsProperty.SetValue(rule, exceptionsPath);
     }
 
     private void SaveOutputFile(AnalyzerResult result, CodeAnalysisResult analysisResult)

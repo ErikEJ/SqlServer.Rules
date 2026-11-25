@@ -27,6 +27,16 @@ namespace SqlServer.Rules.Design
         public const string RuleDisplayName = "Classified sensitive columns should be masked or encrypted.";
         public const string Message = RuleDisplayName;
 
+        /// <summary>
+        /// Gets or sets an explicitly selected SSMS Information Protection policy file.
+        /// </summary>
+        public string? PolicyFile { get; set; }
+
+        /// <summary>
+        /// Gets or sets an optional exact-column policy exceptions file.
+        /// </summary>
+        public string? ExceptionsFile { get; set; }
+
         public UnprotectedSensitiveColumnsRule()
             : base(ModelSchema.Table)
         {
@@ -45,6 +55,9 @@ namespace SqlServer.Rules.Design
             // DacFx uses 0 for explicit NONE and -1 for an omitted rank.
             var columns = table.GetReferenced(DacQueryScopes.All)
                 .Where(column => column.ObjectType == Column.TypeClass && !column.IsWhiteListed())
+                .ToList();
+
+            var classifiedColumns = columns
                 .Where(column =>
                     !string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.SensitivityLabel))
                     || !string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.SensitivityInformationType)))
@@ -54,14 +67,54 @@ namespace SqlServer.Rules.Design
                         "Public",
                         StringComparison.OrdinalIgnoreCase))
                 .Where(column => column.GetProperty<int>(Column.SensitivityRank) != 0)
-                .Where(column =>
-                    string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.MaskingFunction))
-                    && column.GetProperty<int>(Column.EncryptionType) == 0);
+                .Where(column => !IsProtected(column))
+                .ToList();
 
-            problems.AddRange(columns.Select(column =>
+            problems.AddRange(classifiedColumns.Select(column =>
                 new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), column)));
+
+            var (policyPath, exceptionsPath) = GetPolicyPaths(table);
+            if (policyPath != null)
+            {
+                var policy = SensitivityPolicy.Load(policyPath, exceptionsPath, DateTime.UtcNow);
+                var classified = new HashSet<TSqlObject>(classifiedColumns);
+
+                foreach (var column in columns.Where(column => !classified.Contains(column) && !IsProtected(column)))
+                {
+                if (policy.IsExcluded(column))
+                {
+                    continue;
+                }
+
+                var match = policy.FindMatch(column);
+                if (match != null)
+                {
+                    var message = $"Column '{column.Name.Parts.Last()}' is potentially sensitive (policy information type '{match.InformationType}', pattern '{match.Pattern}') but is not masked or Always Encrypted.";
+                    problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage(message, RuleId), column));
+                }
+                }
+            }
 
             return problems;
         }
+
+        private (string? PolicyPath, string? ExceptionsPath) GetPolicyPaths(TSqlObject table)
+        {
+            if (!string.IsNullOrWhiteSpace(PolicyFile) || !string.IsNullOrWhiteSpace(ExceptionsFile))
+            {
+                if (string.IsNullOrWhiteSpace(PolicyFile))
+                {
+                throw new InvalidOperationException("SRD0097 exceptions_file requires policy_file.");
+                }
+
+                return (PolicyFile, ExceptionsFile);
+            }
+
+            return SensitivityPolicy.GetConfiguredPaths(table);
+        }
+
+        private static bool IsProtected(TSqlObject column)
+            => !string.IsNullOrWhiteSpace(column.GetProperty<string>(Column.MaskingFunction))
+                || column.GetProperty<int>(Column.EncryptionType) != 0;
     }
 }

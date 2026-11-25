@@ -49,4 +49,14 @@ public class AnalyzerOptions
     /// Used to specify if formatting of the .sql files selected for analysis is required.
     /// </summary>
     public bool Format { get; set; }
+
+    /// <summary>
+    /// Used to opt in to SRD0097 evaluation with an SSMS Information Protection policy file.
+    /// </summary>
+    public string? SensitivityPolicyFile { get; set; }
+
+    /// <summary>
+    /// Used to specify exact-column exceptions for SRD0097 policy evaluation.
+    /// </summary>
+    public string? SensitivityExceptionsFile { get; set; }
 }

@@ -1,0 +1,48 @@
+{
+  "Version": "2.0",
+  "Labels": {
+    "confidential": {
+      "DisplayName": "Confidential",
+      "Rank": "Medium",
+      "Enabled": true
+    }
+  },
+  "InformationTypes": {
+    "contact": {
+      "DisplayName": "Contact Info",
+      "Order": 1,
+      "RecommendedLabelId": "confidential",
+      "Enabled": true,
+      "Keywords": [
+        {
+          "Pattern": "%email%",
+          "CanBeNumeric": false,
+          "Excluded": null
+        },
+        {
+          "Pattern": "%emailaddress%",
+          "CanBeNumeric": false,
+          "Excluded": true
+        },
+        {
+          "Pattern": "%phone%",
+          "CanBeNumeric": false,
+          "Excluded": null
+        }
+      ]
+    },
+    "disabled": {
+      "DisplayName": "Disabled type",
+      "Order": 2,
+      "RecommendedLabelId": "confidential",
+      "Enabled": false,
+      "Keywords": [
+        {
+          "Pattern": "%disabled%",
+          "CanBeNumeric": true,
+          "Excluded": null
+        }
+      ]
+    }
+  }
+}
