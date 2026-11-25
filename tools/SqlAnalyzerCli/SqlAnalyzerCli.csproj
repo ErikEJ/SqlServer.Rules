@@ -5,6 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);MCPEXP005</NoWarn>
   </PropertyGroup>
 
   <!-- Performance Optimizations -->
@@ -41,6 +42,7 @@
   <ItemGroup>
     <None Include="readme.md" Pack="true" PackagePath="/" />
     <None Include=".mcp/server.json" Pack="true" PackagePath="/.mcp/" />
+    <None Update="Skills\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +50,7 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.15" />
     <PackageReference Include="ModelContextProtocol" Version="2.4.0" />
+    <PackageReference Include="ModelContextProtocol.Extensions.Skills" Version="2.4.0" />
     <PackageReference Include="NuGet.Protocol" Version="8.0.0" />
     <PackageReference Include="Spectre.Console" Version="0.57.2" />
   </ItemGroup>

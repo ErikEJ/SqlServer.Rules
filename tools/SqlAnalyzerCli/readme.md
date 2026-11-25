@@ -78,6 +78,10 @@ CREATE TABLE [dbo].[Table3]
 
 You can use the tool to ask GitHub Copilot to analyze your SQL Server T-SQL scripts in Visual Studio, SSMS or VS Code.
 
+The server also exposes the experimental MCP Skills extension. Clients that support
+it can discover `sql-project-rules-setup` and read its instructions for enabling
+SqlServer.Rules in an MSBuild.Sdk.SqlProj project in Visual Studio.
+
 The TSQL Analyzer MCP Server supports quick installation across multiple development environments. Choose your preferred client below for streamlined setup:
 
 | Client | One-click Installation | MCP Guide |

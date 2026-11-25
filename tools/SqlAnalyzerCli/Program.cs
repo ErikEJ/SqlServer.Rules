@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Extensions.Skills;
 using Spectre.Console;
 using SqlAnalyzerCli.Services;
 
@@ -24,7 +25,8 @@ internal static class Program
 
                 builder.Services.AddMcpServer()
                 .WithStdioServerTransport()
-                .WithTools<AnalyzerTools>();
+                .WithTools<AnalyzerTools>()
+                .WithSkillsFromSubdirectories(Path.Combine(AppContext.BaseDirectory, "Skills"));
 
                 builder.Logging.AddConsole(options =>
                 {
