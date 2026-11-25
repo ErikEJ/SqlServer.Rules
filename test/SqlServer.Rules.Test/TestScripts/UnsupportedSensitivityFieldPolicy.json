@@ -1,0 +1,26 @@
+{
+  "Version": "2.0",
+  "Labels": {
+    "label": {
+      "DisplayName": "Confidential",
+      "Rank": "Medium",
+      "Enabled": true
+    }
+  },
+  "InformationTypes": {
+    "contact": {
+      "DisplayName": "Contact",
+      "Order": 1,
+      "RecommendedLabelId": "label",
+      "Enabled": true,
+      "Keywords": [
+        {
+          "Pattern": "%email%",
+          "CanBeNumeric": false,
+          "Excluded": null,
+          "CaseSensitive": true
+        }
+      ]
+    }
+  }
+}

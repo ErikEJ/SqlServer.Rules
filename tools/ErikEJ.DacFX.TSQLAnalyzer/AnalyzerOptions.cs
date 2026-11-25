@@ -30,6 +30,11 @@ public class AnalyzerOptions
     public string? Script { get; set; }
 
     /// <summary>
+    /// Used to specify the source path for an in-memory SQL script, enabling source-file configuration discovery.
+    /// </summary>
+    public string? ScriptPath { get; set; }
+
+    /// <summary>
     /// Used to specify a rules expression similar to 'Rules:-SqlServer.Rules.SRN0007;+!SqlServer.Rules.SRN0005'. Optional.
     /// </summary>
     public string? Rules { get; set; }

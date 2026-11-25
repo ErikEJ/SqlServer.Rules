@@ -163,6 +163,7 @@ internal static class ServerMode
                 AdditionalAnalyzers = request.AdditionalAnalyzers?.ToList(),
                 SensitivityPolicyFile = request.SensitivityPolicyFile,
                 SensitivityExceptionsFile = request.SensitivityExceptionsFile,
+                ScriptPath = hasContent ? request.Path : null,
             };
 
             if (hasContent)

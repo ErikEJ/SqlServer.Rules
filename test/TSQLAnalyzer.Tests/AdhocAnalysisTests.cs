@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using ErikEJ.DacFX.TSQLAnalyzer;
 using ErikEJ.DacFX.TSQLAnalyzer.Services;
@@ -314,6 +315,34 @@ public class AdhocAnalysisTests
         Assert.IsTrue(
             result.Result!.Problems.Any(p => p.RuleId == SelectStarRuleId),
             $"Expected {SelectStarRuleId} to still fire when only naming rules are excluded.");
+    }
+
+    [TestMethod]
+    public void SensitivityExceptionsRequireAnExplicitPolicy()
+    {
+        var exception = Assert.Throws<ArgumentException>(() =>
+            new AnalyzerFactory(new AnalyzerOptions
+            {
+                Script = "SELECT 1;",
+                SensitivityExceptionsFile = "sensitivity-exceptions.json",
+            }).Analyze());
+
+        StringAssert.Contains(exception.Message, "requires a sensitivity policy file", StringComparison.Ordinal);
+    }
+
+    [TestMethod]
+    public void InMemoryScriptPreservesItsSourcePath()
+    {
+        var sourcePath = Path.Combine(Path.GetTempPath(), "TSQLAnalyzer-Source.sql");
+        var result = Analyze(new AnalyzerOptions
+        {
+            Script = "SELECT * FROM sys.objects;",
+            ScriptPath = sourcePath,
+            SqlVersion = SqlServerVersion.Sql160,
+        });
+
+        var problem = result.Result!.Problems.First(p => p.RuleId == SelectStarRuleId);
+        Assert.AreEqual(sourcePath, problem.SourceName);
     }
 
     private static AnalyzerResult Analyze(AnalyzerOptions options)

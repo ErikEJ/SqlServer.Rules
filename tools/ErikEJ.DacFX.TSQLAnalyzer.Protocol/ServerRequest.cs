@@ -20,7 +20,7 @@ public sealed class ServerRequest
     public string Command { get; set; } = string.Empty;
 
     /// <summary>
-    /// Path to .sql file or .dacpac to analyze (for analyze command).
+    /// Path to .sql file or .dacpac to analyze. When content is supplied, this may identify the source file for configuration discovery.
     /// </summary>
     [JsonPropertyName("path")]
     public string? Path { get; set; }

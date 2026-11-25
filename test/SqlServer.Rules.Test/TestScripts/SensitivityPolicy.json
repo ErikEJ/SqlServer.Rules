@@ -25,7 +25,32 @@
           "Excluded": true
         },
         {
+          "Pattern": "%excluded%",
+          "CanBeNumeric": false,
+          "Excluded": null
+        },
+        {
           "Pattern": "%phone%",
+          "CanBeNumeric": false,
+          "Excluded": null
+        },
+        {
+          "Pattern": "%pin%",
+          "CanBeNumeric": true,
+          "Excluded": null
+        },
+        {
+          "Pattern": "%[^h]ip%address%",
+          "CanBeNumeric": false,
+          "Excluded": null
+        },
+        {
+          "Pattern": "%_code",
+          "CanBeNumeric": false,
+          "Excluded": null
+        },
+        {
+          "Pattern": "%odd[]]name%",
           "CanBeNumeric": false,
           "Excluded": null
         }

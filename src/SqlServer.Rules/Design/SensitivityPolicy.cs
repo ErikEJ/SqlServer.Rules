@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using EditorConfig.Core;
 using Microsoft.SqlServer.Dac.Model;
@@ -15,6 +15,16 @@ namespace SqlServer.Rules.Design
     internal sealed class SensitivityPolicy
     {
         private static readonly StringComparer IdentifierComparer = StringComparer.InvariantCultureIgnoreCase;
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        };
+
+        private static readonly HashSet<string> NumericTypeNames = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "bigint", "bit", "decimal", "float", "int", "money", "numeric", "real", "smallint", "smallmoney", "tinyint",
+        };
+
         private readonly List<PolicyMatch> matches;
         private readonly Dictionary<string, PolicyException> exceptions;
 
@@ -48,7 +58,7 @@ namespace SqlServer.Rules.Design
             return (policyPath, exceptionsPath);
         }
 
-        public static SensitivityPolicy Load(string policyPath, string? exceptionsPath, DateTime utcNow)
+        public static SensitivityPolicy Load(string policyPath, string? exceptionsPath)
         {
             var document = ReadJson<PolicyDocument>(policyPath);
             if (!string.Equals(document.Version, "2.0", StringComparison.Ordinal))
@@ -61,18 +71,23 @@ namespace SqlServer.Rules.Design
                 throw new InvalidOperationException($"SRD0097 policy '{policyPath}' must contain Labels and InformationTypes.");
             }
 
+            var labels = new Dictionary<string, PolicyLabel>(document.Labels, StringComparer.OrdinalIgnoreCase);
             var matches = new List<PolicyMatch>();
-            foreach (var informationType in document.InformationTypes.Values.OrderBy(x => x.Order))
+            foreach (var item in document.InformationTypes
+                .OrderBy(x => x.Value.Order)
+                .ThenBy(x => x.Value.DisplayName, StringComparer.Ordinal)
+                .ThenBy(x => x.Key, StringComparer.Ordinal))
             {
+                var informationType = item.Value;
+                if (string.IsNullOrWhiteSpace(informationType.RecommendedLabelId)
+                    || !labels.TryGetValue(informationType.RecommendedLabelId!, out var label))
+                {
+                    throw new InvalidOperationException($"Information type '{informationType.DisplayName}' in '{policyPath}' references an unknown RecommendedLabelId.");
+                }
+
                 if (!informationType.Enabled)
                 {
                     continue;
-                }
-
-                if (string.IsNullOrWhiteSpace(informationType.RecommendedLabelId)
-                    || !document.Labels.TryGetValue(informationType.RecommendedLabelId, out var label))
-                {
-                    throw new InvalidOperationException($"Information type '{informationType.DisplayName}' in '{policyPath}' references an unknown RecommendedLabelId.");
                 }
 
                 if (!label.Enabled
@@ -89,22 +104,21 @@ namespace SqlServer.Rules.Design
                         throw new InvalidOperationException($"Information type '{informationType.DisplayName}' in '{policyPath}' contains a keyword without a Pattern.");
                     }
 
-                    if (keyword.Excluded == true)
+                    var regex = CreateLikeRegex(keyword.Pattern, policyPath);
+                    if (keyword.Excluded != true)
                     {
-                        continue;
-                    }
-
-                    matches.Add(new PolicyMatch(
-                        informationType.DisplayName ?? informationType.RecommendedLabelId,
+                        matches.Add(new PolicyMatch(
+                        informationType.DisplayName ?? informationType.RecommendedLabelId!,
                         keyword.Pattern,
                         keyword.CanBeNumeric,
-                        CreateLikeRegex(keyword.Pattern, policyPath)));
+                        regex));
+                    }
                 }
             }
 
             var exceptions = exceptionsPath == null
                 ? new Dictionary<string, PolicyException>(IdentifierComparer)
-                : LoadExceptions(exceptionsPath, utcNow);
+                : LoadExceptions(exceptionsPath);
 
             return new SensitivityPolicy(matches, exceptions);
         }
@@ -118,8 +132,27 @@ namespace SqlServer.Rules.Design
                 && match.Regex.IsMatch(columnName));
         }
 
-        public bool IsExcluded(TSqlObject column)
-            => exceptions.ContainsKey(GetObjectName(column));
+        public bool IsExcluded(TSqlObject column, DateTime utcNow)
+            => exceptions.TryGetValue(GetObjectName(column), out var exception)
+                && (exception.Expires == null || utcNow.Date <= exception.Expires.Value);
+
+        public static string GetCacheKey(string policyPath, string? exceptionsPath)
+            => policyPath + "\0" + exceptionsPath;
+
+        public static (long PolicyTicks, long PolicyLength, long ExceptionsTicks, long ExceptionsLength) GetFileStamp(
+            string policyPath,
+            string? exceptionsPath)
+        {
+            var policy = new FileInfo(policyPath);
+            policy.Refresh();
+            var exceptions = exceptionsPath == null ? null : new FileInfo(exceptionsPath);
+            exceptions?.Refresh();
+            return (
+                policy.LastWriteTimeUtc.Ticks,
+                policy.Exists ? policy.Length : 0,
+                exceptions?.LastWriteTimeUtc.Ticks ?? 0,
+                exceptions?.Exists == true ? exceptions.Length : 0);
+        }
 
         private static string? ResolveSetting(
             EditorConfigParser parser,
@@ -153,10 +186,11 @@ namespace SqlServer.Rules.Design
             return Path.GetFullPath(path);
         }
 
-        private static Dictionary<string, PolicyException> LoadExceptions(string path, DateTime utcNow)
+        private static Dictionary<string, PolicyException> LoadExceptions(string path)
         {
             var document = ReadJson<ExceptionDocument>(path);
             var result = new Dictionary<string, PolicyException>(IdentifierComparer);
+            var allEntries = new Dictionary<string, PolicyException>(IdentifierComparer);
 
             foreach (var exception in document.Exceptions ?? new List<PolicyExceptionEntry>())
             {
@@ -165,9 +199,9 @@ namespace SqlServer.Rules.Design
                     throw new InvalidOperationException($"Each SRD0097 exception in '{path}' must specify a column and a non-empty reason.");
                 }
 
-                var name = ParseObjectName(exception.Column, path);
+                var name = ParseObjectName(exception.Column!, path);
                 DateTime? expires = null;
-                if (!string.IsNullOrWhiteSpace(exception.Expires))
+                if (exception.Expires != null)
                 {
                     if (!DateTime.TryParseExact(
                         exception.Expires,
@@ -182,10 +216,10 @@ namespace SqlServer.Rules.Design
                     expires = expiryDate.Date;
                 }
 
-                var normalizedName = string.Join(".", name);
-                var entry = new PolicyException(exception.Reason, exception.ApprovedBy, expires);
+                var normalizedName = GetObjectKey(name);
+                var entry = new PolicyException(exception.Reason!, exception.ApprovedBy, expires);
 
-                if (result.TryGetValue(normalizedName, out var existing)
+                if (allEntries.TryGetValue(normalizedName, out var existing)
                     && (existing.Reason != entry.Reason
                         || existing.ApprovedBy != entry.ApprovedBy
                         || existing.Expires != entry.Expires))
@@ -193,10 +227,8 @@ namespace SqlServer.Rules.Design
                     throw new InvalidOperationException($"Conflicting SRD0097 exceptions for '{exception.Column}' in '{path}'.");
                 }
 
-                if (expires == null || utcNow.Date <= expires.Value)
-                {
-                    result[normalizedName] = entry;
-                }
+                allEntries[normalizedName] = entry;
+                result[normalizedName] = entry;
             }
 
             return result;
@@ -258,6 +290,15 @@ namespace SqlServer.Rules.Design
                     {
                         builder.Append(value[index++]);
                     }
+
+                    var unquoted = builder.ToString().Trim();
+                    if (!Regex.IsMatch(unquoted, @"^[\p{L}_@#][\p{L}\p{Nd}_@$#]*$", RegexOptions.CultureInvariant))
+                    {
+                        throw InvalidIdentifier(value, path);
+                    }
+
+                    builder.Clear();
+                    builder.Append(unquoted);
                 }
 
                 if (builder.Length == 0 || (index < value.Length && value[index] != '.' && !char.IsWhiteSpace(value[index])))
@@ -271,9 +312,22 @@ namespace SqlServer.Rules.Design
                     index++;
                 }
 
-                if (index < value.Length && value[index++] != '.')
+                if (index < value.Length)
                 {
-                    throw InvalidIdentifier(value, path);
+                    if (value[index++] != '.')
+                    {
+                        throw InvalidIdentifier(value, path);
+                    }
+
+                    while (index < value.Length && char.IsWhiteSpace(value[index]))
+                    {
+                        index++;
+                    }
+
+                    if (index == value.Length)
+                    {
+                        throw InvalidIdentifier(value, path);
+                    }
                 }
             }
 
@@ -289,7 +343,10 @@ namespace SqlServer.Rules.Design
             => new($"Invalid SRD0097 exception column identifier '{value}' in '{path}'. Use an exact [schema].[table].[column] name.");
 
         private static string GetObjectName(TSqlObject column)
-            => string.Join(".", column.Name.Parts);
+            => GetObjectKey(column.Name.Parts);
+
+        private static string GetObjectKey(IEnumerable<string> parts)
+            => string.Join("\0", parts);
 
         private static Regex CreateLikeRegex(string pattern, string policyPath)
         {
@@ -307,7 +364,9 @@ namespace SqlServer.Rules.Design
                 }
                 else if (current == '[')
                 {
-                    var end = pattern.IndexOf(']', index + 1);
+                    var end = pattern[index + 1] == ']'
+                        ? pattern.IndexOf(']', index + 2)
+                        : pattern.IndexOf(']', index + 1);
                     if (end < 0 || end == index + 1)
                     {
                         throw new InvalidOperationException($"Invalid SQL LIKE pattern '{pattern}' in '{policyPath}'.");
@@ -330,7 +389,7 @@ namespace SqlServer.Rules.Design
                     for (var charIndex = contentStart; charIndex < content.Length; charIndex++)
                     {
                         var value = content[charIndex];
-                        if (value is '\\' or ']' or '^')
+                        if (value is '\\' or '[' or ']' or '^')
                         {
                             expression.Append('\\');
                         }
@@ -363,10 +422,6 @@ namespace SqlServer.Rules.Design
 
         private static bool IsNumeric(TSqlObject column)
         {
-            var numericTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "bigint", "bit", "decimal", "float", "int", "money", "numeric", "real", "smallint", "smallmoney", "tinyint",
-            };
             var pending = new Stack<TSqlObject>(column.GetReferenced(Column.DataType, DacQueryScopes.All));
             var visited = new HashSet<TSqlObject>();
 
@@ -378,7 +433,7 @@ namespace SqlServer.Rules.Design
                     continue;
                 }
 
-                if (numericTypes.Contains(dataType.Name.Parts.Last()))
+                if (NumericTypeNames.Contains(dataType.Name.Parts.Last()))
                 {
                     return true;
                 }
@@ -397,95 +452,120 @@ namespace SqlServer.Rules.Design
             try
             {
                 using var stream = File.OpenRead(path);
-                var serializer = new DataContractJsonSerializer(
-                    typeof(T),
-                    new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true });
-                return (T)serializer.ReadObject(stream)!;
+                return JsonSerializer.Deserialize<T>(stream, JsonOptions)
+                    ?? throw new JsonException($"Configuration file '{path}' must contain a JSON object.");
             }
-            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or SerializationException or ArgumentException)
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or JsonException or ArgumentException)
             {
                 throw new InvalidOperationException($"Unable to read SRD0097 configuration file '{path}': {exception.Message}", exception);
             }
         }
 
-        [DataContract]
         private sealed class PolicyDocument
         {
-            [DataMember(Name = "Version", IsRequired = true)]
+            [JsonPropertyName("LastModifiedUtc")]
+            public string? LastModifiedUtc { get; set; }
+
+            [JsonRequired]
+            [JsonPropertyName("Version")]
             public string? Version { get; set; }
 
-            [DataMember(Name = "Labels", IsRequired = true)]
+            [JsonRequired]
+            [JsonPropertyName("Labels")]
             public Dictionary<string, PolicyLabel>? Labels { get; set; }
 
-            [DataMember(Name = "InformationTypes", IsRequired = true)]
+            [JsonRequired]
+            [JsonPropertyName("InformationTypes")]
             public Dictionary<string, PolicyInformationType>? InformationTypes { get; set; }
         }
 
-        [DataContract]
         private sealed class PolicyLabel
         {
-            [DataMember(Name = "DisplayName")]
+            [JsonRequired]
+            [JsonPropertyName("DisplayName")]
             public string? DisplayName { get; set; }
 
-            [DataMember(Name = "Rank")]
+            [JsonPropertyName("Description")]
+            public string? Description { get; set; }
+
+            [JsonRequired]
+            [JsonPropertyName("Rank")]
             public string? Rank { get; set; }
 
-            [DataMember(Name = "Enabled", IsRequired = true)]
+            [JsonPropertyName("Order")]
+            public int Order { get; set; }
+
+            [JsonRequired]
+            [JsonPropertyName("Enabled")]
             public bool Enabled { get; set; }
         }
 
-        [DataContract]
         private sealed class PolicyInformationType
         {
-            [DataMember(Name = "DisplayName")]
+            [JsonRequired]
+            [JsonPropertyName("DisplayName")]
             public string? DisplayName { get; set; }
 
-            [DataMember(Name = "Order", IsRequired = true)]
+            [JsonPropertyName("Description")]
+            public string? Description { get; set; }
+
+            [JsonRequired]
+            [JsonPropertyName("Order")]
             public int Order { get; set; }
 
-            [DataMember(Name = "RecommendedLabelId", IsRequired = true)]
+            [JsonRequired]
+            [JsonPropertyName("RecommendedLabelId")]
             public string? RecommendedLabelId { get; set; }
 
-            [DataMember(Name = "Enabled", IsRequired = true)]
+            [JsonRequired]
+            [JsonPropertyName("Enabled")]
             public bool Enabled { get; set; }
 
-            [DataMember(Name = "Keywords")]
+            [JsonPropertyName("Custom")]
+            public bool Custom { get; set; }
+
+            [JsonPropertyName("Keywords")]
             public List<PolicyKeyword>? Keywords { get; set; }
         }
 
-        [DataContract]
         private sealed class PolicyKeyword
         {
-            [DataMember(Name = "Pattern")]
+            [JsonRequired]
+            [JsonPropertyName("Pattern")]
             public string? Pattern { get; set; }
 
-            [DataMember(Name = "CanBeNumeric", IsRequired = true)]
+            [JsonRequired]
+            [JsonPropertyName("CanBeNumeric")]
             public bool CanBeNumeric { get; set; }
 
-            [DataMember(Name = "Excluded")]
+            [JsonPropertyName("Excluded")]
             public bool? Excluded { get; set; }
+
+            [JsonPropertyName("Custom")]
+            public bool Custom { get; set; }
         }
 
-        [DataContract]
         private sealed class ExceptionDocument
         {
-            [DataMember(Name = "exceptions")]
+            [JsonRequired]
+            [JsonPropertyName("exceptions")]
             public List<PolicyExceptionEntry>? Exceptions { get; set; }
         }
 
-        [DataContract]
         private sealed class PolicyExceptionEntry
         {
-            [DataMember(Name = "column")]
+            [JsonRequired]
+            [JsonPropertyName("column")]
             public string? Column { get; set; }
 
-            [DataMember(Name = "reason")]
+            [JsonRequired]
+            [JsonPropertyName("reason")]
             public string? Reason { get; set; }
 
-            [DataMember(Name = "approvedBy")]
+            [JsonPropertyName("approvedBy")]
             public string? ApprovedBy { get; set; }
 
-            [DataMember(Name = "expires")]
+            [JsonPropertyName("expires")]
             public string? Expires { get; set; }
         }
 

@@ -9,6 +9,10 @@
       "reason": "The dot is part of the column name"
     },
     {
+      "column": "[dbo].[PolicyTest].[Odd]]Name]",
+      "reason": "The closing bracket is escaped in the identifier"
+    },
+    {
       "column": "[dbo].[PolicyTest].[ClassifiedEmail]",
       "reason": "Existing classification is independently evaluated"
     },
