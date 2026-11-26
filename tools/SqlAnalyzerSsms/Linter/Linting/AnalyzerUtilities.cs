@@ -56,7 +56,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         return result.Count > 0 ? result : null;
     }
 
-    public async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeAsync(string text, string rules, string sqlVersion, string? additionalAnalyzers = null, CancellationToken cancellationToken = default)
+    public async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeAsync(string text, string? filePath, string rules, string sqlVersion, string? additionalAnalyzers = null, CancellationToken cancellationToken = default)
     {
         if (text == null)
         {
@@ -71,7 +71,7 @@ internal sealed class AnalyzerUtilities : IDisposable
 
         // Analyze the editor buffer content in-memory via server mode; no temp file is written.
         return await _requestLock.ExecuteAsync(
-            () => AnalyzeWithServerModeAsync(text, rules, sqlVersion, additionalAnalyzers, cancellationToken),
+            () => AnalyzeWithServerModeAsync(text, filePath, rules, sqlVersion, additionalAnalyzers, cancellationToken),
             cancellationToken).ConfigureAwait(false);
     }
 
@@ -81,7 +81,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         this.ResetServerProcess();
     }
 
-    private async ValueTask<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string content, string rules, string sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    private async ValueTask<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string content, string? filePath, string rules, string sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
     {
         try
         {
@@ -96,6 +96,7 @@ internal sealed class AnalyzerUtilities : IDisposable
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Command = "analyze",
+                Path = filePath,
                 Content = content,
                 Rules = string.IsNullOrWhiteSpace(rules) ? null : $"Rules:{rules}",
                 SqlVersion = string.IsNullOrWhiteSpace(sqlVersion) ? null : sqlVersion,

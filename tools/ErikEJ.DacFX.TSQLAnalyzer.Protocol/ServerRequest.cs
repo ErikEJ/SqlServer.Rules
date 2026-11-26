@@ -20,7 +20,7 @@ public sealed class ServerRequest
     public string Command { get; set; } = string.Empty;
 
     /// <summary>
-    /// Path to .sql file or .dacpac to analyze (for analyze command).
+    /// Path to .sql file or .dacpac to analyze. When content is supplied, this may identify the source file for configuration discovery.
     /// </summary>
     [JsonPropertyName("path")]
     public string? Path { get; set; }
@@ -51,4 +51,16 @@ public sealed class ServerRequest
 #pragma warning disable CA2227 // Collection properties should be read only
     public IList<string>? AdditionalAnalyzers { get; set; }
 #pragma warning restore CA2227 // Collection properties should be read only
+
+    /// <summary>
+    /// Optional local SSMS Information Protection policy file for SRD0097.
+    /// </summary>
+    [JsonPropertyName("sensitivityPolicyFile")]
+    public string? SensitivityPolicyFile { get; set; }
+
+    /// <summary>
+    /// Optional exact-column exceptions file for SRD0097 policy evaluation.
+    /// </summary>
+    [JsonPropertyName("sensitivityExceptionsFile")]
+    public string? SensitivityExceptionsFile { get; set; }
 }

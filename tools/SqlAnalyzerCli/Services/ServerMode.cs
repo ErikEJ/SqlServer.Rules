@@ -161,6 +161,9 @@ internal static class ServerMode
                 Rules = normalizedRules,
                 SqlVersion = sqlVersion,
                 AdditionalAnalyzers = request.AdditionalAnalyzers?.ToList(),
+                SensitivityPolicyFile = request.SensitivityPolicyFile,
+                SensitivityExceptionsFile = request.SensitivityExceptionsFile,
+                ScriptPath = hasContent ? request.Path : null,
             };
 
             if (hasContent)

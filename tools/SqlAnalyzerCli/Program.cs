@@ -131,6 +131,8 @@ internal static class Program
             OutputFile = options.OutputFile != null ? new FileInfo(options.OutputFile) : null,
             ConnectionString = sqlConnectionStringBuilder,
             Format = options.Format,
+            SensitivityPolicyFile = options.SensitivityPolicyFile,
+            SensitivityExceptionsFile = options.SensitivityExceptionsFile,
         };
 
         bool hasBogusArgs = args.Any() && args.All(a => !a.StartsWith('-'));

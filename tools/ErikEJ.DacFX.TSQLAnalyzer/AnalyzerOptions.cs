@@ -30,6 +30,11 @@ public class AnalyzerOptions
     public string? Script { get; set; }
 
     /// <summary>
+    /// Used to specify the source path for an in-memory SQL script, enabling source-file configuration discovery.
+    /// </summary>
+    public string? ScriptPath { get; set; }
+
+    /// <summary>
     /// Used to specify a rules expression similar to 'Rules:-SqlServer.Rules.SRN0007;+!SqlServer.Rules.SRN0005'. Optional.
     /// </summary>
     public string? Rules { get; set; }
@@ -49,4 +54,14 @@ public class AnalyzerOptions
     /// Used to specify if formatting of the .sql files selected for analysis is required.
     /// </summary>
     public bool Format { get; set; }
+
+    /// <summary>
+    /// Used to opt in to SRD0097 evaluation with an SSMS Information Protection policy file.
+    /// </summary>
+    public string? SensitivityPolicyFile { get; set; }
+
+    /// <summary>
+    /// Used to specify exact-column exceptions for SRD0097 policy evaluation.
+    /// </summary>
+    public string? SensitivityExceptionsFile { get; set; }
 }

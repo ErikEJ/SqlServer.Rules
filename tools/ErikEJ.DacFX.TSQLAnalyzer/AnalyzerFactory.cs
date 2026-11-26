@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
@@ -53,6 +54,7 @@ public class AnalyzerFactory
         var factory = new CodeAnalysisServiceFactory();
         var service = factory.CreateAnalysisService(model, settings);
 
+        ConfigureSensitivityPolicy(service);
         DisableIgnoredRules(service);
 
         service.SetProblemSuppressor(IsSuppressed);
@@ -80,6 +82,57 @@ public class AnalyzerFactory
         }
 
         return result;
+    }
+
+    private void ConfigureSensitivityPolicy(CodeAnalysisService service)
+    {
+        if (string.IsNullOrWhiteSpace(request.SensitivityPolicyFile)
+            && string.IsNullOrWhiteSpace(request.SensitivityExceptionsFile))
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(request.SensitivityPolicyFile))
+        {
+            throw new ArgumentException("A sensitivity exceptions file requires a sensitivity policy file.");
+        }
+
+        var policyPath = Path.GetFullPath(request.SensitivityPolicyFile);
+        var exceptionsPath = string.IsNullOrWhiteSpace(request.SensitivityExceptionsFile)
+            ? null
+            : Path.GetFullPath(request.SensitivityExceptionsFile);
+
+        if (!File.Exists(policyPath))
+        {
+            throw new ArgumentException($"Sensitivity policy file not found: {policyPath}");
+        }
+
+        if (exceptionsPath != null && !File.Exists(exceptionsPath))
+        {
+            throw new ArgumentException($"Sensitivity exceptions file not found: {exceptionsPath}");
+        }
+
+        var descriptor = service.GetRules().SingleOrDefault(candidate => candidate.RuleId == "SqlServer.Rules.SRD0097");
+        var rule = descriptor?.Rule;
+        var policyProperty = rule?.GetType().GetProperty("PolicyFile");
+        var exceptionsProperty = rule?.GetType().GetProperty("ExceptionsFile");
+        var validateMethod = rule?.GetType().GetMethod("ValidatePolicyFiles");
+        if (rule == null || policyProperty == null || exceptionsProperty == null || validateMethod == null)
+        {
+            throw new ArgumentException("SRD0097 is unavailable; the sensitivity policy cannot be applied.");
+        }
+
+        try
+        {
+            validateMethod.Invoke(null, [policyPath, exceptionsPath]);
+        }
+        catch (TargetInvocationException exception) when (exception.InnerException != null)
+        {
+            throw new ArgumentException(exception.InnerException.Message, exception.InnerException);
+        }
+
+        policyProperty.SetValue(rule, policyPath);
+        exceptionsProperty.SetValue(rule, exceptionsPath);
     }
 
     private void SaveOutputFile(AnalyzerResult result, CodeAnalysisResult analysisResult)
@@ -194,7 +247,7 @@ public class AnalyzerFactory
         }
         else if (!string.IsNullOrWhiteSpace(request.Script))
         {
-            AddScriptToModel(result, model, request.Script);
+            AddScriptToModel(result, model, request.Script, request.ScriptPath);
         }
 
         return model;
@@ -228,18 +281,24 @@ public class AnalyzerFactory
         }
     }
 
-    private static void AddScriptToModel(AnalyzerResult result, TSqlModel model, string script)
+    private static void AddScriptToModel(AnalyzerResult result, TSqlModel model, string script, string? sourcePath)
     {
         var (contents, adjustments) = BatchWrapper.WrapWithAdjustments(script);
         if (adjustments.Count > 0)
         {
-            // Script strings have no file name; use empty string as the sentinel key.
-            result.ColumnAdjustmentsByFile[string.Empty] = adjustments;
+            result.ColumnAdjustmentsByFile[sourcePath ?? string.Empty] = adjustments;
         }
 
         try
         {
-            model.AddObjects(contents, new TSqlObjectOptions());
+            if (string.IsNullOrWhiteSpace(sourcePath))
+            {
+                model.AddObjects(contents, new TSqlObjectOptions());
+            }
+            else
+            {
+                model.AddOrUpdateObjects(contents, sourcePath, new TSqlObjectOptions());
+            }
         }
         catch (DacModelException dex)
         {

@@ -1,0 +1,25 @@
+{
+  "exceptions": [
+    {
+      "column": "[dbo].[PolicyTest].[PolicyExcludedEmail]",
+      "reason": "Not a person's email address"
+    },
+    {
+      "column": "[dbo].[PolicyTest].[Policy.Excluded]",
+      "reason": "The dot is part of the column name"
+    },
+    {
+      "column": "[dbo].[PolicyTest].[Odd]]Name]",
+      "reason": "The closing bracket is escaped in the identifier"
+    },
+    {
+      "column": "[dbo].[PolicyTest].[ClassifiedEmail]",
+      "reason": "Existing classification is independently evaluated"
+    },
+    {
+      "column": "[dbo].[PolicyTest].[ExpiredEmail]",
+      "reason": "This expired exception must not suppress a finding",
+      "expires": "2000-01-01"
+    }
+  ]
+}

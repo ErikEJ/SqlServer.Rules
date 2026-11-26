@@ -117,6 +117,7 @@ async function analyze(doc: vscode.TextDocument): Promise<void> {
     let response: ServerResponse;
     try {
         response = await getClient().analyze({
+            path: doc.uri.scheme === 'file' ? doc.uri.fsPath : undefined,
             content: doc.getText(),
             rules: config.get<string>('rules', '') || undefined,
             sqlVersion: config.get<string>('sqlVersion') || undefined,

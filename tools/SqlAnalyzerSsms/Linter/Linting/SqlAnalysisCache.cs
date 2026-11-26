@@ -122,7 +122,7 @@ namespace SqlAnalyzerSsms.Linter.Linting
 
                 ThreadHelper.JoinableTaskFactory.Run(async () =>
                 {
-                    violations = await AnalyzerUtilities.Instance.AnalyzeAsync(text, rules, sqlVersion, additionalAnalyzers, cancellationToken);
+                    violations = await AnalyzerUtilities.Instance.AnalyzeAsync(text, filePath, rules, sqlVersion, additionalAnalyzers, cancellationToken);
                 });
 
                 var result = new CachedAnalysisResult(snapshot.Version.VersionNumber, violations);

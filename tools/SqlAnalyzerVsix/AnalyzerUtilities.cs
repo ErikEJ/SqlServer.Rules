@@ -68,7 +68,8 @@ internal sealed class AnalyzerUtilities : IDisposable
         var content = textDocument.Text.CopyToString();
 
         // Analyze the editor buffer content in-memory via server mode; no temp file is written.
-        var serverDiagnostics = await AnalyzeWithServerModeAsync(path: null, content, rules, sqlVersion, additionalAnalyzers, reportErrorsAsync, cancellationToken);
+        var sourcePath = textDocument.Uri.IsFile ? textDocument.Uri.LocalPath : null;
+        var serverDiagnostics = await AnalyzeWithServerModeAsync(sourcePath, content, rules, sqlVersion, additionalAnalyzers, reportErrorsAsync, cancellationToken);
         return CreateDocumentDiagnosticsForOpenDocument(textDocument, serverDiagnostics);
     }
 

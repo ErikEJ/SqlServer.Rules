@@ -141,11 +141,12 @@ public class ServerModeTests
     [TestMethod]
     public void ContentTakesPrecedenceOverPath()
     {
+        var sourcePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".sql");
         var request = new ServerRequest
         {
             Id = "3",
             Command = "analyze",
-            Path = "this-path-does-not-exist.sql",
+            Path = sourcePath,
             Content = "CREATE PROCEDURE dbo.TestProc AS SELECT * FROM sys.objects;",
             SqlVersion = "Sql160",
         };
@@ -153,6 +154,9 @@ public class ServerModeTests
         var response = ServerMode.BuildAnalyzeResponse(request);
 
         Assert.AreEqual("success", response.Status, "Content should be analyzed even when Path is invalid.");
+        Assert.IsNotNull(response.Problems);
+        var problem = response.Problems.First(p => p.Rule == SelectStarRuleId);
+        Assert.AreEqual(sourcePath, problem.File, "The in-memory content must retain its source path.");
     }
 
     [TestMethod]
