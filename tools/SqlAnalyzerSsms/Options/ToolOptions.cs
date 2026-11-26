@@ -24,6 +24,12 @@ namespace SqlAnalyzerSsms.Options
         public string? CodeAnalysisRuleSettings { get; set; }
 
         [Category("Code Analysis")]
+        [DisplayName(@"EditorConfig path")]
+        [Description("Optional full path to an EditorConfig file for SQL analysis. Leave empty to use normal configuration discovery.")]
+        [DefaultValue(null)]
+        public string? EditorConfigPath { get; set; }
+
+        [Category("Code Analysis")]
         [DisplayName(@"SQL engine version")]
         [Description("Set the SQL Server dialect used in analysis. Select from the dropdown list or type a version code directly (for example Sql170 for SQL Server 2025).")]
         [DefaultValue(null)]

@@ -38,12 +38,13 @@ internal sealed class AnalyzerUtilities : IDisposable
     /// <param name="rules">Rules to apply for the analyzer.</param>
     /// <param name="sqlVersion">SQL version to use for analysis.</param>
     /// <param name="additionalAnalyzers">Semicolon-separated list of additional analyzer DLL paths.</param>
+    /// <param name="editorConfigPath">Optional explicit EditorConfig file path.</param>
     /// <param name="reportErrorsAsync">Reports errors that left part of the script unanalyzed.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, string? additionalAnalyzers, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnFileAsync(Uri fileUri, string? rules, string? sqlVersion, string? additionalAnalyzers, string? editorConfigPath, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
     {
-        var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, content: null, rules, sqlVersion, additionalAnalyzers, reportErrorsAsync, cancellationToken);
+        var serverDiagnostics = await AnalyzeWithServerModeAsync(fileUri.LocalPath, content: null, rules, sqlVersion, additionalAnalyzers, editorConfigPath, reportErrorsAsync, cancellationToken);
         return CreateDocumentDiagnosticsForClosedDocument(fileUri, serverDiagnostics);
     }
 
@@ -54,10 +55,11 @@ internal sealed class AnalyzerUtilities : IDisposable
     /// <param name="rules">Rules to apply for the analyzer.</param>
     /// <param name="sqlVersion">SQL version to use for analysis.</param>
     /// <param name="additionalAnalyzers">Semicolon-separated list of additional analyzer DLL paths.</param>
+    /// <param name="editorConfigPath">Optional explicit EditorConfig file path.</param>
     /// <param name="reportErrorsAsync">Reports errors that left part of the script unanalyzed.</param>
     /// <param name="cancellationToken">Cancellation token to monitor.</param>
     /// <returns>an enumeration of <see cref="DocumentDiagnostic"/> entries for warnings in the SQL file.</returns>
-    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, string? additionalAnalyzers, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DocumentDiagnostic>> RunAnalyzerOnDocumentAsync(ITextDocumentSnapshot textDocument, string? rules, string? sqlVersion, string? additionalAnalyzers, string? editorConfigPath, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
     {
         if (textDocument.Length > 8192)
         {
@@ -69,7 +71,7 @@ internal sealed class AnalyzerUtilities : IDisposable
 
         // Analyze the editor buffer content in-memory via server mode; no temp file is written.
         var sourcePath = textDocument.Uri.IsFile ? textDocument.Uri.LocalPath : null;
-        var serverDiagnostics = await AnalyzeWithServerModeAsync(sourcePath, content, rules, sqlVersion, additionalAnalyzers, reportErrorsAsync, cancellationToken);
+        var serverDiagnostics = await AnalyzeWithServerModeAsync(sourcePath, content, rules, sqlVersion, additionalAnalyzers, editorConfigPath, reportErrorsAsync, cancellationToken);
         return CreateDocumentDiagnosticsForOpenDocument(textDocument, serverDiagnostics);
     }
 
@@ -94,7 +96,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         return result.Count > 0 ? result : null;
     }
 
-    private async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string? path, string? content, string? rules, string? sqlVersion, string? additionalAnalyzers, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
+    private async Task<IEnumerable<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string? path, string? content, string? rules, string? sqlVersion, string? additionalAnalyzers, string? editorConfigPath, Func<IList<ServerError>, Task> reportErrorsAsync, CancellationToken cancellationToken)
     {
         using var lockReleaser = await this.requestLock.EnterAsync(cancellationToken);
 
@@ -116,6 +118,7 @@ internal sealed class AnalyzerUtilities : IDisposable
                 Rules = string.IsNullOrWhiteSpace(rules) ? null : $"Rules:{rules}",
                 SqlVersion = string.IsNullOrWhiteSpace(sqlVersion) ? null : sqlVersion,
                 AdditionalAnalyzers = ParseAdditionalAnalyzers(additionalAnalyzers),
+                EditorConfigPath = string.IsNullOrWhiteSpace(editorConfigPath) ? null : editorConfigPath.Trim(),
             };
 
             var requestJson = JsonSerializer.Serialize(request);
@@ -141,12 +144,12 @@ internal sealed class AnalyzerUtilities : IDisposable
 
             if (!string.Equals(response.Status, "success", StringComparison.OrdinalIgnoreCase))
             {
-                if (!string.IsNullOrWhiteSpace(response.Error))
-                {
-                    throw new InvalidOperationException(response.Error);
-                }
+                throw new InvalidOperationException(string.IsNullOrWhiteSpace(response.Error) ? "Analysis failed without an error message." : response.Error);
+            }
 
-                return [];
+            if (request.EditorConfigPath is not null && response.EditorConfigApplied != true)
+            {
+                throw new InvalidOperationException("The T-SQL Analyzer CLI did not confirm that the explicit EditorConfig file was applied. Update ErikEJ.DacFX.TSQLAnalyzer.Cli to a version that supports EditorConfig overrides, then retry analysis.");
             }
 
             if (response.Errors is { Count: > 0 })

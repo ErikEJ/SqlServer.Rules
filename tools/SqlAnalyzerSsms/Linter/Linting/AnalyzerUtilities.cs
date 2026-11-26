@@ -56,7 +56,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         return result.Count > 0 ? result : null;
     }
 
-    public async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeAsync(string text, string? filePath, string rules, string sqlVersion, string? additionalAnalyzers = null, CancellationToken cancellationToken = default)
+    public async Task<List<SqlAnalyzerDiagnosticInfo>> AnalyzeAsync(string text, string? filePath, string rules, string sqlVersion, string? additionalAnalyzers = null, string? editorConfigPath = null, CancellationToken cancellationToken = default)
     {
         if (text == null)
         {
@@ -71,7 +71,7 @@ internal sealed class AnalyzerUtilities : IDisposable
 
         // Analyze the editor buffer content in-memory via server mode; no temp file is written.
         return await _requestLock.ExecuteAsync(
-            () => AnalyzeWithServerModeAsync(text, filePath, rules, sqlVersion, additionalAnalyzers, cancellationToken),
+            () => AnalyzeWithServerModeAsync(text, filePath, rules, sqlVersion, additionalAnalyzers, editorConfigPath, cancellationToken),
             cancellationToken).ConfigureAwait(false);
     }
 
@@ -81,7 +81,7 @@ internal sealed class AnalyzerUtilities : IDisposable
         this.ResetServerProcess();
     }
 
-    private async ValueTask<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string content, string? filePath, string rules, string sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    private async ValueTask<List<SqlAnalyzerDiagnosticInfo>> AnalyzeWithServerModeAsync(string content, string? filePath, string rules, string sqlVersion, string? additionalAnalyzers, string? editorConfigPath, CancellationToken cancellationToken)
     {
         try
         {
@@ -101,6 +101,7 @@ internal sealed class AnalyzerUtilities : IDisposable
                 Rules = string.IsNullOrWhiteSpace(rules) ? null : $"Rules:{rules}",
                 SqlVersion = string.IsNullOrWhiteSpace(sqlVersion) ? null : sqlVersion,
                 AdditionalAnalyzers = ParseAdditionalAnalyzers(additionalAnalyzers),
+                EditorConfigPath = string.IsNullOrWhiteSpace(editorConfigPath) ? null : editorConfigPath!.Trim(),
             };
 
             var requestJson = JsonSerializer.Serialize(request);
@@ -121,12 +122,13 @@ internal sealed class AnalyzerUtilities : IDisposable
 
             if (!string.Equals(response.Status, "success", StringComparison.OrdinalIgnoreCase))
             {
-                if (!string.IsNullOrWhiteSpace(response.Error))
-                {
-                    await new InvalidOperationException($"Server mode analysis failed: {response.Error}").LogAsync().ConfigureAwait(false);
-                }
+                var errorMessage = string.IsNullOrWhiteSpace(response.Error) ? "Analysis failed without an error message." : response.Error;
+                throw new InvalidOperationException($"Server mode analysis failed: {errorMessage}");
+            }
 
-                return [];
+            if (request.EditorConfigPath is not null && response.EditorConfigApplied != true)
+            {
+                throw new InvalidOperationException("The T-SQL Analyzer CLI did not confirm that the explicit EditorConfig file was applied. Update ErikEJ.DacFX.TSQLAnalyzer.Cli to a version that supports EditorConfig overrides, then retry analysis.");
             }
 
             if (response.Errors is { Count: > 0 })
@@ -148,11 +150,10 @@ internal sealed class AnalyzerUtilities : IDisposable
             ResetServerProcess();
             return [];
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
-            await ex.LogAsync().ConfigureAwait(false);
             ResetServerProcess();
-            return [];
+            throw;
         }
         catch (IOException ex)
         {

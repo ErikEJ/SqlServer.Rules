@@ -26,6 +26,12 @@ public sealed class ServerResponse
     public string? Error { get; set; }
 
     /// <summary>
+    /// Indicates that the requested EditorConfig override was applied.
+    /// </summary>
+    [JsonPropertyName("editorConfigApplied")]
+    public bool? EditorConfigApplied { get; set; }
+
+    /// <summary>
     /// List of problems found during analysis.
     /// </summary>
     [JsonPropertyName("problems")]

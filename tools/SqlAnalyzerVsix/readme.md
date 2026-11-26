@@ -55,6 +55,10 @@ The extension also adds a menu item under `Tools` to run the T-SQL Analyzer agai
 
 ![toolsmenu](Images/toolsmenu.png)
 
+### EditorConfig
+
+Set **EditorConfig path** in Tools/Options to the full path of an EditorConfig file to use it explicitly for analysis, including scripts in SQL projects. Leave the setting empty to use normal EditorConfig discovery. The CLI must support explicit EditorConfig overrides; if it does not, update the T-SQL Analyzer CLI. Configuration errors are reported in the Output window; previous findings remain until analysis succeeds.
+
 ### Analysis Errors
 
 If a script cannot be fully modeled or an analysis rule fails, the available findings are still shown in the Error List. Details of these errors (kind, code, and message) are written to the **T-SQL Analyzer** pane in **View > Output**. Findings may be incomplete until these errors are resolved.
