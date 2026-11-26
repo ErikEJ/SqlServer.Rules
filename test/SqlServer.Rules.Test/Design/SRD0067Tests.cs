@@ -17,6 +17,7 @@ public class SRD0067Tests : TestModel
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/KeywordCapitalize.sql");
 
         ExpectedProblems.Add(new TestProblem(17, 17, "SqlServer.Rules.SRD0039"));
+        ExpectedProblems.Add(new TestProblem(11, 2, "SqlServer.Rules.SRD0098"));
         ExpectedProblems.Add(new TestProblem(15, 1, "SqlServer.Rules.SRD0067"));
         ExpectedProblems.Add(new TestProblem(15, 1, "SqlServer.Rules.SRN0006"));
         ExpectedProblems.Add(new TestProblem(15, 1, "SqlServer.Rules.SRP0005"));
