@@ -11,13 +11,14 @@ namespace SqlServer.Rules.Design
     /// <summary>
     /// Sensitive columns should be masked or encrypted. An explicitly selected Information Protection policy can also
     /// identify potentially sensitive columns by name.
-    /// Classifications with a Public label or an explicit RANK = NONE are excluded.
+    /// Classifications with a Public label are excluded.
     /// Omitting the rank does not exempt a sensitive classification. A rank alone does not trigger this rule.
     /// <para>
-    /// Policy evaluation is opt-in. In an applicable <c>.editorconfig</c>, set
-    /// <c>sqlserver_rules.srd0097.policy_file</c> to the SSMS Information Protection policy JSON file. Optionally set
-    /// <c>sqlserver_rules.srd0097.exceptions_file</c> to an exact-column exceptions JSON file. Relative paths are
-    /// resolved from the <c>.editorconfig</c> file that defines each setting.
+    ///
+    /// Policy evaluation is opt-in. In an applicable `.editorconfig`, set
+    /// `sqlserver_rules.srd0097.policy_file` to the SSMS Information Protection policy JSON file. Optionally set
+    /// `sqlserver_rules.srd0097.exceptions_file` to an exact-column exceptions JSON file. Relative paths are
+    /// resolved from the `.editorconfig` file that defines each setting.
     /// </para>
     /// </summary>
     /// <FriendlyName>Protect sensitive columns</FriendlyName>
