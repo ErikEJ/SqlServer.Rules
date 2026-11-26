@@ -4,5 +4,8 @@
     OptionalColumn INT NULL,
     UnspecifiedColumn INT,
     ComputedColumn AS (1 + 1),
-    CONSTRAINT PK_ExplicitNullability PRIMARY KEY CLUSTERED (RequiredColumn)
+    IdentityColumn INT IDENTITY(1, 1),
+    SparseColumn INT SPARSE,
+    TablePrimaryKeyColumn INT,
+    CONSTRAINT PK_ExplicitNullability PRIMARY KEY CLUSTERED (TablePrimaryKeyColumn)
 );

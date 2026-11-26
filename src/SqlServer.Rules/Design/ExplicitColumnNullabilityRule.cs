@@ -66,7 +66,7 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(typeof(CreateTableStatement));
+            var fragment = ruleExecutionContext.ScriptFragment?.GetFragment(typeof(CreateTableStatement)) as CreateTableStatement;
 
             if (fragment == null)
             {
@@ -76,8 +76,20 @@ namespace SqlServer.Rules.Design
             var columnVisitor = new ColumnDefinitionVisitor();
             fragment.Accept(columnVisitor);
 
+            var primaryKeyColumns = fragment.Definition.TableConstraints
+                .OfType<UniqueConstraintDefinition>()
+                .Where(constraint => constraint.IsPrimaryKey)
+                .SelectMany(constraint => constraint.Columns)
+                .Select(column => column.Column.MultiPartIdentifier?.Identifiers.LastOrDefault()?.Value)
+                .Where(columnName => columnName != null)
+                .ToHashSet(Comparer);
+
             var columns = columnVisitor.NotIgnoredStatements(RuleId)
                 .Where(column => column.ComputedColumnExpression == null)
+                .Where(column => column.IdentityOptions == null)
+                .Where(column => column.StorageOptions?.SparseOption != SparseColumnOption.Sparse)
+                .Where(column => !column.Constraints.OfType<UniqueConstraintDefinition>().Any(constraint => constraint.IsPrimaryKey))
+                .Where(column => !primaryKeyColumns.Contains(column.ColumnIdentifier.Value))
                 .Where(column => !column.Constraints.Any(constraint => constraint is NullableConstraintDefinition));
 
             problems.AddRange(columns.Select(column => new SqlRuleProblem(MessageFormatter.FormatMessage(Message, RuleId), sqlObj, column)));

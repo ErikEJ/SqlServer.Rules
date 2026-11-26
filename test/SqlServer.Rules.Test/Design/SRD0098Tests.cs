@@ -15,6 +15,7 @@ public class SRD0098Tests : TestModel
     public void FlagsColumnsWithoutExplicitNullability()
     {
         TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0098ExplicitColumnNullability.sql");
+        TestFiles.Add("../../../../../sqlprojects/TSQLSmellsTest/SRD0098InlinePrimaryKeyNullability.sql");
 
         ExpectedProblems.Add(new TestProblem(5, 5, "SqlServer.Rules.SRD0098"));
 
