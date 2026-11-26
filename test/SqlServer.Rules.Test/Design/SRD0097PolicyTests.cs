@@ -172,4 +172,29 @@ public class SRD0097PolicyTests
             result.AnalysisErrors.Any(error => error.Message.Contains("CaseSensitive", StringComparison.Ordinal)),
             $"An unsupported policy field must surface an analysis error; found: {string.Join(Environment.NewLine, result.AnalysisErrors.Select(error => error.Message))}");
     }
+
+    [TestMethod]
+    [DataRow("[")]
+    [DataRow("email[")]
+    [DataRow("[]")]
+    [DataRow("[^]")]
+    [DataRow("[z-a]")]
+    public void InvalidLikePatternsProduceConfigurationErrors(string pattern)
+    {
+        var path = Path.Combine(Path.GetTempPath(), "SRD0097-" + Guid.NewGuid().ToString("N") + ".json");
+        try
+        {
+            var policy = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestScripts", "SensitivityPolicy.json"));
+            File.WriteAllText(path, policy.Replace("%email%", pattern, StringComparison.Ordinal));
+
+            var exception = Assert.Throws<InvalidOperationException>(
+                () => UnprotectedSensitiveColumnsRule.ValidatePolicyFiles(path, null));
+            StringAssert.Contains(exception.Message, $"Invalid SQL LIKE pattern '{pattern}'", StringComparison.Ordinal);
+            StringAssert.Contains(exception.Message, path, StringComparison.Ordinal);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
 }

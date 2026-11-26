@@ -360,6 +360,11 @@ namespace SqlServer.Rules.Design
                 }
                 else if (current == '[')
                 {
+                    if (index + 1 == pattern.Length)
+                    {
+                        throw new InvalidOperationException($"Invalid SQL LIKE pattern '{pattern}' in '{policyPath}'.");
+                    }
+
                     var end = pattern[index + 1] == ']'
                         ? pattern.IndexOf(']', index + 2)
                         : pattern.IndexOf(']', index + 1);
