@@ -133,9 +133,7 @@ public class SRD0097PolicyTests
 
         var result = service.Analyze(model);
 
-        Assert.IsTrue(
-            result.AnalysisErrors.Any(error => error.Message.Contains("requires policy_file", StringComparison.Ordinal)),
-            $"An exceptions-only configuration must surface an analysis error; found: {string.Join("; ", result.AnalysisErrors.Select(error => error.Message))}");
+        AssertConfigurationProblem(result, "requires policy_file");
     }
 
     [TestMethod]
@@ -185,7 +183,7 @@ public class SRD0097PolicyTests
     }
 
     [TestMethod]
-    public void UnsupportedPolicyVersionProducesAnalysisError()
+    public void UnsupportedPolicyVersionProducesRuleProblem()
     {
         using var model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions());
         model.AddObjects("CREATE TABLE dbo.PolicyTest (Email nvarchar(200) NULL);");
@@ -199,13 +197,11 @@ public class SRD0097PolicyTests
 
         var result = service.Analyze(model);
 
-        Assert.IsTrue(
-            result.AnalysisErrors.Any(error => error.Message.Contains("Unsupported SRD0097 policy version", StringComparison.Ordinal)),
-            $"An unsupported policy must surface an analysis error; found: {string.Join("; ", result.AnalysisErrors.Select(error => error.Message))}");
+        AssertConfigurationProblem(result, "Unsupported SRD0097 policy version");
     }
 
     [TestMethod]
-    public void UnsupportedPolicyFieldProducesAnalysisError()
+    public void UnsupportedPolicyFieldProducesRuleProblem()
     {
         using var model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions());
         model.AddObjects("CREATE TABLE dbo.PolicyTest (Email nvarchar(200) NULL);");
@@ -219,9 +215,101 @@ public class SRD0097PolicyTests
 
         var result = service.Analyze(model);
 
-        Assert.IsTrue(
-            result.AnalysisErrors.Any(error => error.Message.Contains("CaseSensitive", StringComparison.Ordinal)),
-            $"An unsupported policy field must surface an analysis error; found: {string.Join(Environment.NewLine, result.AnalysisErrors.Select(error => error.Message))}");
+        AssertConfigurationProblem(result, "CaseSensitive");
+    }
+
+    [TestMethod]
+    [DataRow("unknown-field", "unsupported field 'Foo'")]
+    [DataRow("version", "Unsupported SRD0097 policy version")]
+    [DataRow("exceptions-only", "requires policy_file")]
+    [DataRow("empty-reason", "non-empty reason")]
+    [DataRow("invalid-expiry", "Use yyyy-MM-dd")]
+    [DataRow("missing-policy", "Unable to read SRD0097 configuration file")]
+    [DataRow("missing-exceptions", "Unable to read SRD0097 configuration file")]
+    [DataRow("malformed-json", "Unable to read SRD0097 configuration file")]
+    [DataRow("invalid-pattern", "Invalid SQL LIKE pattern")]
+    public void InvalidEditorConfigProducesErrorsAndPreservesClassification(string scenario, string expectedMessage)
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "SRD0097-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(directory);
+
+        try
+        {
+            var policyPath = Path.Combine(directory, "policy.json");
+            var exceptionsPath = Path.Combine(directory, "exceptions.json");
+            var policy = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestScripts", "SensitivityPolicy.json"));
+            policy = scenario switch
+            {
+                "unknown-field" => "{ \"Version\": \"2.0\", \"Foo\": \"bar\", \"Labels\": {}, \"InformationTypes\": {} }",
+                "version" => "{ \"Version\": \"1.0\", \"Labels\": {}, \"InformationTypes\": {} }",
+                "malformed-json" => "{",
+                "invalid-pattern" => policy.Replace("%email%", "[", StringComparison.Ordinal),
+                _ => policy,
+            };
+            if (scenario != "missing-policy")
+            {
+                File.WriteAllText(policyPath, policy);
+            }
+
+            if (scenario != "missing-exceptions")
+            {
+                File.WriteAllText(exceptionsPath, $$"""
+                    {
+                      "exceptions": [{
+                        "column": "[dbo].[PolicyTest].[Email]",
+                        "reason": "{{(scenario == "empty-reason" ? string.Empty : "Test approval")}}",
+                        "expires": "{{(scenario == "invalid-expiry" ? "31/12/2027" : "2027-12-31")}}"
+                      }]
+                    }
+                    """);
+            }
+
+            var editorConfig = "root = true\n\n[*.sql]\n"
+                + (scenario == "exceptions-only" ? string.Empty : "sqlserver_rules.srd0097.policy_file = policy.json\n")
+                + "sqlserver_rules.srd0097.exceptions_file = exceptions.json\n";
+            File.WriteAllText(Path.Combine(directory, ".editorconfig"), editorConfig);
+
+            using var model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions());
+            foreach (var tableName in new[] { "PolicyTest", "OtherTable" })
+            {
+                model.AddOrUpdateObjects(
+                    $"CREATE TABLE dbo.{tableName} (Email nvarchar(200) NULL);",
+                    Path.Combine(directory, tableName + ".sql"),
+                    new TSqlObjectOptions());
+                model.AddObjects($"ADD SENSITIVITY CLASSIFICATION TO dbo.{tableName}.Email WITH (LABEL = 'Confidential', RANK = HIGH);");
+            }
+
+            var service = new CodeAnalysisServiceFactory().CreateAnalysisService(model.Version);
+            var descriptor = service.GetRules().Single(rule => rule.RuleId == UnprotectedSensitiveColumnsRule.RuleId);
+            descriptor.Severity = SqlRuleProblemSeverity.Error;
+
+            for (var run = 0; run < 2; run++)
+            {
+                var result = service.Analyze(model);
+                Assert.IsTrue(result.AnalysisSucceeded);
+                Assert.AreEqual(0, result.AnalysisErrors.Count, string.Join(Environment.NewLine, result.AnalysisErrors.Select(error => error.Message)));
+                var findings = result.Problems.Where(problem => problem.RuleId == UnprotectedSensitiveColumnsRule.RuleId).ToList();
+                Assert.AreEqual(4, findings.Count);
+                Assert.AreEqual(2, findings.Count(problem => problem.ShortErrorMessage.Contains(expectedMessage, StringComparison.Ordinal)));
+                Assert.AreEqual(2, findings.Count(problem => problem.ShortErrorMessage.Contains(UnprotectedSensitiveColumnsRule.Message, StringComparison.Ordinal)));
+                Assert.IsTrue(findings.All(problem => problem.Severity == SqlRuleProblemSeverity.Error));
+            }
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    private static void AssertConfigurationProblem(CodeAnalysisResult result, string expectedMessage)
+    {
+        Assert.IsTrue(result.AnalysisSucceeded);
+        Assert.AreEqual(0, result.AnalysisErrors.Count, string.Join(Environment.NewLine, result.AnalysisErrors.Select(error => error.Message)));
+        var findings = result.Problems.Where(problem => problem.RuleId == UnprotectedSensitiveColumnsRule.RuleId).ToList();
+        Assert.AreEqual(1, findings.Count);
+        StringAssert.Contains(findings[0].ShortErrorMessage, "Invalid SRD0097 configuration:", StringComparison.Ordinal);
+        StringAssert.Contains(findings[0].ShortErrorMessage, expectedMessage, StringComparison.Ordinal);
+        Assert.AreEqual(SqlRuleProblemSeverity.Warning, findings[0].Severity);
     }
 
     [TestMethod]
