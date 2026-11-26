@@ -87,8 +87,7 @@ namespace SqlServer.Rules.Design
                 }
 
                 if (!label.Enabled
-                    || string.Equals(label.DisplayName, "Public", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(label.Rank, "None", StringComparison.OrdinalIgnoreCase))
+                    || string.Equals(label.DisplayName, "Public", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }

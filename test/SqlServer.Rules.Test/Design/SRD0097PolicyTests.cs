@@ -68,6 +68,57 @@ public class SRD0097PolicyTests
     }
 
     [TestMethod]
+    [DataRow("Custom", "None", true, true, 1)]
+    [DataRow("Custom", "Medium", true, true, 1)]
+    [DataRow("Custom", "None", false, true, 0)]
+    [DataRow("Custom", "None", true, false, 0)]
+    [DataRow("Public", "None", true, true, 0)]
+    public void PolicyMatchingRespectsEnabledFlagsAndPublicLabel(
+        string labelName, string rank, bool labelEnabled, bool typeEnabled, int expectedCount)
+    {
+        var path = Path.Combine(Path.GetTempPath(), "SRD0097-" + Guid.NewGuid().ToString("N") + ".json");
+        try
+        {
+            File.WriteAllText(path, $$"""
+                {
+                  "Version": "2.0",
+                  "Labels": {
+                    "custom": { "DisplayName": "{{labelName}}", "Rank": "{{rank}}", "Enabled": {{labelEnabled.ToString().ToLowerInvariant()}} }
+                  },
+                  "InformationTypes": {
+                    "custom": {
+                      "DisplayName": "Custom type",
+                      "Order": 1,
+                      "RecommendedLabelId": "custom",
+                      "Enabled": {{typeEnabled.ToString().ToLowerInvariant()}},
+                      "Custom": true,
+                      "Keywords": [{ "Pattern": "%secret%", "CanBeNumeric": false }]
+                    }
+                  }
+                }
+                """);
+
+            using var model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions());
+            model.AddObjects("CREATE TABLE dbo.PolicyTest (Secret nvarchar(200) NULL);");
+            var service = new CodeAnalysisServiceFactory().CreateAnalysisService(model.Version);
+            var rule = service.GetRules()
+                .Single(descriptor => descriptor.RuleId == UnprotectedSensitiveColumnsRule.RuleId)
+                .Rule as UnprotectedSensitiveColumnsRule;
+            Assert.IsNotNull(rule);
+            rule.PolicyFile = path;
+
+            var result = service.Analyze(model);
+            Assert.IsTrue(result.AnalysisSucceeded, string.Join(Environment.NewLine, result.AnalysisErrors.Select(error => error.Message)));
+            Assert.AreEqual(0, result.AnalysisErrors.Count, string.Join(Environment.NewLine, result.AnalysisErrors.Select(error => error.Message)));
+            Assert.AreEqual(expectedCount, result.Problems.Count(problem => problem.RuleId == UnprotectedSensitiveColumnsRule.RuleId));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [TestMethod]
     public void ExceptionsFileCannotBeSelectedWithoutPolicy()
     {
         using var model = new TSqlModel(SqlServerVersion.Sql150, new TSqlModelOptions());
