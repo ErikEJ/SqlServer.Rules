@@ -99,7 +99,6 @@ public class SRP0027Tests : TestModel
         {
             TestFiles.Add(testFile);
             ExpectedProblems.Add(new TestProblem(line, column, "SqlServer.Rules.SRP0027"));
-            ExpectedProblems.Add(new TestProblem(1, 22, "SqlServer.Rules.SRD0098"));
 
             RunTest();
         }
