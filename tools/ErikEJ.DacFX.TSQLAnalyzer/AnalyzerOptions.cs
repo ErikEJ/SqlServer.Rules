@@ -56,12 +56,7 @@ public class AnalyzerOptions
     public bool Format { get; set; }
 
     /// <summary>
-    /// Used to opt in to SRD0097 evaluation with an SSMS Information Protection policy file.
+    /// Gets or sets an explicit analysis-wide EditorConfig file.
     /// </summary>
-    public string? SensitivityPolicyFile { get; set; }
-
-    /// <summary>
-    /// Used to specify exact-column exceptions for SRD0097 policy evaluation.
-    /// </summary>
-    public string? SensitivityExceptionsFile { get; set; }
+    public string? EditorConfigPath { get; set; }
 }

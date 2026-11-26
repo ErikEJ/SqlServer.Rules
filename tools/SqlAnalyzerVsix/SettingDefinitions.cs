@@ -28,6 +28,16 @@ public static class SettingDefinitions
     };
 
     [VisualStudioContribution]
+    public static Setting.String EditorConfigPath { get; } = new(
+        "editorConfigPath",
+        "EditorConfig path",
+        AnalyzerCategory,
+        defaultValue: string.Empty)
+    {
+        Description = "Optional full path to an EditorConfig file for SQL analysis. Leave empty to use normal configuration discovery.",
+    };
+
+    [VisualStudioContribution]
     public static Setting.Enum SqlEngineVersion { get; } = new(
         "sqlVersion",
         "SQL engine version",

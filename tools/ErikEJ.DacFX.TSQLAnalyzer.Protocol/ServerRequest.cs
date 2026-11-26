@@ -53,14 +53,8 @@ public sealed class ServerRequest
 #pragma warning restore CA2227 // Collection properties should be read only
 
     /// <summary>
-    /// Optional local SSMS Information Protection policy file for SRD0097.
+    /// Optional analysis-wide EditorConfig file.
     /// </summary>
-    [JsonPropertyName("sensitivityPolicyFile")]
-    public string? SensitivityPolicyFile { get; set; }
-
-    /// <summary>
-    /// Optional exact-column exceptions file for SRD0097 policy evaluation.
-    /// </summary>
-    [JsonPropertyName("sensitivityExceptionsFile")]
-    public string? SensitivityExceptionsFile { get; set; }
+    [JsonPropertyName("editorConfigPath")]
+    public string? EditorConfigPath { get; set; }
 }

@@ -132,14 +132,19 @@ internal static class ServerMode
             return ErrorResponse(request.Id, "Path or content is required for analyze command");
         }
 
-        // An empty (non-null) content buffer is a valid in-memory request: no SQL → no problems.
-        if (hasContent && string.IsNullOrWhiteSpace(request.Content))
-        {
-            return new ServerResponse { Id = request.Id, Status = "success", Problems = [] };
-        }
-
         try
         {
+            // An empty buffer still validates an explicitly requested configuration.
+            if (hasContent && string.IsNullOrWhiteSpace(request.Content))
+            {
+                if (!string.IsNullOrWhiteSpace(request.EditorConfigPath))
+                {
+                    AnalyzerFactory.ValidateEditorConfig(request.EditorConfigPath);
+                }
+
+                return new ServerResponse { Id = request.Id, Status = "success", Problems = [], EditorConfigApplied = !string.IsNullOrWhiteSpace(request.EditorConfigPath) ? true : null };
+            }
+
             // Parse SQL version
             var sqlVersion = SqlServerVersion.Sql160; // Default
             if (!string.IsNullOrWhiteSpace(request.SqlVersion))
@@ -161,8 +166,7 @@ internal static class ServerMode
                 Rules = normalizedRules,
                 SqlVersion = sqlVersion,
                 AdditionalAnalyzers = request.AdditionalAnalyzers?.ToList(),
-                SensitivityPolicyFile = request.SensitivityPolicyFile,
-                SensitivityExceptionsFile = request.SensitivityExceptionsFile,
+                EditorConfigPath = request.EditorConfigPath,
                 ScriptPath = hasContent ? request.Path : null,
             };
 
@@ -249,6 +253,7 @@ internal static class ServerMode
                 Status = "success",
                 Problems = problems,
                 Errors = errors.Count > 0 ? errors : null,
+                EditorConfigApplied = !string.IsNullOrWhiteSpace(request.EditorConfigPath) ? true : null,
             };
         }
         catch (ArgumentException ex)

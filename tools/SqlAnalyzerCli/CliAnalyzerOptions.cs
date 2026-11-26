@@ -71,16 +71,10 @@ internal sealed class CliAnalyzerOptions
     public string? Text { get; set; }
 
     [Option(
-        "sensitivity-policy",
-        HelpText = "Opt in to SRD0097 policy evaluation with an SSMS Information Protection policy JSON file.",
+        "editorconfig",
+        HelpText = "Apply the [*.sql] settings from an EditorConfig file to all analyzed objects.",
         Required = false)]
-    public string? SensitivityPolicyFile { get; set; }
-
-    [Option(
-        "sensitivity-exceptions",
-        HelpText = "Optional exact-column exceptions JSON file for SRD0097 policy evaluation.",
-        Required = false)]
-    public string? SensitivityExceptionsFile { get; set; }
+    public string? EditorConfigPath { get; set; }
 
     [Option(
         "server-mode",

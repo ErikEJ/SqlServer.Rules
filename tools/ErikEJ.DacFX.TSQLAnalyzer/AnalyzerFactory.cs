@@ -1,5 +1,4 @@
 using System.IO.Compression;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using ErikEJ.DacFX.TSQLAnalyzer.Extensions;
@@ -7,6 +6,7 @@ using ErikEJ.DacFX.TSQLAnalyzer.Services;
 using Microsoft.SqlServer.Dac;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
+using SqlServer.Rules;
 
 namespace ErikEJ.DacFX.TSQLAnalyzer;
 
@@ -54,7 +54,7 @@ public class AnalyzerFactory
         var factory = new CodeAnalysisServiceFactory();
         var service = factory.CreateAnalysisService(model, settings);
 
-        ConfigureSensitivityPolicy(service);
+        ConfigureEditorConfig(service, request.EditorConfigPath);
         DisableIgnoredRules(service);
 
         service.SetProblemSuppressor(IsSuppressed);
@@ -84,55 +84,44 @@ public class AnalyzerFactory
         return result;
     }
 
-    private void ConfigureSensitivityPolicy(CodeAnalysisService service)
+    /// <summary>
+    /// Validates an explicit EditorConfig even when no SQL is available for analysis.
+    /// </summary>
+    /// <param name="path">The EditorConfig path.</param>
+    public static void ValidateEditorConfig(string path)
     {
-        if (string.IsNullOrWhiteSpace(request.SensitivityPolicyFile)
-            && string.IsNullOrWhiteSpace(request.SensitivityExceptionsFile))
+        var service = new CodeAnalysisServiceFactory().CreateAnalysisService(SqlServerVersion.Sql160);
+        ConfigureEditorConfig(service, path);
+    }
+
+    private static void ConfigureEditorConfig(CodeAnalysisService service, string? editorConfigPath)
+    {
+        if (string.IsNullOrWhiteSpace(editorConfigPath))
         {
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(request.SensitivityPolicyFile))
-        {
-            throw new ArgumentException("A sensitivity exceptions file requires a sensitivity policy file.");
-        }
-
-        var policyPath = Path.GetFullPath(request.SensitivityPolicyFile);
-        var exceptionsPath = string.IsNullOrWhiteSpace(request.SensitivityExceptionsFile)
-            ? null
-            : Path.GetFullPath(request.SensitivityExceptionsFile);
-
-        if (!File.Exists(policyPath))
-        {
-            throw new ArgumentException($"Sensitivity policy file not found: {policyPath}");
-        }
-
-        if (exceptionsPath != null && !File.Exists(exceptionsPath))
-        {
-            throw new ArgumentException($"Sensitivity exceptions file not found: {exceptionsPath}");
-        }
-
-        var descriptor = service.GetRules().SingleOrDefault(candidate => candidate.RuleId == "SqlServer.Rules.SRD0097");
-        var rule = descriptor?.Rule;
-        var policyProperty = rule?.GetType().GetProperty("PolicyFile");
-        var exceptionsProperty = rule?.GetType().GetProperty("ExceptionsFile");
-        var validateMethod = rule?.GetType().GetMethod("ValidatePolicyFiles");
-        if (rule == null || policyProperty == null || exceptionsProperty == null || validateMethod == null)
-        {
-            throw new ArgumentException("SRD0097 is unavailable; the sensitivity policy cannot be applied.");
-        }
-
+        var path = Path.GetFullPath(editorConfigPath);
+        RuleEditorConfig configuration;
         try
         {
-            validateMethod.Invoke(null, [policyPath, exceptionsPath]);
+            configuration = RuleEditorConfig.Load(path);
         }
-        catch (TargetInvocationException exception) when (exception.InnerException != null)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or FormatException or ArgumentException or NotSupportedException or System.Security.SecurityException)
         {
-            throw new ArgumentException(exception.InnerException.Message, exception.InnerException);
+            throw new ArgumentException($"Unable to load EditorConfig file '{path}': {exception.Message}", exception);
         }
 
-        policyProperty.SetValue(rule, policyPath);
-        exceptionsProperty.SetValue(rule, exceptionsPath);
+        var rules = service.GetRules().Select(descriptor => descriptor.Rule).OfType<BaseSqlCodeAnalysisRule>().ToList();
+        if (rules.Count == 0)
+        {
+            throw new ArgumentException("SqlServer.Rules is unavailable; the EditorConfig override cannot be applied.");
+        }
+
+        foreach (var rule in rules)
+        {
+            rule.EditorConfig = configuration;
+        }
     }
 
     private void SaveOutputFile(AnalyzerResult result, CodeAnalysisResult analysisResult)

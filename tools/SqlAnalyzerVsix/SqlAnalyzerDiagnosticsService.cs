@@ -79,10 +79,11 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 
 #pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             var settingsResults = await extensibility.Settings().ReadEffectiveValuesAsync(
-                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion, SettingDefinitions.AdditionalAnalyzers],
+                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion, SettingDefinitions.AdditionalAnalyzers, SettingDefinitions.EditorConfigPath],
                 cancellationToken);
 
             var additionalAnalyzers = settingsResults.ValueOrDefault(SettingDefinitions.AdditionalAnalyzers, string.Empty);
+            var editorConfigPath = settingsResults.ValueOrDefault(SettingDefinitions.EditorConfigPath, string.Empty);
 
             if (!runProperties.InSqlProj)
             {
@@ -91,17 +92,14 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
             }
 #pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
-            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, errors => this.WriteAnalysisErrorsAsync(documentUri, errors), cancellationToken);
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnFileAsync(documentUri, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, editorConfigPath, errors => this.WriteAnalysisErrorsAsync(documentUri, errors), cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentUri, cancellationToken);
             await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            if (this.outputChannel is not null)
-            {
-                await this.outputChannel.WriteLineAsync(Strings.MissingAnalyzerError);
-            }
+            await this.WriteAnalysisErrorsAsync(documentUri, [new ServerError { Kind = "server", Message = ex.Message }]);
         }
     }
 
@@ -129,30 +127,32 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         {
 #pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             var settingsResults = await extensibility.Settings().ReadEffectiveValuesAsync(
-                [SettingDefinitions.AdditionalAnalyzers],
+                [SettingDefinitions.AdditionalAnalyzers, SettingDefinitions.EditorConfigPath],
                 cancellationToken);
 
             var additionalAnalyzers = settingsResults.ValueOrDefault(SettingDefinitions.AdditionalAnalyzers, string.Empty);
+            var editorConfigPath = settingsResults.ValueOrDefault(SettingDefinitions.EditorConfigPath, string.Empty);
 #pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
-            await this.ProcessDocumentAsync(textViewSnapshot.Document, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, cancellationToken.CombineWith(newCts.Token).Token);
+            await this.ProcessDocumentAsync(textViewSnapshot.Document, runProperties.Rules, runProperties.SqlVersion, additionalAnalyzers, editorConfigPath, cancellationToken.CombineWith(newCts.Token).Token);
         }
         else
         {
 #pragma warning disable VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
             var results = await extensibility.Settings().ReadEffectiveValuesAsync(
-                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion, SettingDefinitions.RunAnalysis, SettingDefinitions.AdditionalAnalyzers],
+                [SettingDefinitions.Rules, SettingDefinitions.SqlEngineVersion, SettingDefinitions.RunAnalysis, SettingDefinitions.AdditionalAnalyzers, SettingDefinitions.EditorConfigPath],
                 cancellationToken);
 
             var sqlVersion = results.ValueOrDefault(SettingDefinitions.SqlEngineVersion, "Sql170");
             var rules = results.ValueOrDefault(SettingDefinitions.Rules, string.Empty);
             var enabled = results.ValueOrDefault(SettingDefinitions.RunAnalysis, true);
             var additionalAnalyzers = results.ValueOrDefault(SettingDefinitions.AdditionalAnalyzers, string.Empty);
+            var editorConfigPath = results.ValueOrDefault(SettingDefinitions.EditorConfigPath, string.Empty);
 #pragma warning restore VSEXTPREVIEW_SETTINGS // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
             if (enabled)
             {
-                await this.ProcessDocumentAsync(textViewSnapshot.Document, rules, sqlVersion, additionalAnalyzers, cancellationToken.CombineWith(newCts.Token).Token);
+                await this.ProcessDocumentAsync(textViewSnapshot.Document, rules, sqlVersion, additionalAnalyzers, editorConfigPath, cancellationToken.CombineWith(newCts.Token).Token);
             }
         }
     }
@@ -189,7 +189,7 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
         }
     }
 
-    private async Task ProcessDocumentAsync(ITextDocumentSnapshot documentSnapshot, string? rules, string? sqlVersion, string? additionalAnalyzers, CancellationToken cancellationToken)
+    private async Task ProcessDocumentAsync(ITextDocumentSnapshot documentSnapshot, string? rules, string? sqlVersion, string? additionalAnalyzers, string? editorConfigPath, CancellationToken cancellationToken)
     {
         // Wait for 1 second to see if any other changes are being sent.
         await Task.Delay(1000, cancellationToken);
@@ -201,17 +201,14 @@ internal sealed class SqlAnalyzerDiagnosticsService : DisposableObject
 
         try
         {
-            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, rules, sqlVersion, additionalAnalyzers, errors => this.WriteAnalysisErrorsAsync(documentSnapshot.Uri, errors), cancellationToken);
+            var diagnostics = await this.analyzerUtilities.RunAnalyzerOnDocumentAsync(documentSnapshot, rules, sqlVersion, additionalAnalyzers, editorConfigPath, errors => this.WriteAnalysisErrorsAsync(documentSnapshot.Uri, errors), cancellationToken);
 
             await this.diagnosticsReporter!.ClearDiagnosticsAsync(documentSnapshot, cancellationToken);
             await this.diagnosticsReporter!.ReportDiagnosticsAsync(diagnostics, cancellationToken);
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            if (this.outputChannel is not null)
-            {
-                await this.outputChannel.WriteLineAsync(Strings.MissingAnalyzerError);
-            }
+            await this.WriteAnalysisErrorsAsync(documentSnapshot.Uri, [new ServerError { Kind = "server", Message = ex.Message }]);
         }
     }
 

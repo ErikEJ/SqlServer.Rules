@@ -57,23 +57,17 @@ The SQL Server version values are documented [here](https://learn.microsoft.com/
 
 > Note: UTF-8 with BOM encoding is required for the input files.
 
-## SRD0097 sensitivity policy evaluation
+## Rule configuration
 
-To additionally identify potentially sensitive columns by name, explicitly select an SSMS Information Protection policy (version 2.0):
-
-```bash
-tsqlanalyze -i C:\scripts\database.sql --sensitivity-policy C:\config\sensitivity-policy.json
-```
-
-An optional exact-column exceptions file suppresses only policy-derived findings:
+By default, rules discover `.editorconfig` settings from each SQL source file. To apply one configuration to all objects, including DACPACs, databases, ZIPs, or text input, use:
 
 ```bash
-tsqlanalyze -i C:\scripts\database.dacpac \
-  --sensitivity-policy C:\config\sensitivity-policy.json \
-  --sensitivity-exceptions C:\config\sensitivity-exceptions.json
+tsqlanalyze -i C:\scripts\database.dacpac --editorconfig C:\config\.editorconfig
 ```
 
-More information about the sensitivity policy and exceptions file formats can be [found here](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0097.md)
+Only `[*.sql]` sections in the selected file are used; source-file configuration is not merged. Relative policy and exceptions paths are resolved from that file's directory. The same override is available as `editorConfigPath` in server-mode requests.
+
+For SRD0097 policy and exceptions settings, see the [rule documentation](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0097.md).
 
 ## Sample output
 

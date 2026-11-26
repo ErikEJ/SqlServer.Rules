@@ -318,16 +318,17 @@ public class AdhocAnalysisTests
     }
 
     [TestMethod]
-    public void SensitivityExceptionsRequireAnExplicitPolicy()
+    public void MissingEditorConfigIsReported()
     {
+        var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"), ".editorconfig");
         var exception = Assert.Throws<ArgumentException>(() =>
             new AnalyzerFactory(new AnalyzerOptions
             {
                 Script = "SELECT 1;",
-                SensitivityExceptionsFile = "sensitivity-exceptions.json",
+                EditorConfigPath = path,
             }).Analyze());
 
-        StringAssert.Contains(exception.Message, "requires a sensitivity policy file", StringComparison.Ordinal);
+        StringAssert.Contains(exception.Message, path, StringComparison.Ordinal);
     }
 
     [TestMethod]

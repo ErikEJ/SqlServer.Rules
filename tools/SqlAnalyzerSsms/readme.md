@@ -53,6 +53,10 @@ You can set this expression in the `Rules expression` option under Tools/Options
 
 - The [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download) is required and is automatically installed with the Database DevOps workload in SSMS.
 
+### EditorConfig
+
+Set **EditorConfig path** in Tools/Options to the full path of an EditorConfig file to use it explicitly for analysis, including scripts in SQL projects. Leave the setting empty to use normal EditorConfig discovery. The CLI must support explicit EditorConfig overrides; if it does not, update the T-SQL Analyzer CLI. Configuration errors are reported in the Output window; previous findings remain until analysis succeeds. Reopen SQL documents after changing this setting.
+
 ### Analysis Errors
 
 If a script cannot be fully modeled or an analysis rule fails, the available findings are still shown in the Error List. Details of these errors (kind, code, and message) are logged to the **Output** window. Findings may be incomplete until these errors are resolved.

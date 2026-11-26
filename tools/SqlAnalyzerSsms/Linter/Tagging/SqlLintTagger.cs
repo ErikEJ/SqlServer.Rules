@@ -23,13 +23,14 @@ namespace SqlAnalyzerSsms.Linter.Tagging
         private readonly string _rules;
         private readonly string _projectName;
         private readonly string? _additionalAnalyzers;
+        private readonly string? _editorConfigPath;
         private ITextSnapshot _currentSnapshot;
         private List<LintResult> _currentResults;
         private bool _isDisposed;
 
         public event EventHandler<SnapshotSpanEventArgs>? TagsChanged;
 
-        public SqlLintTagger(ITextBuffer buffer, SqlAnalysisCache analysisCache, string sqlVersion, string rules, string projectName, string? additionalAnalyzers = null)
+        public SqlLintTagger(ITextBuffer buffer, SqlAnalysisCache analysisCache, string sqlVersion, string rules, string projectName, string? additionalAnalyzers = null, string? editorConfigPath = null)
         {
             _buffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
             _analysisCache = analysisCache ?? throw new ArgumentNullException(nameof(analysisCache));
@@ -40,12 +41,13 @@ namespace SqlAnalyzerSsms.Linter.Tagging
             _rules = rules;
             _projectName = projectName;
             _additionalAnalyzers = additionalAnalyzers;
+            _editorConfigPath = editorConfigPath;
 
             _buffer.Changed += OnBufferChanged;
             _analysisCache.AnalysisUpdated += OnAnalysisUpdated;
 
             // Initial analysis - immediate, no debounce for fast feedback on file open
-            _analysisCache.AnalyzeImmediate(_buffer, _filePath, _sqlVersion, _rules, _projectName, _additionalAnalyzers);
+            _analysisCache.AnalyzeImmediate(_buffer, _filePath, _sqlVersion, _rules, _projectName, _additionalAnalyzers, _editorConfigPath);
         }
 
         private void OnBufferChanged(object sender, TextContentChangedEventArgs e)
@@ -53,7 +55,7 @@ namespace SqlAnalyzerSsms.Linter.Tagging
             _currentSnapshot = e.After;
 
             // Debounced analysis during typing to reduce CPU usage
-            _analysisCache.InvalidateAndAnalyze(_buffer, _filePath, _sqlVersion, _rules, _projectName, _additionalAnalyzers);
+            _analysisCache.InvalidateAndAnalyze(_buffer, _filePath, _sqlVersion, _rules, _projectName, _additionalAnalyzers, _editorConfigPath);
         }
 
         private void OnAnalysisUpdated(object sender, AnalysisUpdatedEventArgs e)
