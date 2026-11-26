@@ -216,6 +216,18 @@ namespace SqlServer.Rules.Design
 
         private (string? PolicyPath, string? ExceptionsPath) GetPolicyPaths(TSqlObject table)
         {
+            if (EditorConfig != null)
+            {
+                var policyPath = EditorConfig.GetFilePath("sqlserver_rules.srd0097.policy_file");
+                var exceptionsPath = EditorConfig.GetFilePath("sqlserver_rules.srd0097.exceptions_file");
+                if (exceptionsPath != null && policyPath == null)
+                {
+                    throw new InvalidOperationException("SRD0097 exceptions_file requires policy_file.");
+                }
+
+                return (policyPath, exceptionsPath);
+            }
+
             if (!string.IsNullOrWhiteSpace(PolicyFile) || !string.IsNullOrWhiteSpace(ExceptionsFile))
             {
                 if (string.IsNullOrWhiteSpace(PolicyFile))

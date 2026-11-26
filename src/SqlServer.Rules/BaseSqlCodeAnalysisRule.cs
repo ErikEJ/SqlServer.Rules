@@ -19,6 +19,11 @@ namespace SqlServer.Rules
     public abstract class BaseSqlCodeAnalysisRule : SqlCodeAnalysisRule
     {
         /// <summary>
+        /// Gets or sets an optional analysis-wide EditorConfig override.
+        /// </summary>
+        public RuleEditorConfig? EditorConfig { get; set; }
+
+        /// <summary>
         /// The programming schemas
         /// </summary>
         protected static readonly IList<ModelTypeClass> ProgrammingSchemas = new[] { ModelSchema.Procedure, ModelSchema.ScalarFunction, ModelSchema.TableValuedFunction };

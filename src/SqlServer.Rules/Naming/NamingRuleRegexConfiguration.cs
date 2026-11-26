@@ -18,16 +18,14 @@ namespace SqlServer.Rules.Naming
         private static readonly ConcurrentDictionary<string, IReadOnlyDictionary<string, string>> SourcePropertiesCache = new(SourcePathComparer);
         private static readonly IReadOnlyDictionary<string, string> EmptyProperties = new Dictionary<string, string>();
 
-        public static string GetConfiguredRegex(TSqlObject sqlObject, string ruleKey, string defaultRegex)
+        public static string GetConfiguredRegex(TSqlObject sqlObject, string ruleKey, string defaultRegex, RuleEditorConfig? editorConfig)
         {
-            var properties = GetEditorConfigProperties(sqlObject);
-            if (properties.TryGetValue(RulePrefix + ruleKey, out var configuredRegex)
-                && !string.IsNullOrWhiteSpace(configuredRegex))
-            {
-                return configuredRegex;
-            }
-
-            return defaultRegex;
+            var properties = editorConfig == null ? GetEditorConfigProperties(sqlObject) : null;
+            string? configuredRegex;
+            var found = editorConfig != null
+                ? editorConfig.TryGetValue(RulePrefix + ruleKey, out configuredRegex)
+                : properties!.TryGetValue(RulePrefix + ruleKey, out configuredRegex);
+            return found && !string.IsNullOrWhiteSpace(configuredRegex) ? configuredRegex! : defaultRegex;
         }
 
         private static IReadOnlyDictionary<string, string> GetEditorConfigProperties(TSqlObject sqlObject)
