@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.ExplicitNullability
+CREATE TABLE dbo.ExplicitNullability
 (
     RequiredColumn INT NOT NULL,
     OptionalColumn INT NULL,
@@ -9,3 +9,5 @@
     TablePrimaryKeyColumn INT,
     CONSTRAINT PK_ExplicitNullability PRIMARY KEY CLUSTERED (TablePrimaryKeyColumn)
 );
+
+-- SRD0098

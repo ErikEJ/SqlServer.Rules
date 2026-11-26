@@ -88,6 +88,8 @@
 | [SRD0094](Design/SRD0094.md) | Avoid named foreign keys on temporary tables | Yes | Foreign key constraints on temp tables should not be named. |   |
 | [SRD0095](Design/SRD0095.md) | Named check constraints on temp tables | Yes | Check constraints on temp tables should not be named. | Yes |
 | [SRD0096](Design/SRD0096.md) | Potential SQL injection issue |   | Dynamic SQL built from procedure input can execute unintended commands; parameterize values to reduce injection risk. | Yes |
+| [SRD0097](Design/SRD0097.md) | Protect sensitive columns | Yes | Classified sensitive columns should be masked or encrypted. | Yes |
+| [SRD0098](Design/SRD0098.md) | Explicit column nullability | Yes | Specify NULL or NOT NULL explicitly for table columns. | Yes |
 | [SRD0700](Design/SRD0700.md) | Database PAGE_VERIFY option is not CHECKSUM |   | Set `<PageVerify>CHECKSUM</PageVerify>` in the project file to enable PAGE_VERIFY = CHECKSUM. (Use `<PageVerifyMode>Checksum</PageVerifyMode>` for MSBuild.Sdk.SqlProj projects.) |   |
 | [SRD0701](Design/SRD0701.md) | Database QUERY_STORE option is not READ_WRITE |   | Set `<QueryStoreDesiredState>READ_WRITE</QueryStoreDesiredState>` in the project file to enable Query Store. (Use `<QueryStoreDesiredState>ReadWrite</QueryStoreDesiredState>` for MSBuild.Sdk.SqlProj projects.) |   |
 | [SRD0703](Design/SRD0703.md) | Database QUERY_STORE_CAPTURE_MODE option is not AUTO |   | Set `<QueryStoreCaptureMode>AUTO</QueryStoreCaptureMode>` in the project file to enable QUERY_STORE_CAPTURE_MODE = AUTO. |   |

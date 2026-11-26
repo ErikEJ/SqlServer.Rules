@@ -1,4 +1,6 @@
-﻿CREATE TABLE dbo.InlinePrimaryKeyNullability
+CREATE TABLE dbo.InlinePrimaryKeyNullability
 (
     InlinePrimaryKeyColumn INT CONSTRAINT PK_InlinePrimaryKeyNullability PRIMARY KEY
 );
+
+-- SRD0098
