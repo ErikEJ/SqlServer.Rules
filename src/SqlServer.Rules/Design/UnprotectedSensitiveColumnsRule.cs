@@ -11,7 +11,7 @@ namespace SqlServer.Rules.Design
     /// <summary>
     /// Sensitive columns should be masked or encrypted. An explicitly selected Information Protection policy can also
     /// identify potentially sensitive columns by name.
-    /// Classifications with a Public label are excluded.
+    /// Classifications with a Public label or an explicit RANK = NONE are excluded.
     /// Omitting the rank does not exempt a sensitive classification. A rank alone does not trigger this rule.
     /// <para>
     ///
