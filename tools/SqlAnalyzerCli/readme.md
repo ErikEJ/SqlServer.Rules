@@ -51,9 +51,15 @@ tsqlanalyze -i C:\scripts\sproc.sql -a C:\code\analyzers
 tsqlanalyze -i C:\scripts\sproc.sql -f 
 ```
 
+Rule settings filters are demonstrated [here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
+
+The SQL Server version values are documented [here](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.dac.model.sqlserverversion)
+
+> Note: UTF-8 with BOM encoding is required for the input files.
+
 ## SRD0097 sensitivity policy evaluation
 
-SRD0097 continues to check classified columns as before. To additionally identify potentially sensitive columns by name, explicitly select an SSMS Information Protection policy (version 2.0):
+To additionally identify potentially sensitive columns by name, explicitly select an SSMS Information Protection policy (version 2.0):
 
 ```bash
 tsqlanalyze -i C:\scripts\database.sql --sensitivity-policy C:\config\sensitivity-policy.json
@@ -67,21 +73,7 @@ tsqlanalyze -i C:\scripts\database.dacpac \
   --sensitivity-exceptions C:\config\sensitivity-exceptions.json
 ```
 
-Source SQL files and editor buffers can opt in through `.editorconfig`; relative paths are resolved from the `.editorconfig` file that defines each setting:
-
-```ini
-[*.sql]
-sqlserver_rules.srd0097.policy_file = config/sensitivity-policy.json
-sqlserver_rules.srd0097.exceptions_file = config/sensitivity-exceptions.json
-```
-
-The policy is never selected or downloaded automatically. Policy matches use column names and SQL `LIKE`-style `%`, `_`, and bracket patterns. Numeric columns are ignored for keywords with `CanBeNumeric: false`. A keyword with `Excluded: true` is ignored; it does not cancel matches from other keywords. Matching does not add classification metadata to the model. Exceptions use the exact `[schema].[table].[column]` form and require a non-empty `reason`; optional `expires` dates use `yyyy-MM-dd` and remain valid through that UTC date. An exceptions file requires a selected policy. Invalid selected files are reported as analysis errors rather than silently disabling policy evaluation.
-
-Rule settings filters are demonstrated [here](https://github.com/rr-wfm/MSBuild.Sdk.SqlProj?tab=readme-ov-file#static-code-analysis)
-
-The SQL Server version values are documented [here](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.dac.model.sqlserverversion)
-
-> Note: UTF-8 with BOM encoding is required for the input files.
+More information about the sensitivity policy and exceptions file formats can be [found here](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0097.md)
 
 ## Sample output
 

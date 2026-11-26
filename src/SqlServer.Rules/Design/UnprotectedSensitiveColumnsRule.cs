@@ -15,15 +15,65 @@ namespace SqlServer.Rules.Design
     /// Omitting the rank does not exempt a sensitive classification. A rank alone does not trigger this rule.
     /// <para>
     ///
-    /// Policy evaluation is opt-in. In an applicable `.editorconfig`, set
-    /// `sqlserver_rules.srd0097.policy_file` to the SSMS Information Protection policy JSON file. Optionally set
-    /// `sqlserver_rules.srd0097.exceptions_file` to an exact-column exceptions JSON file. Relative paths are
+    /// Policy evaluation is opt-in. Only SSMS Information Protection policy version 2.0 is supported.
+    /// In an applicable `.editorconfig`, set `sqlserver_rules.srd0097.policy_file` to the policy JSON file.
+    /// Optionally set `sqlserver_rules.srd0097.exceptions_file` to an exact-column exceptions JSON file. Relative paths are
     /// resolved from the `.editorconfig` file that defines each setting.
+    /// </para>
+    /// <para>
+    ///
+    /// Policy keywords use SQL LIKE-style `%`, `_`, and bracket patterns against column names. Matching does not
+    /// add classification metadata to the model. `CanBeNumeric: false` skips numeric
+    /// types, not `uniqueidentifier` or date/time types. `Excluded: true` ignores only that keyword; it cannot
+    /// cancel another match. To avoid matching `SocialSecurityNumberStatusId`, narrow `%social%security%`
+    /// to `%social%security%number` (without a trailing wildcard). Similarly, `%dob%` also matches `SavedObjectID`;
+    /// use a more specific pattern when that substring is not a date of birth.
+    /// </para>
+    /// <para>
+    ///
+    /// Exceptions suppress only policy-derived findings, use exact `[schema].[table].[column]` names, and require
+    /// a non-empty `reason`. Optional `approvedBy` records approval metadata for audit trails; optional `expires`
+    /// must use `yyyy-MM-dd` and remains valid through that UTC date. An exceptions file requires a policy file.
+    /// </para>
+    /// <para>
+    ///
+    /// Dynamic data masking counts as protection for this rule, but only masks query results for callers subject
+    /// to masking. It does not encrypt stored data or ensure protection in copies such as Fabric mirroring,
+    /// exports, or replicas. Protect those destinations separately.
     /// </para>
     /// </summary>
     /// <FriendlyName>Protect sensitive columns</FriendlyName>
     /// <IsIgnorable>true</IsIgnorable>
-    /// <ExampleMd></ExampleMd>
+    /// <ExampleMd>
+    /// Select a policy and optional exceptions file in `.editorconfig`:
+    ///
+    /// ```ini
+    /// [*.sql]
+    /// sqlserver_rules.srd0097.policy_file = config/sensitivity-policy.json
+    /// sqlserver_rules.srd0097.exceptions_file = config/sensitivity-exceptions.json
+    /// ```
+    ///
+    /// An exceptions file with optional approval and expiration metadata:
+    ///
+    /// ```json
+    /// {
+    ///   "exceptions": [
+    ///     {
+    ///       "column": "[dbo].[Address].[AddressId]",
+    ///       "reason": "Surrogate key, not personal data",
+    ///       "approvedBy": "Data governance team",
+    ///       "expires": "2027-12-31"
+    ///     }
+    ///   ]
+    /// }
+    /// ```
+    ///
+    /// For MSBuild, report SRD0097 findings, including configuration problems, as errors:
+    ///
+    /// ```xml
+    /// &lt;SqlCodeAnalysisRules&gt;+!SqlServer.Rules.SRD0097&lt;/SqlCodeAnalysisRules&gt;
+    /// ```
+    /// </ExampleMd>
     [ExportCodeAnalysisRule(
         RuleId,
         RuleDisplayName,
@@ -84,8 +134,18 @@ namespace SqlServer.Rules.Design
                 return problems;
             }
 
-            var (policyPath, exceptionsPath) = GetPolicyPaths(table);
-            var policy = policyPath == null ? null : GetPolicy(policyPath, exceptionsPath);
+            SensitivityPolicy? policy = null;
+            try
+            {
+                var (policyPath, exceptionsPath) = GetPolicyPaths(table);
+                policy = policyPath == null ? null : GetPolicy(policyPath, exceptionsPath);
+            }
+            catch (Exception exception) when (exception is InvalidOperationException or IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
+            {
+                problems.Add(new SqlRuleProblem(
+                    MessageFormatter.FormatMessage($"Invalid SRD0097 configuration: {exception.Message}", RuleId),
+                    table));
+            }
 
             if (table.IsWhiteListed())
             {
