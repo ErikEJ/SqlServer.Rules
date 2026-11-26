@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Xml;
 using EditorConfig.Core;
 using Microsoft.SqlServer.Dac.Model;
 
@@ -15,11 +16,6 @@ namespace SqlServer.Rules.Design
     internal sealed class SensitivityPolicy
     {
         private static readonly StringComparer IdentifierComparer = StringComparer.InvariantCultureIgnoreCase;
-        private static readonly JsonSerializerOptions JsonOptions = new()
-        {
-            UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
-        };
-
         private static readonly HashSet<string> NumericTypeNames = new(StringComparer.OrdinalIgnoreCase)
         {
             "bigint", "bit", "decimal", "float", "int", "money", "numeric", "real", "smallint", "smallmoney", "tinyint",
@@ -60,7 +56,7 @@ namespace SqlServer.Rules.Design
 
         public static SensitivityPolicy Load(string policyPath, string? exceptionsPath)
         {
-            var document = ReadJson<PolicyDocument>(policyPath);
+            var document = ReadJson<PolicyDocument>(policyPath, ValidatePolicyJson);
             if (!string.Equals(document.Version, "2.0", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException($"Unsupported SRD0097 policy version '{document.Version}' in '{policyPath}'. Only version 2.0 is supported.");
@@ -188,7 +184,7 @@ namespace SqlServer.Rules.Design
 
         private static Dictionary<string, PolicyException> LoadExceptions(string path)
         {
-            var document = ReadJson<ExceptionDocument>(path);
+            var document = ReadJson<ExceptionDocument>(path, ValidateExceptionJson);
             var result = new Dictionary<string, PolicyException>(IdentifierComparer);
             var allEntries = new Dictionary<string, PolicyException>(IdentifierComparer);
 
@@ -447,125 +443,264 @@ namespace SqlServer.Rules.Design
             return false;
         }
 
-        private static T ReadJson<T>(string path)
+        private static T ReadJson<T>(string path, Action<byte[], string> validateJson)
         {
             try
             {
-                using var stream = File.OpenRead(path);
-                return JsonSerializer.Deserialize<T>(stream, JsonOptions)
-                    ?? throw new JsonException($"Configuration file '{path}' must contain a JSON object.");
+                var json = File.ReadAllBytes(path);
+                validateJson(json, path);
+                using var stream = new MemoryStream(json);
+                var serializer = new DataContractJsonSerializer(
+                    typeof(T),
+                    new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true });
+                return serializer.ReadObject(stream) is T value
+                    ? value
+                    : throw new SerializationException($"Configuration file '{path}' must contain a JSON object.");
             }
-            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or JsonException or ArgumentException)
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or SerializationException or XmlException or ArgumentException)
             {
                 throw new InvalidOperationException($"Unable to read SRD0097 configuration file '{path}': {exception.Message}", exception);
             }
         }
 
+        private static void ValidatePolicyJson(byte[] json, string path)
+        {
+            var root = ReadJsonXml(json, path);
+            ValidateObjectMembers(root, "policy", path, "LastModifiedUtc", "Version", "Labels", "InformationTypes");
+
+            var labels = GetProperty(root, "Labels");
+            if (labels != null)
+            {
+                ValidateObject(labels, "Labels", path);
+                foreach (XmlElement label in labels.ChildNodes)
+                {
+                    ValidateObjectMembers(label, $"label '{label.LocalName}'", path, "DisplayName", "Description", "Rank", "Order", "Enabled");
+                }
+            }
+
+            var informationTypes = GetProperty(root, "InformationTypes");
+            if (informationTypes != null)
+            {
+                ValidateObject(informationTypes, "InformationTypes", path);
+                foreach (XmlElement informationType in informationTypes.ChildNodes)
+                {
+                    var context = $"information type '{informationType.LocalName}'";
+                    ValidateObjectMembers(
+                        informationType,
+                        context,
+                        path,
+                        "DisplayName",
+                        "Description",
+                        "Order",
+                        "RecommendedLabelId",
+                        "Enabled",
+                        "Custom",
+                        "Keywords");
+
+                    var keywords = GetProperty(informationType, "Keywords");
+                    if (keywords != null && !string.Equals(keywords.GetAttribute("type"), "null", StringComparison.Ordinal))
+                    {
+                        ValidateArray(keywords, $"{context} keywords", path);
+                        foreach (XmlElement keyword in keywords.ChildNodes)
+                        {
+                            ValidateObjectMembers(
+                                keyword,
+                                $"{context} keyword",
+                                path,
+                                "Pattern",
+                                "CanBeNumeric",
+                                "Excluded",
+                                "Custom");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ValidateExceptionJson(byte[] json, string path)
+        {
+            var root = ReadJsonXml(json, path);
+            ValidateObjectMembers(root, "exceptions file", path, "exceptions");
+
+            var exceptions = GetProperty(root, "exceptions");
+            if (exceptions != null && !string.Equals(exceptions.GetAttribute("type"), "null", StringComparison.Ordinal))
+            {
+                ValidateArray(exceptions, "exceptions", path);
+                foreach (XmlElement exception in exceptions.ChildNodes)
+                {
+                    ValidateObjectMembers(exception, "exception", path, "column", "reason", "approvedBy", "expires");
+                }
+            }
+        }
+
+        private static XmlElement ReadJsonXml(byte[] json, string path)
+        {
+            using var reader = JsonReaderWriterFactory.CreateJsonReader(json, XmlDictionaryReaderQuotas.Max);
+            var document = new XmlDocument();
+            document.Load(reader);
+            var root = document.DocumentElement;
+            if (root == null || !string.Equals(root.GetAttribute("type"), "object", StringComparison.Ordinal))
+            {
+                throw new SerializationException($"Configuration file '{path}' must contain a JSON object.");
+            }
+
+            return root;
+        }
+
+        private static void ValidateObjectMembers(XmlElement element, string context, string path, params string[] allowedMembers)
+        {
+            ValidateObject(element, context, path);
+            var allowed = new HashSet<string>(allowedMembers, StringComparer.Ordinal);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (XmlElement child in element.ChildNodes)
+            {
+                if (!allowed.Contains(child.LocalName))
+                {
+                    throw new SerializationException(
+                        $"Configuration file '{path}' contains unsupported field '{child.LocalName}' in {context}.");
+                }
+
+                if (!seen.Add(child.LocalName))
+                {
+                    throw new SerializationException(
+                        $"Configuration file '{path}' contains duplicate field '{child.LocalName}' in {context}.");
+                }
+            }
+        }
+
+        private static void ValidateObject(XmlElement element, string context, string path)
+        {
+            if (!string.Equals(element.GetAttribute("type"), "object", StringComparison.Ordinal))
+            {
+                throw new SerializationException($"Configuration file '{path}' must contain an object for {context}.");
+            }
+        }
+
+        private static void ValidateArray(XmlElement element, string context, string path)
+        {
+            if (!string.Equals(element.GetAttribute("type"), "array", StringComparison.Ordinal))
+            {
+                throw new SerializationException($"Configuration file '{path}' must contain an array for {context}.");
+            }
+
+            foreach (XmlElement item in element.ChildNodes)
+            {
+                if (!string.Equals(item.LocalName, "item", StringComparison.Ordinal))
+                {
+                    throw new SerializationException($"Configuration file '{path}' contains an invalid array item in {context}.");
+                }
+            }
+        }
+
+        private static XmlElement? GetProperty(XmlElement element, string name)
+        {
+            foreach (XmlElement child in element.ChildNodes)
+            {
+                if (string.Equals(child.LocalName, name, StringComparison.Ordinal))
+                {
+                    return child;
+                }
+            }
+
+            return null;
+        }
+
+        [DataContract]
         private sealed class PolicyDocument
         {
-            [JsonPropertyName("LastModifiedUtc")]
+            [DataMember(Name = "LastModifiedUtc")]
             public string? LastModifiedUtc { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("Version")]
+            [DataMember(Name = "Version", IsRequired = true)]
             public string? Version { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("Labels")]
+            [DataMember(Name = "Labels", IsRequired = true)]
             public Dictionary<string, PolicyLabel>? Labels { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("InformationTypes")]
+            [DataMember(Name = "InformationTypes", IsRequired = true)]
             public Dictionary<string, PolicyInformationType>? InformationTypes { get; set; }
         }
 
+        [DataContract]
         private sealed class PolicyLabel
         {
-            [JsonRequired]
-            [JsonPropertyName("DisplayName")]
+            [DataMember(Name = "DisplayName")]
             public string? DisplayName { get; set; }
 
-            [JsonPropertyName("Description")]
+            [DataMember(Name = "Description")]
             public string? Description { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("Rank")]
+            [DataMember(Name = "Rank")]
             public string? Rank { get; set; }
 
-            [JsonPropertyName("Order")]
+            [DataMember(Name = "Order")]
             public int Order { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("Enabled")]
+            [DataMember(Name = "Enabled", IsRequired = true)]
             public bool Enabled { get; set; }
         }
 
+        [DataContract]
         private sealed class PolicyInformationType
         {
-            [JsonRequired]
-            [JsonPropertyName("DisplayName")]
+            [DataMember(Name = "DisplayName")]
             public string? DisplayName { get; set; }
 
-            [JsonPropertyName("Description")]
+            [DataMember(Name = "Description")]
             public string? Description { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("Order")]
+            [DataMember(Name = "Order", IsRequired = true)]
             public int Order { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("RecommendedLabelId")]
+            [DataMember(Name = "RecommendedLabelId", IsRequired = true)]
             public string? RecommendedLabelId { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("Enabled")]
+            [DataMember(Name = "Enabled", IsRequired = true)]
             public bool Enabled { get; set; }
 
-            [JsonPropertyName("Custom")]
+            [DataMember(Name = "Custom")]
             public bool Custom { get; set; }
 
-            [JsonPropertyName("Keywords")]
+            [DataMember(Name = "Keywords")]
             public List<PolicyKeyword>? Keywords { get; set; }
         }
 
+        [DataContract]
         private sealed class PolicyKeyword
         {
-            [JsonRequired]
-            [JsonPropertyName("Pattern")]
+            [DataMember(Name = "Pattern")]
             public string? Pattern { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("CanBeNumeric")]
+            [DataMember(Name = "CanBeNumeric", IsRequired = true)]
             public bool CanBeNumeric { get; set; }
 
-            [JsonPropertyName("Excluded")]
+            [DataMember(Name = "Excluded")]
             public bool? Excluded { get; set; }
 
-            [JsonPropertyName("Custom")]
+            [DataMember(Name = "Custom")]
             public bool Custom { get; set; }
         }
 
+        [DataContract]
         private sealed class ExceptionDocument
         {
-            [JsonRequired]
-            [JsonPropertyName("exceptions")]
+            [DataMember(Name = "exceptions", IsRequired = true)]
             public List<PolicyExceptionEntry>? Exceptions { get; set; }
         }
 
+        [DataContract]
         private sealed class PolicyExceptionEntry
         {
-            [JsonRequired]
-            [JsonPropertyName("column")]
+            [DataMember(Name = "column", IsRequired = true)]
             public string? Column { get; set; }
 
-            [JsonRequired]
-            [JsonPropertyName("reason")]
+            [DataMember(Name = "reason", IsRequired = true)]
             public string? Reason { get; set; }
 
-            [JsonPropertyName("approvedBy")]
+            [DataMember(Name = "approvedBy")]
             public string? ApprovedBy { get; set; }
 
-            [JsonPropertyName("expires")]
+            [DataMember(Name = "expires")]
             public string? Expires { get; set; }
         }
 
