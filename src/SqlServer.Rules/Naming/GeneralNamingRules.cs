@@ -128,7 +128,7 @@ namespace SqlServer.Rules.Performance
             switch (objectType.ToUpperInvariant())
             {
                 case "PRIMARYKEYCONSTRAINT":
-                    var pkRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "pk_regex", "^PK_{{tableName}}$");
+                    var pkRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "pk_regex", "^PK_{{tableName}}$", EditorConfig);
                     if (!IsNameMatch(name, pkRegex, tableName, schemaName, null, null, null, out var resolvedPkRegex))
                     {
                         problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Primary Key '{name}' does not follow the company naming standard. Please match regex {resolvedPkRegex}.", RuleId), sqlObj, fragment));
@@ -149,10 +149,10 @@ namespace SqlServer.Rules.Performance
                         return problems;
                     }
 
-                    var re = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ix_regex", "^IX_{{tableName}}_.*");
+                    var re = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ix_regex", "^IX_{{tableName}}_.*", EditorConfig);
                     if (idx.Unique)
                     {
-                        re = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ux_regex", "^UX_{{tableName}}_.*");
+                        re = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ux_regex", "^UX_{{tableName}}_.*", EditorConfig);
                     }
 
                     if (!IsNameMatch(name, re, tableName, schemaName, null, null, null, out var resolvedIndexRegex))
@@ -181,7 +181,7 @@ namespace SqlServer.Rules.Performance
 
                     var foreignTableName = foreignTable.Parts.LastOrDefault();
                     var foreignSchemaName = GetSchemaName(foreignTable);
-                    var fkRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "fk_regex", "^FK_{{tableName}}_{{foreignTableName}}.*");
+                    var fkRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "fk_regex", "^FK_{{tableName}}_{{foreignTableName}}.*", EditorConfig);
 
                     if (!IsNameMatch(name, fkRegex, tableName, schemaName, foreignTableName, foreignSchemaName, null, out var resolvedFkRegex))
                     {
@@ -190,7 +190,7 @@ namespace SqlServer.Rules.Performance
 
                     break;
                 case "CHECKCONSTRAINT":
-                    var ckRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ck_regex", "^CK_{{tableName}}_.*");
+                    var ckRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "ck_regex", "^CK_{{tableName}}_.*", EditorConfig);
                     if (!IsNameMatch(name, ckRegex, tableName, schemaName, null, null, null, out var resolvedCkRegex))
                     {
                         problems.Add(new SqlRuleProblem(MessageFormatter.FormatMessage($"Check Constraint '{name}' does not follow the company naming standard. Please match regex {resolvedCkRegex}.", RuleId), sqlObj, fragment));
@@ -199,7 +199,7 @@ namespace SqlServer.Rules.Performance
                     break;
                 case "DEFAULTCONSTRAINT":
                     var columnName = GetReferencedName(sqlObj, DefaultConstraint.TargetColumn, "Column");
-                    var dfRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "df_regex", "^DF_{{tableName}}_{{columnName}}$");
+                    var dfRegex = NamingRuleRegexConfiguration.GetConfiguredRegex(sqlObj, "df_regex", "^DF_{{tableName}}_{{columnName}}$", EditorConfig);
 
                     if (!IsNameMatch(name, dfRegex, tableName, schemaName, null, null, columnName, out var resolvedDfRegex))
                     {
