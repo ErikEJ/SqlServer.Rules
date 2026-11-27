@@ -14,6 +14,6 @@
     <PackageReference Include="ErikEJ.DacFX.SqlServer.Rules" Version="5.1.12" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.8" />
     <PackageReference Include="System.ComponentModel.Composition" Version="10.0.13" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.5.96" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.6.60" PrivateAssets="All" />
   </ItemGroup>
 </Project>
