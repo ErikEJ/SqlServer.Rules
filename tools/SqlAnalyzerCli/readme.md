@@ -107,7 +107,7 @@ steps:
 
 ## Baseline
 
-A baseline lets you adopt the rules on an existing code base: the problems you have today are accepted, and only new ones are reported and fail the run.
+A baseline suppresses problems up to the accepted count for each source and rule. If the current count exceeds that count, all current problems for that source and rule are reported because counts cannot identify which ones are new.
 
 ```bash
 # Accept the problems found now. Commit baseline.json to source control.
