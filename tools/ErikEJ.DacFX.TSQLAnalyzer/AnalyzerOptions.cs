@@ -46,9 +46,19 @@ public class AnalyzerOptions
 
     /// <summary>
     /// Used to specify the full filename for an optional output file.
-    /// Supported formats are 'xml' and 'json'
+    /// Supported formats are 'xml', 'json' and 'sarif'
     /// </summary>
     public FileInfo? OutputFile { get; set; }
+
+    /// <summary>
+    /// Used to specify a baseline file of accepted problems. Only problems that the baseline does not cover are reported.
+    /// </summary>
+    public string? BaselinePath { get; set; }
+
+    /// <summary>
+    /// Used to specify that the problems found are written to the baseline file, replacing its contents.
+    /// </summary>
+    public bool UpdateBaseline { get; set; }
 
     /// <summary>
     /// Used to specify if formatting of the .sql files selected for analysis is required.

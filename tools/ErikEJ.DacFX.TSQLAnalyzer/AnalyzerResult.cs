@@ -7,6 +7,16 @@ public class AnalyzerResult
 {
     public CodeAnalysisResult? Result { get; internal set; }
 
+    /// <summary>
+    /// Gets the problems to report: all problems found, or only those that the baseline does not cover.
+    /// </summary>
+    public IReadOnlyList<SqlRuleProblem> Problems { get; internal set; } = [];
+
+    /// <summary>
+    /// Gets the number of problems found that are covered by the baseline and therefore not reported.
+    /// </summary>
+    public int BaselinedProblemCount { get; internal set; }
+
     public Dictionary<string, DacModelException> ModelErrors { get; } = [];
 
 #pragma warning disable CA1002 // Do not expose generic lists

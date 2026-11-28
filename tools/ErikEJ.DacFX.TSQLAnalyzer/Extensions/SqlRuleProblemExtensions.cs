@@ -99,6 +99,12 @@ public static class SqlRuleProblemExtensions
     public static (int EndLine, int EndColumn) GetEndPosition(this SqlRuleProblem sqlRuleProblem)
         => sqlRuleProblem.GetEndPosition(null);
 
+    /// <summary>
+    /// Gets the exclusive end position, adjusting the column back to the original source when an analysis result is supplied.
+    /// </summary>
+    /// <param name="sqlRuleProblem">The analyzed problem.</param>
+    /// <param name="analyzerResult">The analysis result containing source-column adjustments, or <see langword="null" /> for unadjusted coordinates.</param>
+    /// <returns>The end line and column. The column is already adjusted when an analysis result is supplied.</returns>
     public static (int EndLine, int EndColumn) GetEndPosition(this SqlRuleProblem sqlRuleProblem, AnalyzerResult? analyzerResult)
     {
         ArgumentNullException.ThrowIfNull(sqlRuleProblem);

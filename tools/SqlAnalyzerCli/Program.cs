@@ -132,6 +132,8 @@ internal static class Program
             ConnectionString = sqlConnectionStringBuilder,
             Format = options.Format,
             EditorConfigPath = options.EditorConfigPath,
+            BaselinePath = options.BaselinePath,
+            UpdateBaseline = options.UpdateBaseline,
         };
 
         bool hasBogusArgs = args.Any() && args.All(a => !a.StartsWith('-'));
@@ -207,7 +209,7 @@ internal static class Program
         {
             var warnings = new List<string>();
 
-            foreach (var err in result.Result.Problems)
+            foreach (var err in result.Problems)
             {
                 hadErrors = true;
                 warnings.Add(err.GetOutputMessage(analyzerOptions.Rules, result));
@@ -236,6 +238,13 @@ internal static class Program
                     () => DisplayService.Markup($"Writing report to '{analyzerOptions.OutputFile.FullName}'", Decoration.Bold));
             }
 
+            if (analyzerOptions.UpdateBaseline)
+            {
+                DisplayService.MarkupLine();
+                DisplayService.MarkupLine(
+                    () => DisplayService.Markup($"Writing baseline with {result.BaselinedProblemCount} problems to '{Path.GetFullPath(analyzerOptions.BaselinePath!)}'", Decoration.Bold));
+            }
+
             if (analyzerOptions.Format)
             {
                 DisplayService.MarkupLine();
@@ -251,16 +260,20 @@ internal static class Program
 
             if (!options.NoLogo)
             {
+                var summary = string.IsNullOrWhiteSpace(analyzerOptions.BaselinePath)
+                    ? $"{result.Problems.Count} problems found."
+                    : $"{result.Problems.Count} problems found, {result.BaselinedProblemCount} more covered by the baseline.";
+
                 DisplayService.MarkupLine();
                 if (result.FileCount > 0)
                 {
                     DisplayService.MarkupLine(
-                        () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds. {result.Result.Problems.Count} problems found.", Decoration.Bold));
+                        () => DisplayService.Markup($"Analyzed {result.FileCount} files in {sw.Elapsed.TotalSeconds:N3} seconds. {summary}", Decoration.Bold));
                 }
                 else
                 {
                     DisplayService.MarkupLine(
-                        () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds. {result.Result.Problems.Count} problems found.", Decoration.Bold));
+                        () => DisplayService.Markup($"Analysis completed in {sw.Elapsed.TotalSeconds:N3} seconds. {summary}", Decoration.Bold));
                 }
             }
         }
@@ -313,6 +326,13 @@ internal static class Program
             h.AddPostOptionsLine(string.Empty);
             h.AddPostOptionsLine("## Analyze a .dacpac and save results to an xml file");
             h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\Chinook.dacpac -o result.xml");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Analyze a folder and save results to a SARIF file");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts -o result.sarif");
+            h.AddPostOptionsLine(string.Empty);
+            h.AddPostOptionsLine("## Accept the current problems in a baseline, then report only new problems");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts --baseline baseline.json --update-baseline");
+            h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts --baseline baseline.json");
             h.AddPostOptionsLine(string.Empty);
             h.AddPostOptionsLine("## Analyze a single file, and reformat (PREVIEW)");
             h.AddPostOptionsLine("tsqlanalyze -i C:\\scripts\\sproc.sql -f");
