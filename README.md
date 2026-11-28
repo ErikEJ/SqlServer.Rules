@@ -53,7 +53,7 @@ tsqlanalyze -i C:\scripts\sproc.sql
 tsqlanalyze -i C:\scripts\database.dacpac -o results.json
 ```
 
-Use the CLI for one-off checks or automation, with console, XML, or JSON output. See the [CLI guide](tools/SqlAnalyzerCli/readme.md) for folder and live database analysis, rule filters, and more examples.
+Use the CLI for one-off checks or automation, with console, XML, JSON, or SARIF output, and a baseline to report only new problems. See the [CLI guide](tools/SqlAnalyzerCli/readme.md) for folder and live database analysis, rule filters, and more examples.
 
 ## Use with GitHub Copilot
 

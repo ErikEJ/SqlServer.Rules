@@ -53,8 +53,20 @@ internal sealed class CliAnalyzerOptions
         'o',
         longName: "output",
         Required = false,
-        HelpText = "Optional file name of output file in .xml or .json format")]
+        HelpText = "Optional file name of output file in .xml, .json or .sarif format")]
     public string? OutputFile { get; set; }
+
+    [Option(
+        "baseline",
+        HelpText = "Baseline file of accepted problems - only problems that it does not cover are reported.",
+        Required = false)]
+    public string? BaselinePath { get; set; }
+
+    [Option(
+        "update-baseline",
+        HelpText = "Write the problems found to the --baseline file, creating or replacing it.",
+        Required = false)]
+    public bool UpdateBaseline { get; set; }
 
     [Option(
         'a',

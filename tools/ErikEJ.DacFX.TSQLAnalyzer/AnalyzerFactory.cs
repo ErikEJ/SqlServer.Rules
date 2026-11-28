@@ -37,6 +37,8 @@ public class AnalyzerFactory
             BuildRuleLists(request.Rules);
         }
 
+        var baseline = LoadBaseline();
+
         using var model = GenerateTSqlModel(result);
 
         if (model == null)
@@ -67,12 +69,26 @@ public class AnalyzerFactory
         }
 
         result.Result = analysisResult;
+        result.Problems = analysisResult.Problems;
+
+        if (baseline != null)
+        {
+            result.Problems = baseline.GetNewProblems(analysisResult.Problems);
+            result.BaselinedProblemCount = analysisResult.Problems.Count - result.Problems.Count;
+        }
 
         if (analysisResult.AnalysisSucceeded)
         {
+            if (request.UpdateBaseline)
+            {
+                Baseline.Save(request.BaselinePath!, analysisResult.Problems);
+                result.Problems = [];
+                result.BaselinedProblemCount = analysisResult.Problems.Count;
+            }
+
             if (request.OutputFile != null)
             {
-                SaveOutputFile(result, analysisResult);
+                SaveOutputFile(result, analysisResult, service.GetRules());
             }
 
             if (request.Format)
@@ -124,7 +140,28 @@ public class AnalyzerFactory
         }
     }
 
-    private void SaveOutputFile(AnalyzerResult result, CodeAnalysisResult analysisResult)
+    private Baseline? LoadBaseline()
+    {
+        if (string.IsNullOrWhiteSpace(request.BaselinePath))
+        {
+            if (request.UpdateBaseline)
+            {
+                throw new ArgumentException("A baseline file must be specified to update the baseline");
+            }
+
+            return null;
+        }
+
+        // The XML report is serialized by DacFx from the complete analysis result and cannot be filtered.
+        if (request.OutputFile?.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            throw new ArgumentException("A baseline cannot be combined with an output file of type 'xml'; use type 'json' or type 'sarif'");
+        }
+
+        return request.UpdateBaseline ? null : Baseline.Load(request.BaselinePath);
+    }
+
+    private void SaveOutputFile(AnalyzerResult result, CodeAnalysisResult analysisResult, IEnumerable<RuleDescriptor> rules)
     {
         var outputFile = GetOutputFile(request.OutputFile);
 
@@ -155,7 +192,7 @@ public class AnalyzerFactory
             {
                 var problemList = new ProblemList { Problems = new List<PlainProblem>() };
 
-                foreach (var problem in analysisResult.Problems)
+                foreach (var problem in result.Problems)
                 {
                     problemList.Problems.Add(new PlainProblem
                     {
@@ -169,6 +206,13 @@ public class AnalyzerFactory
                 }
 
                 File.WriteAllText(outputFile.FullName, JsonSerializer.Serialize(problemList), Encoding.UTF8);
+            }
+
+            if (outputFile.Extension.Equals(".sarif", StringComparison.OrdinalIgnoreCase))
+            {
+                SarifWriter.Write(outputFile.FullName, result, rules, request.Rules, Directory.GetCurrentDirectory());
+
+                result.OutputFile = outputFile.FullName;
             }
         }
     }
@@ -213,6 +257,13 @@ public class AnalyzerFactory
             }
             else if (files.Count == 1 && files.First().Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
             {
+                // The archive is extracted to a new temporary directory on every run, so its files have no stable
+                // path to match a baseline on.
+                if (!string.IsNullOrWhiteSpace(request.BaselinePath))
+                {
+                    throw new ArgumentException("A baseline cannot be used with .zip input");
+                }
+
                 var zipFile = files.First().Key;
                 var targetDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
                 ZipFile.ExtractToDirectory(zipFile, targetDirectory);
@@ -426,9 +477,10 @@ public class AnalyzerFactory
         }
 
         if (!fileInfo.Extension.Equals(".xml", StringComparison.OrdinalIgnoreCase)
-            && !fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
+            && !fileInfo.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase)
+            && !fileInfo.Extension.Equals(".sarif", StringComparison.OrdinalIgnoreCase))
         {
-            throw new ArgumentException("Output file must be of type 'xml' or type 'json'");
+            throw new ArgumentException("Output file must be of type 'xml', type 'json' or type 'sarif'");
         }
 
         if (!Path.IsPathRooted(fileInfo.FullName))

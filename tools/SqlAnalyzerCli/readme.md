@@ -38,6 +38,13 @@ tsqlanalyze -i C:\scripts\Chinook.dacpac -o result.xml
 ## Analyze a .dacpac and save results to a JSON file
 tsqlanalyze -i C:\scripts\Chinook.dacpac -o result.json
 
+## Analyze a folder and save results to a SARIF file
+tsqlanalyze -i C:\scripts -o result.sarif
+
+## Accept the current problems in a baseline, then report only new problems
+tsqlanalyze -i C:\scripts --baseline baseline.json --update-baseline
+tsqlanalyze -i C:\scripts --baseline baseline.json
+
 ## Analyze a .zip file with .sql files
 tsqlanalyze -i C:\scripts\Fabric.zip
 
@@ -68,6 +75,61 @@ tsqlanalyze -i C:\scripts\database.dacpac --editorconfig C:\config\.editorconfig
 Only `[*.sql]` sections in the selected file are used; source-file configuration is not merged. Relative policy and exceptions paths are resolved from that file's directory. The same override is available as `editorConfigPath` in server-mode requests.
 
 For SRD0097 policy and exceptions settings, see the [rule documentation](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0097.md).
+
+## SARIF output
+
+Use an output file with the `.sarif` extension to write the problems as [SARIF 2.1.0](https://sarifweb.azurewebsites.net/), the format read by GitHub code scanning and Azure DevOps.
+
+```bash
+tsqlanalyze -i src/Database -o tsqlanalyzer.sarif
+```
+
+- Files below the current directory are written as relative paths, so run the tool from the repository root. Other files are written as absolute `file://` URIs.
+
+To show the problems on pull requests in GitHub:
+
+```yaml
+permissions:
+  security-events: write
+
+steps:
+  - uses: actions/checkout@v7
+  - uses: actions/setup-dotnet@v6
+    with:
+      dotnet-version: 10.0.x
+  - run: dotnet tool install --global ErikEJ.DacFX.TSQLAnalyzer.Cli
+  - run: tsqlanalyze -n -i src/Database -o tsqlanalyzer.sarif
+  - uses: github/codeql-action/upload-sarif@v4
+    if: always()
+    with:
+      sarif_file: tsqlanalyzer.sarif
+```
+
+## Baseline
+
+A baseline suppresses problems up to the accepted count for each source and rule. If the current count exceeds that count, all current problems for that source and rule are reported because counts cannot identify which ones are new.
+
+```bash
+# Accept the problems found now. Commit baseline.json to source control.
+tsqlanalyze -i src/Database --baseline baseline.json --update-baseline
+
+# Report only problems that the baseline does not cover
+tsqlanalyze -i src/Database --baseline baseline.json
+```
+
+The baseline holds the number of accepted problems per rule for each source file, with file paths relative to the baseline file:
+
+```json
+{
+  "version": 1,
+  "problems": {
+    "Procedures/GetOrders.sql": {
+      "SqlServer.Rules.SRD0006": 2,
+      "SqlServer.Rules.SRP0005": 1
+    }
+  }
+}
+```
 
 ## Sample output
 
