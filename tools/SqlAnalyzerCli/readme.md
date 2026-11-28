@@ -72,7 +72,7 @@ By default, rules discover `.editorconfig` settings from each SQL source file. T
 tsqlanalyze -i C:\scripts\database.dacpac --editorconfig C:\config\.editorconfig
 ```
 
-Only `[*.sql]` sections in the selected file are used; source-file configuration is not merged. Relative policy and exceptions paths are resolved from that file's directory. The same override is available as `editorConfigPath` in server-mode requests.
+Only `[*.sql]` sections in the selected file are used. Relative policy and exceptions paths for rule SRD0097 are resolved from that file's directory.
 
 For SRD0097 policy and exceptions settings, see the [rule documentation](https://github.com/ErikEJ/SqlServer.Rules/blob/master/docs/Design/SRD0097.md).
 
@@ -80,13 +80,9 @@ For SRD0097 policy and exceptions settings, see the [rule documentation](https:/
 
 Use an output file with the `.sarif` extension to write the problems as [SARIF 2.1.0](https://sarifweb.azurewebsites.net/), the format read by GitHub code scanning and Azure DevOps.
 
-```bash
-tsqlanalyze -i src/Database -o tsqlanalyzer.sarif
-```
-
 - Files below the current directory are written as relative paths, so run the tool from the repository root. Other files are written as absolute `file://` URIs.
 
-To show the problems on pull requests in GitHub:
+To show the problems in GitHub Actions:
 
 ```yaml
 permissions:
@@ -105,6 +101,23 @@ steps:
       sarif_file: tsqlanalyzer.sarif
 ```
 
+To publish the SARIF file as a build artifact in Azure DevOps:
+
+```yaml
+steps:
+- task: UseDotNet@2
+  inputs:
+    version: 10.0.x
+- script: dotnet tool install --global ErikEJ.DacFX.TSQLAnalyzer.Cli
+- script: tsqlanalyze -n -i src/Database --baseline tsqlanalyzer-baseline.json -o $(Build.ArtifactStagingDirectory)/tsqlanalyzer.sarif
+  workingDirectory: $(Build.SourcesDirectory)
+- task: PublishBuildArtifacts@1
+  condition: succeededOrFailed()
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)/tsqlanalyzer.sarif
+    ArtifactName: CodeAnalysisLogs
+```
+
 ## Baseline
 
 A baseline suppresses problems up to the accepted count for each source and rule. If the current count exceeds that count, all current problems for that source and rule are reported because counts cannot identify which ones are new.
@@ -115,20 +128,6 @@ tsqlanalyze -i src/Database --baseline baseline.json --update-baseline
 
 # Report only problems that the baseline does not cover
 tsqlanalyze -i src/Database --baseline baseline.json
-```
-
-The baseline holds the number of accepted problems per rule for each source file, with file paths relative to the baseline file:
-
-```json
-{
-  "version": 1,
-  "problems": {
-    "Procedures/GetOrders.sql": {
-      "SqlServer.Rules.SRD0006": 2,
-      "SqlServer.Rules.SRP0005": 1
-    }
-  }
-}
 ```
 
 ## Sample output
