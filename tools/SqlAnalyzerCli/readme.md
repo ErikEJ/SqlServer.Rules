@@ -101,7 +101,7 @@ steps:
       sarif_file: tsqlanalyzer.sarif
 ```
 
-To show the problems in Azure DevOps pipelines:
+To publish the SARIF file as a build artifact in Azure DevOps:
 
 ```yaml
 steps:
